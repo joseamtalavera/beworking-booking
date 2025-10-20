@@ -111,7 +111,13 @@ const ChooseBookingMode = ({ onContinue }) => {
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Button
             variant="contained"
-            onClick={onContinue}
+            onClick={() => {
+              if (bookingMode === 'login' && auth.status !== 'authenticated') {
+                window.location.href = auth.loginUrl || 'http://localhost:5173/';
+                return;
+              }
+              onContinue?.();
+            }}
             sx={{ textTransform: 'none', fontWeight: 600, px: 3 }}
           >
             Continue
