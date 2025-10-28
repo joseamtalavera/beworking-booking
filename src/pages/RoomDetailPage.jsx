@@ -1,10 +1,15 @@
-import { useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { Box, Button, Chip, Divider, Grid, Stack, Typography } from '@mui/material';
+import { useMemo, useState } from 'react';
+import { Link, useParams, useLocation } from 'react-router-dom';
+import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import CloseIcon from '@mui/icons-material/Close';
+import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
+import RoomCalendarGrid, { CalendarLegend } from '../components/booking/RoomCalendarGrid.jsx';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 
 const RoomDetailPage = () => {
   const { roomId } = useParams();
+  const location = useLocation();
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
 
@@ -19,73 +24,301 @@ const RoomDetailPage = () => {
     );
   }
 
-  return (
-    <Stack spacing={4}>
-      <Box
-        sx={{
-          borderRadius: 4,
-          overflow: 'hidden',
-          minHeight: 320,
-          backgroundImage: `linear-gradient(0deg, rgba(15,23,42,0.45), rgba(15,23,42,0.45)), url(${room.heroImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          color: '#fff',
-          display: 'flex',
-          alignItems: 'flex-end',
-          p: 4
-        }}
-      >
-        <Stack spacing={1}>
-          <Chip label={room.centro} sx={{ bgcolor: 'rgba(226,232,240,0.25)', color: '#f8fafc', width: 'fit-content' }} />
-          <Typography variant="h3" sx={{ fontWeight: 700 }}>
-            {room.name}
-          </Typography>
-          <Typography variant="body1">Capacity {room.capacity} · from {room.priceFrom} {room.currency}/hr</Typography>
-        </Stack>
-      </Box>
+  // Derive gallery, description, amenities, policies, map and calendar placeholders
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const galleryImages = useMemo(() => {
+    const primary = Array.isArray(room.gallery) ? room.gallery.filter(Boolean) : [];
+    if (primary.length) {
+      return primary;
+    }
+    return room.heroImage ? [room.heroImage] : [];
+  }, [room.gallery, room.heroImage]);
 
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={8}>
-          <Stack spacing={3}>
+  const spotlightImages = galleryImages.slice(0, 5);
+  const featureImage = spotlightImages[0];
+  const secondaryImages = spotlightImages.slice(1, 5);
+  const xsGalleryAreas = ['"hero"', ...secondaryImages.map((_, index) => `"thumb${index + 1}"`)].join(' ') || '"hero"';
+  const description =
+    room.description ?? 'Nuestra Aula está equipada para reuniones, eventos y formaciones. Espacio luminoso con conexión de alta velocidad, pizarra y un ambiente profesional listo para tus clientes.';
+  const amenities = room.amenities ?? room.tags ?? [];
+  const cancellationPolicy = room.cancellationPolicy ??
+  [
+      'La fecha de la reserva podrá modificarse hasta 24 h antes del inicio.',
+      'La modificación debe confirmarse por email.',
+      'No se realizará devolución en caso de no asistencia.'
+    ];
+  const bookingInstructions = room.bookingInstructions ??
+  [
+      'Solicita el día de tu reserva.',
+      'Te confirmaremos disponibilidad y enviaremos la factura.',
+      'Tras el pago recibirás instrucciones de acceso.'
+    ];
+    const todayIso = new Date().toISOString().split('T')[0];
+    const calendarEntries = room.availability ?? [
+      {
+        id: 'sample-1',
+        fechaIni: `${todayIso}T10:00:00`,
+        fechaFin: `${todayIso}T12:00:00`,
+        estado: 'paid',
+        cliente: { nombre: 'Reserva confirmada' },
+        centro: { nombre: room.centro },
+        producto: { nombre: room.name }
+      },
+      {
+        id: 'sample-2',
+        fechaIni: `${todayIso}T15:00:00`,
+        fechaFin: `${todayIso}T16:30:00`,
+        estado: 'created',
+        cliente: { nombre: 'Bloqueo interno' },
+        centro: { nombre: room.centro },
+        producto: { nombre: room.name }
+      }
+    ];
+
+  const calendarLabel = new Date (todayIso).toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+  });
+  const mapEmbedUrl = room.mapEmbedUrl ?? (room.latitude && room.longitude
+    ? `https://www.google.com/maps?q=${room.latitude},${room.longitude}&z=15&output=embed`
+    : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9975481.89859359!2d-13.865541969374726!3d40.20864084878176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd0e320f8d25d7f7%3A0x40340f63c70c1c0!2sEspaña!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses`);
+
+
+  return (
+    <Stack spacing={5}>
+      {/* NEW: header block */}
+      <Stack spacing={1}>
+        <Typography variant="overline" sx={{ color: '#475569', letterSpacing: 1.2 }}>
+          {room.centro}
+        </Typography>
+        <Typography variant="h3" sx={{ fontWeight: 800 }}>
+          {room.name}
+        </Typography>
+        <Typography variant="body1" sx={{ color: '#475569' }}>
+          Capacidad {room.capacity} personas · desde {room.priceFrom} {room.currency}/h
+        </Typography>
+      </Stack>
+
+      {/* Gallery */}
+      {featureImage ? (
+        <Box sx={{ position: 'relative' }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 2,
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(4, minmax(0, 1fr))' },
+              gridTemplateRows: { md: 'repeat(2, 220px)' },
+              gridTemplateAreas: {
+                xs: xsGalleryAreas,
+                md: '"hero hero thumb1 thumb2" "hero hero thumb3 thumb4"'
+              },
+              '& .gallery-hero': {
+                gridArea: 'hero',
+                height: { xs: 260, md: '100%' }
+              },
+              '& .gallery-thumb': {
+                height: { xs: 180, md: '100%' }
+              }
+            }}
+          >
+            <Box
+              component="img"
+              src={featureImage}
+              alt={`${room.name} principal`}
+              className="gallery-hero"
+              sx={{ width: '100%', objectFit: 'cover', borderRadius: 3 }}
+            />
+            {secondaryImages.map((image, index) => (
+              <Box
+                key={`${image}-${index}`}
+                component="img"
+                src={image}
+                alt={`${room.name} ${index + 2}`}
+                className="gallery-thumb"
+                sx={{ width: '100%', objectFit: 'cover', borderRadius: 3, gridArea: `thumb${index + 1}` }}
+              />
+            ))}
+          </Box>
+
+          {galleryImages.length > 5 ? (
+            <Button
+              onClick={() => setGalleryOpen(true)}
+              startIcon={<PhotoLibraryOutlinedIcon />}
+              sx={{
+                position: 'absolute',
+                bottom: 16,
+                right: 16,
+                borderRadius: 999,
+                backgroundColor: '#fff',
+                textTransform: 'none',
+                fontWeight: 600,
+                px: 2.5,
+                boxShadow: '0 10px 30px rgba(15, 23, 42, 0.12)',
+                '&:hover': { backgroundColor: '#f8fafc' }
+              }}
+            >
+              Show all photos
+            </Button>
+          ) : null}
+        </Box>
+      ) : null}
+
+      <Grid container spacing={5}>
+        <Grid item xs={12} md={7}>
+          <Stack spacing={4}>
             <section>
               <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-                Overview
+                Descripción
               </Typography>
-              <Typography variant="body1" sx={{ color: '#475569' }}>
-                This is a placeholder description. Integrate with the CMS/backend to fetch rich content,
-                amenities, and availability. Highlight unique selling points and embed virtual tours as needed.
+              <Typography variant="body1" sx={{ color: '#475569', lineHeight: 1.65 }}>
+                {description}
               </Typography>
             </section>
 
+            {amenities.length ? (
+              <section>
+                <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+                  Servicios incluidos
+                </Typography>
+                <Grid container spacing={2}>
+                  {amenities.map((amenity) => (
+                    <Grid item xs={12} sm={6} key={amenity}>
+                      <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                        <CheckCircleRoundedIcon sx={{ color: '#2563eb', mt: 0.4 }} fontSize="small" />
+                        <Typography variant="body1" sx={{ color: '#1f2937' }}>
+                          {amenity}
+                        </Typography>
+                      </Stack>
+                    </Grid>
+                  ))}
+                </Grid>
+              </section>
+            ) : null}
+
             <section>
-              <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                Amenities
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+                Política de cancelación
               </Typography>
-              <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                {room.tags?.map((tag) => (
-                  <Chip key={tag} label={tag} sx={{ bgcolor: '#eff6ff', color: '#1d4ed8' }} />
+              <Stack spacing={1.25}>
+                {cancellationPolicy.map((item) => (
+                  <Stack direction="row" spacing={1.5} key={item}>
+                    <CheckCircleRoundedIcon sx={{ color: '#475569', mt: 0.35 }} fontSize="small" />
+                    <Typography variant="body2" sx={{ color: '#475569' }}>
+                      {item}
+                    </Typography>
+                  </Stack>
+                ))}
+              </Stack>
+            </section>
+
+            <section>
+              <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
+                Instrucciones
+              </Typography>
+              <Stack spacing={1.25}>
+                {bookingInstructions.map((item) => (
+                  <Stack direction="row" spacing={1.5} key={item}>
+                    <CheckCircleRoundedIcon sx={{ color: '#475569', mt: 0.35 }} fontSize="small" />
+                    <Typography variant="body2" sx={{ color: '#475569' }}>
+                      {item}
+                    </Typography>
+                  </Stack>
                 ))}
               </Stack>
             </section>
           </Stack>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Stack spacing={2} sx={{ border: '1px solid #e2e8f0', borderRadius: 3, p: 3, bgcolor: '#fff' }}>
+        {/* NEW: calendar + CTA */}
+        <Grid item xs={12} md={5}>
+          <Stack spacing={3} sx={{ border: '1px solid #e2e8f0', borderRadius: 3, p: 3, bgcolor: '#fff' }}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              Ready to book?
+              Disponibilidad
             </Typography>
             <Typography variant="body2" sx={{ color: '#475569' }}>
-              Choose your preferred date and time, login or checkout as a visitor, and secure the space with a
-              fast Stripe payment flow.
+              Consulta los bloques reservados y solicita tu horario ideal. La disponibilidad se sincroniza con el panel
+              de Agenda del dashboard.
             </Typography>
             <Divider />
-            <Button component={Link} to={`/rooms/${room.slug ?? room.id}/book`} variant="contained" size="large">
+            <CalendarLegend />
+            <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} />
+            <Button
+              component={Link}
+              to={`/rooms/${room.slug ?? room.id}/book`}
+              state={{
+                modal: true,
+                backgroundLocation: {
+                  pathname: location.pathname,
+                  search: location.search,
+                  hash: location.hash
+                }
+              }}
+              variant="contained"
+              size="large"
+              sx={{ textTransform: 'none', fontWeight: 600 }}
+            >
               Start booking
             </Button>
           </Stack>
         </Grid>
       </Grid>
+
+      {/* NEW: map */}
+      <section>
+        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
+          Ubicación
+        </Typography>
+        <Box
+          sx={{
+            borderRadius: 3,
+            overflow: 'hidden',
+            border: '1px solid #e2e8f0',
+            minHeight: 320,
+            bgcolor: '#fff'
+          }}
+        >
+          <Box
+            component="iframe"
+            title={`Mapa de ${room.name}`}
+            src={mapEmbedUrl}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
+            sx={{ width: '100%', height: 360, border: 0 }}
+          />
+        </Box>
+      </section>
+
+      <Dialog
+        open={galleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        maxWidth="lg"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 3, p: 2 } }}
+      >
+        <IconButton
+          onClick={() => setGalleryOpen(false)}
+          sx={{ position: 'absolute', top: 12, right: 12, bgcolor: '#fff' }}
+        >
+          <CloseIcon fontSize="small" />
+        </IconButton>
+        <DialogContent sx={{ pt: 4 }}>
+          <Grid container spacing={2}>
+            {galleryImages.map((image, index) => (
+              <Grid item xs={12} sm={6} md={4} key={`${image}-${index}`}>
+                <Box
+                  component="img"
+                  src={image}
+                  alt={`${room.name} gallery ${index + 1}`}
+                  sx={{ width: '100%', height: 220, objectFit: 'cover', borderRadius: 2 }}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+      </Dialog>
     </Stack>
   );
 };

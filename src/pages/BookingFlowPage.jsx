@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 import { useBookingFlow } from '../store/useBookingFlow.js';
@@ -10,8 +10,10 @@ import ContactBillingStep from '../components/booking/ContactBillingStep.jsx';
 import { useBookingVisitor } from '../store/useBookingVisitor.js';
 import { useAuth } from '../components/auth/AuthProvider.jsx';
 
-const BookingFlowPage = () => {
+export const BookingFlowContent = ({ layout = 'page' }) => {
   const { roomId } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
   const activeStep = useBookingFlow((state) => state.activeStep);
@@ -20,12 +22,20 @@ const BookingFlowPage = () => {
   const resetFlow = useBookingFlow((state) => state.resetFlow);
   const setVisitorContact = useBookingVisitor((state) => state.setVisitorContact);
   const resetVisitor = useBookingVisitor((state) => state.resetVisitor);
+  const setActiveStep = useBookingFlow((state) => state.setActiveStep);
   const auth = useAuth();
 
   useEffect(() => () => {
     resetFlow();
     resetVisitor();
   }, [resetFlow, resetVisitor]);
+
+  useEffect(() => {
+    if (location.state?.skipMode) {
+      setActiveStep(1);
+      navigate(location.pathname, { replace: true, state: null });
+    }
+  }, [location.pathname, location.state, navigate, setActiveStep]);
 
   const authenticatedContact = useMemo(() => {
     if (auth.status !== 'authenticated' || !auth.profile) {
@@ -88,8 +98,13 @@ const BookingFlowPage = () => {
     return <Typography variant="h6">Room not found.</Typography>;
   }
 
+  const containerSx =
+    layout === 'modal'
+      ? { width: '100%', display: 'grid', gap: 3 }
+      : { maxWidth: 720, mx: 'auto', display: 'grid', gap: 4 };
+
   return (
-    <Box sx={{ maxWidth: 720, mx: 'auto', display: 'grid', gap: 4 }}>
+    <Box sx={containerSx}>
       <Box>
         <Typography variant="overline" sx={{ color: '#64748b' }}>
           Booking · {room.centro}
@@ -109,5 +124,7 @@ const BookingFlowPage = () => {
     </Box>
   );
 };
+
+const BookingFlowPage = () => <BookingFlowContent layout="page" />;
 
 export default BookingFlowPage;
