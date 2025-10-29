@@ -1,11 +1,99 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useLocation } from 'react-router-dom';
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
+import WifiRoundedIcon from '@mui/icons-material/WifiRounded';
+import TvRoundedIcon from '@mui/icons-material/TvRounded';
+import EditNoteRoundedIcon from '@mui/icons-material/EditNoteRounded';
+import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded';
+import CoffeeMakerRoundedIcon from '@mui/icons-material/CoffeeMakerRounded';
+import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
+import VideocamRoundedIcon from '@mui/icons-material/VideocamRounded';
+import PanoramaRoundedIcon from '@mui/icons-material/PanoramaRounded';
+import WeekendRoundedIcon from '@mui/icons-material/WeekendRounded';
+import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
+import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
+import MoneyOffRoundedIcon from '@mui/icons-material/MoneyOffRounded';
+import ReportProblemRoundedIcon from '@mui/icons-material/ReportProblemRounded';
+import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded';
+import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
+import VpnKeyRoundedIcon from '@mui/icons-material/VpnKeyRounded';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import RoomCalendarGrid, { CalendarLegend } from '../components/booking/RoomCalendarGrid.jsx';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
+
+const AMENITY_ICON_COLOR = '#fb8c00';
+
+const pickAmenityIcon = (label) => {
+  if (!label) {
+    return AppsRoundedIcon;
+  }
+  const normalized = label.toLowerCase();
+  if (normalized.includes('wifi') || normalized.includes('internet')) {
+    return WifiRoundedIcon;
+  }
+  if (normalized.includes('pantalla') || normalized.includes('screen') || normalized.includes('tv')) {
+    return TvRoundedIcon;
+  }
+  if (normalized.includes('pizarra') || normalized.includes('whiteboard') || normalized.includes('rotulador')) {
+    return EditNoteRoundedIcon;
+  }
+  if (normalized.includes('climat') || normalized.includes('aire') || normalized.includes('ac')) {
+    return AcUnitRoundedIcon;
+  }
+  if (normalized.includes('coffee') || normalized.includes('café')) {
+    return CoffeeMakerRoundedIcon;
+  }
+  if (normalized.includes('acceso') || normalized.includes('llave') || normalized.includes('24/7')) {
+    return KeyRoundedIcon;
+  }
+  if (normalized.includes('híbrido') || normalized.includes('video') || normalized.includes('stream')) {
+    return VideocamRoundedIcon;
+  }
+  if (normalized.includes('vista') || normalized.includes('panor') || normalized.includes('ventana')) {
+    return PanoramaRoundedIcon;
+  }
+  if (normalized.includes('mobiliario') || normalized.includes('modular') || normalized.includes('mesa')) {
+    return WeekendRoundedIcon;
+  }
+  return AppsRoundedIcon;
+};
+
+const pickPolicyIcon = (text) => {
+  if (!text) {
+    return ReportProblemRoundedIcon;
+  }
+  const normalized = text.toLowerCase();
+  if (normalized.includes('modific')) {
+    return AutorenewRoundedIcon;
+  }
+  if (normalized.includes('email') || normalized.includes('correo')) {
+    return MailOutlineRoundedIcon;
+  }
+  if (normalized.includes('devolu') || normalized.includes('reembolso') || normalized.includes('dinero')) {
+    return MoneyOffRoundedIcon;
+  }
+  return ReportProblemRoundedIcon;
+};
+
+const pickInstructionIcon = (text) => {
+  if (!text) {
+    return InfoOutlinedIcon;
+  }
+  const normalized = text.toLowerCase();
+  if (normalized.includes('solicita') || normalized.includes('reserva') || normalized.includes('día')) {
+    return EventAvailableRoundedIcon;
+  }
+  if (normalized.includes('factura') || normalized.includes('pago') || normalized.includes('enlace')) {
+    return ReceiptLongRoundedIcon;
+  }
+  if (normalized.includes('instruccion') || normalized.includes('acceso') || normalized.includes('llave')) {
+    return VpnKeyRoundedIcon;
+  }
+  return InfoOutlinedIcon;
+};
 
 const RoomDetailPage = () => {
   const { roomId } = useParams();
@@ -183,16 +271,19 @@ const RoomDetailPage = () => {
                   Servicios incluidos
                 </Typography>
                 <Grid container spacing={2}>
-                  {amenities.map((amenity) => (
-                    <Grid item xs={12} sm={6} key={amenity}>
-                      <Stack direction="row" spacing={1.5} alignItems="flex-start">
-                        <CheckCircleRoundedIcon sx={{ color: '#2563eb', mt: 0.4 }} fontSize="small" />
-                        <Typography variant="body1" sx={{ color: '#1f2937' }}>
-                          {amenity}
-                        </Typography>
-                      </Stack>
-                    </Grid>
-                  ))}
+                  {amenities.map((amenity) => {
+                    const AmenityIcon = pickAmenityIcon(amenity);
+                    return (
+                      <Grid item xs={12} sm={6} key={amenity}>
+                        <Stack direction="row" spacing={1.5} alignItems="flex-start">
+                          <AmenityIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.4, flexShrink: 0 }} fontSize="small" />
+                          <Typography variant="body1" sx={{ color: '#1f2937' }}>
+                            {amenity}
+                          </Typography>
+                        </Stack>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </section>
             ) : null}
@@ -202,14 +293,17 @@ const RoomDetailPage = () => {
                 Política de cancelación
               </Typography>
               <Stack spacing={1.25}>
-                {cancellationPolicy.map((item) => (
-                  <Stack direction="row" spacing={1.5} key={item}>
-                    <CheckCircleRoundedIcon sx={{ color: '#475569', mt: 0.35 }} fontSize="small" />
-                    <Typography variant="body2" sx={{ color: '#475569' }}>
-                      {item}
-                    </Typography>
-                  </Stack>
-                ))}
+                {cancellationPolicy.map((item) => {
+                  const PolicyIcon = pickPolicyIcon(item);
+                  return (
+                    <Stack direction="row" spacing={1.5} key={item}>
+                      <PolicyIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.35, flexShrink: 0 }} fontSize="small" />
+                      <Typography variant="body2" sx={{ color: '#475569' }}>
+                        {item}
+                      </Typography>
+                    </Stack>
+                  );
+                })}
               </Stack>
             </section>
 
@@ -218,14 +312,17 @@ const RoomDetailPage = () => {
                 Instrucciones
               </Typography>
               <Stack spacing={1.25}>
-                {bookingInstructions.map((item) => (
-                  <Stack direction="row" spacing={1.5} key={item}>
-                    <CheckCircleRoundedIcon sx={{ color: '#475569', mt: 0.35 }} fontSize="small" />
-                    <Typography variant="body2" sx={{ color: '#475569' }}>
-                      {item}
-                    </Typography>
-                  </Stack>
-                ))}
+                {bookingInstructions.map((item) => {
+                  const InstructionIcon = pickInstructionIcon(item);
+                  return (
+                    <Stack direction="row" spacing={1.5} key={item}>
+                      <InstructionIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.35, flexShrink: 0 }} fontSize="small" />
+                      <Typography variant="body2" sx={{ color: '#475569' }}>
+                        {item}
+                      </Typography>
+                    </Stack>
+                  );
+                })}
               </Stack>
             </section>
           </Stack>

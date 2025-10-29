@@ -166,21 +166,20 @@ const AppLayout = () => {
               component="a"
               href="/main/login"
               sx={{
-                color: '#009624',
-                borderColor: '#009624',
-                borderRadius: 0,
+                ml: 2,
                 px: 3,
                 py: 1,
-                ml: 2,
                 textTransform: 'none',
-                fontWeight: 600,
+                fontWeight: 700,
                 fontSize: '1rem',
+                borderRadius: 2,
+                color: '#009624',
                 backgroundColor: 'transparent',
-                boxShadow: 'none',
                 border: '1px solid #009624',
+                boxShadow: 'none',
                 '&:hover': {
-                  borderColor: '#007d3a',
                   color: '#007d3a',
+                  borderColor: '#007d3a',
                   backgroundColor: 'transparent'
                 }
               }}
@@ -304,10 +303,11 @@ const AppLayout = () => {
           transformOrigin={{ vertical: 'top', horizontal: 'left' }}
           PaperProps={{ sx: { mt: 1, p: 2, borderRadius: 2, width: 900, maxWidth: 'calc(100vw - 32px)' } }}
         >
-          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2 }}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 2 }}>
             <MenuCard href="/solutions/workspaces" title="Workspaces" desc="Private offices & coworking" />
             <MenuCard href="/solutions/meeting-rooms" title="Meeting rooms" desc="Flexible meeting spaces" />
             <MenuCard href="/solutions/virtual-offices" title="Virtual offices" desc="Registered address + services" />
+            <MenuCard href="/list-your-venue" title="List your venue" desc="Publish your space and get bookings" />
           </Box>
         </Popover>
 
