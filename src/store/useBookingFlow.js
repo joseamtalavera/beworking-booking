@@ -9,8 +9,7 @@ const todayISO = () => {
 
 const initialState = {
   activeStep: 0,
-  steps: ['mode', 'details', 'contact', 'payment'],
-  bookingMode: 'visitor', // 'login' | 'visitor'
+  steps: ['details', 'contact', 'payment'],
   schedule: {
     date: todayISO(),
     startTime: null,
@@ -32,7 +31,6 @@ export const useBookingFlow = create((set) => ({
       const prev = Math.max(state.activeStep - 1, 0);
       return { activeStep: prev };
     }),
-  setBookingMode: (mode) => set({ bookingMode: mode }),
   setSchedule: (partial) =>
     set((state) => ({
       schedule: { ...state.schedule, ...partial }

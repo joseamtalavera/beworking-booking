@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Alert,
   Box,
@@ -54,21 +54,12 @@ const buildErrors = (form) => {
   return errors;
 };
 
-const ContactBillingStep = ({ room, onBack, onContinue, existingContact, authStatus, loginUrl }) => {
-  const bookingMode = useBookingFlow((state) => state.bookingMode);
+const ContactBillingStep = ({ room, onBack, onContinue }) => {
   const schedule = useBookingFlow((state) => state.schedule);
 
   const [formState, setFormState] = useState(initialVisitorForm);
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
-
-  useEffect(() => {
-    if (bookingMode !== 'visitor') {
-      setFormState(initialVisitorForm);
-      setErrors({});
-      setSubmitError('');
-    }
-  }, [bookingMode]);
 
   const summaryItems = useMemo(() => {
     const items = [];
@@ -100,76 +91,8 @@ const ContactBillingStep = ({ room, onBack, onContinue, existingContact, authSta
     if (Object.keys(nextErrors).length > 0) {
       return;
     }
-    onContinue?.({ contact: formState, mode: bookingMode });
+    onContinue?.({ contact: formState });
   };
-
-  if (bookingMode === 'login') {
-    if (authStatus !== 'authenticated') {
-      return (
-        <Stack spacing={3} component={Paper} variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-          <Stack spacing={1}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              Sign in to continue
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
-              Access your saved billing profiles and payment methods by signing in to your BeWorking account.
-            </Typography>
-          </Stack>
-          <Button
-            variant="contained"
-            href={loginUrl}
-            sx={{ alignSelf: 'flex-start', textTransform: 'none', fontWeight: 600 }}
-          >
-            Go to login
-          </Button>
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button onClick={onBack}>Back</Button>
-          </Stack>
-        </Stack>
-      );
-    }
-
-    return (
-      <Stack spacing={3} component={Paper} variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-        <Stack spacing={1}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Use saved billing profile
-          </Typography>
-          <Typography variant="body2" sx={{ color: '#475569' }}>
-            Signed in as {existingContact?.name || 'your account'}. We&apos;ll reuse your saved billing details for this
-            reservation.
-          </Typography>
-        </Stack>
-
-        <Paper variant="outlined" sx={{ p: 2, borderRadius: 2, bgcolor: '#f8fafc' }}>
-          <Stack spacing={1}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-              Billing contact
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
-              {existingContact?.name}
-            </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
-              {existingContact?.email}
-            </Typography>
-            {existingContact?.billing?.line1 ? (
-              <Typography variant="body2" sx={{ color: '#475569' }}>
-                {existingContact.billing.line1}
-                {existingContact.billing.city ? ` · ${existingContact.billing.city}` : ''}
-              </Typography>
-            ) : null}
-          </Stack>
-        </Paper>
-
-        <Stack direction="row" spacing={1} justifyContent="flex-end">
-          <Button onClick={onBack}>Back</Button>
-          <Button variant="contained" onClick={() => onContinue?.({ mode: bookingMode, contact: existingContact })}>
-            Continue
-          </Button>
-        </Stack>
-      </Stack>
-    );
-  }
 
   return (
     <Box component="form" onSubmit={handleSubmit}>

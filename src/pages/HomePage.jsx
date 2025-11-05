@@ -1,7 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
 import { 
   Button, 
-  Chip, 
   Paper, 
   Stack, 
   TextField, 
@@ -9,17 +9,8 @@ import {
   Tabs, 
   Tab, 
   Box,
-  Card,
-  CardMedia,
-  CardContent,
-  Rating,
-  IconButton,
   InputAdornment,
-  Menu,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select
+  Autocomplete
 } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
@@ -28,117 +19,150 @@ import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
-import EuroRoundedIcon from '@mui/icons-material/EuroRounded';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
-import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
-import RoomMiniCard from '../components/cards/RoomMiniCard.jsx';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
-
-// Mock data for demonstration
-const mockSpaces = [
-  {
-    id: 1,
-    name: "Edge5",
-    description: "Sitzungszimmer",
-    type: "meeting_room",
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop",
-    capacity: "1-10",
-    rating: 4.9,
-    reviewCount: 136,
-    price: "CHF 25",
-    priceUnit: "/h",
-    location: "Zurich",
-    tags: ["Hero Space"],
-    instantBooking: true
-  },
-  {
-    id: 2,
-    name: "M40 Workspace",
-    description: "Modern meeting room in loft style",
-    type: "meeting_room",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop",
-    capacity: "1-15",
-    rating: 4.8,
-    reviewCount: 89,
-    price: "€ 8",
-    priceUnit: "/h",
-    location: "Berlin",
-    tags: [],
-    instantBooking: true
-  },
-  {
-    id: 3,
-    name: "Desk Space A1",
-    description: "Individual desk in quiet area",
-    type: "desk",
-    image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop",
-    capacity: "1",
-    rating: 4.7,
-    reviewCount: 45,
-    price: "€ 15",
-    priceUnit: "/day",
-    location: "Madrid",
-    tags: ["Quiet Zone"],
-    instantBooking: true
-  },
-  {
-    id: 4,
-    name: "Flex Desk",
-    description: "Flexible workspace desk",
-    type: "desk",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=300&fit=crop",
-    capacity: "1",
-    rating: 4.6,
-    reviewCount: 78,
-    price: "€ 12",
-    priceUnit: "/day",
-    location: "Málaga",
-    tags: ["Flexible"],
-    instantBooking: true
-  },
-  {
-    id: 5,
-    name: "Executive Desk",
-    description: "Premium individual workspace with privacy",
-    type: "desk",
-    image: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop",
-    capacity: "1",
-    rating: 4.8,
-    reviewCount: 92,
-    price: "€ 20",
-    priceUnit: "/day",
-    location: "Madrid",
-    tags: ["Premium", "Private"],
-    instantBooking: true
-  },
-  {
-    id: 6,
-    name: "Boardroom Elite",
-    description: "Executive meeting room for important discussions",
-    type: "meeting_room",
-    image: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=300&fit=crop",
-    capacity: "8-12",
-    rating: 4.9,
-    reviewCount: 156,
-    price: "€ 40",
-    priceUnit: "/h",
-    location: "Barcelona",
-    tags: ["Executive", "Premium"],
-    instantBooking: false
-  }
-];
+import { fetchBookingCentros, fetchBookingProductos } from '../api/bookings.js';
+import SpaceCard from '../components/home/SpaceCard.jsx';
 
 const HomePage = () => {
   const { rooms } = useCatalogRooms();
+  const navigate = useNavigate();
+  const routerLocation = useRouterLocation();
   const [activeTab, setActiveTab] = useState(0);
   const [location, setLocation] = useState('');
-  const [userType, setUserType] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
+  const [cityOptions, setCityOptions] = useState([{ id: 'all', label: 'All locations', isAllOption: true }]);
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [people, setPeople] = useState('');
   const [price, setPrice] = useState('');
-  const [peopleAnchor, setPeopleAnchor] = useState(null);
-  const [priceAnchor, setPriceAnchor] = useState(null);
+  const [centros, setCentros] = useState([]);
+  const [centrosLoading, setCentrosLoading] = useState(false);
+  const [productos, setProductos] = useState([]);
+  const [productosLoading, setProductosLoading] = useState(false);
+
+
+// Load centros and cities
+  useEffect(() => {
+    let active = true;
+    setCentrosLoading(true);
+    
+    const loadCentros = async () => {
+      try {
+        const data = await fetchBookingCentros();
+        
+        if (!active) return;
+
+        const options = Array.isArray(data) ? data.map((c) => {
+          const code = (c.codigo ?? c.code ?? '').toUpperCase();
+          const city = (c.localidad ?? c.city ?? '').trim();
+
+          return {
+            ...c, 
+            id: c.id ?? c.codigo ?? c.code ?? c.nombre ?? c.name ?? code, 
+            label: c.nombre ?? c.name ?? '',
+            code,
+            city
+          };
+        }) : [];
+        
+        const centrosWithAll = [{ id: 'all', label: 'All Centros', isAllOption: true }, ...options];
+        setCentros(centrosWithAll);
+
+        const uniqueCities = Array.from(new Set(options
+          .map(option => option.city)
+          .filter(city => typeof city === 'string' && city.trim() !== '')
+          .map(city => city.trim())));
+        const cityList = [
+          { id: 'all', label: 'All locations', isAllOption: true },
+          ...uniqueCities.map(city => ({ id: city.toLowerCase(), label: city }))
+        ];
+        setCityOptions(cityList);
+      } catch (error) {
+        if (active) {
+          setCentros([]);
+          setCityOptions([{ id: 'all', label: 'All locations', isAllOption: true }]);
+        }
+      } finally {
+        if (active) {
+          setCentrosLoading(false);
+        }
+      }
+    };
+    loadCentros();
+    
+    return () => {
+      active = false;
+    };
+  },[]);
+
+  // Load productos
+  useEffect(() => {
+    let active = true;
+    setProductosLoading(true);
+
+    const loadProductos = async () => {
+      try {
+
+        // Build params: always filter by MA1 centro, filter by tipo based on activeTab
+        const params = { centerCode: 'MA1' };
+        if(activeTab === 1) {
+          // Meeting Rooms tab -> Aulas
+          params.type = 'Aula';
+        } else if(activeTab === 2) {
+          // Desks tab -> Mesas
+          params.type = 'Mesa';
+        }
+        // activeTab === 0 -> All Spaces (no tipo filter, gets both Aula and Mesa)
+        
+        const data = await fetchBookingProductos(params);
+
+        if (!active) return;
+        setProductos(Array.isArray(data) ? data : []);
+
+      } catch (error) {
+        if (active) {
+          setProductos([]);
+        }
+      } finally {
+        if (active) {
+          setProductosLoading(false);
+        }
+      }
+    };
+    
+    loadProductos();
+    
+    return () => {
+      active = false;
+    };
+  }, [activeTab]);
+
+  // Standard field styles for all search inputs - uniform size
+  const standardFieldStyles = {
+    width: '100%',
+    '& .MuiOutlinedInput-root': {
+      borderRadius: 1,
+      backgroundColor: '#f8fafc',
+      height: '40px',
+      '& fieldset': {
+        borderColor: '#e2e8f0'
+      },
+      '& input': {
+        fontSize: '0.9375rem !important',
+        fontWeight: 500,
+        color: '#1e293b !important',
+        padding: '8.5px 14px !important',
+        height: '100%'
+      }
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: '0.75rem',
+      color: '#64748b'
+    },
+    '& .MuiAutocomplete-input': {
+      padding: '8.5px 14px !important'
+    }
+  };
 
   const spaceTypes = [
     { value: 'all', label: 'All Spaces', icon: <BusinessRoundedIcon /> },
@@ -147,87 +171,211 @@ const HomePage = () => {
   ];
 
   const filteredSpaces = useMemo(() => {
-    let filtered = mockSpaces;
-    
-    // Filter by space type (tabs)
-    if (activeTab > 0) {
-      const selectedType = spaceTypes[activeTab].value;
-      if (selectedType !== 'all') {
-        filtered = filtered.filter(space => space.type === selectedType);
+    if (!productos || !Array.isArray(productos)) {
+      return [];
+    }
+
+    const filteredProductos = productos.filter((producto) => {
+      const type = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
+      const name = (producto.name ?? producto.nombre ?? '').trim();
+      const centerCode = (producto.centerCode ?? producto.centroCodigo ?? '').trim().toUpperCase();
+
+      if (!name || centerCode !== 'MA1') {
+        return false;
       }
-    }
+
+      const upperName = name.toUpperCase();
+
+      if (type === 'aula') {
+        return upperName.startsWith('MA1A');
+      }
+
+      if (type === 'mesa') {
+        const deskMatch = upperName.match(/^MA1[-_]?O1[-_ ]?(\d{1,2})$/);
+        if (!deskMatch) {
+          return false;
+        }
+
+        const numero = parseInt(deskMatch[1], 10);
+        return numero >= 1 && numero <= 16;
+      }
+
+      return false;
+    });
     
-    // Filter by centro (location)
-    if (location) {
-      filtered = filtered.filter(space => space.location.toLowerCase().includes(location.toLowerCase()));
-    }
+    const aulas = filteredProductos.filter((producto) => {
+      const typeLower = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
+      return typeLower === 'aula';
+    });
+
+    const mesas = filteredProductos.filter((producto) => {
+      const typeLower = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
+      return typeLower === 'mesa';
+    });
+
+    const aulaSpaces = aulas.map((producto) => {
+      const rawType = (producto.type ?? producto.tipo ?? '').trim();
+      const name = (producto.name ?? producto.nombre ?? '').trim();
+      const productCenter = (producto.centerCode ?? producto.centroCodigo ?? '').trim();
+      const productCenterUpper = productCenter.toUpperCase();
+      const matchingCentro = centros.find(
+        (c) => (c.code ?? '').toUpperCase() === productCenterUpper
+      );
+      const centerName = matchingCentro?.label ?? productCenter;
+      const city = matchingCentro?.city ?? '';
+      const matchingRoom = rooms.find((room) => (room.productName ?? '').toLowerCase() === name.toLowerCase());
+      const roomSlug =
+        matchingRoom?.slug ??
+        ((matchingRoom?.id ? matchingRoom.id.toString().toLowerCase() : '') || name.toLowerCase());
+
+      return {
+        id: producto.id,
+        name,
+        description: `${rawType} - ${name}`,
+        productName: name,
+        slug: roomSlug,
+        type: 'meeting_room',
+        image: 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
+        capacity: '1-10',
+        rating: 4.8,
+        reviewCount: 0,
+        price: '€ 35',
+        priceUnit: '/h',
+        location: city || centerName || 'Málaga',
+        tags: [],
+        instantBooking: true,
+        centroCode: productCenter || undefined,
+        centerName: centerName || undefined,
+        isBookable: Boolean(matchingRoom)
+      };
+    });
+
+    const deskCard = (() => {
+      if (mesas.length === 0) {
+        return null;
+      }
+
+      const sample = mesas[0];
+      const rawType = (sample.type ?? sample.tipo ?? '').trim();
+      const productCenter = (sample.centerCode ?? sample.centroCodigo ?? '').trim();
+      const productCenterUpper = productCenter.toUpperCase();
+      const matchingCentro = centros.find(
+        (c) => (c.code ?? '').toUpperCase() === productCenterUpper
+      );
+      const centerName = matchingCentro?.label ?? productCenter;
+      const city = matchingCentro?.city ?? '';
+      const deskCount = mesas.length;
+      const matchingRoom = rooms.find((room) => (room.slug ?? '').toLowerCase() === 'ma1-desks');
+      const roomSlug =
+        matchingRoom?.slug ??
+        ((matchingRoom?.id ? String(matchingRoom.id).toLowerCase() : '') || 'ma1-desks');
+
+      return {
+        id: `desks-${productCenterUpper || 'ma1'}`,
+        name: centerName ? `${centerName} Desks` : 'MA1 Desks',
+        description: `${deskCount} desk${deskCount === 1 ? '' : 's'} available for booking`,
+        productName: 'MA1 Desks',
+        slug: roomSlug,
+        type: 'desk',
+        image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
+        capacity: '1',
+        rating: 4.8,
+        reviewCount: 0,
+        price: '€ 15',
+        priceUnit: '/day',
+        location: city || centerName || 'Málaga',
+        tags: [],
+        instantBooking: true,
+        centroCode: productCenter || undefined,
+        availableCount: deskCount,
+        centerName: centerName || undefined,
+        isBookable: Boolean(matchingRoom)
+      };
+    })();
+
+    const mappedSpaces = deskCard ? [...aulaSpaces, deskCard] : aulaSpaces;
     
-    // Filter by user type (meeting_room or desk)
-    if (userType) {
-      filtered = filtered.filter(space => space.type === userType);
+    let filtered = [...mappedSpaces];
+    
+    // Filter by city/location if specified
+    if (cityFilter && cityFilter.trim() !== '') {
+      const cityFilterLower = cityFilter.trim().toLowerCase();
+      filtered = filtered.filter(space => (space.location ?? '').toLowerCase() === cityFilterLower);
     }
     
     // Filter by number of users
-    if (people) {
+    if (people && people.trim() !== '') {
       const userCount = parseInt(people);
-      filtered = filtered.filter(space => {
-        const [minCapacity, maxCapacity] = space.capacity.split('-').map(num => parseInt(num));
-        return userCount >= minCapacity && userCount <= maxCapacity;
-      });
+      if (!isNaN(userCount)) {
+        filtered = filtered.filter(space => {
+          if (!space.capacity) return false;
+          const capacityParts = space.capacity.split('-');
+          if (capacityParts.length === 1) {
+            const singleCapacity = parseInt(capacityParts[0]);
+            return !isNaN(singleCapacity) && userCount <= singleCapacity;
+          } else {
+            const [minCapacity, maxCapacity] = capacityParts.map(num => parseInt(num));
+            return !isNaN(minCapacity) && !isNaN(maxCapacity) && 
+                   userCount >= minCapacity && userCount <= maxCapacity;
+          }
+        });
+      }
     }
     
     return filtered;
-  }, [activeTab, location, userType, people]);
+  }, [productos, centros, cityFilter, people, rooms]);
+
+  const resolveRoomSlug = useCallback(
+    (space) => {
+      if (!space) {
+        return '';
+      }
+
+      const matchingRoom = rooms.find((room) => {
+        const roomProduct = (room.productName ?? '').toLowerCase();
+        const roomSlug = (room.slug ?? '').toLowerCase();
+        const targetProduct = (space.productName ?? space.name ?? '').toLowerCase();
+        const targetSlug = (space.slug ?? '').toLowerCase();
+        return (targetProduct && roomProduct === targetProduct) || (targetSlug && roomSlug === targetSlug);
+      });
+
+      const fallbackId = matchingRoom?.id ? String(matchingRoom.id).toLowerCase() : '';
+      const targetSlug = (space.slug ?? '').toLowerCase() || (matchingRoom?.slug ?? '').toLowerCase() || fallbackId;
+      return targetSlug;
+    },
+    [rooms]
+  );
+
+  const handleBookNow = useCallback(
+    (space) => {
+      const targetSlug = resolveRoomSlug(space);
+      if (!targetSlug) {
+        return;
+      }
+
+      navigate(`/rooms/${targetSlug}`, {
+        state: {
+          backgroundLocation: {
+            pathname: routerLocation.pathname,
+            search: routerLocation.search,
+            hash: routerLocation.hash
+          }
+        }
+      });
+    },
+    [navigate, resolveRoomSlug, routerLocation.hash, routerLocation.pathname, routerLocation.search]
+  );
 
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  const handleFilterClick = (event, setAnchor) => {
-    setAnchor(event.currentTarget);
-  };
-
-  const handleFilterClose = (setAnchor) => {
-    setAnchor(null);
-  };
-
   return (
     <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
-      {/* Header */}
-      <Box sx={{ 
-        backgroundColor: 'white', 
-        borderBottom: '1px solid #e2e8f0',
-        px: 3,
-        py: 2
-      }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h4" fontWeight={700} color="primary">
-            beworking
-          </Typography>
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" sx={{ textTransform: 'none' }}>
-              Book a space
-            </Button>
-            <Button variant="outlined" sx={{ textTransform: 'none' }}>
-              Business
-            </Button>
-            <Button variant="outlined" sx={{ textTransform: 'none' }}>
-              List your venue
-            </Button>
-            <Button variant="outlined" sx={{ textTransform: 'none' }}>
-              Sign up
-            </Button>
-            <Button variant="contained" sx={{ textTransform: 'none' }}>
-              Login
-            </Button>
-          </Stack>
-        </Stack>
-      </Box>
-
       <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: 4 }}>
         {/* Page Title */}
         <Typography variant="h3" fontWeight={700} sx={{ mb: 1 }}>
-          Meeting rooms and desks - {filteredSpaces.length}+ unique locations
+          Meeting rooms and desks in your city
         </Typography>
         <Typography variant="subtitle1" sx={{ color: '#475569', mb: 4 }}>
           Find the perfect workspace for your needs. Choose between meeting rooms for team collaboration or individual desks for focused work.
@@ -260,76 +408,87 @@ const HomePage = () => {
             <Paper
               elevation={0}
               sx={{
-            p: 3, 
-            mb: 4, 
+                p: 3, 
+                mb: 4, 
                 borderRadius: 3,
-            border: '1px solid #e2e8f0',
-            backgroundColor: 'white'
-          }}
-        >
+                border: '1px solid #e2e8f0',
+                backgroundColor: 'white',
+                width: '100%',
+                boxSizing: 'border-box'
+              }}
+            >
           {/* Search Fields - Agenda Style */}
-          <Grid container spacing={1.5} sx={{ mb: 2 }}>
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                fullWidth
-                label="Centro"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="All centros"
+          <Grid container spacing={1.5} sx={{ mb: 2, display: 'flex' }}>
+            <Grid item xs={12} sm={6} md sx={{ flex: '1 1 0%', minWidth: 0 }}>
+              <Autocomplete
                 size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LocationOnRoundedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 1,
-                    backgroundColor: '#f8fafc',
-                    '& fieldset': {
-                      borderColor: '#e2e8f0'
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.75rem',
-                    color: '#64748b'
-                  }
-                }}
+                options={cityOptions}
+                getOptionLabel={(option) => option?.label ?? ''}
+                value={
+                  cityFilter === ''
+                    ? (cityOptions.find(option => option.id === 'all') || null)
+                    : (cityOptions.find(option => option.label?.toLowerCase() === cityFilter.toLowerCase()) || null)
+                }
+                onChange={(_, value) => setCityFilter(value && value.id !== 'all' ? value.label : '')}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Location"
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <BusinessRoundedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={standardFieldStyles}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <Box component="li" {...props} sx={{ fontSize: '0.9375rem', fontWeight: 500 }}>
+                    {option.label}
+                  </Box>
+                )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                fullWidth
-                label="User Type"
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                placeholder="All user types"
+            <Grid item xs={12} sm={6} md sx={{ flex: '1 1 0%', minWidth: 0 }}>
+              <Autocomplete
                 size="small"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PeopleAltRoundedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 1,
-                    backgroundColor: '#f8fafc',
-                    '& fieldset': {
-                      borderColor: '#e2e8f0'
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.75rem',
-                    color: '#64748b'
-                  }
-                }}
+                options={centros}
+                loading={centrosLoading}
+                getOptionLabel={(option) => option?.label ?? ''}
+                value={
+                  location === '' 
+                    ? (centros.find(c => c.id === 'all') || null)
+                    : (centros.find((c) => c.id !== 'all' && c.label?.toLowerCase() === (location || '').toLowerCase()) || null)
+                }
+                onChange={(_, value) => setLocation(value && value.id !== 'all' ? value.label : '')}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    label="Centro"
+                    InputProps={{
+                      ...params.InputProps,
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LocationOnRoundedIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={standardFieldStyles}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <Box component="li" {...props} sx={{ fontSize: '0.9375rem', fontWeight: 500 }}>
+                    {option.label}
+                  </Box>
+                )}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md sx={{ flex: '1 1 0%', minWidth: 0 }}>
               <TextField
                 fullWidth
                 label="Number of Users"
@@ -345,22 +504,10 @@ const HomePage = () => {
                     </InputAdornment>
                   ),
                 }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 1,
-                    backgroundColor: '#f8fafc',
-                    '& fieldset': {
-                      borderColor: '#e2e8f0'
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.75rem',
-                    color: '#64748b'
-                  }
-                }}
+                sx={standardFieldStyles}
               />
             </Grid>
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md sx={{ flex: '1 1 0%', minWidth: 0 }}>
               <TextField
                 fullWidth
                 label="Check in"
@@ -376,19 +523,7 @@ const HomePage = () => {
                     </InputAdornment>
                   ),
                 }}
-                sx={{
-                  '& .MuiOutlinedInput-root': {
-                    borderRadius: 1,
-                    backgroundColor: '#f8fafc',
-                    '& fieldset': {
-                      borderColor: '#e2e8f0'
-                    }
-                  },
-                  '& .MuiInputLabel-root': {
-                    fontSize: '0.75rem',
-                    color: '#64748b'
-                  }
-                }}
+                sx={standardFieldStyles}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={2}>
@@ -413,233 +548,34 @@ const HomePage = () => {
             </Grid>
           </Grid>
 
-          {/* Additional Filter Buttons - Agenda Style */}
-          <Stack direction="row" spacing={1.5} alignItems="center" sx={{ mb: 1 }}>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<PeopleAltRoundedIcon />}
-              sx={{ 
-                borderRadius: 1,
-                textTransform: 'none',
-                borderColor: '#e2e8f0',
-                color: 'text.secondary',
-                backgroundColor: '#f8fafc',
-                minWidth: 'auto',
-                px: 2,
-                py: 1,
-                '&:hover': {
-                  borderColor: '#fb923c',
-                  color: '#fb923c',
-                  backgroundColor: '#fff'
-                }
-              }}
-            >
-              People
-            </Button>
-            <Button
-              variant="outlined"
-              size="small"
-              startIcon={<EuroRoundedIcon />}
-              onClick={(e) => handleFilterClick(e, setPriceAnchor)}
-              sx={{ 
-                borderRadius: 1,
-                textTransform: 'none',
-                borderColor: '#e2e8f0',
-                color: 'text.secondary',
-                backgroundColor: '#f8fafc',
-                minWidth: 'auto',
-                px: 2,
-                py: 1,
-                '&:hover': {
-                  borderColor: '#fb923c',
-                  color: '#fb923c',
-                  backgroundColor: '#fff'
-                }
-              }}
-            >
-              € Price
-            </Button>
-            <Box sx={{ flexGrow: 1 }} />
+          {/* Results Count */}
+          <Stack direction="row" justifyContent="flex-end" sx={{ mb: 1 }}>
             <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-              Showing {filteredSpaces.length} of {mockSpaces.length} spaces
+              Showing {filteredSpaces.length} {filteredSpaces.length === 1 ? 'space' : 'spaces'}
             </Typography>
           </Stack>
             </Paper>
 
         {/* Space Listings */}
-        <Grid container spacing={3}>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'grid',
+            gap: (theme) => theme.spacing(3),
+            gridTemplateColumns: {
+              xs: 'repeat(1, minmax(0, 1fr))',
+              sm: 'repeat(2, minmax(0, 1fr))',
+              md: 'repeat(3, minmax(0, 1fr))',
+              lg: 'repeat(4, minmax(0, 1fr))'
+            },
+            alignItems: 'stretch'
+          }}
+        >
           {filteredSpaces.map((space) => (
-            <Grid item xs={12} sm={6} md={4} key={space.id}>
-              <Card 
-                sx={{ 
-                  borderRadius: 3,
-                  overflow: 'hidden',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1)'
-                  }
-                }}
-              >
-                {/* Image */}
-                <Box sx={{ position: 'relative' }}>
-                  <CardMedia
-                    component="img"
-                    height="200"
-                    image={space.image}
-                    alt={space.name}
-                  />
-                  
-                  {/* Tags */}
-                  <Stack 
-                    direction="row" 
-                    spacing={1} 
-                    sx={{ 
-                      position: 'absolute', 
-                      top: 12, 
-                      left: 12 
-                    }}
-                  >
-                    {space.tags.map((tag, index) => (
-                      <Chip
-                        key={index}
-                        label={tag}
-                        size="small"
-                        sx={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          color: 'text.primary',
-                          fontWeight: 500,
-                          fontSize: '0.75rem'
-                        }}
-                      />
-                    ))}
-                    {space.instantBooking && (
-                      <Chip
-                        label="Instant booking"
-                        size="small"
-                        sx={{
-                          backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                          color: 'text.primary',
-                          fontWeight: 500,
-                          fontSize: '0.75rem'
-                        }}
-                      />
-                    )}
-                  </Stack>
-
-                  {/* Favorite Button */}
-                  <IconButton
-                    sx={{
-                      position: 'absolute',
-                      top: 12,
-                      right: 12,
-                      backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                      '&:hover': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)'
-                      }
-                    }}
-                  >
-                    <FavoriteBorderRoundedIcon />
-                  </IconButton>
-                </Box>
-
-                {/* Content */}
-                <CardContent sx={{ p: 3 }}>
-                  <Typography variant="h6" fontWeight={600} sx={{ mb: 1 }}>
-                    {space.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {space.description}
-                  </Typography>
-
-                  {/* Details */}
-                  <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
-                      <PeopleAltRoundedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {space.capacity}
-                      </Typography>
-                    </Stack>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
-                      <StarRoundedIcon sx={{ fontSize: 16, color: '#fbbf24' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {space.rating} ({space.reviewCount})
-                      </Typography>
-                    </Stack>
-                    <Stack direction="row" alignItems="center" spacing={0.5}>
-                      <BusinessRoundedIcon sx={{ fontSize: 16, color: 'text.secondary' }} />
-                      <Typography variant="body2" color="text.secondary">
-                        {space.type === 'meeting_room' ? 'Meeting room' : 'Desk'}
-                      </Typography>
-                </Stack>
-              </Stack>
-
-                  {/* Price */}
-                  <Stack direction="row" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h6" fontWeight={600} color="primary">
-                      From {space.price}{space.priceUnit}
-                    </Typography>
-                <Button
-                  variant="contained"
-                      size="small"
-                  sx={{
-                    textTransform: 'none',
-                        fontWeight: 600,
-                        backgroundColor: '#fb923c',
-                        '&:hover': {
-                          backgroundColor: '#ea580c'
-                        }
-                      }}
-                    >
-                      Book now
-                </Button>
-              </Stack>
-                </CardContent>
-              </Card>
-            </Grid>
+            <SpaceCard key={space.id} space={space} onBookNow={handleBookNow} />
           ))}
-        </Grid>
+        </Box>
 
-        {/* Filter Menus */}
-        <Menu
-          anchorEl={peopleAnchor}
-          open={Boolean(peopleAnchor)}
-          onClose={() => handleFilterClose(setPeopleAnchor)}
-        >
-          <MenuItem onClick={() => { setPeople('1-5'); handleFilterClose(setPeopleAnchor); }}>
-            1-5 people
-          </MenuItem>
-          <MenuItem onClick={() => { setPeople('6-10'); handleFilterClose(setPeopleAnchor); }}>
-            6-10 people
-          </MenuItem>
-          <MenuItem onClick={() => { setPeople('11-20'); handleFilterClose(setPeopleAnchor); }}>
-            11-20 people
-          </MenuItem>
-          <MenuItem onClick={() => { setPeople('20+'); handleFilterClose(setPeopleAnchor); }}>
-            20+ people
-          </MenuItem>
-        </Menu>
-
-        <Menu
-          anchorEl={priceAnchor}
-          open={Boolean(priceAnchor)}
-          onClose={() => handleFilterClose(setPriceAnchor)}
-        >
-          <MenuItem onClick={() => { setPrice('€0-25'); handleFilterClose(setPriceAnchor); }}>
-            €0 - €25
-          </MenuItem>
-          <MenuItem onClick={() => { setPrice('€25-50'); handleFilterClose(setPriceAnchor); }}>
-            €25 - €50
-          </MenuItem>
-          <MenuItem onClick={() => { setPrice('€50-100'); handleFilterClose(setPriceAnchor); }}>
-            €50 - €100
-          </MenuItem>
-          <MenuItem onClick={() => { setPrice('€100+'); handleFilterClose(setPriceAnchor); }}>
-            €100+
-          </MenuItem>
-        </Menu>
       </Box>
     </Box>
   );

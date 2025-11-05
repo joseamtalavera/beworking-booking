@@ -1,7 +1,7 @@
 import { Step, StepLabel, Stepper } from '@mui/material';
 import { useBookingFlow } from '../../store/useBookingFlow.js';
 
-const STEP_LABELS = ['Choose mode', 'Select details', 'Contact & billing', 'Review & payment'];
+const STEP_LABELS = ['Select details', 'Contact & billing', 'Review & payment'];
 
 const BookingStepper = () => {
   const activeStep = useBookingFlow((state) => state.activeStep);

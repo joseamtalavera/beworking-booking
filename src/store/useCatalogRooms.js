@@ -136,6 +136,32 @@ const DEFAULT_ROOMS = [
     ],
     amenities: ['Brainstorming', 'Whiteboard', 'Cozy'],
     tags: ['Brainstorming', 'Whiteboard', 'Cozy']
+  },
+  {
+    id: 'ma1-desks',
+    slug: 'ma1-desks',
+    name: 'MA1 Shared Desk Zone',
+    centro: 'Málaga Workspace',
+    capacity: 1,
+    priceFrom: 15,
+    currency: 'EUR',
+    productName: 'MA1 Desks',
+    heroImage: 'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?auto=format&fit=crop&w=1600&q=80',
+    gallery: [
+      'https://images.unsplash.com/photo-1510972527921-ce03766a1cf1?auto=format&fit=crop&w=1600&q=80',
+      'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1521747116042-5a810fda9664?auto=format&fit=crop&w=1200&q=80'
+    ],
+    description:
+      'Zona colaborativa con 16 puestos flexibles en el centro MA1. Incluye conectividad de alta velocidad, lockers y acceso 24/7 con llave digital.',
+    amenities: ['High-speed Wi-Fi', 'Lockers', '24/7 access', 'Coffee corner'],
+    tags: ['Flex desk', 'Coworking', '24/7 access'],
+    availability: [],
+    bookingInstructions: [
+      'Selecciona tu horario preferido y envía la solicitud.',
+      'Confirmaremos disponibilidad para el conjunto de puestos.',
+      'Tras el pago recibirás la asignación exacta del desk.'
+    ]
   }
 ];
 

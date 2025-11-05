@@ -1,36 +1,31 @@
-import { useCallback, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Box, Dialog, DialogContent, IconButton } from '@mui/material';
+import { useEffect } from 'react';
+import { Box, Button, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import ChooseBookingMode from './ChooseBookingMode.jsx';
 import { useBookingFlow } from '../../store/useBookingFlow.js';
 
 // Modal dialog wrapper for booking flow
-const BookingFlowModal = () => {
-  const navigate = useNavigate();
-  const { roomId } = useParams();
+const BookingFlowModal = ({ open, onClose, onContinue }) => {
   const resetFlow = useBookingFlow((state) => state.resetFlow);
-  const setActiveStep = useBookingFlow((state) => state.setActiveStep);
-
-  const handleClose = useCallback(() => {
-    resetFlow();
-    navigate(-1);
-  }, [navigate, resetFlow]);
-
-  const handleContinue = useCallback(() => {
-    setActiveStep(1);
-    navigate(`/rooms/${roomId}/book`, { replace: true, state: { skipMode: true } });
-  }, [navigate, roomId, setActiveStep]);
 
   useEffect(() => {
-    resetFlow();
-  }, [resetFlow]);
+    if (open) {
+      resetFlow();
+    }
+  }, [open, resetFlow]);
+
+  const handleClose = () => {
+    onClose?.();
+  };
+
+  const handleContinue = () => {
+    onContinue?.();
+  };
 
   return (
     <Dialog
       fullWidth
       maxWidth="md"
-      open
+      open={open}
       onClose={handleClose}
       sx={{
         '& .MuiDialog-paper': {
@@ -46,7 +41,22 @@ const BookingFlowModal = () => {
         </IconButton>
       </Box>
       <DialogContent sx={{ pt: 3 }}>
-        <ChooseBookingMode onContinue={handleContinue} />
+        <Stack spacing={3}>
+          <Stack spacing={1}>
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Ready to book this space?
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#475569' }}>
+              Continue to the booking form to choose your dates, provide contact details, and confirm the reservation.
+            </Typography>
+          </Stack>
+          <Stack direction="row" spacing={1} justifyContent="flex-end">
+            <Button onClick={handleClose}>Cancel</Button>
+            <Button variant="contained" onClick={handleContinue}>
+              Continue
+            </Button>
+          </Stack>
+        </Stack>
       </DialogContent>
     </Dialog>
   );

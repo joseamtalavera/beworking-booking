@@ -1,19 +1,15 @@
 import { useEffect, useMemo } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { useParams } from 'react-router-dom';
+import { Box, Button, Paper, Stack, Typography } from '@mui/material';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 import { useBookingFlow } from '../store/useBookingFlow.js';
 import BookingStepper from '../components/booking/BookingStepper.jsx';
-import ChooseBookingMode from '../components/booking/ChooseBookingMode.jsx';
 import SelectBookingDetails from '../components/booking/SelectBookingDetails.jsx';
 import ContactBillingStep from '../components/booking/ContactBillingStep.jsx';
 import { useBookingVisitor } from '../store/useBookingVisitor.js';
-import { useAuth } from '../components/auth/AuthProvider.jsx';
 
 export const BookingFlowContent = ({ layout = 'page' }) => {
   const { roomId } = useParams();
-  const location = useLocation();
-  const navigate = useNavigate();
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
   const activeStep = useBookingFlow((state) => state.activeStep);
@@ -22,56 +18,32 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
   const resetFlow = useBookingFlow((state) => state.resetFlow);
   const setVisitorContact = useBookingVisitor((state) => state.setVisitorContact);
   const resetVisitor = useBookingVisitor((state) => state.resetVisitor);
-  const setActiveStep = useBookingFlow((state) => state.setActiveStep);
-  const auth = useAuth();
-
-  useEffect(() => () => {
-    resetFlow();
-    resetVisitor();
-  }, [resetFlow, resetVisitor]);
 
   useEffect(() => {
-    if (location.state?.skipMode) {
-      setActiveStep(1);
-      navigate(location.pathname, { replace: true, state: null });
-    }
-  }, [location.pathname, location.state, navigate, setActiveStep]);
-
-  const authenticatedContact = useMemo(() => {
-    if (auth.status !== 'authenticated' || !auth.profile) {
-      return null;
-    }
-    const { name, email, phone, billing, tenantId } = auth.profile;
-    return {
-      name,
-      email,
-      phone,
-      tenantId,
-      billing
+    resetFlow();
+    resetVisitor();
+    return () => {
+      resetFlow();
+      resetVisitor();
     };
-  }, [auth.profile, auth.status]);
+  }, [resetFlow, resetVisitor]);
 
   const renderStep = () => {
     switch (activeStep) {
       case 0:
-        return <ChooseBookingMode onContinue={nextStep} />;
-      case 1:
         return <SelectBookingDetails room={room} onContinue={nextStep} />;
-      case 2:
+      case 1:
         return (
           <ContactBillingStep
             room={room}
             onBack={prevStep}
             onContinue={(payload) => {
-              setVisitorContact(payload);
+              setVisitorContact(payload.contact);
               nextStep();
             }}
-            authStatus={auth.status}
-            loginUrl={auth.loginUrl}
-            existingContact={authenticatedContact}
           />
         );
-      case 3:
+      case 2:
         return (
           <Stack spacing={2} sx={{ border: '1px dashed #cbd5f5', borderRadius: 3, p: 3, bgcolor: '#fff' }}>
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
@@ -95,16 +67,22 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
   };
 
   if (!room) {
-    return <Typography variant="h6">Room not found.</Typography>;
+    return (
+      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+        <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
+          <Typography variant="h6">Room not found.</Typography>
+        </Box>
+      </Box>
+    );
   }
 
   const containerSx =
     layout === 'modal'
       ? { width: '100%', display: 'grid', gap: 3 }
-      : { maxWidth: 720, mx: 'auto', display: 'grid', gap: 4 };
+      : { width: '100%', display: 'grid', gap: 5 };
 
   return (
-    <Box sx={containerSx}>
+    <Stack spacing={5} sx={containerSx}>
       <Box>
         <Typography variant="overline" sx={{ color: '#64748b' }}>
           Booking · {room.centro}
@@ -118,13 +96,21 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
         </Typography>
       </Box>
 
-      <BookingStepper />
+      <Paper variant="outlined" sx={{ px: 3, py: 2, borderRadius: 3 }}>
+        <BookingStepper />
+      </Paper>
 
       {renderStep()}
-    </Box>
+    </Stack>
   );
 };
 
-const BookingFlowPage = () => <BookingFlowContent layout="page" />;
+const BookingFlowPage = () => (
+  <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+    <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
+      <BookingFlowContent layout="page" />
+    </Box>
+  </Box>
+);
 
 export default BookingFlowPage;

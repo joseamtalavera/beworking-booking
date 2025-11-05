@@ -1,4 +1,4 @@
-import { apiRequest } from './client.js';
+import { requestJson } from './client.js';
 
 const buildQueryString = (params = {}) => {
   const search = new URLSearchParams();
@@ -12,7 +12,7 @@ const buildQueryString = (params = {}) => {
 };
 
 export const fetchBloqueos = (params = {}, options = {}) =>
-  apiRequest(`/bloqueos${buildQueryString(params)}`, options);
+  requestJson(`/bloqueos${buildQueryString(params)}`, options);
 
 export const fetchPublicAvailability = (params = {}, options = {}) => {
   const search = new URLSearchParams();
@@ -34,28 +34,28 @@ export const fetchPublicAvailability = (params = {}, options = {}) => {
     });
   }
   const query = search.toString();
-  return apiRequest(`/public/availability${query ? `?${query}` : ''}`, options);
+  return requestJson(`/public/availability${query ? `?${query}` : ''}`, options);
 };
 
 export const createReserva = (payload, options = {}) =>
-  apiRequest('/bookings', {
+  requestJson('/bookings', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: payload,
     ...options
   });
 
 export const updateBloqueo = (bloqueoId, payload, options = {}) =>
-  apiRequest(`/bloqueos/${bloqueoId}`, {
+  requestJson(`/bloqueos/${bloqueoId}`, {
     method: 'PUT',
-    body: JSON.stringify(payload),
+    body: payload,
     ...options
   });
 
 export const fetchBookingContacts = (params = {}, options = {}) =>
-  apiRequest(`/bookings/lookups/contacts${buildQueryString(params)}`, options);
+  requestJson(`/bookings/lookups/contacts${buildQueryString(params)}`, options);
 
 export const fetchBookingCentros = (params = {}, options = {}) =>
-  apiRequest(`/bookings/lookups/centros${buildQueryString(params)}`, options);
+  requestJson(`/public/centros${buildQueryString(params)}`, options);
 
 export const fetchBookingProductos = (params = {}, options = {}) =>
-  apiRequest(`/bookings/lookups/productos${buildQueryString(params)}`, options);
+  requestJson(`/public/productos${buildQueryString(params)}`, options);
