@@ -175,7 +175,7 @@ const SpaceCard = ({ space, onBookNow }) => {
               <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
                 <BusinessRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
                 <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-                  {isMeetingRoom ? 'Meeting room' : `Desk${deskLabel}`}
+                  {space.typeLabel || (isMeetingRoom ? 'Meeting room' : `Desk${deskLabel}`)}
                 </Typography>
               </Stack>
             </Stack>
