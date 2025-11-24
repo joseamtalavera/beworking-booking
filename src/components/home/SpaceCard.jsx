@@ -9,8 +9,10 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import StarRoundedIcon from '@mui/icons-material/StarRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+
+const BUTTON_COLOR = '#2bb673';
+const BUTTON_COLOR_HOVER = '#23a160';
 
 const SpaceCard = ({ space, onBookNow }) => {
   if (!space) {
@@ -166,13 +168,6 @@ const SpaceCard = ({ space, onBookNow }) => {
               </Stack>
 
               <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
-                <StarRoundedIcon sx={{ fontSize: 15, color: '#fbbf24' }} />
-                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-                  {space.rating} ({space.reviewCount})
-                </Typography>
-              </Stack>
-
-              <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
                 <BusinessRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
                 <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
                   {space.typeLabel || (isMeetingRoom ? 'Meeting room' : `Desk${deskLabel}`)}
@@ -214,10 +209,10 @@ const SpaceCard = ({ space, onBookNow }) => {
               sx={{
                 textTransform: 'none',
                 fontWeight: 600,
-                backgroundColor: '#fb923c',
+                backgroundColor: BUTTON_COLOR,
                 flexShrink: 0,
                 '&:hover': {
-                  backgroundColor: '#ea580c'
+                  backgroundColor: BUTTON_COLOR_HOVER
                 }
               }}
               disabled={!space.isBookable}
