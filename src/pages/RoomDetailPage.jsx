@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
@@ -99,8 +99,13 @@ const pickInstructionIcon = (text) => {
 const RoomDetailPage = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { rooms } = useCatalogRooms();
-  const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
+  const stateRoom = location.state?.space;
+  const room = useMemo(
+    () => stateRoom || rooms.find((entry) => entry.slug === roomId || entry.id === roomId),
+    [rooms, roomId, stateRoom]
+  );
 
   if (!room) {
     return (
@@ -203,6 +208,11 @@ const RoomDetailPage = () => {
             <Typography variant="h3" sx={{ fontWeight: 800 }}>
               {room.name}
             </Typography>
+            {room.subtitle && (
+              <Typography variant="h6" sx={{ color: '#475569', fontWeight: 600 }}>
+                {room.subtitle}
+              </Typography>
+            )}
             <Typography variant="body1" sx={{ color: '#475569' }}>
               Capacidad {room.capacity} personas · desde {room.priceFrom} {room.currency}/h
             </Typography>

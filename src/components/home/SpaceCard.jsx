@@ -146,7 +146,7 @@ const SpaceCard = ({ space, onBookNow }) => {
                 width: '100%'
               }}
             >
-              {space.description}
+              {space.subtitle || space.description}
             </Typography>
 
             <Stack

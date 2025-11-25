@@ -231,7 +231,6 @@ const HomePage = () => {
       return {
         id: producto.id,
         name,
-        description: `${rawType} - ${name}`,
         productName: name,
         slug: roomSlug,
         type: 'meeting_room',
@@ -242,8 +241,12 @@ const HomePage = () => {
         reviewCount: producto.ratingCount != null ? producto.ratingCount : 0,
         price: producto.priceFrom != null ? `€ ${producto.priceFrom}` : '€ —',
         priceUnit: producto.priceUnit || '/h',
+        description: producto.description || producto.subtitle || `${rawType} - ${name}`,
+        subtitle: producto.subtitle || '',
+        gallery: Array.isArray(producto.images) ? producto.images : [],
+        amenities: Array.isArray(producto.amenities) ? producto.amenities : [],
+        tags: Array.isArray(producto.tags) ? producto.tags : [],
         location: city || centerName || 'Málaga',
-        tags: [],
         instantBooking: producto.instantBooking !== false,
         centroCode: productCenter || undefined,
         centerName: centerName || undefined,
@@ -356,6 +359,7 @@ const HomePage = () => {
 
       navigate(`/rooms/${targetSlug}`, {
         state: {
+          space,
           backgroundLocation: {
             pathname: routerLocation.pathname,
             search: routerLocation.search,
