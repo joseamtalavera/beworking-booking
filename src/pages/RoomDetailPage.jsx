@@ -12,6 +12,14 @@ import KeyRoundedIcon from '@mui/icons-material/KeyRounded';
 import VideocamRoundedIcon from '@mui/icons-material/VideocamRounded';
 import PanoramaRoundedIcon from '@mui/icons-material/PanoramaRounded';
 import WeekendRoundedIcon from '@mui/icons-material/WeekendRounded';
+import AlarmRoundedIcon from '@mui/icons-material/AlarmRounded';
+import CampaignRoundedIcon from '@mui/icons-material/CampaignRounded';
+import PrintRoundedIcon from '@mui/icons-material/PrintRounded';
+import HeadsetMicRoundedIcon from '@mui/icons-material/HeadsetMicRounded';
+import CreditCardRoundedIcon from '@mui/icons-material/CreditCardRounded';
+import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import OpacityRoundedIcon from '@mui/icons-material/OpacityRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
@@ -21,17 +29,42 @@ import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import VpnKeyRoundedIcon from '@mui/icons-material/VpnKeyRounded';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import RoomCalendarGrid, { CalendarLegend } from '../components/booking/RoomCalendarGrid.jsx';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 import BookingFlowModal from '../components/booking/BookingFlowModal.jsx';
 
 const AMENITY_ICON_COLOR = '#fb8c00';
+const AMENITY_TILE_BG = '#fff7ed';
+const AMENITY_TILE_BORDER = '#fed7aa';
 
 const pickAmenityIcon = (label) => {
   if (!label) {
     return AppsRoundedIcon;
   }
   const normalized = label.toLowerCase();
+  if (normalized.includes('alarma')) {
+    return AlarmRoundedIcon;
+  }
+  if (normalized.includes('marketing')) {
+    return CampaignRoundedIcon;
+  }
+  if (normalized.includes('escaner') || normalized.includes('impresora')) {
+    return PrintRoundedIcon;
+  }
+  if (normalized.includes('soporte')) {
+    return HeadsetMicRoundedIcon;
+  }
+  if (normalized.includes('visa') || normalized.includes('coworking')) {
+    return CreditCardRoundedIcon;
+  }
+  if (normalized.includes('taquilla')) {
+    return LockRoundedIcon;
+  }
+  if (normalized.includes('agua')) {
+    return OpacityRoundedIcon;
+  }
   if (normalized.includes('wifi') || normalized.includes('internet')) {
     return WifiRoundedIcon;
   }
@@ -52,6 +85,9 @@ const pickAmenityIcon = (label) => {
   }
   if (normalized.includes('híbrido') || normalized.includes('video') || normalized.includes('stream')) {
     return VideocamRoundedIcon;
+  }
+  if (normalized.includes('coworking') || normalized.includes('mesa')) {
+    return MeetingRoomRoundedIcon;
   }
   if (normalized.includes('vista') || normalized.includes('panor') || normalized.includes('ventana')) {
     return PanoramaRoundedIcon;
@@ -199,24 +235,68 @@ const RoomDetailPage = () => {
     <>
       <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
-          <Stack spacing={5}>
-          {/* NEW: header block */}
-          <Stack spacing={1}>
-            <Typography variant="overline" sx={{ color: '#475569', letterSpacing: 1.2 }}>
-              {room.centro}
-            </Typography>
-            <Typography variant="h3" sx={{ fontWeight: 800 }}>
-              {room.name}
-            </Typography>
-            {room.subtitle && (
-              <Typography variant="h6" sx={{ color: '#475569', fontWeight: 600 }}>
-                {room.subtitle}
-              </Typography>
-            )}
-            <Typography variant="body1" sx={{ color: '#475569' }}>
-              Capacidad {room.capacity} personas · desde {room.priceFrom} {room.currency}/h
-            </Typography>
-          </Stack>
+          <Stack spacing={4}>
+            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
+              <Stack spacing={1}>
+                <Typography variant="overline" sx={{ color: '#475569', letterSpacing: 1.2 }}>
+                  {room.centro}
+                </Typography>
+                <Typography variant="h3" sx={{ fontWeight: 800 }}>
+                  {room.name}
+                </Typography>
+                {room.subtitle && (
+                  <Typography variant="h6" sx={{ color: '#475569', fontWeight: 600 }}>
+                    {room.subtitle}
+                  </Typography>
+                )}
+                <Typography variant="body1" sx={{ color: '#475569' }}>
+                  {`Capacidad ${room.capacity} personas · desde ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Button
+                  size="small"
+                  startIcon={<IosShareOutlinedIcon />}
+                  variant="text"
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({ title: room.name, url: window.location.href }).catch(() => {});
+                    } else {
+                      navigator.clipboard?.writeText(window.location.href).catch(() => {});
+                    }
+                  }}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    color: '#111827'
+                  }}
+                >
+                  Compartir
+                </Button>
+                <Button
+                  size="small"
+                  startIcon={<DownloadOutlinedIcon />}
+                  variant="text"
+                  onClick={() => {
+                    if (featureImage) {
+                      const link = document.createElement('a');
+                      link.href = featureImage;
+                      link.download = `${room.name || 'room'}.jpg`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }
+                  }}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    color: '#111827'
+                  }}
+                >
+                  Guardar
+                </Button>
+              </Stack>
+            </Stack>
 
           {/* Gallery */}
           {featureImage ? (
@@ -299,32 +379,48 @@ const RoomDetailPage = () => {
                     <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
                       Servicios incluidos
                     </Typography>
-                <Grid container spacing={2}>
-                  {amenitiesColumns.map((column, columnIndex) => (
-                    <Grid item xs={12} md={6} key={`amenities-col-${columnIndex}`}>
-                      <Stack spacing={1.5}>
-                        {column.map((amenity) => {
-                          const AmenityIcon = pickAmenityIcon(amenity);
-                          return (
-                            <Stack
-                              key={amenity}
-                              direction="row"
-                              spacing={1.5}
-                              alignItems="flex-start"
+                    <Grid container spacing={1.5}>
+                      {amenities.map((amenity) => {
+                        const AmenityIcon = pickAmenityIcon(amenity);
+                        return (
+                          <Grid item xs={12} sm={6} md={4} key={amenity}>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1.25,
+                                p: 1.5,
+                                borderRadius: 2,
+                                backgroundColor: AMENITY_TILE_BG,
+                                border: `1px solid ${AMENITY_TILE_BORDER}`,
+                                minHeight: 68
+                              }}
                             >
-                              <AmenityIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.4, flexShrink: 0 }} fontSize="small" />
-                              <Typography variant="body1" sx={{ color: '#1f2937' }}>
+                              <Box
+                                sx={{
+                                  width: 36,
+                                  height: 36,
+                                  borderRadius: '50%',
+                                  backgroundColor: 'rgba(251, 146, 60, 0.18)',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  color: AMENITY_ICON_COLOR,
+                                  flexShrink: 0
+                                }}
+                              >
+                                <AmenityIcon fontSize="small" />
+                              </Box>
+                              <Typography variant="body1" sx={{ color: '#1f2937', fontWeight: 600 }}>
                                 {amenity}
                               </Typography>
-                            </Stack>
-                          );
-                        })}
-                      </Stack>
+                            </Box>
+                          </Grid>
+                        );
+                      })}
                     </Grid>
-                  ))}
-                </Grid>
-              </section>
-            ) : null}
+                  </section>
+                ) : null}
 
                 <section>
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>

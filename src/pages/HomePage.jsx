@@ -239,6 +239,7 @@ const HomePage = () => {
         capacity: producto.capacity != null ? String(producto.capacity) : '—',
         rating: producto.ratingAverage != null ? Number(producto.ratingAverage) : 4.8,
         reviewCount: producto.ratingCount != null ? producto.ratingCount : 0,
+        priceFrom: producto.priceFrom,
         price: producto.priceFrom != null ? `€ ${producto.priceFrom}` : '€ —',
         priceUnit: producto.priceUnit || '/h',
         description: producto.description || producto.subtitle || `${rawType} - ${name}`,
