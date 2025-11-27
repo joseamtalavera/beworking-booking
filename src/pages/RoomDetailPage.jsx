@@ -479,7 +479,13 @@ const RoomDetailPage = () => {
                   onClick={() => setBookingModalOpen(true)}
                   variant="contained"
                   size="large"
-                  sx={{ textTransform: 'none', fontWeight: 600 }}
+                  sx={{
+                    textTransform: 'none',
+                    fontWeight: 700,
+                    backgroundColor: '#2bb673',
+                    '&:hover': { backgroundColor: '#23a160' },
+                    borderRadius: 999
+                  }}
                 >
                   Start booking
                 </Button>

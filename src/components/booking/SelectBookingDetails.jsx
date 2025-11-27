@@ -91,15 +91,22 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     fetchBookingCentros()
       .then((data) => {
         const items = Array.isArray(data) ? data : [];
-        setCentroOptions(items);
-        if (items.length && !formState.centro) {
-          const first = items[0];
+        const normalized = items
+          .map((item) => ({
+            id: item.id,
+            nombre: item.nombre || item.name || '',
+            codigo: item.codigo || item.code || item.centroCodigo || item.centroCode || ''
+          }))
+          .filter((item) => item.codigo && item.codigo.toUpperCase() !== 'MAOV');
+        setCentroOptions(normalized);
+        if (normalized.length && !formState.centro) {
+          const first = normalized[0];
           setFormState((prev) => ({
             ...prev,
             centro: {
               id: first.id,
               name: first.nombre,
-              code: first.codigo || first.code
+              code: first.codigo
             }
           }));
         }
@@ -111,17 +118,24 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     fetchBookingProductos()
       .then((data) => {
         const items = Array.isArray(data) ? data : [];
-        setProductOptions(items);
+        const normalized = items.map((item) => ({
+          id: item.id,
+          nombre: item.nombre || item.name,
+          tipo: item.tipo || item.type,
+          centerCode: (item.centroCodigo || item.centerCode || '').toUpperCase()
+        }));
+        setProductOptions(normalized);
         if (!formState.producto) {
-          const match = items.find((item) => item.nombre?.toLowerCase() === room?.productName?.toLowerCase());
-          const fallback = match || items[0];
+          const match = normalized.find((item) => item.nombre?.toLowerCase() === room?.productName?.toLowerCase());
+          const fallback = match || normalized[0];
           if (fallback) {
             setFormState((prev) => ({
               ...prev,
               producto: {
                 id: fallback.id,
                 name: fallback.nombre || fallback.name,
-                type: fallback.tipo || fallback.type
+                type: fallback.tipo || fallback.type,
+                centerCode: fallback.centerCode
               }
             }));
           }
@@ -183,18 +197,40 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     setFormState((prev) => ({ ...prev, [field]: value }));
   };
 
+  const filteredProducts = useMemo(() => {
+    if (!formState.centro?.code) {
+      return productOptions;
+    }
+    const code = (formState.centro.code || '').toUpperCase();
+    const scoped = productOptions.filter(
+      (item) => !item.centerCode || item.centerCode === code
+    );
+    return scoped.length ? scoped : productOptions;
+  }, [productOptions, formState.centro?.code]);
+
   const handleCentroChange = (event) => {
     const selected = centroOptions.find((item) => item.nombre === event.target.value);
-    setFormState((prev) => ({
-      ...prev,
-      centro: selected
+    setFormState((prev) => {
+      const nextCentro = selected
         ? {
             id: selected.id,
             name: selected.nombre,
             code: selected.codigo || selected.code
           }
-        : null
-    }));
+        : null;
+      const code = (nextCentro?.code || '').toUpperCase();
+      const nextProduct =
+        filteredProducts.find((p) => p.centerCode === code) ||
+        filteredProducts[0] ||
+        null;
+      return {
+        ...prev,
+        centro: nextCentro,
+        producto: nextProduct
+          ? { id: nextProduct.id, name: nextProduct.nombre, type: nextProduct.tipo, centerCode: nextProduct.centerCode }
+          : null
+      };
+    });
   };
 
   const handleProductoChange = (event) => {
@@ -205,7 +241,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
         ? {
             id: selected.id,
             name: selected.nombre || selected.name,
-            type: selected.tipo || selected.type
+            type: selected.tipo || selected.type,
+            centerCode: selected.centerCode
           }
         : null
     }));
@@ -323,7 +360,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 )
               }}
             >
-              {productOptions.map((option) => (
+              {filteredProducts.map((option) => (
                 <MenuItem key={option.id} value={option.nombre}>
                   {option.nombre}
                 </MenuItem>
@@ -354,10 +391,9 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             </TextField>
             <TextField
               label="Status"
-              select
               fullWidth
               value={formState.status}
-              onChange={handleFieldChange('status')}
+              disabled
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -366,11 +402,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 )
               }}
             >
-              {STATUS_FORM_OPTIONS.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
+              <MenuItem value={formState.status}>{formState.status}</MenuItem>
             </TextField>
             <TextField
               label="Tarifa (€)"
