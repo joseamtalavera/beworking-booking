@@ -122,7 +122,9 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           id: item.id,
           nombre: item.nombre || item.name,
           tipo: item.tipo || item.type,
-          centerCode: (item.centroCodigo || item.centerCode || '').toUpperCase()
+          centerCode: (item.centroCodigo || item.centerCode || '').toUpperCase(),
+          priceFrom: item.priceFrom ?? item.precioDesde ?? item.precio ?? null,
+          priceUnit: item.priceUnit || item.unidadPrecio || ''
         }));
         setProductOptions(normalized);
         if (!formState.producto) {
@@ -136,7 +138,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 name: fallback.nombre || fallback.name,
                 type: fallback.tipo || fallback.type,
                 centerCode: fallback.centerCode
-              }
+              },
+              tarifa: fallback.priceFrom ?? ''
             }));
           }
         }
@@ -228,7 +231,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
         centro: nextCentro,
         producto: nextProduct
           ? { id: nextProduct.id, name: nextProduct.nombre, type: nextProduct.tipo, centerCode: nextProduct.centerCode }
-          : null
+          : null,
+        tarifa: nextProduct?.priceFrom ?? prev.tarifa
       };
     });
   };
@@ -244,7 +248,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             type: selected.tipo || selected.type,
             centerCode: selected.centerCode
           }
-        : null
+        : null,
+      tarifa: selected?.priceFrom ?? prev.tarifa
     }));
     queryClient.invalidateQueries({ queryKey: ['public-availability'] });
   };
@@ -407,8 +412,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             <TextField
               label="Tarifa (€)"
               value={formState.tarifa}
-              onChange={handleFieldChange('tarifa')}
               fullWidth
+              disabled
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
