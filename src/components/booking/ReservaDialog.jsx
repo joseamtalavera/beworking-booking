@@ -620,7 +620,7 @@ const ReservaDialog = ({
       <Box component="form" onSubmit={handleSubmit}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
           <Stack direction="row" spacing={2} alignItems="center">
-            <DialogIcon sx={{ color: '#fb923c' }} />
+            <DialogIcon sx={{ color: 'secondary.main' }} />
             <Stack spacing={0.5}>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 {dialogTitle}

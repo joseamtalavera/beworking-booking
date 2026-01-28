@@ -11,8 +11,7 @@ import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 
-const BUTTON_COLOR = '#2bb673';
-const BUTTON_COLOR_HOVER = '#23a160';
+// Colors are now defined in theme.js - use theme palette: primary.main/dark for green
 
 const SpaceCard = ({ space, onBookNow }) => {
   if (!space) {
@@ -209,10 +208,10 @@ const SpaceCard = ({ space, onBookNow }) => {
               sx={{
                 textTransform: 'none',
                 fontWeight: 600,
-                backgroundColor: BUTTON_COLOR,
+                backgroundColor: 'primary.main',
                 flexShrink: 0,
                 '&:hover': {
-                  backgroundColor: BUTTON_COLOR_HOVER
+                  backgroundColor: 'primary.dark'
                 }
               }}
               disabled={!space.isBookable}

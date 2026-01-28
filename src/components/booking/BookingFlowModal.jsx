@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { Box, Button, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { useBookingFlow } from '../../store/useBookingFlow.js';
 
 const LOGIN_URL = import.meta.env.VITE_LOGIN_URL || 'http://localhost:3020/main/login';
-const BRAND_GREEN = '#2bb673';
-const BRAND_GREEN_HOVER = '#23a160';
 
 // Modal dialog wrapper for booking flow
 const BookingFlowModal = ({ open, onClose, onContinue }) => {
+  const theme = useTheme();
   const resetFlow = useBookingFlow((state) => state.resetFlow);
 
   useEffect(() => {
@@ -55,12 +55,12 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               ¿Cómo quieres continuar?
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Puedes seguir como invitado o iniciar sesión para usar tus datos guardados.
             </Typography>
           </Stack>
           <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button onClick={handleClose} sx={{ color: '#475569', fontWeight: 600 }}>
+            <Button onClick={handleClose} sx={{ color: 'text.secondary', fontWeight: 600 }}>
               Cancelar
             </Button>
             <Button
@@ -68,10 +68,11 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
               sx={{
                 textTransform: 'none',
                 fontWeight: 700,
-                border: '1px solid #cbd5e1',
-                color: '#0f172a',
-                bgcolor: '#fff',
-                '&:hover': { bgcolor: '#f8fafc', borderColor: '#94a3b8' }
+                border: '1px solid',
+                borderColor: 'grey.300',
+                color: 'text.primary',
+                bgcolor: 'background.paper',
+                '&:hover': { bgcolor: 'background.default', borderColor: 'grey.400' }
               }}
             >
               Iniciar sesión
@@ -82,8 +83,8 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
               sx={{
                 textTransform: 'none',
                 fontWeight: 700,
-                backgroundColor: BRAND_GREEN,
-                '&:hover': { backgroundColor: BRAND_GREEN_HOVER }
+                backgroundColor: 'secondary.main',
+                '&:hover': { backgroundColor: 'secondary.main' }
               }}
             >
               Seguir como invitado

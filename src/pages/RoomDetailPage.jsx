@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
@@ -35,9 +36,7 @@ import RoomCalendarGrid, { CalendarLegend } from '../components/booking/RoomCale
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 import BookingFlowModal from '../components/booking/BookingFlowModal.jsx';
 
-const AMENITY_ICON_COLOR = '#fb8c00';
-const AMENITY_TILE_BG = '#fff7ed';
-const AMENITY_TILE_BORDER = '#fed7aa';
+// Using theme colors instead of hardcoded hex values
 
 const pickAmenityIcon = (label) => {
   if (!label) {
@@ -145,7 +144,7 @@ const RoomDetailPage = () => {
 
   if (!room) {
     return (
-      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
           <Stack spacing={2}>
             <Typography variant="h5">Room not found</Typography>
@@ -233,23 +232,23 @@ const RoomDetailPage = () => {
 
   return (
     <>
-      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
           <Stack spacing={4}>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
               <Stack spacing={1}>
-                <Typography variant="overline" sx={{ color: '#475569', letterSpacing: 1.2 }}>
+                <Typography variant="overline" sx={{ color: 'text.secondary', letterSpacing: 1.2 }}>
                   {room.centro}
                 </Typography>
                 <Typography variant="h3" sx={{ fontWeight: 800 }}>
                   {room.name}
                 </Typography>
                 {room.subtitle && (
-                  <Typography variant="h6" sx={{ color: '#475569', fontWeight: 600 }}>
+                  <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 600 }}>
                     {room.subtitle}
                   </Typography>
                 )}
-                <Typography variant="body1" sx={{ color: '#475569' }}>
+                  <Typography variant="body1" sx={{ color: 'text.secondary' }}>
                   {`Capacidad ${room.capacity} personas · desde ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
                 </Typography>
               </Stack>
@@ -268,7 +267,7 @@ const RoomDetailPage = () => {
                   sx={{
                     textTransform: 'none',
                     fontWeight: 700,
-                    color: '#111827'
+                    color: 'text.primary'
                   }}
                 >
                   Compartir
@@ -290,7 +289,7 @@ const RoomDetailPage = () => {
                   sx={{
                     textTransform: 'none',
                     fontWeight: 700,
-                    color: '#111827'
+                    color: 'text.primary'
                   }}
                 >
                   Guardar
@@ -348,12 +347,12 @@ const RoomDetailPage = () => {
                     bottom: 16,
                     right: 16,
                     borderRadius: 999,
-                    backgroundColor: '#fff',
+                    backgroundColor: 'background.paper',
                     textTransform: 'none',
                     fontWeight: 600,
                     px: 2.5,
                     boxShadow: '0 10px 30px rgba(15, 23, 42, 0.12)',
-                    '&:hover': { backgroundColor: '#f8fafc' }
+                    '&:hover': { backgroundColor: 'background.default' }
                   }}
                 >
                   Show all photos
@@ -369,7 +368,7 @@ const RoomDetailPage = () => {
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
                     Descripción
                   </Typography>
-                  <Typography variant="body1" sx={{ color: '#475569', lineHeight: 1.65 }}>
+                  <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.65 }}>
                     {description}
                   </Typography>
                 </section>
@@ -391,8 +390,8 @@ const RoomDetailPage = () => {
                                 gap: 1.25,
                                 p: 1.5,
                                 borderRadius: 2,
-                                backgroundColor: AMENITY_TILE_BG,
-                                border: `1px solid ${AMENITY_TILE_BORDER}`,
+                                backgroundColor: (theme) => `${theme.palette.primary.light}15`,
+                                border: (theme) => `1px solid ${theme.palette.primary.light}80`,
                                 minHeight: 68
                               }}
                             >
@@ -401,17 +400,17 @@ const RoomDetailPage = () => {
                                   width: 36,
                                   height: 36,
                                   borderRadius: '50%',
-                                  backgroundColor: 'rgba(251, 146, 60, 0.18)',
+                                  backgroundColor: (theme) => `${theme.palette.primary.main}2E`,
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
-                                  color: AMENITY_ICON_COLOR,
+                                  color: 'primary.main',
                                   flexShrink: 0
                                 }}
                               >
                                 <AmenityIcon fontSize="small" />
                               </Box>
-                              <Typography variant="body1" sx={{ color: '#1f2937', fontWeight: 600 }}>
+                              <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 600 }}>
                                 {amenity}
                               </Typography>
                             </Box>
@@ -431,7 +430,7 @@ const RoomDetailPage = () => {
                       const PolicyIcon = pickPolicyIcon(item);
                       return (
                         <Stack direction="row" spacing={1.5} key={item}>
-                          <PolicyIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.35, flexShrink: 0 }} fontSize="small" />
+                          <PolicyIcon sx={{ color: 'primary.main', mt: 0.35, flexShrink: 0 }} fontSize="small" />
                           <Typography variant="body2" sx={{ color: '#475569' }}>
                             {item}
                           </Typography>
@@ -450,7 +449,7 @@ const RoomDetailPage = () => {
                       const InstructionIcon = pickInstructionIcon(item);
                       return (
                         <Stack direction="row" spacing={1.5} key={item}>
-                          <InstructionIcon sx={{ color: AMENITY_ICON_COLOR, mt: 0.35, flexShrink: 0 }} fontSize="small" />
+                          <InstructionIcon sx={{ color: 'primary.main', mt: 0.35, flexShrink: 0 }} fontSize="small" />
                           <Typography variant="body2" sx={{ color: '#475569' }}>
                             {item}
                           </Typography>
@@ -464,7 +463,7 @@ const RoomDetailPage = () => {
 
             {/* NEW: calendar + CTA */}
             <Grid item xs={12} md={5}>
-              <Stack spacing={3} sx={{ border: '1px solid #e2e8f0', borderRadius: 3, p: 3, bgcolor: '#fff' }}>
+              <Stack spacing={3} sx={{ border: '1px solid', borderColor: 'grey.200', borderRadius: 3, p: 3, bgcolor: 'background.paper' }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   Disponibilidad
                 </Typography>
@@ -482,8 +481,8 @@ const RoomDetailPage = () => {
                   sx={{
                     textTransform: 'none',
                     fontWeight: 700,
-                    backgroundColor: '#2bb673',
-                    '&:hover': { backgroundColor: '#23a160' },
+                    backgroundColor: 'secondary.main',
+                    '&:hover': { backgroundColor: 'secondary.main' },
                     borderRadius: 999
                   }}
                 >
@@ -502,9 +501,10 @@ const RoomDetailPage = () => {
               sx={{
                 borderRadius: 3,
                 overflow: 'hidden',
-                border: '1px solid #e2e8f0',
+                border: '1px solid',
+                borderColor: 'grey.200',
                 minHeight: 320,
-                bgcolor: '#fff'
+                bgcolor: 'background.paper'
               }}
             >
               <Box
@@ -528,7 +528,7 @@ const RoomDetailPage = () => {
           >
             <IconButton
               onClick={() => setGalleryOpen(false)}
-              sx={{ position: 'absolute', top: 12, right: 12, bgcolor: '#fff' }}
+              sx={{ position: 'absolute', top: 12, right: 12, bgcolor: 'background.paper' }}
             >
               <CloseIcon fontSize="small" />
             </IconButton>

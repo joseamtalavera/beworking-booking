@@ -289,7 +289,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               Who & where
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Provide basic booking details so we can secure the right space for you.
             </Typography>
           </Stack>
@@ -432,7 +432,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
               Schedule & status
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Select your preferred dates and times. Weekday selection is optional for recurring bookings.
             </Typography>
           </Stack>

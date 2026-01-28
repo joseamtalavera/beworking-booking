@@ -45,11 +45,11 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
         );
       case 2:
         return (
-          <Stack spacing={2} sx={{ border: '1px dashed #cbd5f5', borderRadius: 3, p: 3, bgcolor: '#fff' }}>
+          <Stack spacing={2} sx={{ border: '1px dashed', borderColor: 'grey.300', borderRadius: 3, p: 3, bgcolor: 'background.paper' }}>
             <Typography variant="body1" sx={{ fontWeight: 600 }}>
               Review &amp; payment
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Stripe Payment Element placeholder. We will inject the payment intent client secret here and render
               confirmation details in the next step.
             </Typography>
@@ -68,7 +68,7 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
 
   if (!room) {
     return (
-      <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
           <Typography variant="h6">Room not found.</Typography>
         </Box>
@@ -84,7 +84,7 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
   return (
     <Stack spacing={5} sx={containerSx}>
       <Box>
-        <Typography variant="overline" sx={{ color: '#64748b' }}>
+        <Typography variant="overline" sx={{ color: 'text.disabled' }}>
           Booking · {room.centro}
         </Typography>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>

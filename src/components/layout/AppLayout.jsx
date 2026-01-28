@@ -102,12 +102,10 @@ const AppLayout = () => {
       <AppBar position="fixed" color="default" elevation={0} sx={{ bgcolor: '#fff', boxShadow: 'none', borderBottom: 'none' }}>
         <Container disableGutters maxWidth={false} sx={{ pl: 5, pr: 5 }}>
           <Toolbar disableGutters sx={{ display: 'flex', alignItems: 'center', pl: 0, pr: 0 }}>
-            {/* Left: Original Logo Text in Same Position/Style */}
+            {/* Left: Logo */}
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', pl: 0, ml: 0 }}>
-              <Box component="a" href="/" sx={{ textDecoration: 'none' }}>
-                <Typography variant="h4" sx={{ color: '#000', cursor: 'pointer', pl: 0, ml: 0 }}>
-                  BeWorking
-                </Typography>
+              <Box component="a" href="/" sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+                <img src="/beworking_logo.svg" alt="BeWorking" style={{ height: '32px', cursor: 'pointer' }} />
               </Box>
             </Box>
 

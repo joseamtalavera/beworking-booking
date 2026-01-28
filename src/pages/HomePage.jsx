@@ -12,6 +12,8 @@ import {
   InputAdornment,
   Autocomplete
 } from '@mui/material';
+
+// Colors are now defined in theme.js - use theme palette: primary.main/dark for green
 import Grid from '@mui/material/Grid';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
@@ -543,9 +545,9 @@ const HomePage = () => {
                   textTransform: 'none',
                   fontWeight: 600,
                   fontSize: '0.875rem',
-                  backgroundColor: '#fb923c',
+                  backgroundColor: 'primary.main',
                   '&:hover': {
-                    backgroundColor: '#ea580c'
+                    backgroundColor: 'primary.dark'
                   }
                 }}
               >
