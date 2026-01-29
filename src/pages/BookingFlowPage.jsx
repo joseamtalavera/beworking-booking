@@ -90,7 +90,7 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           {room.name}
         </Typography>
-        <Typography variant="body2" sx={{ color: '#475569' }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Structured flow placeholder. We'll progressively replace these sections with live availability, visitor
           registration, and Stripe payment integration.
         </Typography>
@@ -106,7 +106,7 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
 };
 
 const BookingFlowPage = () => (
-  <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+  <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
     <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
       <BookingFlowContent layout="page" />
     </Box>

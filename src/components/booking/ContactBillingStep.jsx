@@ -102,7 +102,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               Contact details
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Enter the guest&apos;s contact and billing information. We&apos;ll create a contact profile that mirrors the admin
               dashboard.
             </Typography>
@@ -178,7 +178,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               Billing address
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               This information will appear on invoices and receipts.
             </Typography>
           </Stack>
@@ -241,7 +241,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
               Reservation summary
             </Typography>
-            <Typography variant="body2" sx={{ color: '#475569' }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               Quick snapshot of the reservation before payment.
             </Typography>
           </Stack>
@@ -251,7 +251,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   {item.label}
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#475569' }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   {item.value}
                 </Typography>
               </Stack>

@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { Box, Button, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import CloseIcon from '@mui/icons-material/Close';
 import { useBookingFlow } from '../../store/useBookingFlow.js';
 
@@ -8,7 +7,6 @@ const LOGIN_URL = import.meta.env.VITE_LOGIN_URL || 'http://localhost:3020/main/
 
 // Modal dialog wrapper for booking flow
 const BookingFlowModal = ({ open, onClose, onContinue }) => {
-  const theme = useTheme();
   const resetFlow = useBookingFlow((state) => state.resetFlow);
 
   useEffect(() => {
@@ -40,7 +38,7 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
           borderRadius: 3,
           overflow: 'visible',
           p: 2,
-          boxShadow: '0 20px 50px rgba(15,23,42,0.12)'
+          boxShadow: (theme) => theme.shadows[6]
         }
       }}
     >

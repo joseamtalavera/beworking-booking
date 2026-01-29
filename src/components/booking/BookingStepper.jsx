@@ -7,7 +7,7 @@ const BookingStepper = () => {
   const activeStep = useBookingFlow((state) => state.activeStep);
 
   return (
-    <Stepper activeStep={activeStep} alternativeLabel sx={{ bgcolor: '#fff', borderRadius: 2, p: 2 }}>
+    <Stepper activeStep={activeStep} alternativeLabel sx={{ bgcolor: 'background.paper', borderRadius: 2, p: 2 }}>
       {STEP_LABELS.map((label) => (
         <Step key={label}>
           <StepLabel>{label}</StepLabel>

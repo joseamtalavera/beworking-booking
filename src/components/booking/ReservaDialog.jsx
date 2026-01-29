@@ -152,14 +152,14 @@ const ReservationSummary = ({ formState, selectedContact }) => {
         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
           Quick summary
         </Typography>
-        <Typography variant="body2" sx={{ color: '#475569' }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {formState.dateFrom} · {formState.startTime} – {formState.endTime}
         </Typography>
-        <Typography variant="body2" sx={{ color: '#475569' }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           {formState.producto?.name || 'Select a room'} · {formState.centro?.name || 'Centro'}
         </Typography>
         {selectedContact ? (
-          <Typography variant="body2" sx={{ color: '#475569' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             {selectedContact.name} · {selectedContact.email || 'No email'}
           </Typography>
         ) : null}
@@ -625,7 +625,7 @@ const ReservaDialog = ({
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 {dialogTitle}
               </Typography>
-              <Typography variant="body2" sx={{ color: '#475569' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {dialogSubtitle}
               </Typography>
             </Stack>
@@ -634,13 +634,13 @@ const ReservaDialog = ({
             <CloseRoundedIcon />
           </IconButton>
         </DialogTitle>
-        <DialogContent dividers sx={{ bgcolor: '#f8fafc' }}>
+        <DialogContent dividers sx={{ bgcolor: 'background.default' }}>
           <Stack spacing={3}>
             {error ? (
               <Alert severity="error">{error}</Alert>
             ) : null}
 
-            <Tabs value={activeTab} onChange={handleTabChange} sx={{ borderBottom: '1px solid #e2e8f0' }}>
+            <Tabs value={activeTab} onChange={handleTabChange} sx={{ borderBottom: '1px solid', borderBottomColor: 'divider' }}>
               <Tab label="Details" value="details" disableRipple />
               <Tab label="Extras" value="extras" disableRipple />
             </Tabs>
@@ -693,7 +693,7 @@ const ReservaDialog = ({
                               <Typography variant="body2" sx={{ fontWeight: 600 }}>
                                 {option.name}
                               </Typography>
-                              <Typography variant="caption" sx={{ color: '#64748b' }}>
+                              <Typography variant="caption" sx={{ color: 'text.disabled' }}>
                                 {option.email || 'No email'}
                               </Typography>
                             </Stack>
@@ -991,7 +991,7 @@ const ReservaDialog = ({
                         <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           Quick actions
                         </Typography>
-                        <Typography variant="body2" sx={{ color: '#64748b' }}>
+                        <Typography variant="body2" sx={{ color: 'text.disabled' }}>
                           Toggle open ended reservations or mark weekdays that apply.
                         </Typography>
                         <FormControlLabel

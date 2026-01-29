@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams, useNavigate, useLocation } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { alpha } from '@mui/material/styles';
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
@@ -351,7 +351,7 @@ const RoomDetailPage = () => {
                     textTransform: 'none',
                     fontWeight: 600,
                     px: 2.5,
-                    boxShadow: '0 10px 30px rgba(15, 23, 42, 0.12)',
+                    boxShadow: (theme) => theme.shadows[6],
                     '&:hover': { backgroundColor: 'background.default' }
                   }}
                 >
@@ -390,8 +390,9 @@ const RoomDetailPage = () => {
                                 gap: 1.25,
                                 p: 1.5,
                                 borderRadius: 2,
-                                backgroundColor: (theme) => `${theme.palette.primary.light}15`,
-                                border: (theme) => `1px solid ${theme.palette.primary.light}80`,
+                                backgroundColor: (theme) => alpha(theme.palette.primary.light, 0.08),
+                                border: '1px solid',
+                                borderColor: (theme) => alpha(theme.palette.primary.light, 0.5),
                                 minHeight: 68
                               }}
                             >
@@ -400,7 +401,7 @@ const RoomDetailPage = () => {
                                   width: 36,
                                   height: 36,
                                   borderRadius: '50%',
-                                  backgroundColor: (theme) => `${theme.palette.primary.main}2E`,
+                                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.18),
                                   display: 'inline-flex',
                                   alignItems: 'center',
                                   justifyContent: 'center',
@@ -431,7 +432,7 @@ const RoomDetailPage = () => {
                       return (
                         <Stack direction="row" spacing={1.5} key={item}>
                           <PolicyIcon sx={{ color: 'primary.main', mt: 0.35, flexShrink: 0 }} fontSize="small" />
-                          <Typography variant="body2" sx={{ color: '#475569' }}>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                             {item}
                           </Typography>
                         </Stack>
@@ -450,7 +451,7 @@ const RoomDetailPage = () => {
                       return (
                         <Stack direction="row" spacing={1.5} key={item}>
                           <InstructionIcon sx={{ color: 'primary.main', mt: 0.35, flexShrink: 0 }} fontSize="small" />
-                          <Typography variant="body2" sx={{ color: '#475569' }}>
+                          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                             {item}
                           </Typography>
                         </Stack>
@@ -467,7 +468,7 @@ const RoomDetailPage = () => {
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   Disponibilidad
                 </Typography>
-                <Typography variant="body2" sx={{ color: '#475569' }}>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                   Consulta los bloques reservados y solicita tu horario ideal. La disponibilidad se sincroniza con el panel
                   de Agenda del dashboard.
                 </Typography>

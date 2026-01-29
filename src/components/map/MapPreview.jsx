@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { Box, Typography } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
 const MapPreview = ({ rooms }) => {
+  const theme = useTheme();
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -34,7 +36,10 @@ const MapPreview = ({ rooms }) => {
     const markers = rooms.map((room) => {
       const el = document.createElement('div');
       el.className = 'beworking-map-marker';
-      el.style.cssText = 'width:18px;height:18px;border-radius:50%;background:#2563eb;box-shadow:0 0 0 4px rgba(37,99,235,0.2);';
+      el.style.cssText = `width:18px;height:18px;border-radius:50%;background:${theme.palette.primary.main};box-shadow:0 0 0 4px ${alpha(
+        theme.palette.primary.main,
+        0.2
+      )};`;
 
       return new mapboxgl.Marker(el)
         .setLngLat(room.coordinates)
@@ -56,7 +61,7 @@ const MapPreview = ({ rooms }) => {
       <Box
         sx={{
           borderRadius: 3,
-          bgcolor: '#e2e8f0',
+          bgcolor: 'grey.200',
           p: 4,
           height: '100%',
           minHeight: 360,
@@ -64,7 +69,7 @@ const MapPreview = ({ rooms }) => {
           placeItems: 'center'
         }}
       >
-        <Typography variant="body2" sx={{ color: '#475569' }}>
+        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
           Configure `VITE_MAPBOX_TOKEN` to enable the interactive map.
         </Typography>
       </Box>

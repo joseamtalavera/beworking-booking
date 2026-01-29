@@ -144,22 +144,22 @@ const HomePage = () => {
     width: '100%',
     '& .MuiOutlinedInput-root': {
       borderRadius: 1,
-      backgroundColor: '#f8fafc',
+      backgroundColor: 'background.default',
       height: '40px',
       '& fieldset': {
-        borderColor: '#e2e8f0'
+        borderColor: 'divider'
       },
       '& input': {
         fontSize: '0.9375rem !important',
         fontWeight: 500,
-        color: '#1e293b !important',
+        color: 'text.primary',
         padding: '8.5px 14px !important',
         height: '100%'
       }
     },
     '& .MuiInputLabel-root': {
       fontSize: '0.75rem',
-      color: '#64748b'
+      color: 'text.disabled'
     },
     '& .MuiAutocomplete-input': {
       padding: '8.5px 14px !important'
@@ -379,13 +379,13 @@ const HomePage = () => {
   };
 
   return (
-    <Box sx={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
+    <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
       <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: 4 }}>
         {/* Page Title */}
         <Typography variant="h3" fontWeight={700} sx={{ mb: 1 }}>
           Meeting rooms and desks in your city
         </Typography>
-        <Typography variant="subtitle1" sx={{ color: '#475569', mb: 4 }}>
+        <Typography variant="subtitle1" sx={{ color: 'text.secondary', mb: 4 }}>
           Find the perfect workspace for your needs. Choose between meeting rooms for team collaboration or individual desks for focused work.
         </Typography>
 
@@ -419,8 +419,9 @@ const HomePage = () => {
                 p: 3, 
                 mb: 4, 
                 borderRadius: 3,
-                border: '1px solid #e2e8f0',
-                backgroundColor: 'white',
+                border: '1px solid',
+                borderColor: 'divider',
+                backgroundColor: 'background.paper',
                 width: '100%',
                 boxSizing: 'border-box'
               }}

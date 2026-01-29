@@ -19,6 +19,7 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import YouTubeIcon from '@mui/icons-material/YouTube';
+import { alpha } from '@mui/material/styles';
 
 const NavPill = ({ children, onOpen, active = false }) => (
   <Button
@@ -28,14 +29,14 @@ const NavPill = ({ children, onOpen, active = false }) => (
     sx={{
       fontSize: '1rem',
       fontWeight: 400,
-      color: active ? '#00B14F' : '#666',
+      color: active ? 'primary.main' : 'text.secondary',
       textTransform: 'none',
       px: 3,
       py: 1,
       backgroundColor: 'transparent',
       boxShadow: 'none',
       '&:hover': {
-        color: '#007d3a',
+        color: 'primary.dark',
         backgroundColor: 'transparent',
       },
     }}
@@ -53,12 +54,12 @@ const MenuItemLink = ({ href, label, desc }) => (
       p: 1,
       borderRadius: 1,
       textDecoration: 'none',
-      '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
+      '&:hover': { bgcolor: (theme) => alpha(theme.palette.common.black, 0.04) },
     }}
   >
-    <Typography sx={{ fontWeight: 600, color: '#111' }}>{label}</Typography>
+    <Typography sx={{ fontWeight: 600, color: 'text.primary' }}>{label}</Typography>
     {desc && (
-      <Typography variant="body2" sx={{ color: '#666' }}>
+      <Typography variant="body2" sx={{ color: 'text.secondary' }}>
         {desc}
       </Typography>
     )}
@@ -73,13 +74,14 @@ const MenuCard = ({ href, title, desc }) => (
       display: 'block',
       p: 2,
       borderRadius: 2,
-      border: '1px solid rgba(0,0,0,0.1)',
+      border: '1px solid',
+      borderColor: (theme) => alpha(theme.palette.common.black, 0.1),
       textDecoration: 'none',
-      '&:hover': { borderColor: '#00B14F', bgcolor: 'rgba(0,177,79,0.05)' },
+      '&:hover': { borderColor: 'primary.main', bgcolor: (theme) => alpha(theme.palette.primary.main, 0.05) },
     }}
   >
-    <Typography sx={{ fontWeight: 700, color: '#111', mb: 0.5 }}>{title}</Typography>
-    <Typography variant="body2" sx={{ color: '#555' }}>
+    <Typography sx={{ fontWeight: 700, color: 'text.primary', mb: 0.5 }}>{title}</Typography>
+    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
       {desc}
     </Typography>
   </Box>
@@ -99,13 +101,13 @@ const AppLayout = () => {
   return (
     <Box sx={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
       {/* Header per requested layout */}
-      <AppBar position="fixed" color="default" elevation={0} sx={{ bgcolor: '#fff', boxShadow: 'none', borderBottom: 'none' }}>
+      <AppBar position="fixed" color="default" elevation={0} sx={{ bgcolor: 'background.paper', boxShadow: 'none', borderBottom: 'none' }}>
         <Container disableGutters maxWidth={false} sx={{ pl: 5, pr: 5 }}>
           <Toolbar disableGutters sx={{ display: 'flex', alignItems: 'center', pl: 0, pr: 0 }}>
             {/* Left: Logo */}
             <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', pl: 0, ml: 0 }}>
               <Box component="a" href="/" sx={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
-                <img src="/beworking_logo.svg" alt="BeWorking" style={{ height: '32px', cursor: 'pointer' }} />
+                <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: '32px', cursor: 'pointer' }} />
               </Box>
             </Box>
 
@@ -120,14 +122,14 @@ const AppLayout = () => {
                 sx={{
                   fontSize: '1rem',
                   fontWeight: 400,
-                  color: '#666',
+                  color: 'text.secondary',
                   textTransform: 'none',
                   px: 3,
                   py: 1,
                   backgroundColor: 'transparent',
                   boxShadow: 'none',
                   '&:hover': {
-                    color: '#007d3a',
+                    color: 'primary.dark',
                     backgroundColor: 'transparent',
                   },
                 }}
@@ -143,7 +145,7 @@ const AppLayout = () => {
               sx={{
                 fontSize: '1rem',
                 fontWeight: 400,
-                color: '#666',
+                color: 'text.secondary',
                 textTransform: 'none',
                 px: 3,
                 py: 1,
@@ -151,7 +153,7 @@ const AppLayout = () => {
                 backgroundColor: 'transparent',
                 boxShadow: 'none',
                 '&:hover': {
-                  color: '#007d3a',
+                  color: 'primary.dark',
                   backgroundColor: 'transparent',
                 },
               }}
@@ -161,13 +163,13 @@ const AppLayout = () => {
 
             {/* EN | ES */}
             <Box sx={{ ml: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Button variant="text" sx={{ minWidth: 0, px: 1, fontWeight: 700, color: '#222', textDecoration: 'underline', textTransform: 'none' }}>
+              <Button variant="text" sx={{ minWidth: 0, px: 1, fontWeight: 700, color: 'text.primary', textDecoration: 'underline', textTransform: 'none' }}>
                 EN
               </Button>
-              <Typography variant="body2" sx={{ color: '#222', fontWeight: 700 }}>
+              <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 700 }}>
                 |
               </Typography>
-              <Button variant="text" sx={{ minWidth: 0, px: 1, fontWeight: 700, color: '#222', textTransform: 'none' }}>
+              <Button variant="text" sx={{ minWidth: 0, px: 1, fontWeight: 700, color: 'text.primary', textTransform: 'none' }}>
                 ES
               </Button>
             </Box>
@@ -191,7 +193,7 @@ const AppLayout = () => {
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 0.9fr', gap: 2 }}>
             {/* Capabilities */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>Capabilities</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>Capabilities</Typography>
               <MenuItemLink href="/platform/dashboard" label="Dashboard" desc="Control center for your office" />
               <MenuItemLink href="/platform/contacts" label="Contacts & CRM" desc="Leads, clients, segmentation" />
               <MenuItemLink href="/platform/invoicing" label="Invoicing" desc="Quotes, invoices, payments" />
@@ -202,7 +204,7 @@ const AppLayout = () => {
 
             {/* AI & Integrations */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>AI & Integrations</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>AI & Integrations</Typography>
               <MenuItemLink href="/platform/ai-copilot" label="BeCopilot" desc="AI agents & automation" />
               <MenuItemLink href="/integrations/google" label="Google Workspace" desc="Drive, Gmail, Calendar" />
               <MenuItemLink href="/integrations/whatsapp" label="WhatsApp" desc="Two-way messaging" />
@@ -213,7 +215,7 @@ const AppLayout = () => {
 
             {/* Security */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>Security</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>Security</Typography>
               <MenuItemLink href="/platform/security" label="Security & Compliance" desc="Roles, audit, GDPR" />
               <MenuItemLink href="/platform/multitenant" label="Multi-tenant" desc="Org & workspace isolation" />
               <Divider sx={{ my: 1 }} />
@@ -223,7 +225,7 @@ const AppLayout = () => {
             </Box>
 
             {/* Promo Rail */}
-            <Box sx={{ p: 2, borderRadius: 2, bgcolor: 'rgba(0,177,79,0.08)' }}>
+            <Box sx={{ p: 2, borderRadius: 2, bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08) }}>
               <Typography sx={{ fontWeight: 800, mb: 1 }}>Powered by BeCopilot</Typography>
               <Typography variant="body2" sx={{ mb: 1 }}>AI automates communication, billing, and document workflows.</Typography>
               <ul style={{ margin: 0, paddingLeft: 18 }}>
@@ -235,7 +237,7 @@ const AppLayout = () => {
                 component="a"
                 href="/demo"
                 size="small"
-                sx={{ mt: 1, textTransform: 'none', fontWeight: 800, bgcolor: '#00B14F', color: '#fff', '&:hover': { bgcolor: '#009247' } }}
+                sx={{ mt: 1, textTransform: 'none', fontWeight: 800, bgcolor: 'primary.main', color: 'primary.contrastText', '&:hover': { bgcolor: 'primary.dark' } }}
               >
                 Watch demo
               </Button>
@@ -269,7 +271,7 @@ const AppLayout = () => {
           <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 2 }}>
             {/* Learn */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>Learn (Free)</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>Learn (Free)</Typography>
               <MenuItemLink href="/resources/webinars" label="Webinars" />
               <MenuItemLink href="/resources/guides" label="Guides" />
               <MenuItemLink href="/resources/videos" label="Video tutorials" />
@@ -277,7 +279,7 @@ const AppLayout = () => {
 
             {/* Discover */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>Discover</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>Discover</Typography>
               <MenuItemLink href="/blog" label="Blog" />
               <MenuItemLink href="/customers" label="Customer stories" />
               <MenuItemLink href="/events" label="Virtual summits" />
@@ -285,7 +287,7 @@ const AppLayout = () => {
 
             {/* Services */}
             <Box>
-              <Typography variant="overline" sx={{ color: '#777' }}>Services</Typography>
+              <Typography variant="overline" sx={{ color: 'text.secondary' }}>Services</Typography>
               <MenuItemLink href="/services/professional" label="Professional services" />
               <MenuItemLink href="/support" label="Support services" />
               <MenuItemLink href="/partners" label="Partner services" />
@@ -303,7 +305,7 @@ const AppLayout = () => {
       </Box>
 
       {/* Footer unchanged */}
-      <Box component="footer" sx={{ mt: 4, py: 4, bgcolor: '#009624', color: '#fff' }}>
+      <Box component="footer" sx={{ mt: 4, py: 4, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
         <Container sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', gap: 6 }}>
           {/* BeWorking Column */}
           <Box sx={{ flex: 1 }}>
@@ -339,7 +341,9 @@ const AppLayout = () => {
             <Link href="mailto:soporte@beworking.es" color="inherit" sx={{ display: 'block', mb: 1, textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>info@be-working.com</Link>
           </Box>
         </Container>
-        <Divider sx={{ my: 1, borderColor: 'rgba(255,255,255,0.3)', opacity: 1, borderBottomWidth: '0.5px' }} />
+        <Divider
+          sx={{ my: 1, borderColor: (theme) => alpha(theme.palette.common.white, 0.3), opacity: 1, borderBottomWidth: '0.5px' }}
+        />
         <Container sx={{ pt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: { xs: 'column', md: 'row' }, gap: 2 }}>
           {/* Left: BeWorking and legal links */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

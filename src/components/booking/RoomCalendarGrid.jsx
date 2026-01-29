@@ -12,6 +12,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
   buildTimeSlotsFromBloqueos,
   bloqueoCoversSlot,
@@ -33,23 +34,25 @@ export const CalendarLegendItem = ({ label, color }) => (
         bgcolor: color.bgcolor
       }}
     />
-    <Typography variant="caption" sx={{ color: '#475569' }}>
+    <Typography variant="caption" sx={{ color: 'text.secondary' }}>
       {label}
     </Typography>
   </Stack>
 );
 
-export const CalendarLegend = () => (
+export const CalendarLegend = ({ styles }) => (
   <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-    <CalendarLegendItem label="Available" color={statusStyles.available} />
-    <CalendarLegendItem label="Paid" color={statusStyles.paid} />
-    <CalendarLegendItem label="Invoiced" color={statusStyles.invoiced} />
-    <CalendarLegendItem label="Created" color={statusStyles.created} />
+    <CalendarLegendItem label="Available" color={styles.available} />
+    <CalendarLegendItem label="Paid" color={styles.paid} />
+    <CalendarLegendItem label="Invoiced" color={styles.invoiced} />
+    <CalendarLegendItem label="Created" color={styles.created} />
   </Stack>
 );
 
 const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot }) => {
+  const theme = useTheme();
   const timeSlots = useMemo(() => buildTimeSlotsFromBloqueos(bloqueos), [bloqueos]);
+  const resolvedStatusStyles = useMemo(() => statusStyles(theme), [theme]);
   const tableMinWidth = useMemo(() => {
     const slotWidth = 64;
     const baseRoomColumn = 220;
@@ -70,12 +73,13 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
       elevation={0}
       sx={{
         borderRadius: 3,
-        border: '1px solid #e2e8f0',
+        border: '1px solid',
+        borderColor: 'divider',
         width: '100%',
         maxWidth: 1240,
         mx: 'auto',
         overflow: 'hidden',
-        backgroundColor: '#fff'
+        backgroundColor: 'background.paper'
       }}
     >
       <Stack spacing={3} sx={{ p: 3 }}>
@@ -85,12 +89,12 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
               Availability · {room?.name || 'Meeting room'}
             </Typography>
             {dateLabel ? (
-              <Typography variant="body2" sx={{ color: '#475569' }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {dateLabel}
               </Typography>
             ) : null}
           </Stack>
-          <CalendarLegend />
+          <CalendarLegend styles={resolvedStatusStyles} />
         </Stack>
 
         <TableContainer
@@ -108,10 +112,12 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
               minWidth: tableMinWidth,
               tableLayout: 'fixed',
               '& .MuiTableCell-root': {
-                borderRight: '1px solid rgba(148, 163, 184, 0.12)'
+                borderRight: '1px solid',
+                borderRightColor: (theme) => alpha(theme.palette.divider, 0.6)
               },
               '& .MuiTableRow-root': {
-                borderBottom: '1px solid rgba(148, 163, 184, 0.12)'
+                borderBottom: '1px solid',
+                borderBottomColor: (theme) => alpha(theme.palette.divider, 0.6)
               }
             }}
           >
@@ -125,8 +131,9 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                     left: 0,
                     backgroundColor: 'background.paper',
                     zIndex: 4,
-                    borderRight: '1px solid rgba(148, 163, 184, 0.32)',
-                    boxShadow: '4px 0 12px rgba(15, 23, 42, 0.06)'
+                    borderRight: '1px solid',
+                    borderRightColor: (theme) => alpha(theme.palette.divider, 0.8),
+                    boxShadow: (theme) => `4px 0 12px ${alpha(theme.palette.common.black, 0.06)}`
                   }}
                 >
                   Room
@@ -161,8 +168,9 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                     maxWidth: 220,
                     backgroundColor: 'background.paper',
                     zIndex: 2,
-                    borderRight: '1px solid rgba(148, 163, 184, 0.24)',
-                    boxShadow: '2px 0 8px rgba(15, 23, 42, 0.04)'
+                    borderRight: '1px solid',
+                    borderRightColor: (theme) => alpha(theme.palette.divider, 0.7),
+                    boxShadow: (theme) => `2px 0 8px ${alpha(theme.palette.common.black, 0.04)}`
                   }}
                 >
                   <Stack spacing={0.5}>
@@ -170,7 +178,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                       {room?.name || room?.label || 'Meeting room'}
                     </Typography>
                     {room?.capacity ? (
-                      <Typography variant="caption" sx={{ color: '#64748b' }}>
+                      <Typography variant="caption" sx={{ color: 'text.disabled' }}>
                         Capacity {room.capacity} guests
                       </Typography>
                     ) : null}
@@ -179,7 +187,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                 {timeSlots.map((slot) => {
                   const slotKey = `${room?.id || 'room'}-${slot.id}`;
                   const { status, bloqueo } = getSlotStatus(slot.id);
-                  const styles = statusStyles[status] || statusStyles.created;
+                  const styles = resolvedStatusStyles[status] || resolvedStatusStyles.created;
                   const isSelected = selectedSlotKey === slotKey;
 
                   return (
@@ -200,7 +208,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                             width: '100%',
                             borderRadius: 2,
                             border: '2px solid',
-                            borderColor: isSelected ? '#2563eb' : styles.borderColor,
+                            borderColor: isSelected ? theme.palette.primary.main : styles.borderColor,
                             bgcolor: styles.bgcolor,
                             color: styles.color,
                             cursor: 'pointer',

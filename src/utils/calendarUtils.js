@@ -1,28 +1,30 @@
 export const DEFAULT_START_HOUR = 6;
 export const DEFAULT_END_HOUR = 22;
 
-export const statusStyles = {
+import { alpha } from '@mui/material/styles';
+
+export const statusStyles = (theme) => ({
   available: {
     bgcolor: 'transparent',
-    borderColor: 'rgba(148, 163, 184, 0.24)',
-    color: '#475569'
+    borderColor: alpha(theme.palette.divider, 0.6),
+    color: theme.palette.text.secondary
   },
   paid: {
-    bgcolor: 'rgba(134, 239, 172, 0.32)',
-    borderColor: '#22c55e',
-    color: '#166534'
+    bgcolor: alpha(theme.palette.success.main, 0.32),
+    borderColor: theme.palette.success.main,
+    color: theme.palette.success.dark
   },
   invoiced: {
-    bgcolor: 'rgba(253, 224, 71, 0.25)',
-    borderColor: '#facc15',
-    color: '#854d0e'
+    bgcolor: alpha(theme.palette.warning.light, 0.25),
+    borderColor: theme.palette.warning.main,
+    color: theme.palette.warning.dark
   },
   created: {
-    bgcolor: 'rgba(248, 113, 113, 0.22)',
-    borderColor: '#ef4444',
-    color: '#991b1b'
+    bgcolor: alpha(theme.palette.error.light, 0.22),
+    borderColor: theme.palette.error.main,
+    color: theme.palette.error.dark
   }
-};
+});
 
 export const getInitials = (value) => {
   if (!value) {

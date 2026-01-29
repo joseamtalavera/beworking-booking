@@ -7,6 +7,7 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { alpha } from '@mui/material/styles';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
@@ -38,7 +39,7 @@ const SpaceCard = ({ space, onBookNow }) => {
         sx={{
           borderRadius: 3,
           overflow: 'hidden',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+          boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.common.black, 0.1)}`,
           transition: 'transform 0.2s, box-shadow 0.2s',
           width: '100%',
           height: '100%',
@@ -48,7 +49,7 @@ const SpaceCard = ({ space, onBookNow }) => {
           maxWidth: '100%',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1)'
+            boxShadow: (theme) => `0 10px 25px -3px ${alpha(theme.palette.common.black, 0.1)}`
           }
         }}
       >
@@ -79,7 +80,7 @@ const SpaceCard = ({ space, onBookNow }) => {
                 label="Instant booking"
                 size="small"
                 sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.9),
                   color: 'text.primary',
                   fontWeight: 500,
                   fontSize: '0.75rem'
@@ -93,9 +94,9 @@ const SpaceCard = ({ space, onBookNow }) => {
               position: 'absolute',
               top: 10,
               right: 10,
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              backgroundColor: (theme) => alpha(theme.palette.common.white, 0.8),
               '&:hover': {
-                backgroundColor: 'rgba(255, 255, 255, 0.9)'
+                backgroundColor: (theme) => alpha(theme.palette.common.white, 0.9)
               }
             }}
           >
