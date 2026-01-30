@@ -1,11 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import { Box, Paper, Stack, Typography } from '@mui/material';
 import { useCatalogRooms } from '../store/useCatalogRooms.js';
 import { useBookingFlow } from '../store/useBookingFlow.js';
 import BookingStepper from '../components/booking/BookingStepper.jsx';
 import SelectBookingDetails from '../components/booking/SelectBookingDetails.jsx';
 import ContactBillingStep from '../components/booking/ContactBillingStep.jsx';
+import PaymentStep from '../components/booking/PaymentStep.jsx';
 import { useBookingVisitor } from '../store/useBookingVisitor.js';
 
 export const BookingFlowContent = ({ layout = 'page' }) => {
@@ -44,23 +45,7 @@ export const BookingFlowContent = ({ layout = 'page' }) => {
           />
         );
       case 2:
-        return (
-          <Stack spacing={2} sx={{ border: '1px dashed', borderColor: 'grey.300', borderRadius: 3, p: 3, bgcolor: 'background.paper' }}>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
-              Review &amp; payment
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Stripe Payment Element placeholder. We will inject the payment intent client secret here and render
-              confirmation details in the next step.
-            </Typography>
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <Button onClick={prevStep}>Back</Button>
-              <Button variant="contained" disabled>
-                Pay now
-              </Button>
-            </Stack>
-          </Stack>
-        );
+        return <PaymentStep room={room} onBack={prevStep} />;
       default:
         return null;
     }
