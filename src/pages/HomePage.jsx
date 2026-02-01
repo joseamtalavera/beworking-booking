@@ -1,13 +1,13 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useNavigate, useLocation as useRouterLocation } from 'react-router-dom';
-import { 
-  Button, 
-  Paper, 
-  Stack, 
-  TextField, 
-  Typography, 
-  Tabs, 
-  Tab, 
+import {
+  Button,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+  Tabs,
+  Tab,
   Box,
   InputAdornment,
   Autocomplete
@@ -47,11 +47,11 @@ const HomePage = () => {
   useEffect(() => {
     let active = true;
     setCentrosLoading(true);
-    
+
     const loadCentros = async () => {
       try {
         const data = await fetchBookingCentros();
-        
+
         if (!active) return;
 
         const options = Array.isArray(data) ? data.map((c) => {
@@ -59,14 +59,14 @@ const HomePage = () => {
           const city = (c.localidad ?? c.city ?? '').trim();
 
           return {
-            ...c, 
-            id: c.id ?? c.codigo ?? c.code ?? c.nombre ?? c.name ?? code, 
+            ...c,
+            id: c.id ?? c.codigo ?? c.code ?? c.nombre ?? c.name ?? code,
             label: c.nombre ?? c.name ?? '',
             code,
             city
           };
         }) : [];
-        
+
         const centrosWithAll = [{ id: 'all', label: 'All Centros', isAllOption: true }, ...options];
         setCentros(centrosWithAll);
 
@@ -91,7 +91,7 @@ const HomePage = () => {
       }
     };
     loadCentros();
-    
+
     return () => {
       active = false;
     };
@@ -115,7 +115,7 @@ const HomePage = () => {
           params.type = 'Mesa';
         }
         // activeTab === 0 -> All Spaces (no tipo filter, gets both Aula and Mesa)
-        
+
         const data = await fetchBookingProductos(params);
 
         if (!active) return;
@@ -131,9 +131,9 @@ const HomePage = () => {
         }
       }
     };
-    
+
     loadProductos();
-    
+
     return () => {
       active = false;
     };
@@ -204,7 +204,7 @@ const HomePage = () => {
 
       return false;
     });
-    
+
     const aulas = filteredProductos.filter((producto) => {
       const typeLower = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
       return typeLower === 'aula';
@@ -301,15 +301,15 @@ const HomePage = () => {
     })();
 
     const mappedSpaces = deskCard ? [...aulaSpaces, deskCard] : aulaSpaces;
-    
+
     let filtered = [...mappedSpaces];
-    
+
     // Filter by city/location if specified
     if (cityFilter && cityFilter.trim() !== '') {
       const cityFilterLower = cityFilter.trim().toLowerCase();
       filtered = filtered.filter(space => (space.location ?? '').toLowerCase() === cityFilterLower);
     }
-    
+
     // Filter by number of users
     if (people && people.trim() !== '') {
       const userCount = parseInt(people);
@@ -322,13 +322,13 @@ const HomePage = () => {
             return !isNaN(singleCapacity) && userCount <= singleCapacity;
           } else {
             const [minCapacity, maxCapacity] = capacityParts.map(num => parseInt(num));
-            return !isNaN(minCapacity) && !isNaN(maxCapacity) && 
+            return !isNaN(minCapacity) && !isNaN(maxCapacity) &&
                    userCount >= minCapacity && userCount <= maxCapacity;
           }
         });
       }
     }
-    
+
     return filtered;
   }, [productos, centros, cityFilter, people, rooms]);
 
@@ -390,10 +390,10 @@ const HomePage = () => {
         </Typography>
 
         {/* Space Type Tabs */}
-        <Tabs 
-          value={activeTab} 
+        <Tabs
+          value={activeTab}
           onChange={handleTabChange}
-          sx={{ 
+          sx={{
             mb: 4,
             '& .MuiTab-root': {
               textTransform: 'none',
@@ -403,9 +403,9 @@ const HomePage = () => {
           }}
         >
           {spaceTypes.map((type, index) => (
-            <Tab 
+            <Tab
               key={type.value}
-              icon={type.icon} 
+              icon={type.icon}
               label={type.label}
               iconPosition="start"
             />
@@ -416,8 +416,8 @@ const HomePage = () => {
             <Paper
               elevation={0}
               sx={{
-                p: 3, 
-                mb: 4, 
+                p: 3,
+                mb: 4,
                 borderRadius: 3,
                 border: '1px solid',
                 borderColor: 'divider',
@@ -469,7 +469,7 @@ const HomePage = () => {
                 loading={centrosLoading}
                 getOptionLabel={(option) => option?.label ?? ''}
                 value={
-                  location === '' 
+                  location === ''
                     ? (centros.find(c => c.id === 'all') || null)
                     : (centros.find((c) => c.id !== 'all' && c.label?.toLowerCase() === (location || '').toLowerCase()) || null)
                 }
