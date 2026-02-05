@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo, useState } from 'react';
 import {
   Alert,
@@ -10,7 +12,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useBookingFlow } from '../../store/useBookingFlow.js';
+import { useBookingFlow } from '../../store/useBookingFlow';
 
 const initialVisitorForm = {
   firstName: '',

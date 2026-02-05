@@ -1,9 +1,11 @@
+'use client';
+
 import { useEffect } from 'react';
 import { Box, Button, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useBookingFlow } from '../../store/useBookingFlow.js';
+import { useBookingFlow } from '../../store/useBookingFlow';
 
-const LOGIN_URL = import.meta.env.VITE_LOGIN_URL || 'http://localhost:3020/main/login';
+const LOGIN_URL = process.env.NEXT_PUBLIC_LOGIN_URL || 'http://localhost:3020/main/login';
 
 // Modal dialog wrapper for booking flow
 const BookingFlowModal = ({ open, onClose, onContinue }) => {

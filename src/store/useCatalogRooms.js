@@ -4,29 +4,33 @@ const DEFAULT_ROOMS = [
   {
     id: 'ma1a1',
     slug: 'ma1a1',
-    name: 'MA1A1',
+    name: 'Aula MA1A1',
     centro: 'Málaga Workspace',
-    capacity: 8,
-    priceFrom: 35,
+    capacity: 6,
+    priceFrom: 5,
     currency: 'EUR',
     productName: 'MA1A1',
-    heroImage: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1600&q=80',
+    heroImage: 'https://be-working.com/wp-content/uploads/2025/09/MA1A1-0-featured-20220504133312-1.jpg',
     gallery: [
-      'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1600&q=80',
-      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1523875194681-bedd468c58bf?auto=format&fit=crop&w=1200&q=80',
-      'https://images.unsplash.com/photo-1573164713710-3ba1d3b957b4?auto=format&fit=crop&w=1200&q=80'
+      'https://be-working.com/wp-content/uploads/2025/09/MA1A1-0-featured-20220504133312-1.jpg',
+      'https://be-working.com/wp-content/uploads/2025/09/MA1A1-1-20220504133312.jpg',
+      'https://be-working.com/wp-content/uploads/2025/09/MA1A1-2-20220504133312-scaled.jpg',
+      'https://be-working.com/wp-content/uploads/2025/09/MA1A1-3-20220504133312.jpg',
+      'https://be-working.com/wp-content/uploads/2025/09/MA1A1-4-20220504133312.jpg'
     ],
     description:
-      'Nuestra Aula/Sala 4 en Alejandro Dumas 17 es perfecta para reuniones, formaciones y entrevistas. 45 m² equipados con fibra simétrica, pantalla y zona lounge.',
+      'Nuestra Aula/ Sala 1 de Alejandro Dumas es perfecta para reuniones ó entrevistas. Tiene 15 m2 y esta Equipada con conexión internet 600 Mb simétricos, pizarra y mobiliario. Acceso 24 horas / 365 días. Proyector, Pizarra y Llave digital.',
     amenities: [
-      'Pantalla de 65"',
-      'Pizarra y rotuladores',
-      'Conexión 600 Mb simétrica',
-      'Climatización independiente',
-      'Coffee corner self-service',
-      'Acceso 24/7 con llave digital'
+      'Acceso 24h',
+      'Internet 600Mb',
+      'Pizarra y papelógrafo',
+      'Proyector',
+      'Aire acondicionado',
+      'Llave digital',
+      'Taquilla',
+      'Zona de descanso',
+      'Soporte 24h',
+      'Sin permanencia'
     ],
     cancellationPolicy: [
       'Cambios admitidos hasta 24 h antes del inicio.',
@@ -39,28 +43,9 @@ const DEFAULT_ROOMS = [
       'Tras el pago te enviaremos instrucciones y acceso.'
     ],
     mapEmbedUrl:
-      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9975481.89859359!2d-13.865541969374726!3d40.20864084878176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd0e320f8d25d7f7%3A0x40340f63c70c1c0!2sEspaña!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses',
-    availability: [
-      {
-        id: 'seed-1',
-        fechaIni: '2024-06-18T09:00:00',
-        fechaFin: '2024-06-18T11:00:00',
-        estado: 'paid',
-        cliente: { nombre: 'Marketing meetup' },
-        centro: { nombre: 'Málaga Workspace' },
-        producto: { nombre: 'MA1A1' }
-      },
-      {
-        id: 'seed-2',
-        fechaIni: '2024-06-18T15:00:00',
-        fechaFin: '2024-06-18T16:30:00',
-        estado: 'created',
-        cliente: { nombre: 'Bloqueo interno' },
-        centro: { nombre: 'Málaga Workspace' },
-        producto: { nombre: 'MA1A1' }
-      }
-    ],
-    tags: ['TV Screen', 'Whiteboard', 'Video conferencing']
+      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3198.1234567890123!2d-4.4567890123456785!3d36.71234567890123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd72f7e8c9e8d7654%3A0x1234567890abcdef!2sCalle%20Alejandro%20Dumas%2C%2017%2C%2029004%20M%C3%A1laga!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses',
+    availability: [],
+    tags: ['Reuniones', 'Formación', 'Entrevistas']
   },
   {
     id: 'ma1a2',

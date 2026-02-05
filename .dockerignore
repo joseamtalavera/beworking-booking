@@ -1,4 +1,9 @@
 node_modules
 .git
+.next
+out
 dist
 .env*
+!.env.local.example
+*.md
+.DS_Store

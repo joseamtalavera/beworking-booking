@@ -1,5 +1,7 @@
+'use client';
+
 import { Step, StepLabel, Stepper } from '@mui/material';
-import { useBookingFlow } from '../../store/useBookingFlow.js';
+import { useBookingFlow } from '../../store/useBookingFlow';
 
 const STEP_LABELS = ['Select details', 'Contact & billing', 'Review & payment'];
 

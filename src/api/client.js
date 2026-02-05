@@ -1,8 +1,14 @@
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? (import.meta.env.DEV ? 'http://localhost:8080/api' : '/api')).replace(/\/$/, '');
+const getApiBaseUrl = () => {
+  if (typeof window === 'undefined') {
+    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api';
+  }
+  return (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api').replace(/\/$/, '');
+};
 
 const normalisePath = (path = '') => {
+  const baseUrl = getApiBaseUrl();
   const cleaned = path.replace(/^\/+/, '');
-  return cleaned ? `${API_BASE_URL}/${cleaned}` : API_BASE_URL;
+  return cleaned ? `${baseUrl}/${cleaned}` : baseUrl;
 };
 
 export const requestJson = async (path, options = {}) => {

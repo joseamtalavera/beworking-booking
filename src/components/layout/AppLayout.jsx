@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { Outlet, Link as RouterLink } from 'react-router-dom';
+import NextLink from 'next/link';
 import {
   AppBar,
   Toolbar,
@@ -20,39 +22,41 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import XIcon from '@mui/icons-material/X';
 
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
+
 const navLinks = [
-  { label: 'Business Address', href: 'http://localhost:3020/business-address' },
+  { label: 'Business Address', href: `${FRONTEND_URL}/business-address` },
   { label: 'Spaces', href: '/' },
-  { label: 'Platform', href: 'http://localhost:3020/application' },
-  { label: 'Pricing', href: 'http://localhost:3020/pricing' },
+  { label: 'Platform', href: `${FRONTEND_URL}/application` },
+  { label: 'Pricing', href: `${FRONTEND_URL}/pricing` },
 ];
 
 const footerColumns = [
   {
     title: 'Product',
     links: [
-      { label: 'Business Address', href: 'http://localhost:3020/business-address' },
+      { label: 'Business Address', href: `${FRONTEND_URL}/business-address` },
       { label: 'Spaces', href: '/' },
-      { label: 'Platform', href: 'http://localhost:3020/application' },
-      { label: 'Pricing', href: 'http://localhost:3020/pricing' },
+      { label: 'Platform', href: `${FRONTEND_URL}/application` },
+      { label: 'Pricing', href: `${FRONTEND_URL}/pricing` },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'About', href: 'http://localhost:3020/about' },
-      { label: 'Careers', href: 'http://localhost:3020/careers' },
-      { label: 'Press', href: 'http://localhost:3020/press' },
-      { label: 'Contact', href: 'http://localhost:3020/contact' },
+      { label: 'About', href: `${FRONTEND_URL}/about` },
+      { label: 'Careers', href: `${FRONTEND_URL}/careers` },
+      { label: 'Press', href: `${FRONTEND_URL}/press` },
+      { label: 'Contact', href: `${FRONTEND_URL}/contact` },
     ],
   },
   {
     title: 'Legal',
     links: [
-      { label: 'Terms', href: 'http://localhost:3020/terms' },
-      { label: 'Privacy', href: 'http://localhost:3020/privacy' },
-      { label: 'Cookies', href: 'http://localhost:3020/cookies' },
-      { label: 'Sitemap', href: 'http://localhost:3020/sitemap' },
+      { label: 'Terms', href: `${FRONTEND_URL}/terms` },
+      { label: 'Privacy', href: `${FRONTEND_URL}/privacy` },
+      { label: 'Cookies', href: `${FRONTEND_URL}/cookies` },
+      { label: 'Sitemap', href: `${FRONTEND_URL}/sitemap` },
     ],
   },
 ];
@@ -63,8 +67,10 @@ const socialLinks = [
   { Icon: XIcon, href: 'https://x.com/beworking', label: 'X' },
 ];
 
-const AppLayout = () => {
+const AppLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const isInternalLink = (href) => href.startsWith('/') && !href.startsWith('//');
 
   return (
     <Box sx={{ bgcolor: '#fafafa', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -93,7 +99,7 @@ const AppLayout = () => {
           }}
         >
           {/* Left: Logo */}
-          <Box component="a" href="http://localhost:3020/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Box component="a" href={FRONTEND_URL} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
           </Box>
 
@@ -108,7 +114,7 @@ const AppLayout = () => {
             {navLinks.map((link) => (
               <Button
                 key={link.label}
-                component="a"
+                component={isInternalLink(link.href) ? NextLink : 'a'}
                 href={link.href}
                 sx={{
                   fontSize: '0.875rem',
@@ -138,7 +144,7 @@ const AppLayout = () => {
           >
             <Button
               component="a"
-              href="http://localhost:3020/main/login"
+              href={`${FRONTEND_URL}/main/login`}
               sx={{
                 fontSize: '0.875rem',
                 fontWeight: 400,
@@ -156,7 +162,7 @@ const AppLayout = () => {
             <Button
               variant="contained"
               component="a"
-              href="http://localhost:3020/main/register"
+              href={`${FRONTEND_URL}/main/register`}
               sx={{
                 borderRadius: '999px',
                 px: 3,
@@ -204,7 +210,7 @@ const AppLayout = () => {
           {navLinks.map((link) => (
             <ListItemButton
               key={link.label}
-              component="a"
+              component={isInternalLink(link.href) ? NextLink : 'a'}
               href={link.href}
               onClick={() => setMobileOpen(false)}
               sx={{
@@ -230,7 +236,7 @@ const AppLayout = () => {
         <List>
           <ListItemButton
             component="a"
-            href="http://localhost:3020/main/login"
+            href={`${FRONTEND_URL}/main/login`}
             onClick={() => setMobileOpen(false)}
             sx={{
               borderRadius: '8px',
@@ -251,7 +257,7 @@ const AppLayout = () => {
             variant="contained"
             fullWidth
             component="a"
-            href="http://localhost:3020/main/register"
+            href={`${FRONTEND_URL}/main/register`}
             onClick={() => setMobileOpen(false)}
             sx={{
               borderRadius: '999px',
@@ -269,7 +275,7 @@ const AppLayout = () => {
 
       {/* Main content */}
       <Box sx={{ flex: 1 }}>
-        <Outlet />
+        {children}
       </Box>
 
       {/* Footer */}
@@ -313,6 +319,7 @@ const AppLayout = () => {
                 <Link
                   key={link.label}
                   href={link.href}
+                  component={isInternalLink(link.href) ? NextLink : 'a'}
                   underline="none"
                   sx={{
                     display: 'block',

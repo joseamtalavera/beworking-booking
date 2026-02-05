@@ -1,3 +1,5 @@
+'use client';
+
 import { useMemo } from 'react';
 import {
   Box,
@@ -20,7 +22,7 @@ import {
   getInitials,
   mapStatusKey,
   statusStyles
-} from '../../utils/calendarUtils.js';
+} from '../../utils/calendarUtils';
 
 export const CalendarLegendItem = ({ label, color }) => (
   <Stack direction="row" spacing={1} alignItems="center">
@@ -30,8 +32,8 @@ export const CalendarLegendItem = ({ label, color }) => (
         height: 16,
         borderRadius: 2,
         border: '1px solid',
-        borderColor: color.borderColor,
-        bgcolor: color.bgcolor
+        borderColor: color?.borderColor || 'divider',
+        bgcolor: color?.bgcolor || 'transparent'
       }}
     />
     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
@@ -40,14 +42,19 @@ export const CalendarLegendItem = ({ label, color }) => (
   </Stack>
 );
 
-export const CalendarLegend = ({ styles }) => (
-  <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-    <CalendarLegendItem label="Available" color={styles.available} />
-    <CalendarLegendItem label="Paid" color={styles.paid} />
-    <CalendarLegendItem label="Invoiced" color={styles.invoiced} />
-    <CalendarLegendItem label="Created" color={styles.created} />
-  </Stack>
-);
+export const CalendarLegend = ({ styles: stylesProp }) => {
+  const theme = useTheme();
+  const styles = stylesProp || statusStyles(theme);
+
+  return (
+    <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+      <CalendarLegendItem label="Available" color={styles.available} />
+      <CalendarLegendItem label="Paid" color={styles.paid} />
+      <CalendarLegendItem label="Invoiced" color={styles.invoiced} />
+      <CalendarLegendItem label="Created" color={styles.created} />
+    </Stack>
+  );
+};
 
 const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot }) => {
   const theme = useTheme();

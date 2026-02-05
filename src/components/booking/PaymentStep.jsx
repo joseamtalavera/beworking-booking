@@ -1,10 +1,12 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import { Alert, Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
-const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-const paymentsBaseUrl = import.meta.env.VITE_PAYMENTS_BASE_URL;
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
 
 const PaymentIntentForm = ({ onBack }) => {
   const stripe = useStripe();
@@ -76,7 +78,7 @@ const PaymentStep = ({ room, onBack }) => {
             amount: Math.round((room?.priceFrom || 0) * 100),
             currency: (room?.currency || 'EUR').toLowerCase(),
             reference: room?.id || 'booking',
-            tenant: import.meta.env.VITE_STRIPE_TENANT || 'default'
+            tenant: process.env.NEXT_PUBLIC_STRIPE_TENANT || 'default'
           })
         });
 

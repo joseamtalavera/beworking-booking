@@ -3,10 +3,13 @@ node_modules/
 
 # Build output
 dist/
+.next/
+out/
 
 # Local env files
 .env
 .env.*
+!.env.local.example
 
 # Logs
 npm-debug.log*
@@ -14,5 +17,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# Vite cache
-.vite/
+# Misc
+.DS_Store
+*.pem
+
+# Vercel
+.vercel

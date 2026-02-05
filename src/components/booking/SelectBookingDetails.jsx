@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
@@ -17,14 +19,14 @@ import {
   Typography
 } from '@mui/material';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useBookingFlow } from '../../store/useBookingFlow.js';
+import { useBookingFlow } from '../../store/useBookingFlow';
 import {
   fetchPublicAvailability,
   fetchBookingCentros,
   fetchBookingProductos
-} from '../../api/bookings.js';
-import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid.jsx';
-import { addMinutesToTime } from '../../utils/calendarUtils.js';
+} from '../../api/bookings';
+import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid';
+import { addMinutesToTime } from '../../utils/calendarUtils';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
