@@ -23,9 +23,12 @@ import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useCatalogRooms } from '@/store/useCatalogRooms';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
+
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
 const HomePage = () => {
   const { rooms } = useCatalogRooms();
@@ -280,19 +283,19 @@ const HomePage = () => {
 
       return {
         id: `desks-${productCenterUpper || 'ma1'}`,
-        name: centerName ? `${centerName} Desks` : 'MA1 Desks',
-        description: `${deskCount} desk${deskCount === 1 ? '' : 's'} available for booking`,
+        name: matchingRoom?.name || 'MA1 Desks',
+        description: matchingRoom?.description || `${deskCount} desk${deskCount === 1 ? '' : 's'} available for booking`,
         productName: 'MA1 Desks',
         slug: roomSlug,
         type: 'desk',
-        image: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
-        capacity: '1',
+        image: matchingRoom?.heroImage || sample.heroImage || 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
+        capacity: matchingRoom?.capacity != null ? String(matchingRoom.capacity) : String(deskCount),
         rating: 4.8,
         reviewCount: 0,
-        price: '€ 15',
-        priceUnit: '/day',
+        price: matchingRoom?.priceFrom != null ? `€ ${matchingRoom.priceFrom}` : '€ 90',
+        priceUnit: '/month',
         location: city || centerName || 'Málaga',
-        tags: [],
+        tags: matchingRoom?.tags || [],
         instantBooking: true,
         centroCode: productCenter || undefined,
         availableCount: deskCount,
@@ -380,6 +383,28 @@ const HomePage = () => {
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: 4 }}>
+          {/* Back to main site */}
+          <Button
+            component="a"
+            href={FRONTEND_URL}
+            startIcon={<ArrowBackRoundedIcon />}
+            sx={{
+              fontSize: '0.875rem',
+              fontWeight: 500,
+              color: 'text.secondary',
+              textTransform: 'none',
+              px: 1,
+              mb: 1,
+              borderRadius: '6px',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                color: 'text.primary',
+              },
+            }}
+          >
+            Back to BeWorking
+          </Button>
+
           {/* Page Title */}
           <Typography variant="h3" fontWeight={700} sx={{ mb: 1 }}>
             Meeting rooms and desks in your city
@@ -551,7 +576,7 @@ const HomePage = () => {
                     }
                   }}
                 >
-                  SEARCH SPACES
+                  Search spaces
                 </Button>
               </Grid>
             </Grid>

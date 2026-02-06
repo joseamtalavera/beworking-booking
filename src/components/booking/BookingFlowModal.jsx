@@ -83,8 +83,8 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
               sx={{
                 textTransform: 'none',
                 fontWeight: 700,
-                backgroundColor: 'secondary.main',
-                '&:hover': { backgroundColor: 'secondary.main' }
+                backgroundColor: 'primary.main',
+                '&:hover': { backgroundColor: 'primary.dark' }
               }}
             >
               Seguir como invitado

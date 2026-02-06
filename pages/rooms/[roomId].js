@@ -490,8 +490,8 @@ const RoomDetailPage = () => {
                   sx={{
                     textTransform: 'none',
                     fontWeight: 700,
-                    backgroundColor: 'secondary.main',
-                    '&:hover': { backgroundColor: 'secondary.main' },
+                    backgroundColor: 'primary.main',
+                    '&:hover': { backgroundColor: 'primary.dark' },
                     borderRadius: 999
                   }}
                 >
