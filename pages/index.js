@@ -402,7 +402,7 @@ const HomePage = () => {
               },
             }}
           >
-            Back to BeWorking
+            Back
           </Button>
 
           {/* Page Title */}

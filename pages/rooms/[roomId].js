@@ -7,6 +7,8 @@ import Head from 'next/head';
 import { alpha } from '@mui/material/styles';
 import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
+import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import PhotoLibraryOutlinedIcon from '@mui/icons-material/PhotoLibraryOutlined';
 import WifiRoundedIcon from '@mui/icons-material/WifiRounded';
 import TvRoundedIcon from '@mui/icons-material/TvRounded';
@@ -34,10 +36,13 @@ import EventAvailableRoundedIcon from '@mui/icons-material/EventAvailableRounded
 import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import VpnKeyRoundedIcon from '@mui/icons-material/VpnKeyRounded';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
+import { useQuery } from '@tanstack/react-query';
 import RoomCalendarGrid, { CalendarLegend } from '@/components/booking/RoomCalendarGrid';
 import { useCatalogRooms } from '@/store/useCatalogRooms';
+import { fetchPublicAvailability } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 
 const pickAmenityIcon = (label) => {
@@ -144,6 +149,28 @@ const RoomDetailPage = () => {
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
+
+  const todayIso = new Date().toISOString().split('T')[0];
+
+  const { data: availabilityData } = useQuery({
+    queryKey: ['public-availability', todayIso, room?.productName],
+    queryFn: () =>
+      fetchPublicAvailability({
+        date: todayIso,
+        products: room?.productName ? [room.productName] : undefined,
+      }),
+    enabled: Boolean(room?.productName),
+  });
+
+  const calendarEntries = useMemo(() => {
+    if (!availabilityData) return [];
+    const bloqueos = Array.isArray(availabilityData) ? availabilityData : availabilityData.bloqueos ?? [];
+    return bloqueos.filter((b) => {
+      const prodName = b.producto?.nombre || b.producto?.name || '';
+      return !room?.productName || prodName.toLowerCase().includes(room.productName.toLowerCase());
+    });
+  }, [availabilityData, room?.productName]);
 
   if (!roomId) {
     return null; // Still loading router
@@ -201,37 +228,14 @@ const RoomDetailPage = () => {
       'Te confirmaremos disponibilidad y enviaremos la factura.',
       'Tras el pago recibirás instrucciones de acceso.'
     ];
-    const todayIso = new Date().toISOString().split('T')[0];
-    const calendarEntries = room.availability ?? [
-      {
-        id: 'sample-1',
-        fechaIni: `${todayIso}T10:00:00`,
-        fechaFin: `${todayIso}T12:00:00`,
-        estado: 'paid',
-        cliente: { nombre: 'Reserva confirmada' },
-        centro: { nombre: room.centro },
-        producto: { nombre: room.name }
-      },
-      {
-        id: 'sample-2',
-        fechaIni: `${todayIso}T15:00:00`,
-        fechaFin: `${todayIso}T16:30:00`,
-        estado: 'created',
-        cliente: { nombre: 'Bloqueo interno' },
-        centro: { nombre: room.centro },
-        producto: { nombre: room.name }
-      }
-    ];
-
-  const calendarLabel = new Date (todayIso).toLocaleDateString(undefined, {
+  const calendarLabel = new Date(todayIso).toLocaleDateString(undefined, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
   });
-  const mapEmbedUrl = room.mapEmbedUrl ?? (room.latitude && room.longitude
-    ? `https://www.google.com/maps?q=${room.latitude},${room.longitude}&z=15&output=embed`
-    : `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9975481.89859359!2d-13.865541969374726!3d40.20864084878176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd0e320f8d25d7f7%3A0x40340f63c70c1c0!2sEspaña!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses`);
+  const mapEmbedUrl = room.mapEmbedUrl
+    ?? `https://maps.google.com/maps?q=BeWorking+Coworking+${encodeURIComponent(room.centro || 'Málaga')}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
 
 
   return (
@@ -243,6 +247,14 @@ const RoomDetailPage = () => {
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
           <Stack spacing={4}>
+            <Button
+              component={NextLink}
+              href="/"
+              startIcon={<ArrowBackRoundedIcon />}
+              sx={{ alignSelf: 'flex-start', textTransform: 'none', color: 'text.secondary', fontWeight: 600 }}
+            >
+              Back
+            </Button>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
               <Stack spacing={1}>
                 <Typography variant="overline" sx={{ color: 'text.secondary', letterSpacing: 1.2 }}>
@@ -332,7 +344,8 @@ const RoomDetailPage = () => {
                   src={featureImage}
                   alt={`${room.name} principal`}
                   className="gallery-hero"
-                  sx={{ width: '100%', objectFit: 'cover', borderRadius: 3 }}
+                  onClick={() => { setCarouselIndex(0); setGalleryOpen(true); }}
+                  sx={{ width: '100%', objectFit: 'cover', borderRadius: 3, cursor: 'pointer' }}
                 />
                 {secondaryImages.map((image, index) => (
                   <Box
@@ -341,31 +354,30 @@ const RoomDetailPage = () => {
                     src={image}
                     alt={`${room.name} ${index + 2}`}
                     className="gallery-thumb"
-                    sx={{ width: '100%', objectFit: 'cover', borderRadius: 3, gridArea: `thumb${index + 1}` }}
+                    onClick={() => { setCarouselIndex(index + 1); setGalleryOpen(true); }}
+                    sx={{ width: '100%', objectFit: 'cover', borderRadius: 3, gridArea: `thumb${index + 1}`, cursor: 'pointer' }}
                   />
                 ))}
               </Box>
 
-              {galleryImages.length > 5 ? (
-                <Button
-                  onClick={() => setGalleryOpen(true)}
-                  startIcon={<PhotoLibraryOutlinedIcon />}
-                  sx={{
-                    position: 'absolute',
-                    bottom: 16,
-                    right: 16,
-                    borderRadius: 999,
-                    backgroundColor: 'background.paper',
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    px: 2.5,
-                    boxShadow: (theme) => theme.shadows[6],
-                    '&:hover': { backgroundColor: 'background.default' }
-                  }}
-                >
-                  Show all photos
-                </Button>
-              ) : null}
+              <Button
+                onClick={() => { setCarouselIndex(0); setGalleryOpen(true); }}
+                startIcon={<PhotoLibraryOutlinedIcon />}
+                sx={{
+                  position: 'absolute',
+                  bottom: 16,
+                  right: 16,
+                  borderRadius: 999,
+                  backgroundColor: 'background.paper',
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  px: 2.5,
+                  boxShadow: (theme) => theme.shadows[6],
+                  '&:hover': { backgroundColor: 'background.default' }
+                }}
+              >
+                {`${galleryImages.length} photos`}
+              </Button>
             </Box>
           ) : null}
 
@@ -386,47 +398,38 @@ const RoomDetailPage = () => {
                     <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
                       Servicios incluidos
                     </Typography>
-                    <Grid container spacing={1.5}>
+                    <Stack direction="row" flexWrap="wrap" useFlexGap spacing={1.5}>
                       {amenities.map((amenity) => {
                         const AmenityIcon = pickAmenityIcon(amenity);
                         return (
-                          <Grid item xs={12} sm={6} md={4} key={amenity}>
+                          <Box key={amenity}>
                             <Box
                               sx={{
-                                display: 'flex',
+                                display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: 1.25,
-                                p: 1.5,
-                                borderRadius: 2,
-                                backgroundColor: (theme) => alpha(theme.palette.primary.light, 0.08),
+                                gap: 1,
+                                py: 1,
+                                px: 1.75,
+                                borderRadius: 999,
+                                bgcolor: 'background.paper',
                                 border: '1px solid',
-                                borderColor: (theme) => alpha(theme.palette.primary.light, 0.5),
-                                minHeight: 68
+                                borderColor: 'divider',
+                                transition: 'box-shadow 0.2s, border-color 0.2s',
+                                '&:hover': {
+                                  borderColor: (theme) => alpha(theme.palette.primary.main, 0.4),
+                                  boxShadow: (theme) => `0 0 0 3px ${alpha(theme.palette.primary.main, 0.08)}`,
+                                },
                               }}
                             >
-                              <Box
-                                sx={{
-                                  width: 36,
-                                  height: 36,
-                                  borderRadius: '50%',
-                                  backgroundColor: (theme) => alpha(theme.palette.primary.main, 0.18),
-                                  display: 'inline-flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  color: 'primary.main',
-                                  flexShrink: 0
-                                }}
-                              >
-                                <AmenityIcon fontSize="small" />
-                              </Box>
-                              <Typography variant="body1" sx={{ color: 'text.primary', fontWeight: 600 }}>
+                              <AmenityIcon sx={{ fontSize: 18, color: 'primary.main' }} />
+                              <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 500 }}>
                                 {amenity}
                               </Typography>
                             </Box>
-                          </Grid>
+                          </Box>
                         );
                       })}
-                    </Grid>
+                    </Stack>
                   </section>
                 ) : null}
 
@@ -488,11 +491,15 @@ const RoomDetailPage = () => {
                   variant="contained"
                   size="large"
                   sx={{
+                    alignSelf: 'center',
                     textTransform: 'none',
                     fontWeight: 700,
+                    fontSize: '0.95rem',
                     backgroundColor: 'primary.main',
                     '&:hover': { backgroundColor: 'primary.dark' },
-                    borderRadius: 999
+                    borderRadius: 999,
+                    px: 5,
+                    py: 1.25,
                   }}
                 >
                   Start booking
@@ -531,30 +538,120 @@ const RoomDetailPage = () => {
           <Dialog
             open={galleryOpen}
             onClose={() => setGalleryOpen(false)}
-            maxWidth="lg"
-            fullWidth
-            PaperProps={{ sx: { borderRadius: 3, p: 2 } }}
+            fullScreen
+            PaperProps={{ sx: { bgcolor: 'rgba(0,0,0,0.92)' } }}
           >
-            <IconButton
-              onClick={() => setGalleryOpen(false)}
-              sx={{ position: 'absolute', top: 12, right: 12, bgcolor: 'background.paper' }}
+            {/* Top bar */}
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              sx={{ px: 3, py: 2 }}
             >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-            <DialogContent sx={{ pt: 4 }}>
-              <Grid container spacing={2}>
+              <Typography variant="body2" sx={{ color: 'grey.400', fontWeight: 600 }}>
+                {`${carouselIndex + 1} / ${galleryImages.length}`}
+              </Typography>
+              <IconButton
+                onClick={() => setGalleryOpen(false)}
+                sx={{ color: 'grey.300', '&:hover': { bgcolor: 'rgba(255,255,255,0.1)' } }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </Stack>
+
+            {/* Carousel body */}
+            <Box
+              sx={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'relative',
+                px: { xs: 2, md: 8 },
+                pb: 4,
+                userSelect: 'none',
+              }}
+            >
+              {/* Prev */}
+              {galleryImages.length > 1 && (
+                <IconButton
+                  onClick={() => setCarouselIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length)}
+                  sx={{
+                    position: 'absolute',
+                    left: { xs: 8, md: 24 },
+                    color: '#fff',
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+                    width: 48,
+                    height: 48,
+                  }}
+                >
+                  <ChevronLeftRoundedIcon fontSize="large" />
+                </IconButton>
+              )}
+
+              <Box
+                component="img"
+                src={galleryImages[carouselIndex]}
+                alt={`${room.name} ${carouselIndex + 1}`}
+                sx={{
+                  maxHeight: 'calc(100vh - 140px)',
+                  maxWidth: '100%',
+                  objectFit: 'contain',
+                  borderRadius: 2,
+                }}
+              />
+
+              {/* Next */}
+              {galleryImages.length > 1 && (
+                <IconButton
+                  onClick={() => setCarouselIndex((prev) => (prev + 1) % galleryImages.length)}
+                  sx={{
+                    position: 'absolute',
+                    right: { xs: 8, md: 24 },
+                    color: '#fff',
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    '&:hover': { bgcolor: 'rgba(255,255,255,0.2)' },
+                    width: 48,
+                    height: 48,
+                  }}
+                >
+                  <ChevronRightRoundedIcon fontSize="large" />
+                </IconButton>
+              )}
+            </Box>
+
+            {/* Thumbnail strip */}
+            {galleryImages.length > 1 && (
+              <Stack
+                direction="row"
+                spacing={1}
+                justifyContent="center"
+                sx={{ pb: 3, px: 2, overflowX: 'auto' }}
+              >
                 {galleryImages.map((image, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={`${image}-${index}`}>
-                    <Box
-                      component="img"
-                      src={image}
-                      alt={`${room.name} gallery ${index + 1}`}
-                      sx={{ width: '100%', height: 220, objectFit: 'cover', borderRadius: 2 }}
-                    />
-                  </Grid>
+                  <Box
+                    key={`thumb-${index}`}
+                    component="img"
+                    src={image}
+                    alt={`thumbnail ${index + 1}`}
+                    onClick={() => setCarouselIndex(index)}
+                    sx={{
+                      width: 56,
+                      height: 40,
+                      objectFit: 'cover',
+                      borderRadius: 1,
+                      cursor: 'pointer',
+                      opacity: index === carouselIndex ? 1 : 0.4,
+                      border: index === carouselIndex ? '2px solid #fff' : '2px solid transparent',
+                      transition: 'opacity 0.2s, border-color 0.2s',
+                      flexShrink: 0,
+                      '&:hover': { opacity: 0.8 },
+                    }}
+                  />
                 ))}
-              </Grid>
-            </DialogContent>
+              </Stack>
+            )}
           </Dialog>
           </Stack>
         </Box>

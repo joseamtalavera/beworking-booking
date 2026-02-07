@@ -12,8 +12,9 @@ const initialState = {
   steps: ['details', 'contact', 'payment'],
   schedule: {
     date: todayISO(),
-    startTime: null,
-    endTime: null,
+    dateTo: todayISO(),
+    startTime: '09:00',
+    endTime: '10:00',
     attendees: 1
   }
 };

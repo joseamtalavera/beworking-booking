@@ -56,7 +56,7 @@ export const CalendarLegend = ({ styles: stylesProp }) => {
   );
 };
 
-const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot }) => {
+const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot, interactive = !!onSelectSlot }) => {
   const theme = useTheme();
   const timeSlots = useMemo(() => buildTimeSlotsFromBloqueos(bloqueos), [bloqueos]);
   const resolvedStatusStyles = useMemo(() => statusStyles(theme), [theme]);
@@ -199,17 +199,19 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
 
                   return (
                     <TableCell key={`${room?.id ?? 'room'}-${slot.id}`} align="center" sx={{ p: 0.75, width: 64, maxWidth: 64 }}>
-                      <Tooltip arrow title={describeBloqueo(bloqueo)}>
+                      <Tooltip arrow title={interactive ? describeBloqueo(bloqueo) : ''}>
                         <Box
-                          role="button"
-                          tabIndex={0}
-                          onClick={() => onSelectSlot?.(slot, bloqueo)}
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter' || event.key === ' ') {
-                              event.preventDefault();
-                              onSelectSlot?.(slot, bloqueo);
-                            }
-                          }}
+                          {...(interactive ? {
+                            role: 'button',
+                            tabIndex: 0,
+                            onClick: () => onSelectSlot?.(slot, bloqueo),
+                            onKeyDown: (event) => {
+                              if (event.key === 'Enter' || event.key === ' ') {
+                                event.preventDefault();
+                                onSelectSlot?.(slot, bloqueo);
+                              }
+                            },
+                          } : {})}
                           sx={{
                             height: 52,
                             width: '100%',
@@ -218,14 +220,12 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                             borderColor: isSelected ? theme.palette.primary.main : styles.borderColor,
                             bgcolor: styles.bgcolor,
                             color: styles.color,
-                            cursor: 'pointer',
+                            cursor: interactive ? 'pointer' : 'default',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             transition: (theme) => theme.transitions.create(['transform', 'border-color']),
-                            '&:hover': {
-                              transform: 'scale(1.05)'
-                            },
+                            ...(interactive ? { '&:hover': { transform: 'scale(1.05)' } } : {}),
                             outline: 'none'
                           }}
                         >

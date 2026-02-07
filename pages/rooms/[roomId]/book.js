@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
+import NextLink from 'next/link';
 import Head from 'next/head';
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Box, Button, Paper, Stack, Typography } from '@mui/material';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useCatalogRooms } from '@/store/useCatalogRooms';
 import { useBookingFlow } from '@/store/useBookingFlow';
 import BookingStepper from '@/components/booking/BookingStepper';
@@ -63,23 +65,14 @@ export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
     );
   }
 
-  const containerSx =
-    layout === 'modal'
-      ? { width: '100%', display: 'grid', gap: 3 }
-      : { width: '100%', display: 'grid', gap: 5 };
-
   return (
-    <Stack spacing={5} sx={containerSx}>
+    <Stack spacing={layout === 'modal' ? 3 : 4} sx={{ width: '100%' }}>
       <Box>
         <Typography variant="overline" sx={{ color: 'text.disabled' }}>
           Booking · {room.centro}
         </Typography>
         <Typography variant="h4" sx={{ fontWeight: 700 }}>
           {room.name}
-        </Typography>
-        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          Structured flow placeholder. We'll progressively replace these sections with live availability, visitor
-          registration, and Stripe payment integration.
         </Typography>
       </Box>
 
@@ -110,6 +103,14 @@ const BookingFlowPage = () => {
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
+          <Button
+            component={NextLink}
+            href={`/rooms/${roomId}`}
+            startIcon={<ArrowBackRoundedIcon />}
+            sx={{ mb: 2, textTransform: 'none', color: 'text.secondary', fontWeight: 600 }}
+          >
+            Back
+          </Button>
           <BookingFlowContent roomId={roomId} layout="page" />
         </Box>
       </Box>

@@ -43,7 +43,7 @@ const DEFAULT_ROOMS = [
       'Tras el pago te enviaremos instrucciones y acceso.'
     ],
     mapEmbedUrl:
-      'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3198.1234567890123!2d-4.4567890123456785!3d36.71234567890123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd72f7e8c9e8d7654%3A0x1234567890abcdef!2sCalle%20Alejandro%20Dumas%2C%2017%2C%2029004%20M%C3%A1laga!5e0!3m2!1ses!2ses!4v1700000000000!5m2!1ses!2ses',
+      'https://maps.google.com/maps?q=BeWorking+Coworking+Málaga+Calle+Alejandro+Dumas+17&t=&z=16&ie=UTF8&iwloc=&output=embed',
     availability: [],
     tags: ['Reuniones', 'Formación', 'Entrevistas']
   },

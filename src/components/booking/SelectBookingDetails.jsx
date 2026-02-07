@@ -5,73 +5,28 @@ import {
   Alert,
   Box,
   Button,
-  Checkbox,
   CircularProgress,
   Divider,
-  FormControlLabel,
-  FormGroup,
-  InputAdornment,
-  MenuItem,
   Paper,
   Stack,
-  Switch,
   TextField,
   Typography
 } from '@mui/material';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
-import {
-  fetchPublicAvailability,
-  fetchBookingCentros,
-  fetchBookingProductos
-} from '../../api/bookings';
+import { fetchPublicAvailability } from '../../api/bookings';
 import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid';
 import { addMinutesToTime } from '../../utils/calendarUtils';
-import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import EventRepeatRoundedIcon from '@mui/icons-material/EventRepeatRounded';
-import FlagRoundedIcon from '@mui/icons-material/FlagRounded';
-import EuroRoundedIcon from '@mui/icons-material/EuroRounded';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import InputAdornment from '@mui/material/InputAdornment';
 
-const RESERVATION_TYPE_OPTIONS = ['Por Horas', 'Diaria', 'Mensual'];
-const STATUS_FORM_OPTIONS = ['Created', 'Invoiced', 'Paid'];
-const WEEKDAY_OPTIONS = [
-  { value: 'monday', label: 'Mon' },
-  { value: 'tuesday', label: 'Tue' },
-  { value: 'wednesday', label: 'Wed' },
-  { value: 'thursday', label: 'Thu' },
-  { value: 'friday', label: 'Fri' },
-  { value: 'saturday', label: 'Sat' },
-  { value: 'sunday', label: 'Sun' }
-];
-const DEFAULT_USER_TYPE = 'Usuario Aulas';
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
 
 const SelectBookingDetails = ({ room, onContinue }) => {
   const schedule = useBookingFlow((state) => state.schedule);
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
-  const queryClient = useQueryClient();
-
-  const [formState, setFormState] = useState({
-    customerName: '',
-    centro: null,
-    userType: DEFAULT_USER_TYPE,
-    reservationType: RESERVATION_TYPE_OPTIONS[0],
-    status: STATUS_FORM_OPTIONS[0],
-    tarifa: '',
-    producto: null,
-    configuracion: '',
-    note: '',
-    weekdays: [],
-    openEnded: false
-  });
-  const [centroOptions, setCentroOptions] = useState([]);
-  const [productOptions, setProductOptions] = useState([]);
+  const [note, setNote] = useState('');
 
   useEffect(() => {
     if (!schedule.startTime) {
@@ -89,85 +44,24 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    fetchBookingCentros()
-      .then((data) => {
-        const items = Array.isArray(data) ? data : [];
-        const normalized = items
-          .map((item) => ({
-            id: item.id,
-            nombre: item.nombre || item.name || '',
-            codigo: item.codigo || item.code || item.centroCodigo || item.centroCode || ''
-          }))
-          .filter((item) => item.codigo && item.codigo.toUpperCase() !== 'MAOV');
-        setCentroOptions(normalized);
-        if (normalized.length && !formState.centro) {
-          const first = normalized[0];
-          setFormState((prev) => ({
-            ...prev,
-            centro: {
-              id: first.id,
-              name: first.nombre,
-              code: first.codigo
-            }
-          }));
-        }
-      })
-      .catch((err) => console.error('Failed to load centros', err));
-  }, []);
-
-  useEffect(() => {
-    fetchBookingProductos()
-      .then((data) => {
-        const items = Array.isArray(data) ? data : [];
-        const normalized = items.map((item) => ({
-          id: item.id,
-          nombre: item.nombre || item.name,
-          tipo: item.tipo || item.type,
-          centerCode: (item.centroCodigo || item.centerCode || '').toUpperCase(),
-          priceFrom: item.priceFrom ?? item.precioDesde ?? item.precio ?? null,
-          priceUnit: item.priceUnit || item.unidadPrecio || ''
-        }));
-        setProductOptions(normalized);
-        if (!formState.producto) {
-          const match = normalized.find((item) => item.nombre?.toLowerCase() === room?.productName?.toLowerCase());
-          const fallback = match || normalized[0];
-          if (fallback) {
-            setFormState((prev) => ({
-              ...prev,
-              producto: {
-                id: fallback.id,
-                name: fallback.nombre || fallback.name,
-                type: fallback.tipo || fallback.type,
-                centerCode: fallback.centerCode
-              },
-              tarifa: fallback.priceFrom ?? ''
-            }));
-          }
-        }
-      })
-      .catch((err) => console.error('Failed to load productos', err));
-  }, [room?.productName]);
-
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['public-availability', schedule.date, formState.producto?.name || room?.productName],
+    queryKey: ['public-availability', schedule.date, room?.productName],
     queryFn: () =>
       fetchPublicAvailability({
         date: schedule.date,
-        products: formState.producto?.name ? [formState.producto.name] : room?.productName ? [room.productName] : undefined
+        products: room?.productName ? [room.productName] : undefined
       }),
     enabled: Boolean(schedule.date)
   });
 
   const bloqueos = Array.isArray(data) ? data : [];
 
-  const activeProductName = formState.producto?.name || room?.productName;
   const roomBloqueos = useMemo(() => {
-    if (!activeProductName) {
-      return bloqueos;
-    }
-    return bloqueos.filter((item) => (item?.producto?.nombre || '').toLowerCase() === activeProductName.toLowerCase());
-  }, [bloqueos, activeProductName]);
+    if (!room?.productName) return bloqueos;
+    return bloqueos.filter(
+      (item) => (item?.producto?.nombre || '').toLowerCase() === room.productName.toLowerCase()
+    );
+  }, [bloqueos, room?.productName]);
 
   const selectedSlotKey = useMemo(() => {
     if (schedule.startTime) {
@@ -176,380 +70,124 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     return '';
   }, [room?.id, schedule.startTime]);
 
-  const handleScheduleChange = (patch) => {
-    setSchedule(patch);
+  const handleSlotSelect = (slot, bloqueo) => {
+    if (!schedule.date || bloqueo) return;
+    const nextEnd = addMinutesToTime(slot.id, 60);
+    setSchedule({ startTime: slot.id, endTime: nextEnd });
   };
 
-  const handleDateChange = (field) => (event) => {
+  const handleDateChange = (event) => {
     const value = event.target.value;
-    handleScheduleChange({ [field]: value });
-    if (field === 'date') {
-      handleScheduleChange({ dateTo: value });
-    }
+    setSchedule({ date: value, dateTo: value });
   };
 
   const handleTimeChange = (field) => (event) => {
-    handleScheduleChange({ [field]: event.target.value });
+    setSchedule({ [field]: event.target.value });
   };
 
   const handleAttendeesChange = (event) => {
     const value = Number.parseInt(event.target.value, 10);
-    handleScheduleChange({ attendees: Number.isNaN(value) || value < 1 ? 1 : value });
+    setSchedule({ attendees: Number.isNaN(value) || value < 1 ? 1 : value });
   };
 
-  const handleFieldChange = (field) => (event) => {
-    const value = event.target.value;
-    setFormState((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const filteredProducts = useMemo(() => {
-    if (!formState.centro?.code) {
-      return productOptions;
-    }
-    const code = (formState.centro.code || '').toUpperCase();
-    const scoped = productOptions.filter(
-      (item) => !item.centerCode || item.centerCode === code
-    );
-    return scoped.length ? scoped : productOptions;
-  }, [productOptions, formState.centro?.code]);
-
-  const handleCentroChange = (event) => {
-    const selected = centroOptions.find((item) => item.nombre === event.target.value);
-    setFormState((prev) => {
-      const nextCentro = selected
-        ? {
-            id: selected.id,
-            name: selected.nombre,
-            code: selected.codigo || selected.code
-          }
-        : null;
-      const code = (nextCentro?.code || '').toUpperCase();
-      const nextProduct =
-        filteredProducts.find((p) => p.centerCode === code) ||
-        filteredProducts[0] ||
-        null;
-      return {
-        ...prev,
-        centro: nextCentro,
-        producto: nextProduct
-          ? { id: nextProduct.id, name: nextProduct.nombre, type: nextProduct.tipo, centerCode: nextProduct.centerCode }
-          : null,
-        tarifa: nextProduct?.priceFrom ?? prev.tarifa
-      };
-    });
-  };
-
-  const handleProductoChange = (event) => {
-    const selected = productOptions.find((item) => item.nombre === event.target.value);
-    setFormState((prev) => ({
-      ...prev,
-      producto: selected
-        ? {
-            id: selected.id,
-            name: selected.nombre || selected.name,
-            type: selected.tipo || selected.type,
-            centerCode: selected.centerCode
-          }
-        : null,
-      tarifa: selected?.priceFrom ?? prev.tarifa
-    }));
-    queryClient.invalidateQueries({ queryKey: ['public-availability'] });
-  };
-
-  const handleWeekdayToggle = (weekday) => (_event, checked) => {
-    setFormState((prev) => {
-      const set = new Set(prev.weekdays);
-      if (checked) {
-        set.add(weekday);
-      } else {
-        set.delete(weekday);
-      }
-      return { ...prev, weekdays: Array.from(set) };
-    });
-  };
-
-  const handleSlotSelect = (slot, bloqueo) => {
-    if (!schedule.date || bloqueo) {
-      return;
-    }
-    const nextEnd = addMinutesToTime(slot.id, 30);
-    handleScheduleChange({ startTime: slot.id, endTime: nextEnd });
-  };
-
-  const isContinueDisabled =
-    !formState.centro ||
-    !formState.producto ||
-    !schedule.date ||
-    !schedule.startTime ||
-    !schedule.endTime;
+  const isContinueDisabled = !schedule.date || !schedule.startTime || !schedule.endTime;
 
   return (
-    <Stack spacing={4}>
-      <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-        <Stack spacing={2}>
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Who & where
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Provide basic booking details so we can secure the right space for you.
-            </Typography>
-          </Stack>
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              label="Search by name"
-              placeholder="Your name"
-              fullWidth
-              value={formState.customerName}
-              onChange={handleFieldChange('customerName')}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            />
-            <TextField
-              label="Centro"
-              select
-              fullWidth
-              value={formState.centro?.nombre || formState.centro?.name || ''}
-              onChange={handleCentroChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <LocationOnRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            >
-              {centroOptions.map((option) => (
-                <MenuItem key={option.id} value={option.nombre}>
-                  {option.nombre}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Stack>
-
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              label="User type"
-              select
-              fullWidth
-              value={formState.userType}
-              onChange={handleFieldChange('userType')}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PersonRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            >
-              {[DEFAULT_USER_TYPE, 'Usuario Virtual', 'Usuario Mesa'].map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="Producto"
-              select
-              fullWidth
-              value={formState.producto?.name || ''}
-              onChange={handleProductoChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SettingsSuggestRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            >
-              {filteredProducts.map((option) => (
-                <MenuItem key={option.id} value={option.nombre}>
-                  {option.nombre}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Stack>
-
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              label="Reservation type"
-              select
-              fullWidth
-              value={formState.reservationType}
-              onChange={handleFieldChange('reservationType')}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EventRepeatRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            >
-              {RESERVATION_TYPE_OPTIONS.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
-              label="Status"
-              fullWidth
-              value={formState.status}
-              disabled
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FlagRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            >
-              <MenuItem value={formState.status}>{formState.status}</MenuItem>
-            </TextField>
-            <TextField
-              label="Tarifa (€)"
-              value={formState.tarifa}
-              fullWidth
-              disabled
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <EuroRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            />
-          </Stack>
+    <Stack spacing={3}>
+      {/* Room summary card */}
+      <Paper
+        variant="outlined"
+        sx={{ p: 3, borderRadius: 3, display: 'flex', gap: 2, alignItems: 'center' }}
+      >
+        {room?.heroImage && (
+          <Box
+            component="img"
+            src={room.heroImage}
+            alt={room.name}
+            sx={{ width: 80, height: 80, borderRadius: 2, objectFit: 'cover', flexShrink: 0 }}
+          />
+        )}
+        <Stack spacing={0.25} sx={{ flex: 1 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            {room?.name}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {room?.centro}
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            {`Capacity ${room?.capacity ?? '—'} · from ${room?.priceFrom ?? room?.price ?? '—'} ${room?.priceUnit ?? room?.currency ?? 'EUR'}/h`}
+          </Typography>
         </Stack>
       </Paper>
 
+      {/* Date & time selection */}
       <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-        <Stack spacing={2}>
+        <Stack spacing={2.5}>
           <Stack spacing={0.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Schedule & status
+            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+              Pick your date & time
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Select your preferred dates and times. Weekday selection is optional for recurring bookings.
+              Select a date and click an available slot, or set the time manually.
             </Typography>
           </Stack>
 
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              label="Date from"
-              type="date"
-              value={schedule.date || ''}
-              onChange={handleDateChange('date')}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            />
-            <TextField
-              label="Date to"
-              type="date"
-              value={schedule.dateTo || schedule.date || ''}
-              onChange={handleDateChange('dateTo')}
-              InputLabelProps={{ shrink: true }}
-              fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
-            />
-          </Stack>
+          <TextField
+            size="small"
+            label="Date"
+            type="date"
+            value={schedule.date || ''}
+            onChange={handleDateChange}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+          />
 
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
+              size="small"
               label="Start time"
               type="time"
               value={schedule.startTime || DEFAULT_TIME_RANGE.start}
               onChange={handleTimeChange('startTime')}
               InputLabelProps={{ shrink: true }}
               fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
             />
             <TextField
+              size="small"
               label="End time"
               type="time"
               value={schedule.endTime || DEFAULT_TIME_RANGE.end}
               onChange={handleTimeChange('endTime')}
               InputLabelProps={{ shrink: true }}
               fullWidth
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                )
-              }}
             />
           </Stack>
 
-          <FormGroup row sx={{ gap: 1 }}>
-            {WEEKDAY_OPTIONS.map((weekday) => (
-              <FormControlLabel
-                key={weekday.value}
-                control={
-                  <Checkbox
-                    checked={formState.weekdays.includes(weekday.value)}
-                    onChange={handleWeekdayToggle(weekday.value)}
-                  />
-                }
-                label={weekday.label}
-              />
-            ))}
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={formState.openEnded}
-                  onChange={(_event, checked) =>
-                    setFormState((prev) => ({
-                      ...prev,
-                      openEnded: checked
-                    }))
-                  }
-                />
-              }
-              label="Open ended"
-            />
-          </FormGroup>
-
-          <Divider sx={{ my: 1 }} />
+          <Divider />
 
           {isError ? (
             <Alert severity="error">{error?.message || 'Unable to fetch availability.'}</Alert>
           ) : null}
 
           {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress size={28} />
             </Box>
           ) : (
-            <Stack spacing={2}>
+            <Stack spacing={1.5}>
               <CalendarLegend />
               <RoomCalendarGrid
                 room={room}
-                dateLabel={schedule.date ? new Date(schedule.date).toLocaleDateString() : ''}
+                dateLabel={
+                  schedule.date
+                    ? new Date(schedule.date).toLocaleDateString(undefined, {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                      })
+                    : ''
+                }
                 bloqueos={roomBloqueos}
                 selectedSlotKey={selectedSlotKey}
                 onSelectSlot={handleSlotSelect}
@@ -559,16 +197,16 @@ const SelectBookingDetails = ({ room, onContinue }) => {
         </Stack>
       </Paper>
 
+      {/* Additional info */}
       <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
         <Stack spacing={2}>
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-              Additional details
-            </Typography>
-          </Stack>
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            Additional details
+          </Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
-              label="Attendees"
+              size="small"
+              label="Number of attendees"
               type="number"
               value={schedule.attendees || ''}
               onChange={handleAttendeesChange}
@@ -577,30 +215,42 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                   <InputAdornment position="start">
                     <PeopleAltRoundedIcon sx={{ color: 'text.disabled' }} />
                   </InputAdornment>
-                )
+                ),
+                inputProps: { min: 1, max: room?.capacity || 99 }
               }}
-              fullWidth
-            />
-            <TextField
-              label="Configuración"
-              value={formState.configuracion}
-              onChange={handleFieldChange('configuracion')}
               fullWidth
             />
           </Stack>
           <TextField
-            label="Notas"
-            value={formState.note}
-            onChange={handleFieldChange('note')}
+            size="small"
+            label="Notes (optional)"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
             fullWidth
             multiline
             minRows={2}
+            placeholder="Any special requirements or requests..."
           />
         </Stack>
       </Paper>
 
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button variant="contained" onClick={onContinue} disabled={isContinueDisabled}>
+        <Button
+          variant="contained"
+          onClick={() => {
+            setSchedule({ note });
+            onContinue?.();
+          }}
+          disabled={isContinueDisabled}
+          sx={{
+            borderRadius: 999,
+            px: 4,
+            py: 1.25,
+            textTransform: 'none',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+          }}
+        >
           Continue
         </Button>
       </Box>
