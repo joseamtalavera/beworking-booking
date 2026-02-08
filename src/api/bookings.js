@@ -59,3 +59,10 @@ export const fetchBookingCentros = (params = {}, options = {}) =>
 
 export const fetchBookingProductos = (params = {}, options = {}) =>
   requestJson(`/public/productos${buildQueryString(params)}`, options);
+
+export const createPublicBooking = (payload, options = {}) =>
+  requestJson('/public/bookings', {
+    method: 'POST',
+    body: payload,
+    ...options
+  });

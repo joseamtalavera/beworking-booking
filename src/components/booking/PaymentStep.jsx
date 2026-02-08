@@ -20,14 +20,18 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useBookingFlow } from '../../store/useBookingFlow';
+import { useBookingVisitor } from '../../store/useBookingVisitor';
+import { createPublicBooking } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
 
-const PaymentIntentForm = ({ onBack, amount }) => {
+const PaymentIntentForm = ({ onBack, amount, room }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const schedule = useBookingFlow((state) => state.schedule);
+  const visitor = useBookingVisitor();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -43,12 +47,39 @@ const PaymentIntentForm = ({ onBack, amount }) => {
       redirect: 'if_required'
     });
 
-    setSubmitting(false);
-
     if (result.error) {
+      setSubmitting(false);
       setError(result.error.message || 'Payment failed');
     } else if (result.paymentIntent?.status === 'succeeded') {
+      try {
+        const contact = visitor.contact || {};
+        const billing = visitor.billing || {};
+        await createPublicBooking({
+          firstName: contact.firstName || '',
+          lastName: contact.lastName || '',
+          email: contact.email || '',
+          phone: contact.phone || '',
+          company: billing.company || contact.company || '',
+          taxId: billing.taxId || '',
+          billingAddress: billing.address || '',
+          billingCity: billing.city || '',
+          billingProvince: billing.province || '',
+          billingCountry: billing.country || '',
+          billingPostalCode: billing.postalCode || '',
+          productName: room?.productName || room?.name || '',
+          date: schedule?.date || '',
+          startTime: schedule?.startTime || '',
+          endTime: schedule?.endTime || '',
+          attendees: schedule?.attendees || 1,
+          stripePaymentIntentId: result.paymentIntent.id
+        });
+      } catch (bookingErr) {
+        console.error('Failed to create booking after payment:', bookingErr);
+      }
+      setSubmitting(false);
       setSuccess(true);
+    } else {
+      setSubmitting(false);
     }
   };
 
@@ -248,7 +279,7 @@ const PaymentStep = ({ room, onBack }) => {
     <Stack spacing={3}>
       <OrderSummary room={room} schedule={schedule} estimatedTotal={estimatedTotal} />
       <Elements stripe={stripePromise} options={{ clientSecret }}>
-        <PaymentIntentForm onBack={onBack} amount={estimatedTotal || '0.00'} />
+        <PaymentIntentForm onBack={onBack} amount={estimatedTotal || '0.00'} room={room} />
       </Elements>
     </Stack>
   );

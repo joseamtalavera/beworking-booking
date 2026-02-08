@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { alpha } from '@mui/material/styles';
-import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -150,14 +150,17 @@ const RoomDetailPage = () => {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
 
-  const todayIso = new Date().toISOString().split('T')[0];
+  const handleDateChange = useCallback((e) => {
+    setSelectedDate(e.target.value);
+  }, []);
 
   const { data: availabilityData } = useQuery({
-    queryKey: ['public-availability', todayIso, room?.productName],
+    queryKey: ['public-availability', selectedDate, room?.productName],
     queryFn: () =>
       fetchPublicAvailability({
-        date: todayIso,
+        date: selectedDate,
         products: room?.productName ? [room.productName] : undefined,
       }),
     enabled: Boolean(room?.productName),
@@ -228,7 +231,7 @@ const RoomDetailPage = () => {
       'Te confirmaremos disponibilidad y enviaremos la factura.',
       'Tras el pago recibirás instrucciones de acceso.'
     ];
-  const calendarLabel = new Date(todayIso).toLocaleDateString(undefined, {
+  const calendarLabel = new Date(`${selectedDate}T00:00:00`).toLocaleDateString(undefined, {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -484,7 +487,18 @@ const RoomDetailPage = () => {
                   de Agenda del dashboard.
                 </Typography>
                 <Divider />
-                <CalendarLegend />
+                <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
+                  <TextField
+                    label="Select date"
+                    type="date"
+                    size="small"
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ width: 170 }}
+                  />
+                  <CalendarLegend />
+                </Stack>
                 <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} />
                 <Button
                   onClick={() => setBookingModalOpen(true)}

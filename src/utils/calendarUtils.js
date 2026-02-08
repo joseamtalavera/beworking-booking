@@ -3,26 +3,26 @@ export const DEFAULT_END_HOUR = 22;
 
 import { alpha } from '@mui/material/styles';
 
-export const statusStyles = (theme) => ({
+export const statusStyles = () => ({
   available: {
-    bgcolor: alpha(theme.palette.success.main, 0.18),
-    borderColor: theme.palette.success.main,
-    color: theme.palette.success.dark
-  },
-  created: {
-    bgcolor: alpha(theme.palette.warning.light, 0.15),
-    borderColor: theme.palette.warning.light,
-    color: theme.palette.warning.dark
-  },
-  invoiced: {
-    bgcolor: alpha(theme.palette.secondary.light, 0.25),
-    borderColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.dark
+    bgcolor: alpha('#a1a1aa', 0.15),
+    borderColor: '#a1a1aa',
+    color: '#52525b'
   },
   paid: {
-    bgcolor: alpha(theme.palette.error.light, 0.18),
-    borderColor: theme.palette.error.main,
-    color: theme.palette.error.dark
+    bgcolor: alpha('#009624', 0.18),
+    borderColor: '#009624',
+    color: '#007a1d'
+  },
+  invoiced: {
+    bgcolor: alpha('#ef4444', 0.18),
+    borderColor: '#dc2626',
+    color: '#b91c1c'
+  },
+  created: {
+    bgcolor: alpha('#fb923c', 0.15),
+    borderColor: '#fb923c',
+    color: '#ea580c'
   }
 });
 

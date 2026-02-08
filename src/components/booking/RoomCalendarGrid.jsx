@@ -90,18 +90,15 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
       }}
     >
       <Stack spacing={3} sx={{ p: 3 }}>
-        <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} justifyContent="space-between">
-          <Stack spacing={0.5}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              Availability · {room?.name || 'Meeting room'}
+        <Stack spacing={0.5}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            Availability · {room?.name || 'Meeting room'}
+          </Typography>
+          {dateLabel ? (
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              {dateLabel}
             </Typography>
-            {dateLabel ? (
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {dateLabel}
-              </Typography>
-            ) : null}
-          </Stack>
-          <CalendarLegend styles={resolvedStatusStyles} />
+          ) : null}
         </Stack>
 
         <TableContainer
