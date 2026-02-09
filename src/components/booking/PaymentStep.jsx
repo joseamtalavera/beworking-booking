@@ -26,6 +26,7 @@ import { timeStringToMinutes } from '../../utils/calendarUtils';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
+const VAT_RATE = 0.21;
 
 const PaymentIntentForm = ({ onBack, amount, room }) => {
   const stripe = useStripe();
@@ -35,6 +36,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const isDesk = room?.priceUnit === '/month';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +56,9 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
       try {
         const contact = visitor.contact || {};
         const billing = visitor.billing || {};
+        const productName = isDesk
+          ? (schedule?.deskProductName || room?.productName || room?.name || '')
+          : (room?.productName || room?.name || '');
         await createPublicBooking({
           firstName: contact.firstName || '',
           lastName: contact.lastName || '',
@@ -66,8 +71,9 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
           billingProvince: billing.province || '',
           billingCountry: billing.country || '',
           billingPostalCode: billing.postalCode || '',
-          productName: room?.productName || room?.name || '',
+          productName,
           date: schedule?.date || '',
+          dateTo: isDesk ? (schedule?.dateTo || '') : undefined,
           startTime: schedule?.startTime || '',
           endTime: schedule?.endTime || '',
           attendees: schedule?.attendees || 1,
@@ -86,7 +92,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   if (success) {
     return (
       <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
-        <Stack spacing={2} alignItems="center">
+        <Stack spacing={3} alignItems="center">
           <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
           <Typography variant="h5" sx={{ fontWeight: 700 }}>
             Booking confirmed!
@@ -95,6 +101,20 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             Your payment of €{amount} has been processed successfully.
             You'll receive a confirmation email shortly with access instructions.
           </Typography>
+          <Button
+            href="/"
+            variant="contained"
+            sx={{
+              borderRadius: 999,
+              px: 4,
+              py: 1.25,
+              textTransform: 'none',
+              fontWeight: 700,
+              fontSize: '0.95rem',
+            }}
+          >
+            Browse more spaces
+          </Button>
         </Stack>
       </Paper>
     );
@@ -153,6 +173,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
 
 const PaymentStep = ({ room, onBack }) => {
   const schedule = useBookingFlow((state) => state.schedule);
+  const isDesk = room?.priceUnit === '/month';
 
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);
@@ -160,17 +181,40 @@ const PaymentStep = ({ room, onBack }) => {
 
   const stripePromise = useMemo(() => (publishableKey ? loadStripe(publishableKey) : null), []);
 
-  const estimatedTotal = useMemo(() => {
-    if (!room?.priceFrom || !schedule?.startTime || !schedule?.endTime) return null;
+  const pricing = useMemo(() => {
+    if (!room?.priceFrom) return null;
+
+    if (isDesk) {
+      const months = schedule?.durationMonths || 1;
+      const subtotal = months * room.priceFrom;
+      const vat = subtotal * VAT_RATE;
+      const total = subtotal + vat;
+      return {
+        subtotal: subtotal.toFixed(2),
+        vat: vat.toFixed(2),
+        total: total.toFixed(2),
+      };
+    }
+
+    if (!schedule?.startTime || !schedule?.endTime) return null;
     const startMins = timeStringToMinutes(schedule.startTime);
     const endMins = timeStringToMinutes(schedule.endTime);
     if (startMins == null || endMins == null || endMins <= startMins) return null;
     const hours = (endMins - startMins) / 60;
-    return (hours * room.priceFrom).toFixed(2);
-  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime]);
+    const subtotal = hours * room.priceFrom;
+    const vat = subtotal * VAT_RATE;
+    const total = subtotal + vat;
+    return {
+      subtotal: subtotal.toFixed(2),
+      vat: vat.toFixed(2),
+      total: total.toFixed(2),
+    };
+  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, isDesk]);
+
+  const estimatedTotal = pricing?.total ?? null;
 
   const amountCents = useMemo(() => {
-    if (!estimatedTotal) return Math.round((room?.priceFrom || 0) * 100);
+    if (!estimatedTotal) return Math.round((room?.priceFrom || 0) * (1 + VAT_RATE) * 100);
     return Math.round(Number(estimatedTotal) * 100);
   }, [estimatedTotal, room?.priceFrom]);
 
@@ -219,7 +263,7 @@ const PaymentStep = ({ room, onBack }) => {
   if (loading) {
     return (
       <Stack spacing={3}>
-        <OrderSummary room={room} schedule={schedule} estimatedTotal={estimatedTotal} />
+        <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} />
         <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
           <Stack spacing={2} alignItems="center">
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
@@ -250,7 +294,7 @@ const PaymentStep = ({ room, onBack }) => {
   if (error) {
     return (
       <Stack spacing={3}>
-        <OrderSummary room={room} schedule={schedule} estimatedTotal={estimatedTotal} />
+        <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} />
         <Alert severity="error">{error}</Alert>
         <Box>
           <Button
@@ -277,7 +321,7 @@ const PaymentStep = ({ room, onBack }) => {
 
   return (
     <Stack spacing={3}>
-      <OrderSummary room={room} schedule={schedule} estimatedTotal={estimatedTotal} />
+      <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} />
       <Elements stripe={stripePromise} options={{ clientSecret }}>
         <PaymentIntentForm onBack={onBack} amount={estimatedTotal || '0.00'} room={room} />
       </Elements>
@@ -285,7 +329,7 @@ const PaymentStep = ({ room, onBack }) => {
   );
 };
 
-const OrderSummary = ({ room, schedule, estimatedTotal }) => (
+const OrderSummary = ({ room, schedule, pricing, isDesk }) => (
   <Paper
     elevation={0}
     sx={{
@@ -329,9 +373,9 @@ const OrderSummary = ({ room, schedule, estimatedTotal }) => (
             </Typography>
           </Stack>
         </Box>
-        {estimatedTotal && (
+        {pricing && (
           <Chip
-            label={`€${estimatedTotal}`}
+            label={`€${pricing.total}`}
             sx={{
               bgcolor: 'rgba(255,255,255,0.9)',
               fontWeight: 700,
@@ -351,23 +395,45 @@ const OrderSummary = ({ room, schedule, estimatedTotal }) => (
       <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
         <CalendarMonthRoundedIcon sx={{ color: 'primary.main', fontSize: 18 }} />
         <Typography variant="caption" sx={{ fontWeight: 600 }}>
-          {schedule?.date
-            ? new Date(schedule.date).toLocaleDateString(undefined, {
-                day: 'numeric',
-                month: 'short',
-              })
-            : '—'}
+          {isDesk && schedule?.date && schedule?.dateTo
+            ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
+            : schedule?.date
+              ? new Date(schedule.date).toLocaleDateString(undefined, {
+                  day: 'numeric',
+                  month: 'short',
+                })
+              : '—'}
         </Typography>
       </Stack>
       <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
         <AccessTimeRoundedIcon sx={{ color: 'primary.main', fontSize: 18 }} />
         <Typography variant="caption" sx={{ fontWeight: 600 }}>
-          {schedule?.startTime && schedule?.endTime
-            ? `${schedule.startTime} – ${schedule.endTime}`
-            : '—'}
+          {isDesk
+            ? (schedule?.deskProductName || '—')
+            : (schedule?.startTime && schedule?.endTime
+                ? `${schedule.startTime} – ${schedule.endTime}`
+                : '—')}
         </Typography>
       </Stack>
     </Stack>
+
+    {pricing && (
+      <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>Subtotal</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
+        </Stack>
+        <Stack direction="row" justifyContent="space-between">
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>IVA (21%)</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
+        </Stack>
+        <Divider sx={{ my: 0.5 }} />
+        <Stack direction="row" justifyContent="space-between">
+          <Typography variant="body2" sx={{ fontWeight: 700 }}>Total</Typography>
+          <Typography variant="body2" sx={{ fontWeight: 700 }}>€{pricing.total}</Typography>
+        </Stack>
+      </Stack>
+    )}
   </Paper>
 );
 

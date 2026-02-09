@@ -52,14 +52,37 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
   const [errors, setErrors] = useState({});
   const [submitError, setSubmitError] = useState('');
 
-  const estimatedTotal = useMemo(() => {
-    if (!room?.priceFrom || !schedule?.startTime || !schedule?.endTime) return null;
+  const isDesk = room?.priceUnit === '/month';
+
+  const pricing = useMemo(() => {
+    if (!room?.priceFrom) return null;
+
+    if (isDesk) {
+      const months = schedule?.durationMonths || 1;
+      const subtotal = months * room.priceFrom;
+      const vat = subtotal * 0.21;
+      const total = subtotal + vat;
+      return {
+        subtotal: subtotal.toFixed(2),
+        vat: vat.toFixed(2),
+        total: total.toFixed(2),
+      };
+    }
+
+    if (!schedule?.startTime || !schedule?.endTime) return null;
     const startMins = timeStringToMinutes(schedule.startTime);
     const endMins = timeStringToMinutes(schedule.endTime);
     if (startMins == null || endMins == null || endMins <= startMins) return null;
     const hours = (endMins - startMins) / 60;
-    return (hours * room.priceFrom).toFixed(2);
-  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime]);
+    const subtotal = hours * room.priceFrom;
+    const vat = subtotal * 0.21;
+    const total = subtotal + vat;
+    return {
+      subtotal: subtotal.toFixed(2),
+      vat: vat.toFixed(2),
+      total: total.toFixed(2),
+    };
+  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, isDesk]);
 
   const handleChange = (field) => (event) => {
     setFormState((prev) => ({ ...prev, [field]: event.target.value }));
@@ -122,9 +145,9 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                   </Typography>
                 </Stack>
               </Box>
-              {estimatedTotal && (
+              {pricing && (
                 <Chip
-                  label={`€${estimatedTotal}`}
+                  label={`€${pricing.total}`}
                   sx={{
                     bgcolor: 'rgba(255,255,255,0.9)',
                     fontWeight: 700,
@@ -145,24 +168,32 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
               <CalendarMonthRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {schedule?.date
-                  ? new Date(schedule.date).toLocaleDateString(undefined, {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    })
-                  : '—'}
+                {isDesk && schedule?.date && schedule?.dateTo
+                  ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
+                  : schedule?.date
+                    ? new Date(schedule.date).toLocaleDateString(undefined, {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                      })
+                    : '—'}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Date</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                {isDesk ? 'Period' : 'Date'}
+              </Typography>
             </Stack>
             <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
               <AccessTimeRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {schedule?.startTime && schedule?.endTime
-                  ? `${schedule.startTime} – ${schedule.endTime}`
-                  : '—'}
+                {isDesk
+                  ? (schedule?.deskProductName || '—')
+                  : (schedule?.startTime && schedule?.endTime
+                      ? `${schedule.startTime} – ${schedule.endTime}`
+                      : '—')}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>Time</Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                {isDesk ? 'Desk' : 'Time'}
+              </Typography>
             </Stack>
             {schedule?.attendees ? (
               <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
@@ -174,6 +205,24 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               </Stack>
             ) : null}
           </Stack>
+
+          {pricing && (
+            <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>Subtotal</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
+              </Stack>
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>IVA (21%)</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
+              </Stack>
+              <Divider sx={{ my: 0.5 }} />
+              <Stack direction="row" justifyContent="space-between">
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>Total</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>€{pricing.total}</Typography>
+              </Stack>
+            </Stack>
+          )}
         </Paper>
 
         {/* Contact details */}

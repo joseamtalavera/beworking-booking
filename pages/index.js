@@ -24,14 +24,19 @@ import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import { useCatalogRooms } from '@/store/useCatalogRooms';
+import {
+  useCatalogRooms,
+  buildRoomFromProducto,
+  isCanonicalDeskProducto,
+  isDeskProducto
+} from '@/store/useCatalogRooms';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
 const HomePage = () => {
-  const { rooms } = useCatalogRooms();
+  const { rooms, setRooms } = useCatalogRooms();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [location, setLocation] = useState('');
@@ -101,6 +106,62 @@ const HomePage = () => {
     };
   },[]);
 
+  // Populate the catalog store with room objects built from API data (one-time).
+  // This feeds the detail page and booking page with real data from the dashboard.
+  useEffect(() => {
+    let active = true;
+
+    const populateStore = async () => {
+      try {
+        const allProductos = await fetchBookingProductos({ centerCode: 'MA1' });
+        if (!active || !Array.isArray(allProductos)) return;
+
+        const centroLabel = centros.find((c) => (c.code ?? '').toUpperCase() === 'MA1')?.label ?? 'Málaga Workspace';
+
+        const aulas = allProductos.filter((p) => {
+          const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
+          const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
+          return type === 'aula' && name.startsWith('MA1A');
+        });
+
+        const mesas = allProductos.filter(isDeskProducto);
+
+        const aulaRooms = aulas.map((p) => buildRoomFromProducto(p, centroLabel));
+
+        // Build desk room: prefer the MA1-DESKS room from API (seeded in rooms table),
+        // fall back to aggregating from mesa productos
+        const deskProducto = allProductos.find(isCanonicalDeskProducto);
+
+        if (deskProducto) {
+          const deskRoom = buildRoomFromProducto(deskProducto, centroLabel);
+          deskRoom.id = 'ma1-desks';
+          deskRoom.slug = 'ma1-desks';
+          deskRoom.productName = 'MA1 Desks';
+          deskRoom.priceUnit = '/month';
+          aulaRooms.push(deskRoom);
+        } else if (mesas.length > 0) {
+          const sample = mesas[0];
+          const deskRoom = buildRoomFromProducto(
+            { ...sample, name: 'MA1 Desks', capacity: mesas.length },
+            centroLabel
+          );
+          deskRoom.id = 'ma1-desks';
+          deskRoom.slug = 'ma1-desks';
+          deskRoom.productName = 'MA1 Desks';
+          deskRoom.priceUnit = '/month';
+          aulaRooms.push(deskRoom);
+        }
+
+        setRooms(aulaRooms);
+      } catch {
+        // keep store empty on error; detail page will show "Room not found"
+      }
+    };
+
+    populateStore();
+    return () => { active = false; };
+  }, [centros, setRooms]);
+
   // Load productos
   useEffect(() => {
     let active = true;
@@ -109,16 +170,14 @@ const HomePage = () => {
     const loadProductos = async () => {
       try {
 
-        // Build params: always filter by MA1 centro, filter by tipo based on activeTab
+        // Build params: always filter by MA1 centro.
+        // For desk tab, do not force type=Mesa because some tenants expose desks
+        // as canonical desk rooms (e.g. MA1_DESK) with type=Aula.
         const params = { centerCode: 'MA1' };
-        if(activeTab === 1) {
+        if(activeTab === 0) {
           // Meeting Rooms tab -> Aulas
           params.type = 'Aula';
-        } else if(activeTab === 2) {
-          // Desks tab -> Mesas
-          params.type = 'Mesa';
         }
-        // activeTab === 0 -> All Spaces (no tipo filter, gets both Aula and Mesa)
 
         const data = await fetchBookingProductos(params);
 
@@ -171,7 +230,6 @@ const HomePage = () => {
   };
 
   const spaceTypes = [
-    { value: 'all', label: 'All Spaces', icon: <BusinessRoundedIcon /> },
     { value: 'meeting_room', label: 'Meeting Rooms', icon: <MeetingRoomRoundedIcon /> },
     { value: 'desk', label: 'Desks', icon: <DeskRoundedIcon /> }
   ];
@@ -192,11 +250,14 @@ const HomePage = () => {
 
       const upperName = name.toUpperCase();
 
-      if (type === 'aula') {
+      if (type === 'aula' && !isCanonicalDeskProducto(producto)) {
         return upperName.startsWith('MA1A');
       }
 
-      if (type === 'mesa') {
+      if (isDeskProducto(producto)) {
+        if (isCanonicalDeskProducto(producto)) {
+          return true;
+        }
         const deskMatch = upperName.match(/^MA1[-_]?O1[-_ ]?(\d{1,2})$/);
         if (!deskMatch) {
           return false;
@@ -211,13 +272,10 @@ const HomePage = () => {
 
     const aulas = filteredProductos.filter((producto) => {
       const typeLower = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
-      return typeLower === 'aula';
+      return typeLower === 'aula' && !isCanonicalDeskProducto(producto);
     });
 
-    const mesas = filteredProductos.filter((producto) => {
-      const typeLower = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
-      return typeLower === 'mesa';
-    });
+    const mesas = filteredProductos.filter((producto) => isDeskProducto(producto));
 
     const aulaSpaces = aulas.map((producto) => {
       const rawType = (producto.type ?? producto.tipo ?? '').trim();
@@ -229,10 +287,7 @@ const HomePage = () => {
       );
       const centerName = matchingCentro?.label ?? productCenter;
       const city = matchingCentro?.city ?? '';
-      const matchingRoom = rooms.find((room) => (room.productName ?? '').toLowerCase() === name.toLowerCase());
-      const roomSlug =
-        matchingRoom?.slug ??
-        ((matchingRoom?.id ? matchingRoom.id.toString().toLowerCase() : '') || name.toLowerCase());
+      const roomSlug = name.toLowerCase();
 
       return {
         id: producto.id,
@@ -241,7 +296,7 @@ const HomePage = () => {
         slug: roomSlug,
         type: 'meeting_room',
         typeLabel: rawType || 'Meeting room',
-        image: producto.heroImage || 'https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=300&fit=crop',
+        image: producto.heroImage || '',
         capacity: producto.capacity != null ? String(producto.capacity) : '—',
         rating: producto.ratingAverage != null ? Number(producto.ratingAverage) : 4.8,
         reviewCount: producto.ratingCount != null ? producto.ratingCount : 0,
@@ -257,7 +312,7 @@ const HomePage = () => {
         instantBooking: producto.instantBooking !== false,
         centroCode: productCenter || undefined,
         centerName: centerName || undefined,
-        isBookable: Boolean(matchingRoom)
+        isBookable: true
       };
     });
 
@@ -267,7 +322,6 @@ const HomePage = () => {
       }
 
       const sample = mesas[0];
-      const rawType = (sample.type ?? sample.tipo ?? '').trim();
       const productCenter = (sample.centerCode ?? sample.centroCodigo ?? '').trim();
       const productCenterUpper = productCenter.toUpperCase();
       const matchingCentro = centros.find(
@@ -277,18 +331,15 @@ const HomePage = () => {
       const city = matchingCentro?.city ?? '';
       const deskCount = mesas.length;
       const matchingRoom = rooms.find((room) => (room.slug ?? '').toLowerCase() === 'ma1-desks');
-      const roomSlug =
-        matchingRoom?.slug ??
-        ((matchingRoom?.id ? String(matchingRoom.id).toLowerCase() : '') || 'ma1-desks');
 
       return {
         id: `desks-${productCenterUpper || 'ma1'}`,
         name: matchingRoom?.name || 'MA1 Desks',
         description: matchingRoom?.description || `${deskCount} desk${deskCount === 1 ? '' : 's'} available for booking`,
         productName: 'MA1 Desks',
-        slug: roomSlug,
+        slug: 'ma1-desks',
         type: 'desk',
-        image: matchingRoom?.heroImage || sample.heroImage || 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=300&fit=crop',
+        image: matchingRoom?.heroImage || sample.heroImage || '',
         capacity: matchingRoom?.capacity != null ? String(matchingRoom.capacity) : String(deskCount),
         rating: 4.8,
         reviewCount: 0,
@@ -300,13 +351,21 @@ const HomePage = () => {
         centroCode: productCenter || undefined,
         availableCount: deskCount,
         centerName: centerName || undefined,
-        isBookable: Boolean(matchingRoom)
+        isBookable: true
       };
     })();
 
     const mappedSpaces = deskCard ? [...aulaSpaces, deskCard] : aulaSpaces;
 
-    let filtered = [...mappedSpaces];
+    let filtered = mappedSpaces.filter((space) => {
+      if (activeTab === 0) {
+        return space.type === 'meeting_room';
+      }
+      if (activeTab === 1) {
+        return space.type === 'desk';
+      }
+      return true;
+    });
 
     // Filter by city/location if specified
     if (cityFilter && cityFilter.trim() !== '') {
@@ -334,27 +393,16 @@ const HomePage = () => {
     }
 
     return filtered;
-  }, [productos, centros, cityFilter, people, rooms]);
+  }, [productos, centros, cityFilter, people, rooms, activeTab]);
 
   const resolveRoomSlug = useCallback(
     (space) => {
       if (!space) {
         return '';
       }
-
-      const matchingRoom = rooms.find((room) => {
-        const roomProduct = (room.productName ?? '').toLowerCase();
-        const roomSlug = (room.slug ?? '').toLowerCase();
-        const targetProduct = (space.productName ?? space.name ?? '').toLowerCase();
-        const targetSlug = (space.slug ?? '').toLowerCase();
-        return (targetProduct && roomProduct === targetProduct) || (targetSlug && roomSlug === targetSlug);
-      });
-
-      const fallbackId = matchingRoom?.id ? String(matchingRoom.id).toLowerCase() : '';
-      const targetSlug = (space.slug ?? '').toLowerCase() || (matchingRoom?.slug ?? '').toLowerCase() || fallbackId;
-      return targetSlug;
+      return (space.slug ?? '').toLowerCase();
     },
-    [rooms]
+    []
   );
 
   const handleBookNow = useCallback(

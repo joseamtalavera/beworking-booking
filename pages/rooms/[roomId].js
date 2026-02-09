@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
@@ -41,8 +41,13 @@ import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { useQuery } from '@tanstack/react-query';
 import RoomCalendarGrid, { CalendarLegend } from '@/components/booking/RoomCalendarGrid';
-import { useCatalogRooms } from '@/store/useCatalogRooms';
-import { fetchPublicAvailability } from '@/api/bookings';
+import {
+  useCatalogRooms,
+  buildRoomFromProducto,
+  isCanonicalDeskProducto,
+  isDeskProducto
+} from '@/store/useCatalogRooms';
+import { fetchPublicAvailability, fetchBookingProductos } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 
 const pickAmenityIcon = (label) => {
@@ -141,11 +146,55 @@ const pickInstructionIcon = (text) => {
 const RoomDetailPage = () => {
   const router = useRouter();
   const { roomId } = router.query;
-  const { rooms } = useCatalogRooms();
+  const { rooms, setRooms } = useCatalogRooms();
   const room = useMemo(
     () => rooms.find((entry) => entry.slug === roomId || entry.id === roomId),
     [rooms, roomId]
   );
+
+  // If the store is empty (direct navigation), fetch from API and populate it
+  // including both meeting rooms (MA1A*) and the aggregated desk room (MA1-DESKS).
+  useEffect(() => {
+    if (rooms.length > 0 || !roomId) return;
+    let active = true;
+    fetchBookingProductos({ centerCode: 'MA1' })
+      .then((data) => {
+        if (!active || !Array.isArray(data)) return;
+
+        const aulas = data.filter((p) => {
+          const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
+          const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
+          return type === 'aula' && name.startsWith('MA1A');
+        });
+
+        const mesas = data.filter(isDeskProducto);
+
+        const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));
+
+        const deskProducto = data.find(isCanonicalDeskProducto);
+
+        if (deskProducto) {
+          const deskRoom = buildRoomFromProducto(deskProducto);
+          deskRoom.id = 'ma1-desks';
+          deskRoom.slug = 'ma1-desks';
+          deskRoom.productName = 'MA1 Desks';
+          deskRoom.priceUnit = '/month';
+          setRooms([...aulaRooms, deskRoom]);
+        } else if (mesas.length > 0) {
+          const sample = mesas[0];
+          const deskRoom = buildRoomFromProducto({ ...sample, name: 'MA1 Desks', capacity: mesas.length });
+          deskRoom.id = 'ma1-desks';
+          deskRoom.slug = 'ma1-desks';
+          deskRoom.productName = 'MA1 Desks';
+          deskRoom.priceUnit = '/month';
+          setRooms([...aulaRooms, deskRoom]);
+        } else {
+          setRooms(aulaRooms);
+        }
+      })
+      .catch(() => {});
+    return () => { active = false; };
+  }, [rooms.length, roomId, setRooms]);
 
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -180,6 +229,13 @@ const RoomDetailPage = () => {
   }
 
   if (!room) {
+    if (rooms.length === 0) {
+      return (
+        <Box sx={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>Loading room…</Typography>
+        </Box>
+      );
+    }
     return (
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>

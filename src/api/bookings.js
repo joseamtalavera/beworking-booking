@@ -66,3 +66,26 @@ export const createPublicBooking = (payload, options = {}) =>
     body: payload,
     ...options
   });
+
+/**
+ * Fetch desk availability for a given month range.
+ * Returns bloqueos for all 16 desk products (MA1O1-1 through MA1O1-16)
+ * for the specified date range so the UI can mark desks as booked.
+ */
+export const fetchDeskAvailability = async (startDate, endDate, options = {}) => {
+  const products = [];
+  for (let i = 1; i <= 16; i++) {
+    products.push(`MA1O1-${i}`);
+  }
+
+  const search = new URLSearchParams();
+  search.set('date', startDate);
+  if (endDate) {
+    search.set('dateTo', endDate);
+  }
+  products.forEach((p) => search.append('products', p));
+  search.append('centers', 'MA1');
+
+  const query = search.toString();
+  return requestJson(`/public/availability${query ? `?${query}` : ''}`, options);
+};
