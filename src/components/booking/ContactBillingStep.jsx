@@ -55,20 +55,26 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
   const isDesk = room?.priceUnit === '/month';
 
   const pricing = useMemo(() => {
-    if (!room?.priceFrom) return null;
-
     if (isDesk) {
-      const months = schedule?.durationMonths || 1;
-      const subtotal = months * room.priceFrom;
+      const isDayBooking = schedule?.bookingType === 'day';
+      let subtotal;
+      if (isDayBooking) {
+        subtotal = 10; // €10/day
+      } else {
+        const months = schedule?.durationMonths || 1;
+        subtotal = months * 90; // €90/month
+      }
       const vat = subtotal * 0.21;
       const total = subtotal + vat;
       return {
+        label: isDayBooking ? '1 day' : `${schedule?.durationMonths || 1} ${(schedule?.durationMonths || 1) === 1 ? 'month' : 'months'}`,
         subtotal: subtotal.toFixed(2),
         vat: vat.toFixed(2),
         total: total.toFixed(2),
       };
     }
 
+    if (!room?.priceFrom) return null;
     if (!schedule?.startTime || !schedule?.endTime) return null;
     const startMins = timeStringToMinutes(schedule.startTime);
     const endMins = timeStringToMinutes(schedule.endTime);
@@ -82,7 +88,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
       vat: vat.toFixed(2),
       total: total.toFixed(2),
     };
-  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, isDesk]);
+  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, schedule?.bookingType, isDesk]);
 
   const handleChange = (field) => (event) => {
     setFormState((prev) => ({ ...prev, [field]: event.target.value }));
@@ -168,18 +174,24 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
               <CalendarMonthRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
               <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                {isDesk && schedule?.date && schedule?.dateTo
-                  ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
-                  : schedule?.date
-                    ? new Date(schedule.date).toLocaleDateString(undefined, {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                      })
-                    : '—'}
+                {isDesk && schedule?.bookingType === 'day' && schedule?.date
+                  ? new Date(schedule.date + 'T00:00:00').toLocaleDateString(undefined, {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric'
+                    })
+                  : isDesk && schedule?.date && schedule?.dateTo
+                    ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
+                    : schedule?.date
+                      ? new Date(schedule.date).toLocaleDateString(undefined, {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric'
+                        })
+                      : '—'}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                {isDesk ? 'Period' : 'Date'}
+                {isDesk ? (schedule?.bookingType === 'day' ? 'Day' : 'Period') : 'Date'}
               </Typography>
             </Stack>
             <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>

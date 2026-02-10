@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
+  buildTimeSlots,
   buildTimeSlotsFromBloqueos,
   bloqueoCoversSlot,
   describeBloqueo,
@@ -51,14 +52,14 @@ export const CalendarLegend = ({ styles: stylesProp }) => {
       <CalendarLegendItem label="Available" color={styles.available} />
       <CalendarLegendItem label="Paid" color={styles.paid} />
       <CalendarLegendItem label="Invoiced" color={styles.invoiced} />
-      <CalendarLegendItem label="Created" color={styles.created} />
+      <CalendarLegendItem label="Booked" color={styles.created} />
     </Stack>
   );
 };
 
-const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot, interactive = !!onSelectSlot }) => {
+const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot, interactive = !!onSelectSlot, isDesk = false, deskSlotInfo = null, deskCount = 16 }) => {
   const theme = useTheme();
-  const timeSlots = useMemo(() => buildTimeSlotsFromBloqueos(bloqueos), [bloqueos]);
+  const timeSlots = useMemo(() => isDesk ? buildTimeSlots() : buildTimeSlotsFromBloqueos(bloqueos), [isDesk, bloqueos]);
   const resolvedStatusStyles = useMemo(() => statusStyles(theme), [theme]);
   const tableMinWidth = useMemo(() => {
     const slotWidth = 64;
@@ -179,24 +180,44 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                 >
                   <Stack spacing={0.5}>
                     <Typography variant="body2" fontWeight="medium">
-                      {room?.name || room?.label || 'Meeting room'}
+                      {isDesk ? 'Desks' : (room?.name || room?.label || 'Meeting room')}
                     </Typography>
-                    {room?.capacity ? (
-                      <Typography variant="caption" sx={{ color: 'text.disabled' }}>
-                        Capacity {room.capacity} guests
-                      </Typography>
-                    ) : null}
+                    <Typography variant="caption" sx={{ color: 'text.disabled' }}>
+                      {isDesk ? `${deskCount} desks` : (room?.capacity ? `Capacity ${room.capacity} guests` : '')}
+                    </Typography>
                   </Stack>
                 </TableCell>
                 {timeSlots.map((slot) => {
                   const slotKey = `${room?.id || 'room'}-${slot.id}`;
-                  const { status, bloqueo } = getSlotStatus(slot.id);
+
+                  // Desk mode: use aggregated slot info
+                  let status, bloqueo, deskFreeCount;
+                  if (isDesk) {
+                    const info = deskSlotInfo ? deskSlotInfo[slot.id] : null;
+                    if (info && info.fullyBooked) {
+                      status = 'paid'; // fully booked → red
+                      bloqueo = { _synthetic: true };
+                    } else {
+                      status = 'available';
+                      bloqueo = null;
+                    }
+                    deskFreeCount = info ? info.freeCount : deskCount;
+                  } else {
+                    const result = getSlotStatus(slot.id);
+                    status = result.status;
+                    bloqueo = result.bloqueo;
+                  }
+
                   const styles = resolvedStatusStyles[status] || resolvedStatusStyles.created;
                   const isSelected = selectedSlotKey === slotKey;
 
+                  const tooltipText = isDesk
+                    ? (bloqueo ? 'All desks booked' : `${deskFreeCount} of ${deskCount} desks available`)
+                    : (interactive ? describeBloqueo(bloqueo) : '');
+
                   return (
                     <TableCell key={`${room?.id ?? 'room'}-${slot.id}`} align="center" sx={{ p: 0.75, width: 64, maxWidth: 64 }}>
-                      <Tooltip arrow title={interactive ? describeBloqueo(bloqueo) : ''}>
+                      <Tooltip arrow title={tooltipText}>
                         <Box
                           {...(interactive ? {
                             role: 'button',
@@ -226,7 +247,17 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                             outline: 'none'
                           }}
                         >
-                          {bloqueo ? (
+                          {isDesk ? (
+                            !bloqueo ? (
+                              <Typography variant="caption" fontWeight={600} noWrap>
+                                {deskFreeCount}
+                              </Typography>
+                            ) : (
+                              <Typography variant="caption" fontWeight={600} noWrap>
+                                0
+                              </Typography>
+                            )
+                          ) : bloqueo ? (
                             <Typography variant="caption" fontWeight={600} noWrap>
                               {getInitials(bloqueo.cliente?.nombre || bloqueo.producto?.nombre || 'Reservado')}
                             </Typography>

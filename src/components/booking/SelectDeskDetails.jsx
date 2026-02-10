@@ -23,6 +23,11 @@ const DURATION_OPTIONS = [
   { label: '12 months', months: 12 },
 ];
 
+const BOOKING_TYPES = [
+  { label: 'Day', value: 'day' },
+  { label: 'Month', value: 'month' },
+];
+
 const DESK_COUNT = 16;
 
 const getMonthEnd = (startDate, months) => {
@@ -39,18 +44,22 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const today = new Date();
   const defaultMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
+  const defaultDate = today.toISOString().split('T')[0];
 
+  const [bookingType, setBookingType] = useState('month');
   const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+  const [selectedDate, setSelectedDate] = useState(defaultDate);
   const [duration, setDuration] = useState(1);
   const [selectedDesk, setSelectedDesk] = useState(null);
 
-  const startDate = getMonthStart(selectedMonth);
-  const endDate = getMonthEnd(startDate, duration);
+  // Compute the date range for the availability query
+  const startDate = bookingType === 'day' ? selectedDate : getMonthStart(selectedMonth);
+  const endDate = bookingType === 'day' ? selectedDate : getMonthEnd(startDate, duration);
 
   const { data: bloqueos, isLoading, isError, error } = useQuery({
     queryKey: ['desk-availability', startDate, endDate],
     queryFn: () => fetchDeskAvailability(startDate, endDate),
-    enabled: Boolean(selectedMonth),
+    enabled: bookingType === 'day' ? Boolean(selectedDate) : Boolean(selectedMonth),
   });
 
   // Determine which desks are booked during the selected period
@@ -58,16 +67,18 @@ const SelectDeskDetails = ({ room, onContinue }) => {
     const booked = new Set();
     if (!Array.isArray(bloqueos)) return booked;
 
-    const rangeStart = new Date(startDate);
-    const rangeEnd = new Date(endDate);
+    const rangeStart = new Date(startDate + 'T00:00:00');
+    const rangeEnd = new Date(endDate + 'T23:59:59');
 
     bloqueos.forEach((b) => {
       const productName = (b.producto?.nombre || b.productName || '').toUpperCase();
       const match = productName.match(/^MA1O1[-_ ]?(\d{1,2})$/);
       if (!match) return;
 
-      const bStart = new Date(b.fecha || b.date);
-      const bEnd = b.fechaFin || b.dateTo ? new Date(b.fechaFin || b.dateTo) : bStart;
+      const bStart = new Date(b.fechaIni || b.fecha || b.date);
+      const bEnd = b.fechaFin || b.dateTo
+        ? new Date(b.fechaFin || b.dateTo)
+        : bStart;
 
       // Check overlap
       if (bStart <= rangeEnd && bEnd >= rangeStart) {
@@ -78,26 +89,59 @@ const SelectDeskDetails = ({ room, onContinue }) => {
     return booked;
   }, [bloqueos, startDate, endDate]);
 
-  // Reset desk selection when month/duration changes
+  const availableDesks = useMemo(() => {
+    const desks = [];
+    for (let i = 1; i <= DESK_COUNT; i++) {
+      if (!bookedDesks.has(i)) {
+        desks.push(i);
+      }
+    }
+    return desks;
+  }, [bookedDesks]);
+
+  // Reset desk selection when period changes
   useEffect(() => {
     setSelectedDesk(null);
-  }, [selectedMonth, duration]);
+  }, [selectedMonth, selectedDate, duration, bookingType]);
 
   const handleContinue = () => {
-    if (!selectedDesk || !selectedMonth) return;
-    setSchedule({
-      date: startDate,
-      dateTo: endDate,
-      startTime: '00:00',
-      endTime: '23:59',
-      attendees: 1,
-      deskProductName: `MA1O1-${selectedDesk}`,
-      durationMonths: duration,
-    });
+    if (!selectedDesk) return;
+    if (bookingType === 'day') {
+      setSchedule({
+        date: selectedDate,
+        dateTo: selectedDate,
+        startTime: '00:00',
+        endTime: '23:59',
+        attendees: 1,
+        deskProductName: `MA1O1-${selectedDesk}`,
+        bookingType: 'day',
+        durationMonths: 0,
+      });
+    } else {
+      setSchedule({
+        date: startDate,
+        dateTo: endDate,
+        startTime: '00:00',
+        endTime: '23:59',
+        attendees: 1,
+        deskProductName: `MA1O1-${selectedDesk}`,
+        bookingType: 'month',
+        durationMonths: duration,
+      });
+    }
     onContinue?.();
   };
 
-  const isContinueDisabled = !selectedDesk || !selectedMonth;
+  const isContinueDisabled = !selectedDesk;
+
+  const VAT_RATE = 0.21;
+  const pricePerDay = 10;
+  const pricePerMonth = 90;
+  const subtotal = bookingType === 'day'
+    ? pricePerDay
+    : pricePerMonth * duration;
+  const vatAmount = subtotal * VAT_RATE;
+  const totalPrice = subtotal + vatAmount;
 
   return (
     <Stack spacing={3}>
@@ -127,7 +171,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         </Stack>
       </Paper>
 
-      {/* Month & duration selection */}
+      {/* Period selection */}
       <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
         <Stack spacing={2.5}>
           <Stack spacing={0.5}>
@@ -135,32 +179,22 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               Select your period
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Choose a start month and how long you need the desk.
+              Choose a booking type and when you need the desk.
             </Typography>
           </Stack>
 
-          <TextField
-            size="small"
-            label="Start month"
-            type="month"
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            inputProps={{ min: defaultMonth }}
-            fullWidth
-          />
-
+          {/* Booking type toggle */}
           <Stack spacing={1}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              Duration
+              Booking type
             </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap">
-              {DURATION_OPTIONS.map((opt) => (
+            <Stack direction="row" spacing={1}>
+              {BOOKING_TYPES.map((opt) => (
                 <Button
-                  key={opt.months}
-                  variant={duration === opt.months ? 'contained' : 'outlined'}
+                  key={opt.value}
+                  variant={bookingType === opt.value ? 'contained' : 'outlined'}
                   size="small"
-                  onClick={() => setDuration(opt.months)}
+                  onClick={() => setBookingType(opt.value)}
                   sx={{
                     borderRadius: 999,
                     textTransform: 'none',
@@ -173,10 +207,60 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               ))}
             </Stack>
           </Stack>
+
+          {bookingType === 'day' ? (
+            <TextField
+              size="small"
+              label="Date"
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ min: defaultDate }}
+              fullWidth
+            />
+          ) : (
+            <>
+              <TextField
+                size="small"
+                label="Start month"
+                type="month"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ min: defaultMonth }}
+                fullWidth
+              />
+
+              <Stack spacing={1}>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  Duration
+                </Typography>
+                <Stack direction="row" spacing={1} flexWrap="wrap">
+                  {DURATION_OPTIONS.map((opt) => (
+                    <Button
+                      key={opt.months}
+                      variant={duration === opt.months ? 'contained' : 'outlined'}
+                      size="small"
+                      onClick={() => setDuration(opt.months)}
+                      sx={{
+                        borderRadius: 999,
+                        textTransform: 'none',
+                        fontWeight: 600,
+                        px: 2.5,
+                      }}
+                    >
+                      {opt.label}
+                    </Button>
+                  ))}
+                </Stack>
+              </Stack>
+            </>
+          )}
         </Stack>
       </Paper>
 
-      {/* Desk grid */}
+      {/* Desk grid — only available desks */}
       <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
         <Stack spacing={2}>
           <Stack spacing={0.5}>
@@ -184,7 +268,9 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               Choose your desk
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Select an available desk for your period. Desks in red are already booked.
+              {availableDesks.length > 0
+                ? `${availableDesks.length} of ${DESK_COUNT} desks available for this period.`
+                : 'No desks available for this period. Try a different date.'}
             </Typography>
           </Stack>
 
@@ -193,10 +279,6 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             <Stack direction="row" spacing={0.5} alignItems="center">
               <Box sx={{ width: 14, height: 14, borderRadius: '3px', bgcolor: 'success.light' }} />
               <Typography variant="caption">Available</Typography>
-            </Stack>
-            <Stack direction="row" spacing={0.5} alignItems="center">
-              <Box sx={{ width: 14, height: 14, borderRadius: '3px', bgcolor: 'error.light' }} />
-              <Typography variant="caption">Booked</Typography>
             </Stack>
             <Stack direction="row" spacing={0.5} alignItems="center">
               <Box sx={{ width: 14, height: 14, borderRadius: '3px', bgcolor: 'primary.main' }} />
@@ -212,6 +294,12 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress size={28} />
             </Box>
+          ) : availableDesks.length === 0 ? (
+            <Box sx={{ py: 4, textAlign: 'center' }}>
+              <Typography variant="body2" sx={{ color: 'text.disabled' }}>
+                All desks are booked for this period.
+              </Typography>
+            </Box>
           ) : (
             <Box
               sx={{
@@ -220,15 +308,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 gap: 1.5,
               }}
             >
-              {Array.from({ length: DESK_COUNT }, (_, i) => i + 1).map((deskNum) => {
-                const isBooked = bookedDesks.has(deskNum);
+              {availableDesks.map((deskNum) => {
                 const isSelected = selectedDesk === deskNum;
 
                 return (
                   <Button
                     key={deskNum}
                     variant={isSelected ? 'contained' : 'outlined'}
-                    disabled={isBooked}
                     onClick={() => setSelectedDesk(deskNum)}
                     sx={{
                       py: 2,
@@ -237,17 +323,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                       fontWeight: 700,
                       fontSize: '0.875rem',
                       minWidth: 0,
-                      ...(isBooked && {
-                        bgcolor: (theme) => alpha(theme.palette.error.main, 0.1),
-                        borderColor: 'error.light',
-                        color: 'error.main',
-                        '&.Mui-disabled': {
-                          bgcolor: (theme) => alpha(theme.palette.error.main, 0.08),
-                          borderColor: (theme) => alpha(theme.palette.error.main, 0.3),
-                          color: (theme) => alpha(theme.palette.error.main, 0.5),
-                        },
-                      }),
-                      ...(!isBooked && !isSelected && {
+                      ...(!isSelected && {
                         borderColor: 'success.light',
                         color: 'success.dark',
                         '&:hover': {
@@ -276,20 +352,48 @@ const SelectDeskDetails = ({ room, onContinue }) => {
       {/* Price summary */}
       {selectedDesk && (
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Box>
+          <Stack spacing={1.5}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Box>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Desk {selectedDesk} &middot;{' '}
+                  {bookingType === 'day'
+                    ? '1 day'
+                    : `${duration} ${duration === 1 ? 'month' : 'months'}`}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {bookingType === 'day'
+                    ? new Date(selectedDate + 'T00:00:00').toLocaleDateString(undefined, {
+                        weekday: 'long',
+                        day: 'numeric',
+                        month: 'long',
+                        year: 'numeric',
+                      })
+                    : `${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })} – ${new Date(endDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}`}
+                </Typography>
+              </Box>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                Desk {selectedDesk} &middot; {duration} {duration === 1 ? 'month' : 'months'}
+                {`€${subtotal.toFixed(2)}`}
+              </Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between">
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                VAT (21%)
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
-                {' '}&ndash;{' '}
-                {new Date(endDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+                {`€${vatAmount.toFixed(2)}`}
               </Typography>
-            </Box>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {`€${((room?.priceFrom ?? 90) * duration).toFixed(2)}`}
-            </Typography>
+            </Stack>
+            <Stack direction="row" justifyContent="space-between" alignItems="center"
+              sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 1.5 }}
+            >
+              <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
+                Total
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                {`€${totalPrice.toFixed(2)}`}
+              </Typography>
+            </Stack>
           </Stack>
         </Paper>
       )}

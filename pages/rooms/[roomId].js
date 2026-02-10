@@ -41,13 +41,14 @@ import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined';
 import { useQuery } from '@tanstack/react-query';
 import RoomCalendarGrid, { CalendarLegend } from '@/components/booking/RoomCalendarGrid';
+import { buildTimeSlots, buildTimeSlotsFromBloqueos, bloqueoCoversSlot } from '@/utils/calendarUtils';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
   isCanonicalDeskProducto,
   isDeskProducto
 } from '@/store/useCatalogRooms';
-import { fetchPublicAvailability, fetchBookingProductos } from '@/api/bookings';
+import { fetchPublicAvailability, fetchDeskAvailability, fetchBookingProductos } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 
 const pickAmenityIcon = (label) => {
@@ -205,6 +206,10 @@ const RoomDetailPage = () => {
     setSelectedDate(e.target.value);
   }, []);
 
+  const isDesk = room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
+  const DESK_COUNT = 16;
+
+  // --- Meeting room availability (non-desk) ---
   const { data: availabilityData } = useQuery({
     queryKey: ['public-availability', selectedDate, room?.productName],
     queryFn: () =>
@@ -212,17 +217,71 @@ const RoomDetailPage = () => {
         date: selectedDate,
         products: room?.productName ? [room.productName] : undefined,
       }),
-    enabled: Boolean(room?.productName),
+    enabled: Boolean(room?.productName) && !isDesk,
+  });
+
+  // --- Desk availability (all 16 desks) ---
+  const { data: deskAvailabilityData } = useQuery({
+    queryKey: ['desk-availability', selectedDate],
+    queryFn: () => fetchDeskAvailability(selectedDate, selectedDate),
+    enabled: isDesk,
   });
 
   const calendarEntries = useMemo(() => {
-    if (!availabilityData) return [];
-    const bloqueos = Array.isArray(availabilityData) ? availabilityData : availabilityData.bloqueos ?? [];
-    return bloqueos.filter((b) => {
-      const prodName = b.producto?.nombre || b.producto?.name || '';
-      return !room?.productName || prodName.toLowerCase().includes(room.productName.toLowerCase());
+    if (!isDesk) {
+      if (!availabilityData) return [];
+      const bloqueos = Array.isArray(availabilityData) ? availabilityData : availabilityData.bloqueos ?? [];
+      return bloqueos.filter((b) => {
+        const prodName = b.producto?.nombre || b.producto?.name || '';
+        return !room?.productName || prodName.toLowerCase().includes(room.productName.toLowerCase());
+      });
+    }
+    // Desk aggregation: return all bloqueos from all 16 desks
+    if (!deskAvailabilityData) return [];
+    const bloqueos = Array.isArray(deskAvailabilityData) ? deskAvailabilityData : deskAvailabilityData.bloqueos ?? [];
+    return bloqueos;
+  }, [isDesk, availabilityData, deskAvailabilityData, room?.productName]);
+
+  // For desks: pre-compute per-slot availability counts
+  const deskSlotInfo = useMemo(() => {
+    if (!isDesk || calendarEntries.length === 0) return null;
+
+    // Desk bloqueos are often monthly (full-day). We need to detect
+    // whether a bloqueo covers the selected date as an all-day booking.
+    const deskBloqueoCoversSlot = (b, slotId) => {
+      const ini = b.fechaIni || '';
+      const fin = b.fechaFin || '';
+      const iniDate = ini.split('T')[0];
+      const finDate = fin.split('T')[0];
+
+      // Multi-day booking: if start date != end date, the bloqueo covers
+      // the entire selected day (all slots) as long as selectedDate is within range.
+      if (iniDate !== finDate) {
+        return selectedDate >= iniDate && selectedDate < finDate;
+      }
+
+      // Same-day booking: fall back to time-based slot matching
+      return bloqueoCoversSlot(b, slotId);
+    };
+
+    // For desks use default business-hours range (full-day bookings have 00:00 times)
+    const slots = buildTimeSlots();
+    const info = {};
+    slots.forEach((slot) => {
+      let bookedCount = 0;
+      calendarEntries.forEach((b) => {
+        if (deskBloqueoCoversSlot(b, slot.id)) {
+          bookedCount += 1;
+        }
+      });
+      info[slot.id] = {
+        bookedCount,
+        freeCount: DESK_COUNT - bookedCount,
+        fullyBooked: bookedCount >= DESK_COUNT,
+      };
     });
-  }, [availabilityData, room?.productName]);
+    return info;
+  }, [isDesk, calendarEntries, selectedDate]);
 
   if (!roomId) {
     return null; // Still loading router
@@ -555,7 +614,7 @@ const RoomDetailPage = () => {
                   />
                   <CalendarLegend />
                 </Stack>
-                <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} />
+                <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
                 <Button
                   onClick={() => setBookingModalOpen(true)}
                   variant="contained"
