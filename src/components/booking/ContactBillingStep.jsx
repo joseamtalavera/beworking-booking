@@ -54,23 +54,29 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
 
   const isDesk = room?.priceUnit === '/month';
 
+  const isSubscription = isDesk && schedule?.bookingType === 'month' && (schedule?.durationMonths || 1) > 1;
+
   const pricing = useMemo(() => {
     if (isDesk) {
       const isDayBooking = schedule?.bookingType === 'day';
       let subtotal;
       if (isDayBooking) {
         subtotal = 10; // €10/day
+      } else if (isSubscription) {
+        subtotal = 90; // €90/month (show monthly, not total)
       } else {
-        const months = schedule?.durationMonths || 1;
-        subtotal = months * 90; // €90/month
+        subtotal = 90; // €90 single month
       }
       const vat = subtotal * 0.21;
       const total = subtotal + vat;
+      const months = schedule?.durationMonths || 1;
       return {
-        label: isDayBooking ? '1 day' : `${schedule?.durationMonths || 1} ${(schedule?.durationMonths || 1) === 1 ? 'month' : 'months'}`,
+        label: isDayBooking ? '1 day' : `${months} ${months === 1 ? 'month' : 'months'}`,
         subtotal: subtotal.toFixed(2),
         vat: vat.toFixed(2),
         total: total.toFixed(2),
+        isSubscription,
+        months,
       };
     }
 
@@ -153,7 +159,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               </Box>
               {pricing && (
                 <Chip
-                  label={`€${pricing.total}`}
+                  label={pricing.isSubscription ? `€${pricing.total}/mo` : `€${pricing.total}`}
                   sx={{
                     bgcolor: 'rgba(255,255,255,0.9)',
                     fontWeight: 700,
@@ -221,7 +227,9 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
           {pricing && (
             <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>Subtotal</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  {pricing.isSubscription ? 'Monthly subtotal' : 'Subtotal'}
+                </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
               </Stack>
               <Stack direction="row" justifyContent="space-between">
@@ -230,9 +238,18 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               </Stack>
               <Divider sx={{ my: 0.5 }} />
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ fontWeight: 700 }}>Total</Typography>
-                <Typography variant="body2" sx={{ fontWeight: 700 }}>€{pricing.total}</Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  {pricing.isSubscription ? 'Monthly total' : 'Total'}
+                </Typography>
+                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                  €{pricing.total}{pricing.isSubscription ? '/month' : ''}
+                </Typography>
               </Stack>
+              {pricing.isSubscription && (
+                <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                  {pricing.months} months — first month charged now, then monthly
+                </Typography>
+              )}
             </Stack>
           )}
         </Paper>

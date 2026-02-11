@@ -137,9 +137,10 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const VAT_RATE = 0.21;
   const pricePerDay = 10;
   const pricePerMonth = 90;
+  const isSubscription = bookingType === 'month' && duration > 1;
   const subtotal = bookingType === 'day'
     ? pricePerDay
-    : pricePerMonth * duration;
+    : isSubscription ? pricePerMonth : pricePerMonth * duration;
   const vatAmount = subtotal * VAT_RATE;
   const totalPrice = subtotal + vatAmount;
 
@@ -373,12 +374,14 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 </Typography>
               </Box>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                {`€${subtotal.toFixed(2)}`}
+                {isSubscription
+                  ? `€${subtotal.toFixed(2)}/month`
+                  : `€${subtotal.toFixed(2)}`}
               </Typography>
             </Stack>
             <Stack direction="row" justifyContent="space-between">
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                VAT (21%)
+                {isSubscription ? 'VAT (21%) /month' : 'VAT (21%)'}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary' }}>
                 {`€${vatAmount.toFixed(2)}`}
@@ -388,12 +391,19 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 1.5 }}
             >
               <Typography variant="subtitle2" sx={{ fontWeight: 700 }}>
-                Total
+                {isSubscription ? 'Monthly total' : 'Total'}
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {`€${totalPrice.toFixed(2)}`}
+                {isSubscription
+                  ? `€${totalPrice.toFixed(2)}/month`
+                  : `€${totalPrice.toFixed(2)}`}
               </Typography>
             </Stack>
+            {isSubscription && (
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                First month charged now, then monthly for {duration} months total
+              </Typography>
+            )}
           </Stack>
         </Paper>
       )}
