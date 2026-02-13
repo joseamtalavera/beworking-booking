@@ -21,7 +21,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
-import { createPublicBooking } from '../../api/bookings';
+import { createPublicBooking, fetchBookingUsage } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -280,6 +280,104 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
   );
 };
 
+/* ─── Free booking form (no Stripe) ─── */
+const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
+  const schedule = useBookingFlow((state) => state.schedule);
+  const visitor = useBookingVisitor();
+  const isDesk = room?.priceUnit === '/month';
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setError('');
+    try {
+      await createPublicBooking(
+        buildBookingPayload(visitor, schedule, room, isDesk)
+      );
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || 'Failed to create booking');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (success) {
+    return <SuccessMessage amount="FREE" />;
+  }
+
+  return (
+    <Stack spacing={2.5}>
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 3,
+          borderRadius: 3,
+          bgcolor: (theme) => alpha(theme.palette.success.main, 0.04),
+          borderColor: 'success.main',
+        }}
+      >
+        <Stack spacing={1.5}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <CheckCircleRoundedIcon sx={{ fontSize: 20, color: 'success.main' }} />
+            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+              Free booking
+            </Typography>
+          </Stack>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            This is your free booking ({usage.used + 1} of {usage.freeLimit} this month).
+          </Typography>
+          {pricing && (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography
+                variant="body2"
+                sx={{ textDecoration: 'line-through', color: 'text.disabled' }}
+              >
+                €{pricing.total}
+              </Typography>
+              <Chip
+                label="FREE"
+                size="small"
+                color="success"
+                sx={{ fontWeight: 700, fontSize: '0.8rem' }}
+              />
+            </Stack>
+          )}
+        </Stack>
+      </Paper>
+
+      {error && <Alert severity="error">{error}</Alert>}
+
+      <Stack direction="row" spacing={2} justifyContent="space-between">
+        <Button
+          onClick={onBack}
+          disabled={submitting}
+          sx={{
+            borderRadius: 999, px: 3, py: 1.25,
+            textTransform: 'none', fontWeight: 600, color: 'text.secondary',
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleSubmit}
+          disabled={submitting}
+          sx={{
+            borderRadius: 999, px: 4, py: 1.25,
+            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
+          }}
+        >
+          {submitting ? 'Processing…' : 'Confirm free booking'}
+        </Button>
+      </Stack>
+    </Stack>
+  );
+};
+
 /* ─── Success message ─── */
 const SuccessMessage = ({ amount, isSubscription }) => (
   <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
@@ -317,6 +415,7 @@ const PaymentStep = ({ room, onBack }) => {
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [freeUsage, setFreeUsage] = useState(null); // { used, freeLimit, isFree }
 
   const stripePromise = useMemo(() => (publishableKey ? loadStripe(publishableKey) : null), []);
 
@@ -382,6 +481,25 @@ const PaymentStep = ({ room, onBack }) => {
 
   useEffect(() => {
     const init = async () => {
+      // Check free booking eligibility first
+      try {
+        const email = visitor.contact?.email;
+        const productName = isDesk
+          ? (schedule?.deskProductName || room?.productName || room?.name || '')
+          : (room?.productName || room?.name || '');
+
+        if (email && productName) {
+          const usage = await fetchBookingUsage(email, productName);
+          setFreeUsage(usage);
+          if (usage.isFree) {
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (usageErr) {
+        // If usage check fails, fall through to normal payment flow
+      }
+
       if (!paymentsBaseUrl) {
         setError('Payment service URL is not configured');
         setLoading(false);
@@ -486,6 +604,15 @@ const PaymentStep = ({ room, onBack }) => {
             Back
           </Button>
         </Box>
+      </Stack>
+    );
+  }
+
+  if (freeUsage?.isFree) {
+    return (
+      <Stack spacing={3}>
+        <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} isSubscription={isSubscription} />
+        <FreeBookingForm onBack={onBack} room={room} pricing={pricing} usage={freeUsage} />
       </Stack>
     );
   }

@@ -67,6 +67,9 @@ export const createPublicBooking = (payload, options = {}) =>
     ...options
   });
 
+export const fetchBookingUsage = (email, productName, options = {}) =>
+  requestJson(`/public/booking-usage?email=${encodeURIComponent(email)}&productName=${encodeURIComponent(productName)}`, options);
+
 /**
  * Fetch desk availability for a given month range.
  * Returns bloqueos for all 16 desk products (MA1O1-1 through MA1O1-16)
