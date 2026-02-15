@@ -8,6 +8,7 @@ import {
   Chip,
   Divider,
   Grid,
+  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -18,6 +19,15 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
+import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
+import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
+import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded';
+import MarkunreadMailboxRoundedIcon from '@mui/icons-material/MarkunreadMailboxRounded';
+import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 
@@ -266,22 +276,22 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
           </Stack>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="First name" value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName} fullWidth />
+              <TextField size="small" label="First name" value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Last name" value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName} fullWidth />
+              <TextField size="small" label="Last name" value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Email" type="email" value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email} fullWidth />
+              <TextField size="small" label="Email" type="email" value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MailOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Phone" value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone} fullWidth />
+              <TextField size="small" label="Phone" value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PhoneRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Company" value={formState.company} onChange={handleChange('company')} fullWidth />
+              <TextField size="small" label="Company" value={formState.company} onChange={handleChange('company')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><BusinessRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="VAT / Tax ID" value={formState.taxId} onChange={handleChange('taxId')} fullWidth />
+              <TextField size="small" label="VAT / Tax ID" value={formState.taxId} onChange={handleChange('taxId')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><ReceiptRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
           </Grid>
         </Paper>
@@ -303,19 +313,19 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
           </Stack>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField size="small" label="Address line 1" value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth />
+              <TextField size="small" label="Address line 1" value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12}>
-              <TextField size="small" label="Address line 2" value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth />
+              <TextField size="small" label="Address line 2" value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="City" value={formState.city} onChange={handleChange('city')} fullWidth />
+              <TextField size="small" label="City" value={formState.city} onChange={handleChange('city')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><LocationCityRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="Postal code" value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth />
+              <TextField size="small" label="Postal code" value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MarkunreadMailboxRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="Country" value={formState.country} onChange={handleChange('country')} fullWidth />
+              <TextField size="small" label="Country" value={formState.country} onChange={handleChange('country')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PublicRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
           </Grid>
         </Paper>

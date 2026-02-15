@@ -12,6 +12,8 @@ import {
   Typography
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import InputAdornment from '@mui/material/InputAdornment';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchDeskAvailability } from '../../api/bookings';
@@ -218,6 +220,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               onChange={(e) => setSelectedDate(e.target.value)}
               InputLabelProps={{ shrink: true }}
               inputProps={{ min: defaultDate }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
               fullWidth
             />
           ) : (
@@ -230,6 +233,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 onChange={(e) => setSelectedMonth(e.target.value)}
                 InputLabelProps={{ shrink: true }}
                 inputProps={{ min: defaultMonth }}
+                InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
                 fullWidth
               />
 

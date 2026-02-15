@@ -18,6 +18,9 @@ import { fetchPublicAvailability } from '../../api/bookings';
 import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid';
 import { addMinutesToTime } from '../../utils/calendarUtils';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
+import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
+import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import InputAdornment from '@mui/material/InputAdornment';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
@@ -139,6 +142,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             value={schedule.date || ''}
             onChange={handleDateChange}
             InputLabelProps={{ shrink: true }}
+            InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
             fullWidth
           />
 
@@ -150,6 +154,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
               value={schedule.startTime || DEFAULT_TIME_RANGE.start}
               onChange={handleTimeChange('startTime')}
               InputLabelProps={{ shrink: true }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
               fullWidth
             />
             <TextField
@@ -159,6 +164,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
               value={schedule.endTime || DEFAULT_TIME_RANGE.end}
               onChange={handleTimeChange('endTime')}
               InputLabelProps={{ shrink: true }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
               fullWidth
             />
           </Stack>
@@ -230,6 +236,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             multiline
             minRows={2}
             placeholder="Any special requirements or requests..."
+            InputProps={{ startAdornment: <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}><NotesRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
           />
         </Stack>
       </Paper>
