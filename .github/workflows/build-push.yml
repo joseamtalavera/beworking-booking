@@ -1,6 +1,8 @@
-name: Build & Push to ECR
+name: Build, Push & Deploy
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
     inputs:
       image_tag:
@@ -16,9 +18,13 @@ permissions:
 env:
   AWS_REGION: eu-north-1
   ECR_REPO: beworking-booking
+  ECS_CLUSTER: beworking-cluster
+  ECS_SERVICE: beworking-booking-service
+  CONTAINER_NAME: beworking-booking
+  TASK_DEF_FAMILY: beworking-booking-task
 
 jobs:
-  build-push:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -44,11 +50,12 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build & push
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
-          tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ inputs.image_tag }}
+          tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ inputs.image_tag || 'main' }}
           build-args: |
             NEXT_PUBLIC_API_BASE_URL=/api
             NEXT_PUBLIC_FRONTEND_URL=https://web.be-working.com
@@ -56,3 +63,26 @@ jobs:
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ steps.stripe.outputs.pk }}
             NEXT_PUBLIC_PAYMENTS_BASE_URL=/payments/api
             NEXT_PUBLIC_STRIPE_TENANT=beworking
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.TASK_DEF_FAMILY }} \
+            --query taskDefinition \
+            --output json > task-def.json
+
+      - name: Update image in task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-def.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ inputs.image_tag || 'main' }}
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
