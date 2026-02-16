@@ -8,7 +8,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="es">
         <Head>
-          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" href="/new_favicon.png" />
           <meta name="theme-color" content="#009624" />
         </Head>
         <body>
