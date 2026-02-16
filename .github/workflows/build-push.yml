@@ -61,7 +61,7 @@ jobs:
             NEXT_PUBLIC_FRONTEND_URL=https://web.be-working.com
             NEXT_PUBLIC_LOGIN_URL=/main/login
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ steps.stripe.outputs.pk }}
-            NEXT_PUBLIC_PAYMENTS_BASE_URL=/payments/api
+            NEXT_PUBLIC_PAYMENTS_BASE_URL=https://stripe.be-working.com
             NEXT_PUBLIC_STRIPE_TENANT=beworking
 
       - name: Download current task definition
