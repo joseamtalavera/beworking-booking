@@ -1,0 +1,58 @@
+name: Build & Push to ECR
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Image tag (e.g. main, prod)"
+        required: true
+        default: main
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+  ECR_REPO: beworking-booking
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fetch Stripe publishable key from Secrets Manager
+        id: stripe
+        run: |
+          PK=$(aws secretsmanager get-secret-value \
+            --secret-id beworking-stripe-publishable-key \
+            --query SecretString --output text)
+          echo "::add-mask::$PK"
+          echo "pk=$PK" >> "$GITHUB_OUTPUT"
+
+      - name: Login to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ inputs.image_tag }}
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=/api
+            NEXT_PUBLIC_FRONTEND_URL=https://web.be-working.com
+            NEXT_PUBLIC_LOGIN_URL=/main/login
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ steps.stripe.outputs.pk }}
+            NEXT_PUBLIC_PAYMENTS_BASE_URL=/payments/api
+            NEXT_PUBLIC_STRIPE_TENANT=beworking
