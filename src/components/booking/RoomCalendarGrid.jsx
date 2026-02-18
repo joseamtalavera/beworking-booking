@@ -62,10 +62,10 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
   const timeSlots = useMemo(() => isDesk ? buildTimeSlots() : buildTimeSlotsFromBloqueos(bloqueos), [isDesk, bloqueos]);
   const resolvedStatusStyles = useMemo(() => statusStyles(theme), [theme]);
   const tableMinWidth = useMemo(() => {
-    const slotWidth = 64;
-    const baseRoomColumn = 220;
-    const paddings = 32;
-    return Math.max(720, baseRoomColumn + timeSlots.length * slotWidth + paddings);
+    const slotWidth = 48;
+    const baseRoomColumn = 120;
+    const paddings = 16;
+    return Math.max(400, baseRoomColumn + timeSlots.length * slotWidth + paddings);
   }, [timeSlots.length]);
 
   const getSlotStatus = (slotId) => {
@@ -130,7 +130,8 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
               <TableRow>
                 <TableCell
                   sx={{
-                    width: 220,
+                    width: { xs: 100, sm: 140, md: 180 },
+                    minWidth: { xs: 100, sm: 140, md: 180 },
                     position: 'sticky',
                     top: 0,
                     left: 0,
@@ -150,8 +151,8 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                     sx={{
                       position: 'sticky',
                       top: 0,
-                      width: 64,
-                      maxWidth: 64,
+                      width: { xs: 48, md: 64 },
+                      maxWidth: { xs: 48, md: 64 },
                       backgroundColor: 'background.paper',
                       zIndex: 3
                     }}
@@ -169,8 +170,8 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                   sx={{
                     position: 'sticky',
                     left: 0,
-                    width: 220,
-                    maxWidth: 220,
+                    width: { xs: 100, sm: 140, md: 180 },
+                    minWidth: { xs: 100, sm: 140, md: 180 },
                     backgroundColor: 'background.paper',
                     zIndex: 2,
                     borderRight: '1px solid',
@@ -216,7 +217,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
                     : (interactive ? describeBloqueo(bloqueo) : '');
 
                   return (
-                    <TableCell key={`${room?.id ?? 'room'}-${slot.id}`} align="center" sx={{ p: 0.75, width: 64, maxWidth: 64 }}>
+                    <TableCell key={`${room?.id ?? 'room'}-${slot.id}`} align="center" sx={{ p: 0.5, width: { xs: 48, md: 64 }, maxWidth: { xs: 48, md: 64 } }}>
                       <Tooltip arrow title={tooltipText}>
                         <Box
                           {...(interactive ? {
