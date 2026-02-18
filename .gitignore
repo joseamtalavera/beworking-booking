@@ -9,7 +9,7 @@ out/
 # Local env files
 .env
 .env.*
-!.env.local.example
+!.env.example
 
 # Logs
 npm-debug.log*
