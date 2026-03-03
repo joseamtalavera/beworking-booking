@@ -21,7 +21,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
-import { createPublicBooking, fetchBookingUsage } from '../../api/bookings';
+import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
@@ -77,6 +77,37 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
     setSubmitting(true);
     setError('');
 
+    // Re-check availability before charging to catch stale data
+    const productName = isDesk
+      ? (schedule?.deskProductName || room?.productName || room?.name || '')
+      : (room?.productName || room?.name || '');
+    if (schedule?.date && productName) {
+      try {
+        const bloqueos = await fetchPublicAvailability({
+          date: schedule.date,
+          products: [productName],
+        });
+        if (Array.isArray(bloqueos) && bloqueos.length > 0) {
+          const selStart = timeStringToMinutes(schedule.startTime);
+          const selEnd = timeStringToMinutes(schedule.endTime);
+          if (selStart != null && selEnd != null) {
+            const conflict = bloqueos.some(b => {
+              const bStart = timeStringToMinutes(b.fechaIni?.split?.('T')?.[1]?.slice(0, 5));
+              const bEnd = timeStringToMinutes(b.fechaFin?.split?.('T')?.[1]?.slice(0, 5));
+              return bStart != null && bEnd != null && bStart < selEnd && bEnd > selStart;
+            });
+            if (conflict) {
+              setSubmitting(false);
+              setError('This time slot is no longer available. Please go back and select a different time.');
+              return;
+            }
+          }
+        }
+      } catch (_) {
+        // If availability check fails, proceed — backend will catch conflicts
+      }
+    }
+
     const result = await stripe.confirmPayment({
       elements,
       redirect: 'if_required'
@@ -92,11 +123,16 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             stripePaymentIntentId: result.paymentIntent.id,
           })
         );
+        setSubmitting(false);
+        setSuccess(true);
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
+        setSubmitting(false);
+        setError(
+          'Your payment was processed but the booking could not be created (the time slot may have been taken). ' +
+          'Please contact us for a refund. Reference: ' + result.paymentIntent.id
+        );
       }
-      setSubmitting(false);
-      setSuccess(true);
     } else {
       setSubmitting(false);
     }
