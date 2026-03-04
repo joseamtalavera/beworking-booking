@@ -41,6 +41,7 @@ const HomePage = () => {
   const [cityFilter, setCityFilter] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [checkIn, setCheckIn] = useState('');
+  const [timeFilter, setTimeFilter] = useState('');
   const [people, setPeople] = useState('');
   const [centros, setCentros] = useState([]);
   const [centrosLoading, setCentrosLoading] = useState(false);
@@ -376,11 +377,16 @@ const HomePage = () => {
         return;
       }
 
+      const query = {};
+      if (checkIn) query.date = checkIn;
+      if (timeFilter) query.time = timeFilter;
+
       router.push({
         pathname: `/rooms/${targetSlug}`,
+        query,
       });
     },
-    [router, resolveRoomSlug]
+    [router, resolveRoomSlug, checkIn, timeFilter]
   );
 
   const handleTabChange = (event, newValue) => {
@@ -507,6 +513,26 @@ const HomePage = () => {
                 sx={{
                   '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
                   '& .MuiInput-input': { fontSize: '0.875rem', color: checkIn ? 'text.primary' : 'text.secondary', py: 0.25 },
+                }}
+              />
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+
+            {/* Time */}
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="time"
+                value={timeFilter}
+                onChange={(e) => setTimeFilter(e.target.value)}
+                label={t('home.time')}
+                placeholder={t('home.timePlaceholder')}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', color: timeFilter ? 'text.primary' : 'text.secondary', py: 0.25 },
                 }}
               />
             </Box>

@@ -202,7 +202,13 @@ const RoomDetailPage = () => {
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().split('T')[0]);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('date')) return params.get('date');
+    }
+    return new Date().toISOString().split('T')[0];
+  });
 
   const handleDateChange = useCallback((e) => {
     setSelectedDate(e.target.value);
@@ -791,7 +797,10 @@ const RoomDetailPage = () => {
         onClose={() => setBookingModalOpen(false)}
         onContinue={() => {
           setBookingModalOpen(false);
-          router.push(`/rooms/${room.slug ?? room.id}/book`);
+          const query = {};
+          if (router.query.date) query.date = router.query.date;
+          if (router.query.time) query.time = router.query.time;
+          router.push({ pathname: `/rooms/${room.slug ?? room.id}/book`, query });
         }}
       />
     </>

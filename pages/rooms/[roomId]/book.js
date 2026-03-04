@@ -22,7 +22,7 @@ import { useBookingVisitor } from '@/store/useBookingVisitor';
 import { fetchBookingProductos } from '@/api/bookings';
 import { useTranslation } from 'react-i18next';
 
-export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
+export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 'page' }) => {
   const { t } = useTranslation();
   const { rooms, setRooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
@@ -30,17 +30,25 @@ export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
   const nextStep = useBookingFlow((state) => state.nextStep);
   const prevStep = useBookingFlow((state) => state.prevStep);
   const resetFlow = useBookingFlow((state) => state.resetFlow);
+  const setSchedule = useBookingFlow((state) => state.setSchedule);
   const setVisitorContact = useBookingVisitor((state) => state.setVisitorContact);
   const resetVisitor = useBookingVisitor((state) => state.resetVisitor);
 
   useEffect(() => {
     resetFlow();
     resetVisitor();
+    // Apply date/time from search bar if passed via query params
+    if (initialDate || initialTime) {
+      const patch = {};
+      if (initialDate) { patch.date = initialDate; patch.dateTo = initialDate; }
+      if (initialTime) { patch.startTime = initialTime; }
+      setSchedule(patch);
+    }
     return () => {
       resetFlow();
       resetVisitor();
     };
-  }, [resetFlow, resetVisitor]);
+  }, [resetFlow, resetVisitor, initialDate, initialTime, setSchedule]);
 
   // Populate store on direct entry (when coming straight to /rooms/ma1-desks/book)
   useEffect(() => {
@@ -150,7 +158,7 @@ export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
 
 const BookingFlowPage = () => {
   const router = useRouter();
-  const { roomId } = router.query;
+  const { roomId, date, time } = router.query;
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
 
@@ -174,7 +182,7 @@ const BookingFlowPage = () => {
           >
             {t('common.back')}
           </Button>
-          <BookingFlowContent roomId={roomId} layout="page" />
+          <BookingFlowContent roomId={roomId} initialDate={date} initialTime={time} layout="page" />
         </Box>
       </Box>
     </>
