@@ -6,11 +6,9 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Chip from '@mui/material/Chip';
-import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
-import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import { useTranslation } from 'react-i18next';
@@ -82,7 +80,7 @@ const SpaceCard = ({ space, onBookNow }) => {
                 label={t('card.instantBooking')}
                 size="small"
                 sx={{
-                  backgroundColor: (theme) => alpha(theme.palette.common.white, 0.9),
+                  backgroundColor: '#fff',
                   color: 'text.primary',
                   fontWeight: 500,
                   fontSize: '0.75rem'
@@ -91,19 +89,6 @@ const SpaceCard = ({ space, onBookNow }) => {
             )}
           </Stack>
 
-          <IconButton
-            sx={{
-              position: 'absolute',
-              top: 10,
-              right: 10,
-              backgroundColor: (theme) => alpha(theme.palette.common.white, 0.8),
-              '&:hover': {
-                backgroundColor: (theme) => alpha(theme.palette.common.white, 0.9)
-              }
-            }}
-          >
-            <FavoriteBorderRoundedIcon />
-          </IconButton>
         </Box>
 
         <CardContent
