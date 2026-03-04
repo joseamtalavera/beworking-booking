@@ -20,10 +20,12 @@
     "@stripe/stripe-js": "^8.5.3",
     "@tanstack/react-query": "^5.66.3",
     "date-fns": "^4.1.0",
+    "i18next": "^25.8.14",
     "mapbox-gl": "^3.9.2",
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^16.5.4",
     "zustand": "^4.5.4"
   },
   "devDependencies": {

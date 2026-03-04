@@ -21,45 +21,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import XIcon from '@mui/icons-material/X';
+import { useTranslation } from 'react-i18next';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
-const navLinks = [
-  { label: 'Business Address', href: `${FRONTEND_URL}/business-address` },
-  { label: 'Spaces', href: '/' },
-  { label: 'Platform', href: `${FRONTEND_URL}/application` },
-  { label: 'Pricing', href: `${FRONTEND_URL}/pricing` },
-];
-
-const footerColumns = [
-  {
-    title: 'Product',
-    links: [
-      { label: 'Business Address', href: `${FRONTEND_URL}/business-address` },
-      { label: 'Spaces', href: '/' },
-      { label: 'Platform', href: `${FRONTEND_URL}/application` },
-      { label: 'Pricing', href: `${FRONTEND_URL}/pricing` },
-    ],
-  },
-  {
-    title: 'Company',
-    links: [
-      { label: 'About', href: `${FRONTEND_URL}/about` },
-      { label: 'Careers', href: `${FRONTEND_URL}/careers` },
-      { label: 'Press', href: `${FRONTEND_URL}/press` },
-      { label: 'Contact', href: `${FRONTEND_URL}/contact` },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
-      { label: 'Terms', href: `${FRONTEND_URL}/terms` },
-      { label: 'Privacy', href: `${FRONTEND_URL}/privacy` },
-      { label: 'Cookies', href: `${FRONTEND_URL}/cookies` },
-      { label: 'Sitemap', href: `${FRONTEND_URL}/sitemap` },
-    ],
-  },
-];
+const isExternal = (href) => /^https?:\/\//.test(href);
 
 const socialLinks = [
   { Icon: LinkedInIcon, href: 'https://www.linkedin.com/company/beworking', label: 'LinkedIn' },
@@ -68,9 +34,80 @@ const socialLinks = [
 ];
 
 const AppLayout = ({ children }) => {
+  const { t, i18n } = useTranslation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const isInternalLink = (href) => href.startsWith('/') && !href.startsWith('//');
+  const navLinks = [
+    { labelKey: 'nav.platform',      href: `${FRONTEND_URL}/platform` },
+    { labelKey: 'nav.virtualOffice', href: `${FRONTEND_URL}/virtual-office` },
+    { labelKey: 'nav.spaces',        href: '/' },
+    { labelKey: 'nav.marketplace',   href: `${FRONTEND_URL}/marketplace` },
+  ];
+
+  const footerColumns = [
+    {
+      titleKey: 'footer.product',
+      links: [
+        { labelKey: 'footer.links.platform',     href: `${FRONTEND_URL}/platform` },
+        { labelKey: 'footer.links.virtualOffice', href: `${FRONTEND_URL}/virtual-office` },
+        { labelKey: 'footer.links.spaces',        href: '/' },
+        { labelKey: 'footer.links.marketplace',   href: `${FRONTEND_URL}/marketplace` },
+      ],
+    },
+    {
+      titleKey: 'footer.company',
+      links: [
+        { labelKey: 'footer.links.about',    soon: true },
+        { labelKey: 'footer.links.careers',  soon: true },
+        { labelKey: 'footer.links.press',    soon: true },
+        { labelKey: 'footer.links.contact',  href: `${FRONTEND_URL}/contact` },
+        { labelKey: 'footer.links.faq',      href: `${FRONTEND_URL}/faq` },
+      ],
+    },
+    {
+      titleKey: 'footer.legal',
+      links: [
+        { labelKey: 'footer.links.terms',    soon: true },
+        { labelKey: 'footer.links.privacy',  soon: true },
+        { labelKey: 'footer.links.cookies',  soon: true },
+        { labelKey: 'footer.links.sitemap',  soon: true },
+      ],
+    },
+  ];
+
+  const toggleLang = () => {
+    const next = i18n.language === 'es' ? 'en' : 'es';
+    i18n.changeLanguage(next);
+    if (typeof window !== 'undefined') localStorage.setItem('beworking_lang', next);
+  };
+
+  const LangToggle = ({ sx }) => (
+    <Button
+      onClick={toggleLang}
+      size="small"
+      sx={{
+        minWidth: 0,
+        px: 1.25,
+        py: 0.5,
+        fontSize: '0.8125rem',
+        fontWeight: 500,
+        color: 'text.secondary',
+        textTransform: 'uppercase',
+        letterSpacing: '0.04em',
+        border: '1px solid rgba(0,0,0,0.1)',
+        borderRadius: '6px',
+        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.18)' },
+        ...sx,
+      }}
+    >
+      {i18n.language === 'es' ? 'EN' : 'ES'}
+    </Button>
+  );
+
+  const linkProps = (href) =>
+    isExternal(href)
+      ? { component: 'a', href, target: '_blank', rel: 'noopener noreferrer' }
+      : { component: NextLink, href };
 
   return (
     <Box sx={{ bgcolor: '#fafafa', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -98,24 +135,17 @@ const AppLayout = ({ children }) => {
             justifyContent: 'space-between',
           }}
         >
-          {/* Left: Logo */}
+          {/* Logo */}
           <Box component="a" href={FRONTEND_URL} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
           </Box>
 
-          {/* Center: Nav links — desktop only */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 0.5,
-            }}
-          >
+          {/* Desktop nav links */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
             {navLinks.map((link) => (
               <Button
-                key={link.label}
-                component={isInternalLink(link.href) ? NextLink : 'a'}
-                href={link.href}
+                key={link.labelKey}
+                {...linkProps(link.href)}
                 sx={{
                   fontSize: '0.875rem',
                   fontWeight: 400,
@@ -124,24 +154,17 @@ const AppLayout = ({ children }) => {
                   px: 1.5,
                   py: 0.75,
                   borderRadius: '6px',
-                  '&:hover': {
-                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                  },
+                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
                 }}
               >
-                {link.label}
+                {t(link.labelKey)}
               </Button>
             ))}
           </Box>
 
-          {/* Right: Sign in + Get started — desktop */}
-          <Box
-            sx={{
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-              gap: 1.5,
-            }}
-          >
+          {/* Right: lang toggle + sign in + get started — desktop */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
+            <LangToggle />
             <Button
               component="a"
               href={`${FRONTEND_URL}/main/login`}
@@ -151,39 +174,28 @@ const AppLayout = ({ children }) => {
                 color: 'text.primary',
                 textTransform: 'none',
                 px: 1.5,
-                '&:hover': {
-                  backgroundColor: 'transparent',
-                  color: 'text.secondary',
-                },
+                '&:hover': { backgroundColor: 'transparent', color: 'text.secondary' },
               }}
             >
-              Sign in
+              {t('nav.signIn')}
             </Button>
             <Button
               variant="contained"
               component="a"
               href={`${FRONTEND_URL}/main/register`}
-              sx={{
-                borderRadius: '999px',
-                px: 3,
-                py: 0.875,
-                fontSize: '0.875rem',
-              }}
+              sx={{ borderRadius: '999px', px: 3, py: 0.875, fontSize: '0.875rem' }}
             >
-              Get started
+              {t('nav.getStarted')}
             </Button>
           </Box>
 
-          {/* Mobile hamburger */}
-          <IconButton
-            onClick={() => setMobileOpen(true)}
-            sx={{
-              display: { xs: 'inline-flex', md: 'none' },
-              color: 'text.primary',
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
+          {/* Mobile: lang toggle + hamburger */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
+            <LangToggle />
+            <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }}>
+              <MenuIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
 
@@ -192,14 +204,7 @@ const AppLayout = ({ children }) => {
         anchor="right"
         open={mobileOpen}
         onClose={() => setMobileOpen(false)}
-        PaperProps={{
-          sx: {
-            width: 280,
-            pt: 2,
-            px: 1,
-            bgcolor: '#ffffff',
-          },
-        }}
+        PaperProps={{ sx: { width: 280, pt: 2, px: 1, bgcolor: '#ffffff' } }}
       >
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1 }}>
           <IconButton onClick={() => setMobileOpen(false)}>
@@ -209,25 +214,14 @@ const AppLayout = ({ children }) => {
         <List>
           {navLinks.map((link) => (
             <ListItemButton
-              key={link.label}
-              component={isInternalLink(link.href) ? NextLink : 'a'}
-              href={link.href}
+              key={link.labelKey}
+              {...linkProps(link.href)}
               onClick={() => setMobileOpen(false)}
-              sx={{
-                borderRadius: '8px',
-                mx: 1,
-                '&:hover': {
-                  bgcolor: 'rgba(0, 0, 0, 0.04)',
-                },
-              }}
+              sx={{ borderRadius: '8px', mx: 1, '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}
             >
               <ListItemText
-                primary={link.label}
-                primaryTypographyProps={{
-                  fontSize: '0.9375rem',
-                  fontWeight: 400,
-                  color: 'text.primary',
-                }}
+                primary={t(link.labelKey)}
+                primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
               />
             </ListItemButton>
           ))}
@@ -238,17 +232,11 @@ const AppLayout = ({ children }) => {
             component="a"
             href={`${FRONTEND_URL}/main/login`}
             onClick={() => setMobileOpen(false)}
-            sx={{
-              borderRadius: '8px',
-              mx: 1,
-            }}
+            sx={{ borderRadius: '8px', mx: 1 }}
           >
             <ListItemText
-              primary="Sign in"
-              primaryTypographyProps={{
-                fontSize: '0.9375rem',
-                fontWeight: 400,
-              }}
+              primary={t('nav.signIn')}
+              primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400 }}
             />
           </ListItemButton>
         </List>
@@ -259,13 +247,9 @@ const AppLayout = ({ children }) => {
             component="a"
             href={`${FRONTEND_URL}/main/register`}
             onClick={() => setMobileOpen(false)}
-            sx={{
-              borderRadius: '999px',
-              py: 1.25,
-              fontSize: '0.875rem',
-            }}
+            sx={{ borderRadius: '999px', py: 1.25, fontSize: '0.875rem' }}
           >
-            Get started
+            {t('nav.getStarted')}
           </Button>
         </Box>
       </Drawer>
@@ -294,16 +278,12 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'grid',
-            gridTemplateColumns: {
-              xs: 'repeat(2, 1fr)',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(4, 1fr)',
-            },
+            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             gap: { xs: 4, md: 6 },
           }}
         >
           {footerColumns.map((col) => (
-            <Box key={col.title}>
+            <Box key={col.titleKey}>
               <Typography
                 sx={{
                   fontSize: '0.8125rem',
@@ -313,27 +293,42 @@ const AppLayout = ({ children }) => {
                   letterSpacing: '0.02em',
                 }}
               >
-                {col.title}
+                {t(col.titleKey)}
               </Typography>
-              {col.links.map((link) => (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  component={isInternalLink(link.href) ? NextLink : 'a'}
-                  underline="none"
-                  sx={{
-                    display: 'block',
-                    fontSize: '0.875rem',
-                    fontWeight: 400,
-                    color: 'rgba(255,255,255,0.8)',
-                    mb: 1.5,
-                    transition: 'color 0.15s ease',
-                    '&:hover': { color: 'common.white' },
-                  }}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {col.links.map((link) =>
+                link.soon ? (
+                  <Typography
+                    key={link.labelKey}
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 400,
+                      color: 'rgba(255,255,255,0.35)',
+                      mb: 1.5,
+                      cursor: 'default',
+                    }}
+                  >
+                    {t(link.labelKey)}
+                  </Typography>
+                ) : (
+                  <Link
+                    key={link.labelKey}
+                    {...linkProps(link.href)}
+                    underline="none"
+                    sx={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 400,
+                      color: 'rgba(255,255,255,0.8)',
+                      mb: 1.5,
+                      transition: 'color 0.15s ease',
+                      '&:hover': { color: 'common.white' },
+                    }}
+                  >
+                    {t(link.labelKey)}
+                  </Link>
+                )
+              )}
             </Box>
           ))}
 
@@ -348,7 +343,7 @@ const AppLayout = ({ children }) => {
                 letterSpacing: '0.02em',
               }}
             >
-              Connect
+              {t('footer.connect')}
             </Typography>
             <Box sx={{ display: 'flex', gap: 2 }}>
               {socialLinks.map((social) => (
@@ -385,10 +380,10 @@ const AppLayout = ({ children }) => {
           }}
         >
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-            BeWorking, S.L. — European business infrastructure.
+            {t('footer.tagline')}
           </Typography>
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-            Malaga, Spain
+            {t('footer.location')}
           </Typography>
         </Box>
       </Box>

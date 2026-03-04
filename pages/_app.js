@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import createEmotionCache from '@/createEmotionCache';
 import theme from '@/theme';
 import AppLayout from '@/components/layout/AppLayout';
+import i18n from '../src/i18n/i18n';
 import '@/styles/globals.css';
 
 const clientSideEmotionCache = createEmotionCache();
@@ -15,6 +16,13 @@ const queryClient = new QueryClient();
 
 export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+
+  React.useEffect(() => {
+    const saved = localStorage.getItem('beworking_lang');
+    if (saved && saved !== i18n.language) {
+      i18n.changeLanguage(saved);
+    }
+  }, []);
 
   return (
     <CacheProvider value={emotionCache}>
