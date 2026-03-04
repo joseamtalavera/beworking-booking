@@ -446,7 +446,7 @@ const HomePage = () => {
               borderRadius: '6px',
               '&:hover': {
                 backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                color: 'text.primary',
+                color: 'primary.main',
               },
             }}
           >
@@ -507,7 +507,7 @@ const HomePage = () => {
                   getOptionLabel={(option) => option?.label ?? ''}
                   value={
                     cityFilter === ''
-                      ? (cityOptions.find(option => option.id === 'all') || null)
+                      ? null
                       : (cityOptions.find(option => option.label?.toLowerCase() === cityFilter.toLowerCase()) || null)
                   }
                   onChange={(_, value) => setCityFilter(value && value.id !== 'all' ? value.label : '')}
@@ -542,7 +542,7 @@ const HomePage = () => {
                   getOptionLabel={(option) => option?.label ?? ''}
                   value={
                     location === ''
-                      ? (centros.find(c => c.id === 'all') || null)
+                      ? null
                       : (centros.find((c) => c.id !== 'all' && c.label?.toLowerCase() === (location || '').toLowerCase()) || null)
                   }
                   onChange={(_, value) => setLocation(value && value.id !== 'all' ? value.label : '')}
@@ -576,7 +576,6 @@ const HomePage = () => {
                   type="number"
                   value={people}
                   onChange={(e) => setPeople(e.target.value)}
-                  placeholder="Number of Users"
                   size="small"
                   InputProps={{
                     endAdornment: (
@@ -595,7 +594,7 @@ const HomePage = () => {
                   type="date"
                   value={checkIn}
                   onChange={(e) => setCheckIn(e.target.value)}
-                  InputLabelProps={{ shrink: true }}
+                  slotProps={{ inputLabel: { shrink: true } }}
                   size="small"
                   InputProps={{
                     endAdornment: (

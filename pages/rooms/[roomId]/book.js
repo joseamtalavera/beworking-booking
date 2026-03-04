@@ -168,7 +168,7 @@ const BookingFlowPage = () => {
             component={NextLink}
             href={`/rooms/${roomId}`}
             startIcon={<ArrowBackRoundedIcon />}
-            sx={{ mb: 2, textTransform: 'none', color: 'text.secondary', fontWeight: 600 }}
+            sx={{ mb: 2, textTransform: 'none', color: 'text.secondary', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
           >
             Back
           </Button>
