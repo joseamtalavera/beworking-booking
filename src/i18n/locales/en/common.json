@@ -47,6 +47,8 @@
     "wherePlaceholder": "Search destinations",
     "when": "When",
     "whenPlaceholder": "Add dates",
+    "time": "Time",
+    "timePlaceholder": "Add time",
     "who": "Who",
     "whoPlaceholder": "Add guests",
     "searchSpaces": "Search spaces",
