@@ -28,6 +28,8 @@ import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import OpacityRoundedIcon from '@mui/icons-material/OpacityRounded';
 import AppsRoundedIcon from '@mui/icons-material/AppsRounded';
+import KitchenRoundedIcon from '@mui/icons-material/KitchenRounded';
+import DeckRoundedIcon from '@mui/icons-material/DeckRounded';
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
 import MoneyOffRoundedIcon from '@mui/icons-material/MoneyOffRounded';
@@ -101,6 +103,12 @@ const pickAmenityIcon = (label) => {
   }
   if (normalized.includes('coworking') || normalized.includes('mesa')) {
     return MeetingRoomRoundedIcon;
+  }
+  if (normalized.includes('cocina')) {
+    return KitchenRoundedIcon;
+  }
+  if (normalized.includes('terraza')) {
+    return DeckRoundedIcon;
   }
   if (normalized.includes('vista') || normalized.includes('panor') || normalized.includes('ventana')) {
     return PanoramaRoundedIcon;
