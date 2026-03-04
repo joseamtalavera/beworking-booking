@@ -13,10 +13,10 @@ import { alpha } from '@mui/material/styles';
 import FavoriteBorderRoundedIcon from '@mui/icons-material/FavoriteBorderRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
-
-// Colors are now defined in theme.js - use theme palette: primary.main/dark for green
+import { useTranslation } from 'react-i18next';
 
 const SpaceCard = ({ space, onBookNow }) => {
+  const { t } = useTranslation();
   if (!space) {
     return null;
   }
@@ -28,7 +28,7 @@ const SpaceCard = ({ space, onBookNow }) => {
   };
 
   const isMeetingRoom = space.type === 'meeting_room';
-  const deskLabel = space.availableCount ? ` (${space.availableCount} available)` : '';
+  const deskLabel = space.availableCount ? ` (${space.availableCount} ${t('card.available')})` : '';
 
   return (
     <Box
@@ -79,7 +79,7 @@ const SpaceCard = ({ space, onBookNow }) => {
           >
             {space.instantBooking && (
               <Chip
-                label="Instant booking"
+                label={t('card.instantBooking')}
                 size="small"
                 sx={{
                   backgroundColor: (theme) => alpha(theme.palette.common.white, 0.9),
@@ -172,7 +172,7 @@ const SpaceCard = ({ space, onBookNow }) => {
               <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
                 <BusinessRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
                 <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-                  {space.typeLabel || (isMeetingRoom ? 'Meeting room' : `Desk${deskLabel}`)}
+                  {space.typeLabel || (isMeetingRoom ? t('card.meetingRoom') : `${t('card.desk')}${deskLabel}`)}
                 </Typography>
               </Stack>
             </Stack>
@@ -200,7 +200,7 @@ const SpaceCard = ({ space, onBookNow }) => {
                 minWidth: 0
               }}
             >
-              From {space.price}
+              {t('card.from')} {space.price}
               {space.priceUnit}
             </Typography>
 
@@ -219,7 +219,7 @@ const SpaceCard = ({ space, onBookNow }) => {
               }}
               disabled={!space.isBookable}
             >
-              Book now
+              {t('card.bookNow')}
             </Button>
           </Stack>
         </CardContent>

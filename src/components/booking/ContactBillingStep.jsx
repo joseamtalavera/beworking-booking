@@ -30,6 +30,7 @@ import MarkunreadMailboxRoundedIcon from '@mui/icons-material/MarkunreadMailboxR
 import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
+import { useTranslation } from 'react-i18next';
 
 const initialVisitorForm = {
   firstName: '',
@@ -47,15 +48,16 @@ const initialVisitorForm = {
 
 const buildErrors = (form) => {
   const errors = {};
-  if (!form.firstName.trim()) errors.firstName = 'First name is required';
-  if (!form.lastName.trim()) errors.lastName = 'Last name is required';
-  if (!form.email.trim()) errors.email = 'Email is required';
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'Enter a valid email address';
-  if (!form.phone.trim()) errors.phone = 'Phone number is required';
+  if (!form.firstName.trim()) errors.firstName = 'contact.errors.firstNameRequired';
+  if (!form.lastName.trim()) errors.lastName = 'contact.errors.lastNameRequired';
+  if (!form.email.trim()) errors.email = 'contact.errors.emailRequired';
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'contact.errors.emailInvalid';
+  if (!form.phone.trim()) errors.phone = 'contact.errors.phoneRequired';
   return errors;
 };
 
 const ContactBillingStep = ({ room, onBack, onContinue }) => {
+  const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
 
   const [formState, setFormState] = useState(initialVisitorForm);
@@ -81,7 +83,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
       const total = subtotal + vat;
       const months = schedule?.durationMonths || 1;
       return {
-        label: isDayBooking ? '1 day' : `${months} ${months === 1 ? 'month' : 'months'}`,
+        label: isDayBooking ? t('pricing.oneDay') : t(months === 1 ? 'pricing.month' : 'pricing.months', { count: months }),
         subtotal: subtotal.toFixed(2),
         vat: vat.toFixed(2),
         total: total.toFixed(2),
@@ -207,7 +209,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                       : '—'}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                {isDesk ? (schedule?.bookingType === 'day' ? 'Day' : 'Period') : 'Date'}
+                {isDesk ? (schedule?.bookingType === 'day' ? t('pricing.day') : t('pricing.period')) : t('pricing.dateLabel')}
               </Typography>
             </Stack>
             <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
@@ -220,7 +222,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                       : '—')}
               </Typography>
               <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                {isDesk ? 'Desk' : 'Time'}
+                {isDesk ? t('pricing.deskLabel') : t('pricing.time')}
               </Typography>
             </Stack>
             {schedule?.attendees ? (
@@ -229,7 +231,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
                   {schedule.attendees}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>Attendees</Typography>
+                <Typography variant="caption" sx={{ color: 'text.secondary' }}>{t('pricing.attendees')}</Typography>
               </Stack>
             ) : null}
           </Stack>
@@ -238,26 +240,26 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
               <Stack direction="row" justifyContent="space-between">
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {pricing.isSubscription ? 'Monthly subtotal' : 'Subtotal'}
+                  {pricing.isSubscription ? t('pricing.monthlySubtotal') : t('pricing.subtotal')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
               </Stack>
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>IVA (21%)</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('pricing.vat')}</Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
               </Stack>
               <Divider sx={{ my: 0.5 }} />
               <Stack direction="row" justifyContent="space-between">
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                  {pricing.isSubscription ? 'Monthly total' : 'Total'}
+                  {pricing.isSubscription ? t('pricing.monthlyTotal') : t('pricing.total')}
                 </Typography>
                 <Typography variant="body2" sx={{ fontWeight: 700 }}>
-                  €{pricing.total}{pricing.isSubscription ? '/month' : ''}
+                  €{pricing.total}{pricing.isSubscription ? t('pricing.perMonth') : ''}
                 </Typography>
               </Stack>
               {pricing.isSubscription && (
                 <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
-                  {pricing.months} months — first month charged now, then monthly
+                  {t('pricing.subscriptionNote', { months: pricing.months })}
                 </Typography>
               )}
             </Stack>
@@ -268,30 +270,30 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
           <Stack spacing={1} sx={{ mb: 2 }}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              Contact details
+              {t('contact.title')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              We'll use this to confirm your booking and send access instructions.
+              {t('contact.subtitle')}
             </Typography>
           </Stack>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="First name" value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.firstName')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Last name" value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.lastName')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Email" type="email" value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MailOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.email')} type="email" value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MailOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Phone" value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PhoneRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.phone')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PhoneRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="Company" value={formState.company} onChange={handleChange('company')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><BusinessRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.company')} value={formState.company} onChange={handleChange('company')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><BusinessRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField size="small" label="VAT / Tax ID" value={formState.taxId} onChange={handleChange('taxId')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><ReceiptRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.vatTaxId')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><ReceiptRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
           </Grid>
         </Paper>
@@ -301,31 +303,31 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
           <Stack spacing={1} sx={{ mb: 2 }}>
             <Stack direction="row" spacing={1} alignItems="baseline">
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                Billing address
+                {t('contact.billingAddress')}
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-                — optional
+                — {t('contact.optional')}
               </Typography>
             </Stack>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Required only if you need an invoice.
+              {t('contact.billingSubtitle')}
             </Typography>
           </Stack>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <TextField size="small" label="Address line 1" value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.addressLine1')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12}>
-              <TextField size="small" label="Address line 2" value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.addressLine2')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="City" value={formState.city} onChange={handleChange('city')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><LocationCityRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.city')} value={formState.city} onChange={handleChange('city')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><LocationCityRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="Postal code" value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MarkunreadMailboxRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.postalCode')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MarkunreadMailboxRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
             <Grid item xs={12} sm={4}>
-              <TextField size="small" label="Country" value={formState.country} onChange={handleChange('country')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PublicRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
+              <TextField size="small" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PublicRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
             </Grid>
           </Grid>
         </Paper>
@@ -344,7 +346,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               color: 'text.secondary',
             }}
           >
-            Back
+            {t('common.back')}
           </Button>
           <Button
             type="submit"
@@ -358,7 +360,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               fontSize: '0.95rem',
             }}
           >
-            Continue to payment
+            {t('contact.continueToPayment')}
           </Button>
         </Stack>
       </Stack>
