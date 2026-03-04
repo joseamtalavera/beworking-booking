@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "platform": "Platform",
+    "virtualOffice": "Virtual Office",
+    "spaces": "Spaces",
+    "marketplace": "Marketplace",
+    "signIn": "Sign in",
+    "getStarted": "Get started"
+  },
+  "footer": {
+    "product": "Product",
+    "company": "Company",
+    "legal": "Legal",
+    "connect": "Connect",
+    "tagline": "BeWorking — European business infrastructure.",
+    "location": "Malaga, Spain",
+    "links": {
+      "platform": "Platform",
+      "virtualOffice": "Virtual Office",
+      "spaces": "Spaces",
+      "marketplace": "Marketplace",
+      "about": "About",
+      "careers": "Careers",
+      "press": "Press",
+      "contact": "Contact",
+      "faq": "FAQ",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "cookies": "Cookies",
+      "sitemap": "Sitemap"
+    }
+  }
+}

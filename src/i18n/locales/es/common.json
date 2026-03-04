@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "platform": "Plataforma",
+    "virtualOffice": "Oficina Virtual",
+    "spaces": "Espacios",
+    "marketplace": "Marketplace",
+    "signIn": "Iniciar sesión",
+    "getStarted": "Empezar"
+  },
+  "footer": {
+    "product": "Producto",
+    "company": "Empresa",
+    "legal": "Legal",
+    "connect": "Contacto",
+    "tagline": "BeWorking — Infraestructura empresarial europea.",
+    "location": "Málaga, España",
+    "links": {
+      "platform": "Plataforma",
+      "virtualOffice": "Oficina Virtual",
+      "spaces": "Espacios",
+      "marketplace": "Marketplace",
+      "about": "Nosotros",
+      "careers": "Empleo",
+      "press": "Prensa",
+      "contact": "Contacto",
+      "faq": "Preguntas frecuentes",
+      "terms": "Términos",
+      "privacy": "Privacidad",
+      "cookies": "Cookies",
+      "sitemap": "Mapa del sitio"
+    }
+  }
+}
