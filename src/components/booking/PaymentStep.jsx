@@ -23,6 +23,7 @@ import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
 import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
+import { useTranslation } from 'react-i18next';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
@@ -62,6 +63,7 @@ const buildBookingPayload = (visitor, schedule, room, isDesk, extraFields = {}) 
 
 /* ─── One-time payment form (unchanged flow) ─── */
 const PaymentIntentForm = ({ onBack, amount, room }) => {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const schedule = useBookingFlow((state) => state.schedule);
@@ -98,7 +100,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             });
             if (conflict) {
               setSubmitting(false);
-              setError('This time slot is no longer available. Please go back and select a different time.');
+              setError(t('payment.slotUnavailable'));
               return;
             }
           }
@@ -115,7 +117,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
 
     if (result.error) {
       setSubmitting(false);
-      setError(result.error.message || 'Payment failed');
+      setError(result.error.message || t('payment.paymentFailed'));
     } else if (result.paymentIntent?.status === 'succeeded') {
       try {
         await createPublicBooking(
@@ -128,10 +130,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
         setSubmitting(false);
-        setError(
-          'Your payment was processed but the booking could not be created (the time slot may have been taken). ' +
-          'Please contact us for a refund. Reference: ' + result.paymentIntent.id
-        );
+        setError(t('payment.paymentSuccessBookingFailed', { ref: result.paymentIntent.id }));
       }
     } else {
       setSubmitting(false);
@@ -149,7 +148,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
           <Stack direction="row" spacing={1} alignItems="center">
             <LockRoundedIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Secure payment powered by Stripe
+              {t('payment.securePayment')}
             </Typography>
           </Stack>
           <PaymentElement />
@@ -167,7 +166,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             textTransform: 'none', fontWeight: 600, color: 'text.secondary',
           }}
         >
-          Back
+          {t('common.back')}
         </Button>
         <Button
           type="submit"
@@ -178,7 +177,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
           }}
         >
-          {submitting ? 'Processing…' : `Pay €${amount}`}
+          {submitting ? t('payment.processing') : t('payment.pay', { amount })}
         </Button>
       </Stack>
     </Stack>
@@ -187,6 +186,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
 
 /* ─── Subscription form (SetupIntent flow) ─── */
 const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
+  const { t } = useTranslation();
   const stripe = useStripe();
   const elements = useElements();
   const schedule = useBookingFlow((state) => state.schedule);
@@ -208,7 +208,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
 
     if (result.error) {
       setSubmitting(false);
-      setError(result.error.message || 'Card setup failed');
+      setError(result.error.message || t('payment.cardSetupFailed'));
       return;
     }
 
@@ -251,7 +251,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
       setSuccess(true);
     } catch (err) {
       setSubmitting(false);
-      setError(err.message || 'Subscription creation failed');
+      setError(err.message || t('payment.subscriptionFailed'));
     }
   };
 
@@ -266,7 +266,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
           <Stack direction="row" spacing={1} alignItems="center">
             <LockRoundedIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Secure payment powered by Stripe
+              {t('payment.securePayment')}
             </Typography>
           </Stack>
           <PaymentElement />
@@ -276,13 +276,13 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
       <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: (theme) => alpha(theme.palette.info.main, 0.04) }}>
         <Stack spacing={0.5}>
           <Typography variant="body2" sx={{ fontWeight: 600 }}>
-            Monthly subscription
+            {t('payment.monthlySubscription')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Charged today: €{monthlyAmount.toFixed(2)}
+            {t('payment.chargedToday', { amount: monthlyAmount.toFixed(2) })}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            Then €{monthlyAmount.toFixed(2)}/month for {durationMonths - 1} remaining {durationMonths - 1 === 1 ? 'month' : 'months'}
+            {t('payment.thenMonthly', { amount: monthlyAmount.toFixed(2), remaining: durationMonths - 1, label: durationMonths - 1 === 1 ? t('payment.monthSingular') : t('payment.monthPlural') })}
           </Typography>
         </Stack>
       </Paper>
@@ -298,7 +298,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
             textTransform: 'none', fontWeight: 600, color: 'text.secondary',
           }}
         >
-          Back
+          {t('common.back')}
         </Button>
         <Button
           type="submit"
@@ -309,7 +309,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
             textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
           }}
         >
-          {submitting ? 'Processing…' : `Subscribe — €${monthlyAmount.toFixed(2)}/month`}
+          {submitting ? t('payment.processing') : t('payment.subscribe', { amount: monthlyAmount.toFixed(2) })}
         </Button>
       </Stack>
     </Stack>
@@ -318,6 +318,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
 
 /* ─── Free booking form (no Stripe) ─── */
 const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
+  const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
   const visitor = useBookingVisitor();
   const isDesk = room?.priceUnit === '/month';
@@ -334,14 +335,14 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
       );
       setSuccess(true);
     } catch (err) {
-      setError(err.message || 'Failed to create booking');
+      setError(err.message || t('payment.failedToCreate'));
     } finally {
       setSubmitting(false);
     }
   };
 
   if (success) {
-    return <SuccessMessage amount="FREE" />;
+    return <SuccessMessage amount={t('payment.free')} />;
   }
 
   return (
@@ -359,11 +360,11 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
           <Stack direction="row" spacing={1} alignItems="center">
             <CheckCircleRoundedIcon sx={{ fontSize: 20, color: 'success.main' }} />
             <Typography variant="body1" sx={{ fontWeight: 700 }}>
-              Free booking
+              {t('payment.freeBooking')}
             </Typography>
           </Stack>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            This is your free booking ({usage.used + 1} of {usage.freeLimit} this month).
+            {t('payment.freeBookingDesc', { used: usage.used + 1, limit: usage.freeLimit })}
           </Typography>
           {pricing && (
             <Stack direction="row" spacing={1} alignItems="center">
@@ -374,7 +375,7 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
                 €{pricing.total}
               </Typography>
               <Chip
-                label="FREE"
+                label={t('payment.free')}
                 size="small"
                 color="success"
                 sx={{ fontWeight: 700, fontSize: '0.8rem' }}
@@ -395,7 +396,7 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
             textTransform: 'none', fontWeight: 600, color: 'text.secondary',
           }}
         >
-          Back
+          {t('common.back')}
         </Button>
         <Button
           variant="contained"
@@ -407,7 +408,7 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
             textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
           }}
         >
-          {submitting ? 'Processing…' : 'Confirm free booking'}
+          {submitting ? t('payment.processing') : t('payment.confirmFreeBooking')}
         </Button>
       </Stack>
     </Stack>
@@ -415,34 +416,38 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
 };
 
 /* ─── Success message ─── */
-const SuccessMessage = ({ amount, isSubscription }) => (
-  <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
-    <Stack spacing={3} alignItems="center">
-      <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
-      <Typography variant="h5" sx={{ fontWeight: 700 }}>
-        Booking confirmed!
-      </Typography>
-      <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-        {isSubscription
-          ? `Your subscription of ${amount} has been activated. You'll receive a confirmation email shortly with access instructions.`
-          : `Your payment of ${amount} has been processed successfully. You'll receive a confirmation email shortly with access instructions.`}
-      </Typography>
-      <Button
-        href="/"
-        variant="contained"
-        sx={{
-          borderRadius: 999, px: 4, py: 1.25,
-          textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
-        }}
-      >
-        Browse more spaces
-      </Button>
-    </Stack>
-  </Paper>
-);
+const SuccessMessage = ({ amount, isSubscription }) => {
+  const { t } = useTranslation();
+  return (
+    <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+      <Stack spacing={3} alignItems="center">
+        <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
+        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          {t('payment.bookingConfirmed')}
+        </Typography>
+        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+          {isSubscription
+            ? t('payment.subscriptionActivated', { amount })
+            : t('payment.paymentProcessed', { amount })}
+        </Typography>
+        <Button
+          href="/"
+          variant="contained"
+          sx={{
+            borderRadius: 999, px: 4, py: 1.25,
+            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
+          }}
+        >
+          {t('payment.browseMore')}
+        </Button>
+      </Stack>
+    </Paper>
+  );
+};
 
 /* ─── Main PaymentStep component ─── */
 const PaymentStep = ({ room, onBack }) => {
+  const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
   const visitor = useBookingVisitor();
   const isDesk = room?.priceUnit === '/month';
@@ -537,12 +542,12 @@ const PaymentStep = ({ room, onBack }) => {
       }
 
       if (!paymentsBaseUrl) {
-        setError('Payment service URL is not configured');
+        setError(t('payment.serviceNotConfigured'));
         setLoading(false);
         return;
       }
       if (!publishableKey) {
-        setError('Stripe publishable key is not configured');
+        setError(t('payment.stripeNotConfigured'));
         setLoading(false);
         return;
       }
@@ -589,7 +594,7 @@ const PaymentStep = ({ room, onBack }) => {
           setClientSecret(data.clientSecret);
         }
       } catch (err) {
-        setError(err.message || 'Failed to initialize payment');
+        setError(err.message || t('payment.failedToInitialize'));
       } finally {
         setLoading(false);
       }
@@ -616,7 +621,7 @@ const PaymentStep = ({ room, onBack }) => {
               />
             </Box>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Preparing secure payment…
+              {t('payment.preparingPayment')}
             </Typography>
           </Stack>
         </Paper>
@@ -637,7 +642,7 @@ const PaymentStep = ({ room, onBack }) => {
               textTransform: 'none', fontWeight: 600, color: 'text.secondary',
             }}
           >
-            Back
+            {t('common.back')}
           </Button>
         </Box>
       </Stack>
@@ -654,7 +659,7 @@ const PaymentStep = ({ room, onBack }) => {
   }
 
   if (!clientSecret || !stripePromise) {
-    return <Alert severity="warning">Payment is not available right now.</Alert>;
+    return <Alert severity="warning">{t('payment.notAvailable')}</Alert>;
   }
 
   return (
@@ -676,7 +681,9 @@ const PaymentStep = ({ room, onBack }) => {
   );
 };
 
-const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => (
+const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => {
+  const { t } = useTranslation();
+  return (
   <Paper
     elevation={0}
     sx={{
@@ -774,31 +781,32 @@ const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => (
       <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {isSubscription ? 'Monthly subtotal' : 'Subtotal'}
+            {isSubscription ? t('pricing.monthlySubtotal') : t('pricing.subtotal')}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
         </Stack>
         <Stack direction="row" justifyContent="space-between">
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>IVA (21%)</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('pricing.vat')}</Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
         </Stack>
         <Divider sx={{ my: 0.5 }} />
         <Stack direction="row" justifyContent="space-between">
           <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            {isSubscription ? 'Monthly total' : 'Total'}
+            {isSubscription ? t('pricing.monthlyTotal') : t('pricing.total')}
           </Typography>
           <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            €{pricing.total}{isSubscription ? '/month' : ''}
+            €{pricing.total}{isSubscription ? t('pricing.perMonth') : ''}
           </Typography>
         </Stack>
         {isSubscription && (
           <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            {pricing.months} months — first month charged now, then monthly
+            {t('pricing.subscriptionNote', { months: pricing.months })}
           </Typography>
         )}
       </Stack>
     )}
   </Paper>
-);
+  );
+};
 
 export default PaymentStep;

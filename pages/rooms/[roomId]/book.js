@@ -20,8 +20,10 @@ import ContactBillingStep from '@/components/booking/ContactBillingStep';
 import PaymentStep from '@/components/booking/PaymentStep';
 import { useBookingVisitor } from '@/store/useBookingVisitor';
 import { fetchBookingProductos } from '@/api/bookings';
+import { useTranslation } from 'react-i18next';
 
 export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
+  const { t } = useTranslation();
   const { rooms, setRooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
   const activeStep = useBookingFlow((state) => state.activeStep);
@@ -113,14 +115,14 @@ export const BookingFlowContent = ({ roomId, layout = 'page' }) => {
     if (rooms.length === 0) {
       return (
         <Box sx={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>Loading room…</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('common.loading')}</Typography>
         </Box>
       );
     }
     return (
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
-          <Typography variant="h6">Room not found.</Typography>
+          <Typography variant="h6">{t('common.roomNotFound')}</Typography>
         </Box>
       </Box>
     );
@@ -170,7 +172,7 @@ const BookingFlowPage = () => {
             startIcon={<ArrowBackRoundedIcon />}
             sx={{ mb: 2, textTransform: 'none', color: 'text.secondary', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
           >
-            Back
+            {t('common.back')}
           </Button>
           <BookingFlowContent roomId={roomId} layout="page" />
         </Box>

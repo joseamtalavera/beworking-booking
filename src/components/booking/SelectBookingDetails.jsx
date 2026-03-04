@@ -22,10 +22,12 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
 import InputAdornment from '@mui/material/InputAdornment';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
 
 const SelectBookingDetails = ({ room, onContinue }) => {
+  const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
@@ -118,7 +120,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             {room?.centro}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {`Capacity ${room?.capacity ?? '—'} · from ${room?.priceFrom ?? room?.price ?? '—'} ${room?.priceUnit ?? room?.currency ?? 'EUR'}/h`}
+            {t('booking.capacityFrom', { capacity: room?.capacity ?? '—', price: room?.priceFrom ?? room?.price ?? '—', unit: room?.priceUnit ?? room?.currency ?? 'EUR' })}
           </Typography>
         </Stack>
       </Paper>
@@ -128,16 +130,16 @@ const SelectBookingDetails = ({ room, onContinue }) => {
         <Stack spacing={2.5}>
           <Stack spacing={0.5}>
             <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-              Pick your date & time
+              {t('booking.pickDateTime')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Select a date and click an available slot, or set the time manually.
+              {t('booking.pickDateTimeDesc')}
             </Typography>
           </Stack>
 
           <TextField
             size="small"
-            label="Date"
+            label={t('booking.date')}
             type="date"
             value={schedule.date || ''}
             onChange={handleDateChange}
@@ -149,7 +151,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               size="small"
-              label="Start time"
+              label={t('booking.startTime')}
               type="time"
               value={schedule.startTime || DEFAULT_TIME_RANGE.start}
               onChange={handleTimeChange('startTime')}
@@ -159,7 +161,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             />
             <TextField
               size="small"
-              label="End time"
+              label={t('booking.endTime')}
               type="time"
               value={schedule.endTime || DEFAULT_TIME_RANGE.end}
               onChange={handleTimeChange('endTime')}
@@ -172,7 +174,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           <Divider />
 
           {isError ? (
-            <Alert severity="error">{error?.message || 'Unable to fetch availability.'}</Alert>
+            <Alert severity="error">{error?.message || t('booking.fetchError')}</Alert>
           ) : null}
 
           {isLoading ? (
@@ -207,12 +209,12 @@ const SelectBookingDetails = ({ room, onContinue }) => {
       <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
         <Stack spacing={2}>
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-            Additional details
+            {t('booking.additionalDetails')}
           </Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
             <TextField
               size="small"
-              label="Number of attendees"
+              label={t('booking.numberOfAttendees')}
               type="number"
               value={schedule.attendees || ''}
               onChange={handleAttendeesChange}
@@ -229,13 +231,13 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           </Stack>
           <TextField
             size="small"
-            label="Notes (optional)"
+            label={t('booking.notesOptional')}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             fullWidth
             multiline
             minRows={2}
-            placeholder="Any special requirements or requests..."
+            placeholder={t('booking.notesPlaceholder')}
             InputProps={{ startAdornment: <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}><NotesRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
           />
         </Stack>
@@ -258,7 +260,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             fontSize: '0.95rem',
           }}
         >
-          Continue
+          {t('common.continue')}
         </Button>
       </Box>
     </Stack>

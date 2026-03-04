@@ -4,11 +4,13 @@ import { useEffect } from 'react';
 import { Box, Button, Dialog, DialogContent, IconButton, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useBookingFlow } from '../../store/useBookingFlow';
+import { useTranslation } from 'react-i18next';
 
 const LOGIN_URL = process.env.NEXT_PUBLIC_LOGIN_URL || 'http://localhost:3020/main/login';
 
 // Modal dialog wrapper for booking flow
 const BookingFlowModal = ({ open, onClose, onContinue }) => {
+  const { t } = useTranslation();
   const resetFlow = useBookingFlow((state) => state.resetFlow);
 
   useEffect(() => {
@@ -53,15 +55,15 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
         <Stack spacing={3}>
           <Stack spacing={1}>
             <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              ¿Cómo quieres continuar?
+              {t('modal.title')}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              Puedes seguir como invitado o iniciar sesión para usar tus datos guardados.
+              {t('modal.subtitle')}
             </Typography>
           </Stack>
           <Stack direction="row" spacing={1} justifyContent="flex-end">
             <Button onClick={handleClose} sx={{ color: 'text.secondary', fontWeight: 600 }}>
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button
               onClick={handleLogin}
@@ -75,7 +77,7 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
                 '&:hover': { bgcolor: 'background.default', borderColor: 'grey.400' }
               }}
             >
-              Iniciar sesión
+              {t('modal.signIn')}
             </Button>
             <Button
               variant="contained"
@@ -87,7 +89,7 @@ const BookingFlowModal = ({ open, onClose, onContinue }) => {
                 '&:hover': { backgroundColor: 'primary.dark' }
               }}
             >
-              Seguir como invitado
+              {t('modal.continueAsGuest')}
             </Button>
           </Stack>
         </Stack>

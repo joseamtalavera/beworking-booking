@@ -50,6 +50,7 @@ import {
 } from '@/store/useCatalogRooms';
 import { fetchPublicAvailability, fetchDeskAvailability, fetchBookingProductos } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
+import { useTranslation } from 'react-i18next';
 
 const pickAmenityIcon = (label) => {
   if (!label) {
@@ -145,6 +146,7 @@ const pickInstructionIcon = (text) => {
 };
 
 const RoomDetailPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { roomId } = router.query;
   const { rooms, setRooms } = useCatalogRooms();
@@ -291,7 +293,7 @@ const RoomDetailPage = () => {
     if (rooms.length === 0) {
       return (
         <Box sx={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>Loading room…</Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('common.loading')}</Typography>
         </Box>
       );
     }
@@ -299,9 +301,9 @@ const RoomDetailPage = () => {
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
           <Stack spacing={2}>
-            <Typography variant="h5">Room not found</Typography>
+            <Typography variant="h5">{t('common.roomNotFound')}</Typography>
             <Button component={NextLink} href="/" variant="contained">
-              Back to discovery
+              {t('common.backToDiscovery')}
             </Button>
           </Stack>
         </Box>
@@ -371,7 +373,7 @@ const RoomDetailPage = () => {
               startIcon={<ArrowBackRoundedIcon />}
               sx={{ alignSelf: 'flex-start', textTransform: 'none', color: 'text.secondary', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
             >
-              Back
+              {t('common.back')}
             </Button>
             <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
               <Stack spacing={1}>
@@ -387,7 +389,7 @@ const RoomDetailPage = () => {
                   </Typography>
                 )}
                   <Typography variant="body1" sx={{ color: 'text.secondary' }}>
-                  {`Capacidad ${room.capacity} personas · desde ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
+                  {`${t('room.capacity', { count: room.capacity })} · ${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
                 </Typography>
               </Stack>
               <Stack direction="row" spacing={2} alignItems="center">
@@ -408,7 +410,7 @@ const RoomDetailPage = () => {
                     color: 'text.primary'
                   }}
                 >
-                  Compartir
+                  {t('room.share')}
                 </Button>
                 <Button
                   size="small"
@@ -430,7 +432,7 @@ const RoomDetailPage = () => {
                     color: 'text.primary'
                   }}
                 >
-                  Guardar
+                  {t('room.save')}
                 </Button>
               </Stack>
             </Stack>
@@ -494,7 +496,7 @@ const RoomDetailPage = () => {
                   '&:hover': { backgroundColor: 'background.default' }
                 }}
               >
-                {`${galleryImages.length} photos`}
+                {t('room.photos', { count: galleryImages.length })}
               </Button>
             </Box>
           ) : null}
@@ -504,7 +506,7 @@ const RoomDetailPage = () => {
               <Stack spacing={4}>
                 <section>
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-                    Descripción
+                    {t('room.description')}
                   </Typography>
                   <Typography variant="body1" sx={{ color: 'text.secondary', lineHeight: 1.65 }}>
                     {description}
@@ -514,7 +516,7 @@ const RoomDetailPage = () => {
                 {amenities.length ? (
                   <section>
                     <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
-                      Servicios incluidos
+                      {t('room.amenities')}
                     </Typography>
                     <Stack direction="row" flexWrap="wrap" useFlexGap spacing={1.5}>
                       {amenities.map((amenity) => {
@@ -553,7 +555,7 @@ const RoomDetailPage = () => {
 
                 <section>
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-                    Política de cancelación
+                    {t('room.cancellation')}
                   </Typography>
                   <Stack spacing={1.25}>
                     {cancellationPolicy.map((item) => {
@@ -572,7 +574,7 @@ const RoomDetailPage = () => {
 
                 <section>
                   <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }}>
-                    Instrucciones
+                    {t('room.instructions')}
                   </Typography>
                   <Stack spacing={1.25}>
                     {bookingInstructions.map((item) => {
@@ -595,16 +597,15 @@ const RoomDetailPage = () => {
             <Grid item xs={12} md={5}>
               <Stack spacing={3} sx={{ border: '1px solid', borderColor: 'grey.200', borderRadius: 3, p: 3, bgcolor: 'background.paper' }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                  Disponibilidad
+                  {t('room.availability')}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  Consulta los bloques reservados y solicita tu horario ideal. La disponibilidad se sincroniza con el panel
-                  de Agenda del dashboard.
+                  {t('room.availabilityDesc')}
                 </Typography>
                 <Divider />
                 <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
                   <TextField
-                    label="Select date"
+                    label={t('room.selectDate')}
                     type="date"
                     size="small"
                     value={selectedDate}
@@ -631,7 +632,7 @@ const RoomDetailPage = () => {
                     py: 1.25,
                   }}
                 >
-                  Start booking
+                  {t('room.startBooking')}
                 </Button>
               </Stack>
             </Grid>
@@ -640,7 +641,7 @@ const RoomDetailPage = () => {
           {/* NEW: map */}
           <section>
             <Typography variant="h5" sx={{ fontWeight: 700, mb: 2 }}>
-              Ubicación
+              {t('room.location')}
             </Typography>
             <Box
               sx={{
