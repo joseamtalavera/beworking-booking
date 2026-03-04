@@ -369,7 +369,7 @@ const RoomDetailPage = () => {
               component={NextLink}
               href="/"
               startIcon={<ArrowBackRoundedIcon />}
-              sx={{ alignSelf: 'flex-start', textTransform: 'none', color: 'text.secondary', fontWeight: 600 }}
+              sx={{ alignSelf: 'flex-start', textTransform: 'none', color: 'text.secondary', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
             >
               Back
             </Button>
