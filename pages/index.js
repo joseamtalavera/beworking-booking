@@ -274,6 +274,7 @@ const HomePage = () => {
         amenities: Array.isArray(producto.amenities) ? producto.amenities : [],
         tags: Array.isArray(producto.tags) ? producto.tags : [],
         location: city || centerName || 'Málaga',
+        sizeSqm: producto.sizeSqm != null ? Number(producto.sizeSqm) : null,
         instantBooking: producto.instantBooking !== false,
         centroCode: productCenter || undefined,
         centerName: centerName || undefined,
