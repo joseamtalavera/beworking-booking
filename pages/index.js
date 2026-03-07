@@ -19,6 +19,7 @@ import {
 
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
@@ -29,6 +30,7 @@ import {
 } from '@/store/useCatalogRooms';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
+import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
 import { useTranslation } from 'react-i18next';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
@@ -196,7 +198,8 @@ const HomePage = () => {
 
   const spaceTypes = [
     { value: 'meeting_room', labelKey: 'home.meetingRooms', icon: <MeetingRoomRoundedIcon /> },
-    { value: 'desk', labelKey: 'home.desks', icon: <DeskRoundedIcon /> }
+    { value: 'desk', labelKey: 'home.coworking', icon: <DeskRoundedIcon /> },
+    { value: 'virtual_office', labelKey: 'home.virtualOffice', icon: <BusinessRoundedIcon /> }
   ];
 
   const filteredSpaces = useMemo(() => {
@@ -397,8 +400,8 @@ const HomePage = () => {
   return (
     <>
       <Head>
-        <title>Find Meeting Rooms & Desks | BeWorking Booking</title>
-        <meta name="description" content="Find the perfect workspace for your needs. Book meeting rooms for team collaboration or individual desks for focused work." />
+        <title>BeSpaces | Meeting Rooms, Coworking & Virtual Office</title>
+        <meta name="description" content="Meeting rooms, coworking desks, and virtual offices — find the right workspace for your business." />
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: 4 }}>
@@ -455,154 +458,159 @@ const HomePage = () => {
             ))}
           </Tabs>
 
-          {/* Search Bar */}
-          <Paper
-            elevation={0}
-            sx={{
-              mb: 3,
-              borderRadius: 999,
-              border: '1px solid',
-              borderColor: 'divider',
-              backgroundColor: 'background.paper',
-              display: 'flex',
-              alignItems: 'center',
-              overflow: 'hidden',
-              boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
-              flexDirection: { xs: 'column', sm: 'row' },
-              borderRadius: { xs: 3, sm: 999 },
-            }}
-          >
-            {/* Where */}
-            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <Autocomplete
-                size="small"
-                freeSolo
-                options={cityOptions.filter(o => !o.isAllOption)}
-                getOptionLabel={(option) => typeof option === 'string' ? option : (option?.label ?? '')}
-                value={cityFilter || null}
-                onChange={(_, value) => setCityFilter(typeof value === 'string' ? value : (value && value.id !== 'all' ? value.label : ''))}
-                onInputChange={(_, value, reason) => { if (reason === 'input') setCityFilter(value); }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant="standard"
-                    placeholder={t('home.wherePlaceholder')}
-                    label={t('home.where')}
-                    slotProps={{ input: { ...params.InputProps, disableUnderline: true }, inputLabel: { shrink: true } }}
-                    sx={{
-                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                      '& .MuiInput-input': { fontSize: '0.875rem', color: 'text.secondary', py: 0.25 },
-                    }}
-                  />
-                )}
-              />
-            </Box>
-            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-
-            {/* When */}
-            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <TextField
-                variant="standard"
-                type="date"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                label={t('home.when')}
-                placeholder={t('home.whenPlaceholder')}
-                fullWidth
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+          {activeTab === 2 ? (
+            <VirtualOfficeSection />
+          ) : (
+            <>
+              {/* Search Bar */}
+              <Paper
+                elevation={0}
                 sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: checkIn ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
-              />
-            </Box>
-            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-
-            {/* Time */}
-            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <TextField
-                variant="standard"
-                type="time"
-                value={timeFilter}
-                onChange={(e) => setTimeFilter(e.target.value)}
-                label={t('home.time')}
-                placeholder={t('home.timePlaceholder')}
-                fullWidth
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: timeFilter ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
-              />
-            </Box>
-            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-
-            {/* Who */}
-            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <TextField
-                variant="standard"
-                type="number"
-                value={people}
-                onChange={(e) => setPeople(e.target.value)}
-                label={t('home.who')}
-                placeholder={t('home.whoPlaceholder')}
-                fullWidth
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: people ? 'text.primary' : 'text.secondary', py: 0.25 },
-                  '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
-                  '& input[type=number]': { MozAppearance: 'textfield' },
-                }}
-              />
-            </Box>
-
-            {/* Search button */}
-            <Box sx={{ px: { xs: 2, sm: 1.5 }, py: { xs: 1.5, sm: 0 }, width: { xs: '100%', sm: 'auto' }, display: 'flex', justifyContent: 'center' }}>
-              <IconButton
-                aria-label={t('home.searchSpaces')}
-                sx={{
-                  bgcolor: 'primary.main',
-                  color: 'common.white',
-                  width: 44,
-                  height: 44,
-                  '&:hover': { bgcolor: 'primary.dark' },
+                  mb: 3,
+                  border: '1px solid',
+                  borderColor: 'divider',
+                  backgroundColor: 'background.paper',
+                  display: 'flex',
+                  alignItems: 'center',
+                  overflow: 'hidden',
+                  boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  borderRadius: { xs: 3, sm: 999 },
                 }}
               >
-                <SearchRoundedIcon />
-              </IconButton>
-            </Box>
-          </Paper>
+                {/* Where */}
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <Autocomplete
+                    size="small"
+                    freeSolo
+                    options={cityOptions.filter(o => !o.isAllOption)}
+                    getOptionLabel={(option) => typeof option === 'string' ? option : (option?.label ?? '')}
+                    value={cityFilter || null}
+                    onChange={(_, value) => setCityFilter(typeof value === 'string' ? value : (value && value.id !== 'all' ? value.label : ''))}
+                    onInputChange={(_, value, reason) => { if (reason === 'input') setCityFilter(value); }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        placeholder={t('home.wherePlaceholder')}
+                        label={t('home.where')}
+                        slotProps={{ input: { ...params.InputProps, disableUnderline: true }, inputLabel: { shrink: true } }}
+                        sx={{
+                          '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                          '& .MuiInput-input': { fontSize: '0.875rem', color: 'text.secondary', py: 0.25 },
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
 
-          {/* Results Count */}
-          <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
-              {t(filteredSpaces.length === 1 ? 'home.showingSpace' : 'home.showingSpaces', { count: filteredSpaces.length })}
-            </Typography>
-          </Stack>
+                {/* When */}
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard"
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    label={t('home.when')}
+                    placeholder={t('home.whenPlaceholder')}
+                    fullWidth
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={{
+                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                      '& .MuiInput-input': { fontSize: '0.875rem', color: checkIn ? 'text.primary' : 'text.secondary', py: 0.25 },
+                    }}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
 
-          {/* Space Listings */}
-          <Box
-            sx={{
-              width: '100%',
-              display: 'grid',
-              gap: (theme) => theme.spacing(3),
-              gridTemplateColumns: {
-                xs: 'repeat(1, minmax(0, 1fr))',
-                sm: 'repeat(2, minmax(0, 1fr))',
-                md: 'repeat(3, minmax(0, 1fr))',
-                lg: 'repeat(4, minmax(0, 1fr))'
-              },
-              alignItems: 'stretch'
-            }}
-          >
-            {filteredSpaces.map((space) => (
-              <SpaceCard key={space.id} space={space} onBookNow={handleBookNow} />
-            ))}
-          </Box>
+                {/* Time */}
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard"
+                    type="time"
+                    value={timeFilter}
+                    onChange={(e) => setTimeFilter(e.target.value)}
+                    label={t('home.time')}
+                    placeholder={t('home.timePlaceholder')}
+                    fullWidth
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={{
+                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                      '& .MuiInput-input': { fontSize: '0.875rem', color: timeFilter ? 'text.primary' : 'text.secondary', py: 0.25 },
+                    }}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+
+                {/* Who */}
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard"
+                    type="number"
+                    value={people}
+                    onChange={(e) => setPeople(e.target.value)}
+                    label={t('home.who')}
+                    placeholder={t('home.whoPlaceholder')}
+                    fullWidth
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={{
+                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                      '& .MuiInput-input': { fontSize: '0.875rem', color: people ? 'text.primary' : 'text.secondary', py: 0.25 },
+                      '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
+                      '& input[type=number]': { MozAppearance: 'textfield' },
+                    }}
+                  />
+                </Box>
+
+                {/* Search button */}
+                <Box sx={{ px: { xs: 2, sm: 1.5 }, py: { xs: 1.5, sm: 0 }, width: { xs: '100%', sm: 'auto' }, display: 'flex', justifyContent: 'center' }}>
+                  <IconButton
+                    aria-label={t('home.searchSpaces')}
+                    sx={{
+                      bgcolor: 'primary.main',
+                      color: 'common.white',
+                      width: 44,
+                      height: 44,
+                      '&:hover': { bgcolor: 'primary.dark' },
+                    }}
+                  >
+                    <SearchRoundedIcon />
+                  </IconButton>
+                </Box>
+              </Paper>
+
+              {/* Results Count */}
+              <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                  {t(filteredSpaces.length === 1 ? 'home.showingSpace' : 'home.showingSpaces', { count: filteredSpaces.length })}
+                </Typography>
+              </Stack>
+
+              {/* Space Listings */}
+              <Box
+                sx={{
+                  width: '100%',
+                  display: 'grid',
+                  gap: (theme) => theme.spacing(3),
+                  gridTemplateColumns: {
+                    xs: 'repeat(1, minmax(0, 1fr))',
+                    sm: 'repeat(2, minmax(0, 1fr))',
+                    md: 'repeat(3, minmax(0, 1fr))',
+                    lg: 'repeat(4, minmax(0, 1fr))'
+                  },
+                  alignItems: 'stretch'
+                }}
+              >
+                {filteredSpaces.map((space) => (
+                  <SpaceCard key={space.id} space={space} onBookNow={handleBookNow} />
+                ))}
+              </Box>
+            </>
+          )}
 
         </Box>
       </Box>

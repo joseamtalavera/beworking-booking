@@ -39,10 +39,11 @@
     "backToDiscovery": "Back to discovery"
   },
   "home": {
-    "title": "Meeting rooms and desks in your city",
-    "subtitle": "Find the perfect workspace for your needs. Choose between meeting rooms for team collaboration or individual desks for focused work.",
+    "title": "BeSpaces",
+    "subtitle": "Meeting rooms, coworking desks, and virtual offices — find the right workspace for your business.",
     "meetingRooms": "Meeting Rooms",
-    "desks": "Desks",
+    "coworking": "Coworking",
+    "virtualOffice": "Virtual Office",
     "where": "Where",
     "wherePlaceholder": "Search destinations",
     "when": "When",
@@ -192,5 +193,59 @@
     "stripeNotConfigured": "Stripe publishable key is not configured",
     "failedToInitialize": "Failed to initialize payment",
     "notAvailable": "Payment is not available right now."
+  },
+  "virtualOffice": {
+    "hero": {
+      "label": "Virtual Office",
+      "heading": "Your company's registered place in the world.",
+      "subheading": "A legal address, a professional presence, and mail handling — without the overhead of a physical office."
+    },
+    "benefits": {
+      "heading": "Everything a business address should offer.",
+      "items": [
+        { "title": "Legal & Fiscal Address", "body": "A registered business address valid for tax authorities, banks, and registries." },
+        { "title": "Mail Scanning", "body": "Physical mail is received, scanned, and uploaded to your dashboard automatically." },
+        { "title": "Complete Privacy", "body": "Keep your personal address off public registries and official documents." },
+        { "title": "Registry Listing", "body": "Your company appears on Google Maps, business directories, and public registries." },
+        { "title": "24/7 Access", "body": "Your digital mailbox is available around the clock, from any device." },
+        { "title": "Meeting Rooms", "body": "Use our professional meeting rooms when you need to meet clients in person." }
+      ]
+    },
+    "location": {
+      "heading": "Our location",
+      "address": "Calle Alejandro Dumas 17, 29004 Málaga, Spain",
+      "phone": "+34 951 905 967",
+      "email": "info@be-working.com",
+      "hours": "Available 24h, 7 days a week"
+    },
+    "services": {
+      "heading": "What's included",
+      "items": ["High-speed WiFi", "Parking", "Public transport access", "Meeting rooms", "Reception service", "Mail handling", "Business address", "24/7 access"]
+    },
+    "form": {
+      "heading": "Register your office",
+      "subheading": "Set up your virtual office in minutes.",
+      "steps": ["Personal details", "Company details", "Choose your plan", "Confirmation"],
+      "fields": {
+        "name": "Full name",
+        "email": "Email address",
+        "phone": "Phone number",
+        "company": "Company name",
+        "taxId": "NIF / Tax ID",
+        "industry": "Industry",
+        "selectPlan": "Select a plan",
+        "industries": ["Technology", "Consulting", "Marketing", "Legal", "Accounting", "Design", "E-commerce", "Healthcare", "Education", "Other"]
+      },
+      "plans": [
+        { "name": "Basic", "price": "€29/mo", "features": ["Legal address", "Mail scanning (5/mo)", "Online dashboard"] },
+        { "name": "Professional", "price": "€59/mo", "features": ["Legal address", "Unlimited mail scanning", "2 meeting room hours/mo", "Phone answering"] },
+        { "name": "Premium", "price": "€99/mo", "features": ["Legal address", "Unlimited mail scanning", "8 meeting room hours/mo", "Dedicated support"] }
+      ],
+      "buttons": { "next": "Continue", "back": "Back", "submit": "Complete registration" },
+      "confirmation": {
+        "heading": "You're registered!",
+        "body": "We'll be in touch shortly to activate your virtual office. Check your inbox for next steps."
+      }
+    }
   }
 }
