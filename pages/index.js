@@ -457,10 +457,12 @@ const HomePage = () => {
               />
             ))}
           </Tabs>
+        </Box>
 
-          {activeTab === 2 ? (
-            <VirtualOfficeSection />
-          ) : (
+        {activeTab === 2 ? (
+          <VirtualOfficeSection />
+        ) : (
+          <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3 }}>
             <>
               {/* Search Bar */}
               <Paper
@@ -610,9 +612,9 @@ const HomePage = () => {
                 ))}
               </Box>
             </>
-          )}
+          </Box>
+        )}
 
-        </Box>
       </Box>
     </>
   );
