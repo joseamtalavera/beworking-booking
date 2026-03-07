@@ -157,6 +157,7 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
 };
 
 const BookingFlowPage = () => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { roomId, date, time } = router.query;
   const { rooms } = useCatalogRooms();
