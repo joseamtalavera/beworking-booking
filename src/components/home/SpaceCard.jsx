@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import { alpha } from '@mui/material/styles';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
+import SquareFootRoundedIcon from '@mui/icons-material/SquareFootRounded';
 import { useTranslation } from 'react-i18next';
 
 const SpaceCard = ({ space, onBookNow }) => {
@@ -153,6 +154,15 @@ const SpaceCard = ({ space, onBookNow }) => {
                   {space.capacity}
                 </Typography>
               </Stack>
+
+              {space.sizeSqm != null && (
+                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
+                  <SquareFootRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
+                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                    {space.sizeSqm} m²
+                  </Typography>
+                </Stack>
+              )}
 
               <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
                 <BusinessRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
