@@ -38,20 +38,20 @@ const AppLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { labelKey: 'nav.platform',      href: `${FRONTEND_URL}/platform` },
-    { labelKey: 'nav.virtualOffice', href: `${FRONTEND_URL}/virtual-office` },
-    { labelKey: 'nav.spaces',        href: '/' },
-    { labelKey: 'nav.marketplace',   href: `${FRONTEND_URL}/marketplace` },
+    { labelKey: 'nav.platform',        href: `${FRONTEND_URL}/platform` },
+    { labelKey: 'nav.connector',      href: `${FRONTEND_URL}/connector` },
+    { labelKey: 'nav.aiOrchestrator', href: `${FRONTEND_URL}/ai-orchestrator` },
+    { labelKey: 'nav.spaces',         href: '/' },
   ];
 
   const footerColumns = [
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'footer.links.platform',     href: `${FRONTEND_URL}/platform` },
-        { labelKey: 'footer.links.virtualOffice', href: `${FRONTEND_URL}/virtual-office` },
-        { labelKey: 'footer.links.spaces',        href: '/' },
-        { labelKey: 'footer.links.marketplace',   href: `${FRONTEND_URL}/marketplace` },
+        { labelKey: 'footer.links.platform',        href: `${FRONTEND_URL}/platform` },
+        { labelKey: 'footer.links.connector',      href: `${FRONTEND_URL}/connector` },
+        { labelKey: 'footer.links.aiOrchestrator', href: `${FRONTEND_URL}/ai-orchestrator` },
+        { labelKey: 'footer.links.spaces',          href: '/' },
       ],
     },
     {

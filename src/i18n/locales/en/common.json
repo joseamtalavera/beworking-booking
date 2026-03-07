@@ -1,9 +1,9 @@
 {
   "nav": {
     "platform": "Platform",
-    "virtualOffice": "Virtual Office",
-    "spaces": "Spaces",
-    "marketplace": "Marketplace",
+    "connector": "Connector",
+    "aiOrchestrator": "AI Orchestrator",
+    "spaces": "BeSpaces",
     "signIn": "Sign in",
     "getStarted": "Get started"
   },
@@ -16,9 +16,9 @@
     "location": "Malaga, Spain",
     "links": {
       "platform": "Platform",
-      "virtualOffice": "Virtual Office",
-      "spaces": "Spaces",
-      "marketplace": "Marketplace",
+      "connector": "Connector",
+      "aiOrchestrator": "AI Orchestrator",
+      "spaces": "BeSpaces",
       "about": "About",
       "careers": "Careers",
       "press": "Press",

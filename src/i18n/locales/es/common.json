@@ -1,9 +1,9 @@
 {
   "nav": {
     "platform": "Plataforma",
-    "virtualOffice": "Oficina Virtual",
-    "spaces": "Espacios",
-    "marketplace": "Marketplace",
+    "connector": "Connector",
+    "aiOrchestrator": "AI Orchestrator",
+    "spaces": "BeSpaces",
     "signIn": "Iniciar sesi\u00f3n",
     "getStarted": "Empezar"
   },
@@ -16,9 +16,9 @@
     "location": "M\u00e1laga, Espa\u00f1a",
     "links": {
       "platform": "Plataforma",
-      "virtualOffice": "Oficina Virtual",
-      "spaces": "Espacios",
-      "marketplace": "Marketplace",
+      "connector": "Connector",
+      "aiOrchestrator": "AI Orchestrator",
+      "spaces": "BeSpaces",
       "about": "Nosotros",
       "careers": "Empleo",
       "press": "Prensa",
