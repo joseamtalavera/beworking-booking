@@ -1,24 +1,33 @@
 'use client';
 
+import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import { alpha } from '@mui/material/styles';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import SquareFootRoundedIcon from '@mui/icons-material/SquareFootRounded';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
 
 const SpaceCard = ({ space, onBookNow }) => {
   const { t } = useTranslation();
+  const [imgIndex, setImgIndex] = useState(0);
+
   if (!space) {
     return null;
   }
+
+  const images = space.gallery && space.gallery.length > 0
+    ? space.gallery
+    : space.image ? [space.image] : [];
 
   const handleClick = () => {
     if (typeof onBookNow === 'function') {
@@ -26,8 +35,19 @@ const SpaceCard = ({ space, onBookNow }) => {
     }
   };
 
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setImgIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  };
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setImgIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+  };
+
   const isMeetingRoom = space.type === 'meeting_room';
   const deskLabel = space.availableCount ? ` (${space.availableCount} ${t('card.available')})` : '';
+  const showArrows = images.length > 1;
 
   return (
     <Box
@@ -54,18 +74,103 @@ const SpaceCard = ({ space, onBookNow }) => {
           }
         }}
       >
-        <Box sx={{ position: 'relative', flexShrink: 0, height: '160px', overflow: 'hidden' }}>
-          <CardMedia
-            component="img"
-            image={space.image}
-            alt={space.name}
-            sx={{
-              objectFit: 'cover',
-              width: '100%',
-              height: '100%',
-              display: 'block'
-            }}
-          />
+        <Box
+          sx={{
+            position: 'relative',
+            flexShrink: 0,
+            height: '160px',
+            overflow: 'hidden',
+            '&:hover .card-nav-arrow': { opacity: 1 },
+          }}
+        >
+          {images.length > 0 && (
+            <Box
+              component="img"
+              src={images[imgIndex]}
+              alt={space.name}
+              sx={{
+                objectFit: 'cover',
+                width: '100%',
+                height: '100%',
+                display: 'block',
+              }}
+            />
+          )}
+
+          {/* Left arrow */}
+          {showArrows && (
+            <IconButton
+              className="card-nav-arrow"
+              onClick={handlePrev}
+              size="small"
+              sx={{
+                position: 'absolute',
+                left: 6,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                bgcolor: 'rgba(255,255,255,0.85)',
+                opacity: 0,
+                transition: 'opacity 0.2s',
+                width: 28,
+                height: 28,
+                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+                '&:hover': { bgcolor: '#fff' },
+              }}
+            >
+              <ChevronLeftIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          )}
+
+          {/* Right arrow */}
+          {showArrows && (
+            <IconButton
+              className="card-nav-arrow"
+              onClick={handleNext}
+              size="small"
+              sx={{
+                position: 'absolute',
+                right: 6,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                bgcolor: 'rgba(255,255,255,0.85)',
+                opacity: 0,
+                transition: 'opacity 0.2s',
+                width: 28,
+                height: 28,
+                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
+                '&:hover': { bgcolor: '#fff' },
+              }}
+            >
+              <ChevronRightIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          )}
+
+          {/* Dot indicators */}
+          {showArrows && (
+            <Box
+              sx={{
+                position: 'absolute',
+                bottom: 8,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                display: 'flex',
+                gap: '5px',
+              }}
+            >
+              {images.map((_, i) => (
+                <Box
+                  key={i}
+                  sx={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    bgcolor: i === imgIndex ? '#fff' : 'rgba(255,255,255,0.5)',
+                    transition: 'background-color 0.2s',
+                  }}
+                />
+              ))}
+            </Box>
+          )}
 
           <Stack
             direction="row"

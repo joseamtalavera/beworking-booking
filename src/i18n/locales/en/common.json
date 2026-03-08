@@ -1,9 +1,8 @@
 {
   "nav": {
     "platform": "Platform",
-    "connector": "Connector",
-    "aiOrchestrator": "AI Orchestrator",
     "spaces": "BeSpaces",
+    "pricing": "Pricing",
     "signIn": "Sign in",
     "getStarted": "Get started"
   },
@@ -13,12 +12,11 @@
     "legal": "Legal",
     "connect": "Connect",
     "tagline": "BeWorking — European business infrastructure.",
-    "location": "Malaga, Spain",
+    "location": "Malaga, Spain · Tallinn, Estonia",
     "links": {
       "platform": "Platform",
-      "connector": "Connector",
-      "aiOrchestrator": "AI Orchestrator",
       "spaces": "BeSpaces",
+      "pricing": "Pricing",
       "about": "About",
       "careers": "Careers",
       "press": "Press",

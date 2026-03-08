@@ -1,9 +1,8 @@
 {
   "nav": {
     "platform": "Plataforma",
-    "connector": "Connector",
-    "aiOrchestrator": "AI Orchestrator",
     "spaces": "BeSpaces",
+    "pricing": "Precios",
     "signIn": "Iniciar sesi\u00f3n",
     "getStarted": "Empezar"
   },
@@ -13,12 +12,11 @@
     "legal": "Legal",
     "connect": "Contacto",
     "tagline": "BeWorking \u2014 Infraestructura empresarial europea.",
-    "location": "M\u00e1laga, Espa\u00f1a",
+    "location": "M\u00e1laga, Espa\u00f1a \u00b7 Tallinn, Estonia",
     "links": {
       "platform": "Plataforma",
-      "connector": "Connector",
-      "aiOrchestrator": "AI Orchestrator",
       "spaces": "BeSpaces",
+      "pricing": "Precios",
       "about": "Nosotros",
       "careers": "Empleo",
       "press": "Prensa",

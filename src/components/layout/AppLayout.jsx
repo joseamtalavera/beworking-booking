@@ -38,20 +38,18 @@ const AppLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { labelKey: 'nav.platform',        href: `${FRONTEND_URL}/platform` },
-    { labelKey: 'nav.connector',      href: `${FRONTEND_URL}/connector` },
-    { labelKey: 'nav.aiOrchestrator', href: `${FRONTEND_URL}/ai-orchestrator` },
-    { labelKey: 'nav.spaces',         href: '/' },
+    { labelKey: 'nav.platform',  href: `${FRONTEND_URL}/platform` },
+    { labelKey: 'nav.spaces',    href: '/' },
+    { labelKey: 'nav.pricing',   href: `${FRONTEND_URL}/prices` },
   ];
 
   const footerColumns = [
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'footer.links.platform',        href: `${FRONTEND_URL}/platform` },
-        { labelKey: 'footer.links.connector',      href: `${FRONTEND_URL}/connector` },
-        { labelKey: 'footer.links.aiOrchestrator', href: `${FRONTEND_URL}/ai-orchestrator` },
-        { labelKey: 'footer.links.spaces',          href: '/' },
+        { labelKey: 'footer.links.platform',  href: `${FRONTEND_URL}/platform` },
+        { labelKey: 'footer.links.spaces',    href: '/' },
+        { labelKey: 'footer.links.pricing',   href: `${FRONTEND_URL}/prices` },
       ],
     },
     {
@@ -133,6 +131,7 @@ const AppLayout = ({ children }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            position: 'relative',
           }}
         >
           {/* Logo */}
@@ -140,8 +139,15 @@ const AppLayout = ({ children }) => {
             <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
           </Box>
 
-          {/* Desktop nav links */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5 }}>
+          {/* Desktop nav links — viewport-centered */}
+          <Box sx={{
+            display: { xs: 'none', md: 'flex' },
+            alignItems: 'center',
+            gap: 0.5,
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}>
             {navLinks.map((link) => (
               <Button
                 key={link.labelKey}
