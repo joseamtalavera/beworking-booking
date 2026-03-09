@@ -264,7 +264,7 @@ const AppLayout = ({ children }) => {
       <Box sx={{ height: 64 }} />
 
       {/* Main content */}
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, pb: { xs: '64px', md: '80px' } }}>
         {children}
       </Box>
 
