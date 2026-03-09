@@ -246,5 +246,19 @@
         "body": "We'll be in touch shortly to activate your virtual office. Check your inbox for next steps."
       }
     }
+  },
+  "myBookings": {
+    "title": "My upcoming bookings",
+    "space": "Space",
+    "start": "Start",
+    "end": "End",
+    "status": "Type",
+    "free": "Free",
+    "cancel": "Cancel",
+    "confirmTitle": "Cancel booking?",
+    "confirmBody": "Cancel {{space}} on {{date}}? This cannot be undone.",
+    "confirmCancel": "Yes, cancel",
+    "loadError": "Could not load your bookings.",
+    "cancelError": "Could not cancel this booking. Please try again."
   }
 }

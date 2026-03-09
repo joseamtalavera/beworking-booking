@@ -67,6 +67,12 @@ export const createPublicBooking = (payload, options = {}) =>
     ...options
   });
 
+export const cancelBloqueo = (bloqueoId, options = {}) =>
+  requestJson(`/bloqueos/${bloqueoId}/cancel`, {
+    method: 'DELETE',
+    ...options
+  });
+
 export const fetchBookingUsage = (email, productName, options = {}) =>
   requestJson(`/public/booking-usage?email=${encodeURIComponent(email)}&productName=${encodeURIComponent(productName)}`, options);
 

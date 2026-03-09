@@ -246,5 +246,19 @@
         "body": "Nos pondremos en contacto pronto para activar tu oficina virtual. Revisa tu bandeja de entrada."
       }
     }
+  },
+  "myBookings": {
+    "title": "Mis reservas próximas",
+    "space": "Espacio",
+    "start": "Inicio",
+    "end": "Fin",
+    "status": "Tipo",
+    "free": "Gratuita",
+    "cancel": "Cancelar",
+    "confirmTitle": "¿Cancelar reserva?",
+    "confirmBody": "¿Cancelar {{space}} el {{date}}? Esta acción no se puede deshacer.",
+    "confirmCancel": "Sí, cancelar",
+    "loadError": "No se pudieron cargar tus reservas.",
+    "cancelError": "No se pudo cancelar la reserva. Inténtalo de nuevo."
   }
 }
