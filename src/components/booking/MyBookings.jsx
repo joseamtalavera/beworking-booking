@@ -54,8 +54,12 @@ const MyBookings = () => {
       const toDate = new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
       const data = await fetchBloqueos({ from: today, to: toDate });
       setBloqueos(Array.isArray(data) ? data : []);
-    } catch {
-      setError(t('myBookings.loadError'));
+    } catch (err) {
+      // 401/403 = not logged in → silently show nothing
+      const msg = err?.message || '';
+      if (!msg.includes('401') && !msg.includes('403') && !msg.includes('Unauthorized') && !msg.includes('Forbidden')) {
+        setError(t('myBookings.loadError'));
+      }
     } finally {
       setLoading(false);
     }
