@@ -129,20 +129,13 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
         setSuccess(true);
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
-        // Auto-refund the payment since the booking could not be created
-        try {
-          await fetch(`${paymentsBaseUrl}/api/refunds`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              payment_intent_id: result.paymentIntent.id,
-            }),
-          });
-          setSubmitting(false);
-          setError(t('payment.slotUnavailable'));
-        } catch (refundErr) {
-          console.error('Auto-refund failed:', refundErr);
-          setSubmitting(false);
+        // Backend auto-refunds on conflict/error — inform user
+        setSubmitting(false);
+        let errMsg = bookingErr?.message || '';
+        try { errMsg = JSON.parse(errMsg)?.message || errMsg; } catch (_) {}
+        if (errMsg.toLowerCase().includes('conflict') || errMsg.toLowerCase().includes('overlap')) {
+          setError(t('payment.slotUnavailableRefunded'));
+        } else {
           setError(t('payment.paymentSuccessBookingFailed', { ref: result.paymentIntent.id }));
         }
       }

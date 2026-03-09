@@ -165,6 +165,7 @@
   "payment": {
     "securePayment": "Secure payment powered by Stripe",
     "slotUnavailable": "This time slot is no longer available. Please go back and select a different time.",
+    "slotUnavailableRefunded": "This time slot was already booked. Your payment has been automatically refunded. Please go back and select a different time.",
     "paymentFailed": "Payment failed",
     "paymentSuccessBookingFailed": "Your payment was processed but the booking could not be created (the time slot may have been taken). Please contact us for a refund. Reference: {{ref}}",
     "processing": "Processing\u2026",

@@ -165,6 +165,7 @@
   "payment": {
     "securePayment": "Pago seguro con Stripe",
     "slotUnavailable": "Este horario ya no est\u00e1 disponible. Vuelve atr\u00e1s y selecciona otro horario.",
+    "slotUnavailableRefunded": "Este horario ya estaba reservado. Tu pago ha sido reembolsado autom\u00e1ticamente. Vuelve atr\u00e1s y selecciona otro horario.",
     "paymentFailed": "El pago ha fallado",
     "paymentSuccessBookingFailed": "Tu pago se ha procesado pero no se pudo crear la reserva (es posible que el horario ya est\u00e9 ocupado). Cont\u00e1ctanos para un reembolso. Referencia: {{ref}}",
     "processing": "Procesando\u2026",
