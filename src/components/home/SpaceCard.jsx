@@ -186,10 +186,11 @@ const SpaceCard = ({ space, onBookNow }) => {
                 label={t('card.instantBooking')}
                 size="small"
                 sx={{
-                  backgroundColor: '#fff',
+                  background: '#ffffff',
                   color: 'text.primary',
                   fontWeight: 500,
-                  fontSize: '0.75rem'
+                  fontSize: '0.75rem',
+                  '& .MuiChip-label': { color: 'text.primary' }
                 }}
               />
             )}
