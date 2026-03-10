@@ -199,7 +199,7 @@ const HomePage = () => {
   const spaceTypes = [
     { value: 'meeting_room', labelKey: 'home.meetingRooms', icon: <MeetingRoomRoundedIcon /> },
     { value: 'desk', labelKey: 'home.coworking', icon: <DeskRoundedIcon /> },
-    // { value: 'virtual_office', labelKey: 'home.virtualOffice', icon: <BusinessRoundedIcon /> }
+    { value: 'virtual_office', labelKey: 'home.businessAddress', icon: <BusinessRoundedIcon /> }
   ];
 
   const filteredSpaces = useMemo(() => {
@@ -394,6 +394,10 @@ const HomePage = () => {
   );
 
   const handleTabChange = (event, newValue) => {
+    if (newValue === 2) {
+      window.open('https://oficinavirtual.be-working.com/malaga', '_blank');
+      return;
+    }
     setActiveTab(newValue);
   };
 
