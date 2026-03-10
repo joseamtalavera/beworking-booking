@@ -199,7 +199,7 @@ const HomePage = () => {
   const spaceTypes = [
     { value: 'meeting_room', labelKey: 'home.meetingRooms', icon: <MeetingRoomRoundedIcon /> },
     { value: 'desk', labelKey: 'home.coworking', icon: <DeskRoundedIcon /> },
-    { value: 'virtual_office', labelKey: 'home.virtualOffice', icon: <BusinessRoundedIcon /> }
+    // { value: 'virtual_office', labelKey: 'home.virtualOffice', icon: <BusinessRoundedIcon /> }
   ];
 
   const filteredSpaces = useMemo(() => {
