@@ -31,7 +31,6 @@ import {
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
-import MyBookings from '@/components/booking/MyBookings';
 import { useTranslation } from 'react-i18next';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
@@ -435,9 +434,6 @@ const HomePage = () => {
           <Typography variant="subtitle1" sx={{ color: 'text.secondary', mb: 4 }}>
             {t('home.subtitle')}
           </Typography>
-
-          {/* My upcoming free bookings (visible for logged-in users only) */}
-          <MyBookings />
 
           {/* Space Type Tabs */}
           <Tabs
