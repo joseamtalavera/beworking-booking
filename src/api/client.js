@@ -36,7 +36,7 @@ export const requestJson = async (path, options = {}) => {
 
   if (!response.ok) {
     const message = await response.text().catch(() => '');
-    throw new Error(message || response.statusText || 'Request failed');
+    throw new Error(`${response.status} ${message || response.statusText || 'Request failed'}`);
   }
 
   if (response.status === 204) {
