@@ -3,28 +3,24 @@ export const DEFAULT_END_HOUR = 22;
 
 import { alpha } from '@mui/material/styles';
 
-export const statusStyles = () => ({
-  available: {
-    bgcolor: alpha('#a1a1aa', 0.15),
-    borderColor: '#a1a1aa',
-    color: '#52525b'
-  },
-  paid: {
-    bgcolor: alpha('#009624', 0.18),
-    borderColor: '#009624',
-    color: '#007a1d'
-  },
-  invoiced: {
+export const statusStyles = () => {
+  const booked = {
     bgcolor: alpha('#ef4444', 0.18),
     borderColor: '#dc2626',
     color: '#b91c1c'
-  },
-  created: {
-    bgcolor: alpha('#fb923c', 0.15),
-    borderColor: '#fb923c',
-    color: '#ea580c'
-  }
-});
+  };
+  return {
+    available: {
+      bgcolor: alpha('#a1a1aa', 0.15),
+      borderColor: '#a1a1aa',
+      color: '#52525b'
+    },
+    booked,
+    paid: booked,
+    invoiced: booked,
+    created: booked
+  };
+};
 
 export const getInitials = (value) => {
   if (!value) {
