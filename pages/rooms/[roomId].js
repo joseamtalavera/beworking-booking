@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { alpha } from '@mui/material/styles';
-import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -617,18 +617,40 @@ const RoomDetailPage = () => {
                   {t('room.availabilityDesc')}
                 </Typography>
                 <Divider />
-                <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" useFlexGap>
-                  <TextField
-                    label={t('room.selectDate')}
-                    type="date"
-                    size="small"
-                    value={selectedDate}
-                    onChange={handleDateChange}
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ width: 170 }}
-                  />
-                  <CalendarLegend />
-                </Stack>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    border: '1px solid',
+                    borderColor: 'divider',
+                    backgroundColor: 'background.paper',
+                    display: 'flex',
+                    alignItems: 'center',
+                    overflow: 'hidden',
+                    boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    borderRadius: { xs: 3, sm: 999 },
+                  }}
+                >
+                  <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                    <TextField
+                      variant="standard"
+                      type="date"
+                      label={t('room.selectDate')}
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                      fullWidth
+                      slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                      sx={{
+                        '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                        '& .MuiInput-input': { fontSize: '0.875rem', color: 'text.primary', py: 0.25 },
+                      }}
+                    />
+                  </Box>
+                  <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                  <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, display: 'flex', alignItems: 'center' }}>
+                    <CalendarLegend />
+                  </Box>
+                </Paper>
                 <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
                 <Button
                   onClick={() => setBookingModalOpen(true)}
