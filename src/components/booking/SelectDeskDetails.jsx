@@ -12,8 +12,6 @@ import {
   Typography
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchDeskAvailability } from '../../api/bookings';
@@ -31,6 +29,15 @@ const BOOKING_TYPES = [
 ];
 
 const DESK_COUNT = 16;
+
+const GRID_DESKS = [
+  [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
+  [9, 1, 2],  [11, 2, 2], [13, 3, 2], [15, 4, 2],
+  [8, 1, 3],                           [4, 4, 3],
+  [7, 1, 4],                           [3, 4, 4],
+  [6, 1, 5],                           [2, 4, 5],
+  [5, 1, 6],                           [1, 4, 6],
+];
 
 const getMonthEnd = (startDate, months) => {
   const d = new Date(startDate + 'T00:00:00');
@@ -212,30 +219,58 @@ const SelectDeskDetails = ({ room, onContinue }) => {
           </Stack>
 
           {bookingType === 'day' ? (
-            <TextField
-              size="small"
-              label="Date"
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ min: defaultDate }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-              fullWidth
-            />
+            <Paper
+              elevation={0}
+              sx={{
+                border: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper',
+                display: 'flex', alignItems: 'center', overflow: 'hidden',
+                boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+                borderRadius: 999,
+              }}
+            >
+              <Box sx={{ flex: 1, px: 3, py: 2, minWidth: 0 }}>
+                <TextField
+                  variant="standard"
+                  type="date"
+                  label="SELECT DATE"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                  fullWidth
+                  slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultDate } }}
+                  sx={{
+                    '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                    '& .MuiInput-input': { fontSize: '0.875rem', color: selectedDate ? 'text.primary' : 'text.secondary', py: 0.25 },
+                  }}
+                />
+              </Box>
+            </Paper>
           ) : (
             <>
-              <TextField
-                size="small"
-                label="Start month"
-                type="month"
-                value={selectedMonth}
-                onChange={(e) => setSelectedMonth(e.target.value)}
-                InputLabelProps={{ shrink: true }}
-                inputProps={{ min: defaultMonth }}
-                InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-                fullWidth
-              />
+              <Paper
+                elevation={0}
+                sx={{
+                  border: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper',
+                  display: 'flex', alignItems: 'center', overflow: 'hidden',
+                  boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+                  borderRadius: 999,
+                }}
+              >
+                <Box sx={{ flex: 1, px: 3, py: 2, minWidth: 0 }}>
+                  <TextField
+                    variant="standard"
+                    type="month"
+                    label="START MONTH"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    fullWidth
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultMonth } }}
+                    sx={{
+                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                      '& .MuiInput-input': { fontSize: '0.875rem', color: selectedMonth ? 'text.primary' : 'text.secondary', py: 0.25 },
+                    }}
+                  />
+                </Box>
+              </Paper>
 
               <Stack spacing={1}>
                 <Typography variant="body2" sx={{ fontWeight: 600 }}>
@@ -289,6 +324,10 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               <Box sx={{ width: 14, height: 14, borderRadius: '3px', bgcolor: 'primary.main' }} />
               <Typography variant="caption">Selected</Typography>
             </Stack>
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              <Box sx={{ width: 14, height: 14, borderRadius: '3px', bgcolor: 'action.disabled' }} />
+              <Typography variant="caption">Booked</Typography>
+            </Stack>
           </Stack>
 
           {isError && (
@@ -299,54 +338,58 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
               <CircularProgress size={28} />
             </Box>
-          ) : availableDesks.length === 0 ? (
-            <Box sx={{ py: 4, textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-                All desks are booked for this period.
-              </Typography>
-            </Box>
           ) : (
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' },
+                gridTemplateColumns: 'repeat(4, 1fr)',
+                gridTemplateRows: 'repeat(6, auto)',
                 gap: 1.5,
               }}
             >
-              {availableDesks.map((deskNum) => {
+              {GRID_DESKS.map(([deskNum, col, row]) => {
+                const isBooked = bookedDesks.has(deskNum);
                 const isSelected = selectedDesk === deskNum;
 
                 return (
-                  <Button
-                    key={deskNum}
-                    variant={isSelected ? 'contained' : 'outlined'}
-                    onClick={() => setSelectedDesk(deskNum)}
-                    sx={{
-                      py: 2,
-                      borderRadius: 2,
-                      textTransform: 'none',
-                      fontWeight: 700,
-                      fontSize: '0.875rem',
-                      minWidth: 0,
-                      ...(!isSelected && {
-                        borderColor: 'success.light',
-                        color: 'success.dark',
-                        '&:hover': {
-                          borderColor: 'success.main',
-                          bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
-                        },
-                      }),
-                    }}
-                  >
-                    <Stack alignItems="center" spacing={0.25}>
-                      <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: 1 }}>
-                        Desk
-                      </Typography>
-                      <Typography variant="body1" sx={{ fontWeight: 700, lineHeight: 1 }}>
-                        {deskNum}
-                      </Typography>
-                    </Stack>
-                  </Button>
+                  <Box key={deskNum} sx={{ gridColumn: col, gridRow: row }}>
+                    <Button
+                      variant={isSelected ? 'contained' : 'outlined'}
+                      onClick={() => !isBooked && setSelectedDesk(deskNum)}
+                      disabled={isBooked}
+                      fullWidth
+                      sx={{
+                        py: 2,
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        fontWeight: 700,
+                        fontSize: '0.875rem',
+                        minWidth: 0,
+                        ...(!isSelected && !isBooked && {
+                          borderColor: 'success.light',
+                          color: 'success.dark',
+                          '&:hover': {
+                            borderColor: 'success.main',
+                            bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+                          },
+                        }),
+                        ...(isBooked && {
+                          borderColor: 'action.disabled',
+                          color: 'text.disabled',
+                          bgcolor: (theme) => alpha(theme.palette.action.disabled, 0.08),
+                        }),
+                      }}
+                    >
+                      <Stack alignItems="center" spacing={0.25}>
+                        <Typography variant="caption" sx={{ fontWeight: 600, lineHeight: 1 }}>
+                          Desk
+                        </Typography>
+                        <Typography variant="body1" sx={{ fontWeight: 700, lineHeight: 1 }}>
+                          {deskNum}
+                        </Typography>
+                      </Stack>
+                    </Button>
+                  </Box>
                 );
               })}
             </Box>
