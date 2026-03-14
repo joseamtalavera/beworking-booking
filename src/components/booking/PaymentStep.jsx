@@ -614,9 +614,12 @@ const PaymentStep = ({ room, onBack }) => {
     }
 
     const init = async () => {
+      // Read visitor from store directly to avoid stale closure
+      const currentVisitor = useBookingVisitor.getState();
+
       // Check free booking eligibility first
       try {
-        const email = visitor.contact?.email;
+        const email = currentVisitor.contact?.email;
         const productName = isDesk
           ? (schedule?.deskProductName || room?.productName || room?.name || '')
           : (room?.productName || room?.name || '');
@@ -646,7 +649,7 @@ const PaymentStep = ({ room, onBack }) => {
 
       try {
         if (isSubscription) {
-          const contact = visitor.contact || {};
+          const contact = currentVisitor.contact || {};
           const res = await fetch(`${paymentsBaseUrl}/api/setup-intents`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -666,7 +669,7 @@ const PaymentStep = ({ room, onBack }) => {
           const data = await res.json();
           setClientSecret(data.clientSecret);
         } else {
-          const contact = visitor.contact || {};
+          const contact = currentVisitor.contact || {};
           const customerName = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
           const res = await fetch(`${paymentsBaseUrl}/api/payment-intents`, {
             method: 'POST',
