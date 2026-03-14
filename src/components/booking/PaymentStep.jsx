@@ -28,6 +28,7 @@ import { useTranslation } from 'react-i18next';
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
 const VAT_RATE = 0.21;
+const PENDING_BOOKING_KEY = 'beworking_pending_booking';
 
 const MONTHLY_BASE = 90;
 const MONTHLY_WITH_VAT = +(MONTHLY_BASE * (1 + VAT_RATE)).toFixed(2); // 108.90
@@ -61,7 +62,7 @@ const buildBookingPayload = (visitor, schedule, room, isDesk, extraFields = {}) 
   };
 };
 
-/* ─── One-time payment form (unchanged flow) ─── */
+/* ─── One-time payment form with 3DS redirect recovery ─── */
 const PaymentIntentForm = ({ onBack, amount, room }) => {
   const { t } = useTranslation();
   const stripe = useStripe();
@@ -72,6 +73,66 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const isDesk = room?.priceUnit === '/month';
+  const [redirectRecoveryDone, setRedirectRecoveryDone] = useState(false);
+
+  // On mount, check if returning from a 3DS redirect
+  useEffect(() => {
+    if (!stripe || redirectRecoveryDone) return;
+    const params = new URLSearchParams(window.location.search);
+    const piClientSecret = params.get('payment_intent_client_secret');
+    if (!piClientSecret) return;
+
+    setRedirectRecoveryDone(true);
+    setSubmitting(true);
+
+    const recover = async () => {
+      try {
+        const { paymentIntent } = await stripe.retrievePaymentIntent(piClientSecret);
+        if (paymentIntent?.status !== 'succeeded') {
+          setError(t('payment.paymentFailed'));
+          setSubmitting(false);
+          return;
+        }
+
+        // Recover saved booking payload from sessionStorage
+        let savedPayload;
+        try {
+          const raw = sessionStorage.getItem(PENDING_BOOKING_KEY);
+          savedPayload = raw ? JSON.parse(raw) : null;
+        } catch (_) {}
+
+        if (!savedPayload) {
+          setError(t('payment.paymentSuccessBookingFailed', { ref: paymentIntent.id }));
+          setSubmitting(false);
+          return;
+        }
+
+        savedPayload.stripePaymentIntentId = paymentIntent.id;
+        await createPublicBooking(savedPayload);
+        sessionStorage.removeItem(PENDING_BOOKING_KEY);
+        setSuccess(true);
+      } catch (bookingErr) {
+        console.error('Failed to create booking after 3DS redirect:', bookingErr);
+        let errMsg = bookingErr?.message || '';
+        try { errMsg = JSON.parse(errMsg)?.message || errMsg; } catch (_) {}
+        if (errMsg.toLowerCase().includes('conflict') || errMsg.toLowerCase().includes('overlap')) {
+          setError(t('payment.slotUnavailableRefunded'));
+        } else {
+          setError(t('payment.paymentSuccessBookingFailed', { ref: '' }));
+        }
+      } finally {
+        setSubmitting(false);
+        // Clean URL params
+        const url = new URL(window.location.href);
+        url.searchParams.delete('payment_intent');
+        url.searchParams.delete('payment_intent_client_secret');
+        url.searchParams.delete('redirect_status');
+        window.history.replaceState({}, '', url.pathname + url.search);
+      }
+    };
+
+    recover();
+  }, [stripe, redirectRecoveryDone, t]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,26 +171,36 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
       }
     }
 
+    // Save booking payload to sessionStorage before confirming (in case of 3DS redirect)
+    const bookingPayload = buildBookingPayload(visitor, schedule, room, isDesk);
+    try {
+      sessionStorage.setItem(PENDING_BOOKING_KEY, JSON.stringify(bookingPayload));
+    } catch (_) {}
+
     const result = await stripe.confirmPayment({
       elements,
-      redirect: 'if_required'
+      confirmParams: {
+        return_url: window.location.href.split('?')[0] + window.location.search,
+      },
+      redirect: 'if_required',
     });
 
     if (result.error) {
       setSubmitting(false);
+      sessionStorage.removeItem(PENDING_BOOKING_KEY);
       setError(result.error.message || t('payment.paymentFailed'));
     } else if (result.paymentIntent?.status === 'succeeded') {
       try {
-        await createPublicBooking(
-          buildBookingPayload(visitor, schedule, room, isDesk, {
-            stripePaymentIntentId: result.paymentIntent.id,
-          })
-        );
+        await createPublicBooking({
+          ...bookingPayload,
+          stripePaymentIntentId: result.paymentIntent.id,
+        });
+        sessionStorage.removeItem(PENDING_BOOKING_KEY);
         setSubmitting(false);
         setSuccess(true);
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
-        // Backend auto-refunds on conflict/error — inform user
+        sessionStorage.removeItem(PENDING_BOOKING_KEY);
         setSubmitting(false);
         let errMsg = bookingErr?.message || '';
         try { errMsg = JSON.parse(errMsg)?.message || errMsg; } catch (_) {}
@@ -527,7 +598,21 @@ const PaymentStep = ({ room, onBack }) => {
     return Math.round(Number(estimatedTotal) * 100);
   }, [estimatedTotal, room?.priceFrom, isSubscription]);
 
+  // Detect 3DS redirect return — use the existing clientSecret from URL
+  const redirectClientSecret = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const params = new URLSearchParams(window.location.search);
+    return params.get('payment_intent_client_secret') || null;
+  }, []);
+
   useEffect(() => {
+    // If returning from 3DS redirect, use the clientSecret from URL params
+    if (redirectClientSecret) {
+      setClientSecret(redirectClientSecret);
+      setLoading(false);
+      return;
+    }
+
     const init = async () => {
       // Check free booking eligibility first
       try {
@@ -581,6 +666,8 @@ const PaymentStep = ({ room, onBack }) => {
           const data = await res.json();
           setClientSecret(data.clientSecret);
         } else {
+          const contact = visitor.contact || {};
+          const customerName = `${contact.firstName || ''} ${contact.lastName || ''}`.trim();
           const res = await fetch(`${paymentsBaseUrl}/api/payment-intents`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -589,6 +676,8 @@ const PaymentStep = ({ room, onBack }) => {
               currency: (room?.currency || 'EUR').toLowerCase(),
               reference: room?.id || 'booking',
               tenant: process.env.NEXT_PUBLIC_STRIPE_TENANT || 'default',
+              customer_email: contact.email || '',
+              customer_name: customerName,
             }),
           });
 
@@ -608,7 +697,7 @@ const PaymentStep = ({ room, onBack }) => {
     };
 
     init();
-  }, [room, amountCents, isSubscription]);
+  }, [room, amountCents, isSubscription, redirectClientSecret]);
 
   if (loading) {
     return (
