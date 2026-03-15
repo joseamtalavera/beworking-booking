@@ -104,11 +104,11 @@
   "stepper": {
     "selectDetails": "Seleccionar detalles",
     "contactBilling": "Contacto y facturaci\u00f3n",
-    "reviewPayment": "Revisar y pagar"
+    "reviewPayment": "Revisión y pago"
   },
   "booking": {
-    "pickDateTime": "Elige tu fecha y hora",
-    "pickDateTimeDesc": "Selecciona una fecha y haz clic en un bloque disponible, o establece la hora manualmente.",
+    "pickDateTime": "Elige fecha y hora",
+    "pickDateTimeDesc": "Selecciona una fecha y haz clic en un horario disponible, o establece la hora manualmente.",
     "date": "Fecha",
     "startTime": "Hora de inicio",
     "endTime": "Hora de fin",
@@ -117,7 +117,7 @@
     "notesOptional": "Notas (opcional)",
     "notesPlaceholder": "Cualquier requisito o petici\u00f3n especial...",
     "fetchError": "No se pudo obtener la disponibilidad.",
-    "capacityFrom": "Capacidad {{capacity}} \u00b7 desde {{price}} {{unit}}/h"
+    "capacityFrom": "Capacidad {{capacity}} · desde {{price}} {{unit}}"
   },
   "contact": {
     "title": "Datos de contacto",

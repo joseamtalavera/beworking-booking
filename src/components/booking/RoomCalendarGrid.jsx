@@ -12,7 +12,8 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Typography
+  Typography,
+  useMediaQuery
 } from '@mui/material';
 import { alpha, useTheme } from '@mui/material/styles';
 import {
@@ -60,6 +61,7 @@ export const CalendarLegend = ({ styles: stylesProp }) => {
 const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onSelectSlot, interactive = !!onSelectSlot, isDesk = false, deskSlotInfo = null, deskCount = 16 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const timeSlots = useMemo(() => isDesk ? buildTimeSlots() : buildTimeSlotsFromBloqueos(bloqueos), [isDesk, bloqueos]);
   const resolvedStatusStyles = useMemo(() => statusStyles(theme), [theme]);
   const tableMinWidth = useMemo(() => {
@@ -76,6 +78,71 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
     }
     return { status: mapStatusKey(bloqueo.estado), bloqueo };
   };
+
+  const renderMobileGrid = () => (
+    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+      {timeSlots.map((slot) => {
+        const slotKey = `${room?.id || 'room'}-${slot.id}`;
+        let status, bloqueo, deskFreeCount;
+        if (isDesk) {
+          const info = deskSlotInfo ? deskSlotInfo[slot.id] : null;
+          if (info && info.fullyBooked) {
+            status = 'paid';
+            bloqueo = { _synthetic: true };
+          } else {
+            status = 'available';
+            bloqueo = null;
+          }
+          deskFreeCount = info ? info.freeCount : deskCount;
+        } else {
+          const result = getSlotStatus(slot.id);
+          status = result.status;
+          bloqueo = result.bloqueo;
+        }
+        const styles = resolvedStatusStyles[status] || resolvedStatusStyles.created;
+        const isSelected = selectedSlotKey === slotKey;
+        return (
+          <Box
+            key={slotKey}
+            {...(interactive ? {
+              role: 'button',
+              tabIndex: 0,
+              onClick: () => onSelectSlot?.(slot, bloqueo),
+              onKeyDown: (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                  event.preventDefault();
+                  onSelectSlot?.(slot, bloqueo);
+                }
+              },
+            } : {})}
+            sx={{
+              height: 44,
+              minWidth: 64,
+              flex: '1 0 auto',
+              borderRadius: 2,
+              border: '2px solid',
+              borderColor: isSelected ? theme.palette.primary.main : styles.borderColor,
+              bgcolor: styles.bgcolor,
+              color: styles.color,
+              cursor: interactive ? 'pointer' : 'default',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: (theme) => theme.transitions.create(['transform', 'border-color']),
+              ...(interactive ? { '&:hover': { transform: 'scale(1.05)' } } : {}),
+              outline: 'none',
+              px: 1,
+            }}
+          >
+            <Typography variant="caption" fontWeight={600} noWrap>
+              {slot.label}
+              {isDesk && bloqueo ? ' (0)' : isDesk ? ` (${deskFreeCount})` : bloqueo ? ` · ${getInitials(bloqueo.cliente?.nombre || bloqueo.producto?.nombre || 'Reservado')}` : ''}
+            </Typography>
+          </Box>
+        );
+      })}
+    </Box>
+  );
 
   return (
     <Paper
@@ -103,7 +170,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
           ) : null}
         </Stack>
 
-        <TableContainer
+        {isMobile ? renderMobileGrid() : <TableContainer
           sx={{
             maxHeight: 420,
             overflowX: 'auto',
@@ -272,7 +339,7 @@ const RoomCalendarGrid = ({ dateLabel, room, bloqueos = [], selectedSlotKey, onS
               </TableRow>
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer>}
       </Stack>
     </Paper>
   );

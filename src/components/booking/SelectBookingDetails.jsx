@@ -137,18 +137,17 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             </Typography>
           </Stack>
 
-          <TextField
-            size="small"
-            label={t('booking.date')}
-            type="date"
-            value={schedule.date || ''}
-            onChange={handleDateChange}
-            InputLabelProps={{ shrink: true }}
-            InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-            fullWidth
-          />
-
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              size="small"
+              label={t('booking.date')}
+              type="date"
+              value={schedule.date || ''}
+              onChange={handleDateChange}
+              InputLabelProps={{ shrink: true }}
+              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
+              fullWidth
+            />
             <TextField
               size="small"
               label={t('booking.startTime')}

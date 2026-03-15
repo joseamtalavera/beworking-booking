@@ -104,7 +104,7 @@
   "stepper": {
     "selectDetails": "Select details",
     "contactBilling": "Contact & billing",
-    "reviewPayment": "Review & payment"
+    "reviewPayment": "Review & pay"
   },
   "booking": {
     "pickDateTime": "Pick your date & time",
@@ -117,7 +117,7 @@
     "notesOptional": "Notes (optional)",
     "notesPlaceholder": "Any special requirements or requests...",
     "fetchError": "Unable to fetch availability.",
-    "capacityFrom": "Capacity {{capacity}} \u00b7 from {{price}} {{unit}}/h"
+    "capacityFrom": "Capacity {{capacity}} · from {{price}} {{unit}}"
   },
   "contact": {
     "title": "Contact details",
