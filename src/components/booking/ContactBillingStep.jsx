@@ -268,68 +268,100 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
 
         {/* Contact details */}
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-          <Stack spacing={1} sx={{ mb: 2 }}>
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              {t('contact.title')}
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {t('contact.subtitle')}
-            </Typography>
+          <Stack spacing={2}>
+            <Stack spacing={0.5}>
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                {t('contact.title')}
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {t('contact.subtitle')}
+              </Typography>
+            </Stack>
+
+            {/* Name row */}
+            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.firstName')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.lastName')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+            </Paper>
+
+            {/* Email & Phone row */}
+            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" type="email" label={t('contact.email')} value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.phone')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+            </Paper>
+
+            {/* Company & Tax ID row */}
+            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.company')} value={formState.company} onChange={handleChange('company')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.vatTaxId')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+            </Paper>
           </Stack>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.firstName')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.lastName')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PersonOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.email')} type="email" value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MailOutlineRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.phone')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PhoneRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.company')} value={formState.company} onChange={handleChange('company')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><BusinessRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField size="small" label={t('contact.vatTaxId')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><ReceiptRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-          </Grid>
         </Paper>
 
         {/* Billing address */}
         <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
-          <Stack spacing={1} sx={{ mb: 2 }}>
-            <Stack direction="row" spacing={1} alignItems="baseline">
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {t('contact.billingAddress')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.disabled' }}>
-                — {t('contact.optional')}
+          <Stack spacing={2}>
+            <Stack spacing={0.5}>
+              <Stack direction="row" spacing={1} alignItems="baseline">
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  {t('contact.billingAddress')}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'text.disabled' }}>
+                  — {t('contact.optional')}
+                </Typography>
+              </Stack>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                {t('contact.billingSubtitle')}
               </Typography>
             </Stack>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {t('contact.billingSubtitle')}
-            </Typography>
+
+            {/* Address row */}
+            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.addressLine1')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.addressLine2')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+            </Paper>
+
+            {/* City, Postal, Country row */}
+            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.city')} value={formState.city} onChange={handleChange('city')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.postalCode')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                <TextField variant="standard" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+              </Box>
+            </Paper>
           </Stack>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField size="small" label={t('contact.addressLine1')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField size="small" label={t('contact.addressLine2')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><HomeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField size="small" label={t('contact.city')} value={formState.city} onChange={handleChange('city')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><LocationCityRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField size="small" label={t('contact.postalCode')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><MarkunreadMailboxRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <TextField size="small" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth InputProps={{ startAdornment: <InputAdornment position="start"><PublicRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }} />
-            </Grid>
-          </Grid>
         </Paper>
 
         {submitError ? <Alert severity="error">{submitError}</Alert> : null}
