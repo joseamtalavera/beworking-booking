@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { alpha } from '@mui/material/styles';
-import { Alert, Box, Button, CircularProgress, Dialog, DialogContent, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Dialog, DialogContent, Divider, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -642,6 +642,7 @@ const RoomDetailPage = () => {
                       }}
                     />
                   </Box>
+                  <Divider orientation="vertical" flexItem />
                   <Box sx={{ display: 'flex', justifyContent: 'center', px: 3, py: { xs: 1.5, sm: 2 } }}>
                     <CalendarLegend />
                   </Box>
