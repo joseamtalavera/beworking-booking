@@ -241,7 +241,8 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
           disabled={submitting}
           sx={{
             borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: 'text.secondary',
+            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
+            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
           }}
         >
           {t('common.back')}
@@ -373,7 +374,8 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
           disabled={submitting}
           sx={{
             borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: 'text.secondary',
+            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
+            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
           }}
         >
           {t('common.back')}
@@ -471,7 +473,8 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
           disabled={submitting}
           sx={{
             borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: 'text.secondary',
+            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
+            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
           }}
         >
           {t('common.back')}

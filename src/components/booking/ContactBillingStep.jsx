@@ -364,7 +364,8 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               py: 1.25,
               textTransform: 'none',
               fontWeight: 600,
-              color: 'text.secondary',
+              color: '#4a7c59',
+              '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
             }}
           >
             {t('common.back')}
