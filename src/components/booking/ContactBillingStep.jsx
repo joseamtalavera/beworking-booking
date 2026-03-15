@@ -7,8 +7,6 @@ import {
   Button,
   Chip,
   Divider,
-  Grid,
-  InputAdornment,
   Paper,
   Stack,
   TextField,
@@ -19,15 +17,6 @@ import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
-import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
-import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
-import PhoneRoundedIcon from '@mui/icons-material/PhoneRounded';
-import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
-import ReceiptRoundedIcon from '@mui/icons-material/ReceiptRounded';
-import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
-import LocationCityRoundedIcon from '@mui/icons-material/LocationCityRounded';
-import MarkunreadMailboxRoundedIcon from '@mui/icons-material/MarkunreadMailboxRounded';
-import PublicRoundedIcon from '@mui/icons-material/PublicRounded';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 import { useTranslation } from 'react-i18next';
