@@ -117,7 +117,20 @@
     "notesOptional": "Notas (opcional)",
     "notesPlaceholder": "Cualquier requisito o petici\u00f3n especial...",
     "fetchError": "No se pudo obtener la disponibilidad.",
-    "capacityFrom": "Capacidad {{capacity}} · desde {{price}} {{unit}}"
+    "capacityFrom": "Capacidad {{capacity}} · desde {{price}} {{unit}}",
+    "recurringBooking": "Reserva recurrente",
+    "dateFrom": "Desde",
+    "dateTo": "Hasta",
+    "selectWeekdays": "Días de la semana",
+    "bookingsWillBeCreated": "Se crearán {{count}} reservas",
+    "selectAtLeastOneDay": "Selecciona al menos un día de la semana",
+    "weekday_monday": "L",
+    "weekday_tuesday": "M",
+    "weekday_wednesday": "X",
+    "weekday_thursday": "J",
+    "weekday_friday": "V",
+    "weekday_saturday": "S",
+    "weekday_sunday": "D"
   },
   "contact": {
     "title": "Datos de contacto",

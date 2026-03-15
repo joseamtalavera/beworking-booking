@@ -5,13 +5,19 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   Divider,
+  FormControlLabel,
   Paper,
   Stack,
+  Switch,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Typography
 } from '@mui/material';
+import EventRepeatRoundedIcon from '@mui/icons-material/EventRepeatRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchPublicAvailability } from '../../api/bookings';
@@ -20,6 +26,8 @@ import { addMinutesToTime } from '../../utils/calendarUtils';
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
+const WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+const DAY_JS_MAP = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
 
 const SelectBookingDetails = ({ room, onContinue }) => {
   const { t } = useTranslation();
@@ -27,6 +35,8 @@ const SelectBookingDetails = ({ room, onContinue }) => {
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
   const [note, setNote] = useState('');
+  const [recurring, setRecurring] = useState(false);
+  const [weekdays, setWeekdays] = useState([]);
 
   useEffect(() => {
     if (!schedule.startTime) {
@@ -89,6 +99,19 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     const value = Number.parseInt(event.target.value, 10);
     setSchedule({ attendees: Number.isNaN(value) || value < 1 ? 1 : value });
   };
+
+  const bookingCount = useMemo(() => {
+    if (!recurring || !schedule.date || !schedule.dateTo || !weekdays.length) return 0;
+    const selectedDays = new Set(weekdays.map((d) => DAY_JS_MAP[d]));
+    let count = 0;
+    const cursor = new Date(schedule.date + 'T00:00:00');
+    const end = new Date(schedule.dateTo + 'T00:00:00');
+    while (cursor <= end) {
+      if (selectedDays.has(cursor.getDay())) count++;
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return count;
+  }, [recurring, schedule.date, schedule.dateTo, weekdays]);
 
   const isContinueDisabled = !schedule.date || !schedule.startTime || !schedule.endTime;
 
@@ -218,6 +241,88 @@ const SelectBookingDetails = ({ room, onContinue }) => {
               />
             </Box>
           </Paper>
+
+          {/* Recurring toggle */}
+          <FormControlLabel
+            control={
+              <Switch
+                checked={recurring}
+                onChange={(e) => {
+                  const on = e.target.checked;
+                  setRecurring(on);
+                  if (!on) {
+                    setSchedule({ dateTo: schedule.date });
+                    setWeekdays([]);
+                  }
+                }}
+              />
+            }
+            label={
+              <Stack direction="row" spacing={1} alignItems="center">
+                <EventRepeatRoundedIcon sx={{ fontSize: 20, color: 'primary.main' }} />
+                <Typography variant="body2" fontWeight={600}>
+                  {t('booking.recurringBooking')}
+                </Typography>
+              </Stack>
+            }
+          />
+
+          {recurring && (
+            <>
+              <Paper
+                elevation={0}
+                sx={{
+                  border: '1px solid', borderColor: 'divider', backgroundColor: 'background.paper',
+                  display: 'flex', alignItems: 'center', overflow: 'hidden',
+                  boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  borderRadius: { xs: 3, sm: 999 },
+                }}
+              >
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard" type="date" label={t('booking.dateFrom')}
+                    value={schedule.date || ''} onChange={(e) => setSchedule({ date: e.target.value })}
+                    fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }}
+                  />
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard" type="date" label={t('booking.dateTo')}
+                    value={schedule.dateTo || ''} onChange={(e) => setSchedule({ dateTo: e.target.value })}
+                    fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }}
+                  />
+                </Box>
+              </Paper>
+              <Stack spacing={1}>
+                <Typography variant="body2" fontWeight={600}>
+                  {t('booking.selectWeekdays')}
+                </Typography>
+                <ToggleButtonGroup
+                  value={weekdays}
+                  onChange={(_, newDays) => setWeekdays(newDays)}
+                  size="small" multiple
+                  sx={{ flexWrap: 'wrap', gap: 0.5 }}
+                >
+                  {WEEKDAY_KEYS.map((day) => (
+                    <ToggleButton key={day} value={day} sx={{
+                      px: 1.5, py: 0.5, borderRadius: '8px !important', border: '1px solid', borderColor: 'divider',
+                      '&.Mui-selected': { bgcolor: 'primary.main', color: 'primary.contrastText', '&:hover': { bgcolor: 'primary.dark' } },
+                    }}>
+                      {t(`booking.weekday_${day}`)}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
+              </Stack>
+              {bookingCount > 0 && (
+                <Chip icon={<EventRepeatRoundedIcon />} label={t('booking.bookingsWillBeCreated', { count: bookingCount })} color="primary" variant="outlined" sx={{ alignSelf: 'flex-start' }} />
+              )}
+            </>
+          )}
 
           <Divider />
 
