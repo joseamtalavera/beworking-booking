@@ -642,6 +642,9 @@ const RoomDetailPage = () => {
                       }}
                     />
                   </Box>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', px: 3, py: { xs: 1.5, sm: 2 } }}>
+                    <CalendarLegend />
+                  </Box>
                 </Paper>
                 {availError ? (
                   <Alert severity="error">{availErrorMsg?.message || t('booking.fetchError')}</Alert>
@@ -651,10 +654,7 @@ const RoomDetailPage = () => {
                     <CircularProgress size={28} />
                   </Box>
                 ) : (
-                  <Stack spacing={1.5}>
-                    <CalendarLegend />
-                    <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
-                  </Stack>
+                  <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
                 )}
                 <Button
                   onClick={() => setBookingModalOpen(true)}
