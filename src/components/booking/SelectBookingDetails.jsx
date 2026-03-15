@@ -17,11 +17,6 @@ import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchPublicAvailability } from '../../api/bookings';
 import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid';
 import { addMinutesToTime } from '../../utils/calendarUtils';
-import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
-import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
-import NotesRoundedIcon from '@mui/icons-material/NotesRounded';
-import InputAdornment from '@mui/material/InputAdornment';
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
@@ -137,38 +132,92 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             </Typography>
           </Stack>
 
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
-              size="small"
-              label={t('booking.date')}
-              type="date"
-              value={schedule.date || ''}
-              onChange={handleDateChange}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><CalendarMonthRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-              fullWidth
-            />
-            <TextField
-              size="small"
-              label={t('booking.startTime')}
-              type="time"
-              value={schedule.startTime || DEFAULT_TIME_RANGE.start}
-              onChange={handleTimeChange('startTime')}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-              fullWidth
-            />
-            <TextField
-              size="small"
-              label={t('booking.endTime')}
-              type="time"
-              value={schedule.endTime || DEFAULT_TIME_RANGE.end}
-              onChange={handleTimeChange('endTime')}
-              InputLabelProps={{ shrink: true }}
-              InputProps={{ startAdornment: <InputAdornment position="start"><AccessTimeRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
-              fullWidth
-            />
-          </Stack>
+          <Paper
+            elevation={0}
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              backgroundColor: 'background.paper',
+              display: 'flex',
+              alignItems: 'center',
+              overflow: 'hidden',
+              boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+              flexDirection: { xs: 'column', sm: 'row' },
+              borderRadius: { xs: 3, sm: 999 },
+            }}
+          >
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="date"
+                label={t('booking.date')}
+                value={schedule.date || ''}
+                onChange={handleDateChange}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.date ? 'text.primary' : 'text.secondary', py: 0.25 },
+                }}
+              />
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="time"
+                label={t('booking.startTime')}
+                value={schedule.startTime || DEFAULT_TIME_RANGE.start}
+                onChange={handleTimeChange('startTime')}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.startTime ? 'text.primary' : 'text.secondary', py: 0.25 },
+                }}
+              />
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="time"
+                label={t('booking.endTime')}
+                value={schedule.endTime || DEFAULT_TIME_RANGE.end}
+                onChange={handleTimeChange('endTime')}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.endTime ? 'text.primary' : 'text.secondary', py: 0.25 },
+                }}
+              />
+            </Box>
+            <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
+            <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="number"
+                label={t('booking.numberOfAttendees')}
+                value={schedule.attendees || ''}
+                onChange={handleAttendeesChange}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.attendees ? 'text.primary' : 'text.secondary', py: 0.25 },
+                  '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
+                  '& input[type=number]': { MozAppearance: 'textfield' },
+                }}
+              />
+            </Box>
+          </Paper>
 
           <Divider />
 
@@ -210,24 +259,6 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             {t('booking.additionalDetails')}
           </Typography>
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-            <TextField
-              size="small"
-              label={t('booking.numberOfAttendees')}
-              type="number"
-              value={schedule.attendees || ''}
-              onChange={handleAttendeesChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PeopleAltRoundedIcon sx={{ color: 'text.disabled' }} />
-                  </InputAdornment>
-                ),
-                inputProps: { min: 1, max: room?.capacity || 99 }
-              }}
-              fullWidth
-            />
-          </Stack>
           <TextField
             size="small"
             label={t('booking.notesOptional')}
@@ -237,7 +268,6 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             multiline
             minRows={2}
             placeholder={t('booking.notesPlaceholder')}
-            InputProps={{ startAdornment: <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}><NotesRoundedIcon sx={{ color: 'text.disabled' }} /></InputAdornment> }}
           />
         </Stack>
       </Paper>
