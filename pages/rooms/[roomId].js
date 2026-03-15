@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import Head from 'next/head';
 import { alpha } from '@mui/material/styles';
-import { Box, Button, Dialog, DialogContent, Divider, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Dialog, DialogContent, Grid, IconButton, Paper, Stack, TextField, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
@@ -226,7 +226,7 @@ const RoomDetailPage = () => {
   const DESK_COUNT = 16;
 
   // --- Meeting room availability (non-desk) ---
-  const { data: availabilityData } = useQuery({
+  const { data: availabilityData, isLoading: availLoading, isError: availError, error: availErrorMsg } = useQuery({
     queryKey: ['public-availability', selectedDate, room?.productName],
     queryFn: () =>
       fetchPublicAvailability({
@@ -609,14 +609,10 @@ const RoomDetailPage = () => {
 
             {/* NEW: calendar + CTA */}
             <Grid item xs={12} md={5}>
-              <Stack spacing={3} sx={{ border: '1px solid', borderColor: 'grey.200', borderRadius: 3, p: 3, bgcolor: 'background.paper' }}>
+              <Stack spacing={3} sx={{ border: '1px solid', borderColor: 'grey.200', borderRadius: 3, p: 3, bgcolor: 'background.paper', position: { md: 'sticky' }, top: { md: 24 } }}>
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
                   {t('room.availability')}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {t('room.availabilityDesc')}
-                </Typography>
-                <Divider />
                 <Paper
                   elevation={0}
                   sx={{
@@ -646,12 +642,20 @@ const RoomDetailPage = () => {
                       }}
                     />
                   </Box>
-                  <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-                  <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, display: 'flex', alignItems: 'center' }}>
-                    <CalendarLegend />
-                  </Box>
                 </Paper>
-                <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
+                {availError ? (
+                  <Alert severity="error">{availErrorMsg?.message || t('booking.fetchError')}</Alert>
+                ) : null}
+                {availLoading ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+                    <CircularProgress size={28} />
+                  </Box>
+                ) : (
+                  <Stack spacing={1.5}>
+                    <CalendarLegend />
+                    <RoomCalendarGrid room={room} dateLabel={calendarLabel} bloqueos={calendarEntries} isDesk={isDesk} deskSlotInfo={deskSlotInfo} deskCount={DESK_COUNT} />
+                  </Stack>
+                )}
                 <Button
                   onClick={() => setBookingModalOpen(true)}
                   variant="contained"
