@@ -10,6 +10,9 @@ export default class MyDocument extends Document {
         <Head>
           <link rel="icon" href="/new_favicon.png" />
           <meta name="theme-color" content="#009624" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
           <meta name="description" content="Reserva salas de reuniones, coworking y oficinas virtuales en BeWorking." />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="BeSpaces — BeWorking" />
