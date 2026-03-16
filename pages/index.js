@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
-  Button,
   Divider,
   IconButton,
   Paper,
@@ -20,7 +19,6 @@ import {
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
   useCatalogRooms,
@@ -32,8 +30,6 @@ import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
 import { useTranslation } from 'react-i18next';
-
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
 const HomePage = () => {
   const { t } = useTranslation();
@@ -408,36 +404,49 @@ const HomePage = () => {
         <meta name="description" content="Meeting rooms, coworking desks, and virtual offices — find the right workspace for your business." />
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
-        <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: 4 }}>
-          {/* Back to main site */}
-          <Button
-            component="a"
-            href={FRONTEND_URL}
-            startIcon={<ArrowBackRoundedIcon />}
-            sx={{
-              fontSize: '0.875rem',
-              fontWeight: 500,
-              color: 'text.secondary',
-              textTransform: 'none',
-              px: 1,
-              mb: 1,
-              borderRadius: '6px',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.04)',
-                color: 'primary.main',
-              },
-            }}
-          >
-            {t('common.back')}
-          </Button>
+        {/* ─── HERO ─── */}
+        <Box
+          sx={{
+            bgcolor: '#ffffff',
+            pt: { xs: 6, md: 10 },
+            pb: { xs: 5, md: 8 },
+            px: 3,
+            borderBottom: '1px solid rgba(0,0,0,0.06)',
+            textAlign: 'center',
+          }}
+        >
+          <Box sx={{ maxWidth: 700, mx: 'auto' }}>
+            <Typography
+              sx={{
+                fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
+                letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
+              }}
+            >
+              BeSpaces
+            </Typography>
+            <Typography
+              component="h1"
+              sx={{
+                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.02em',
+                color: 'text.primary', mb: 2,
+              }}
+            >
+              {t('home.heroTitle', 'Encuentra tu espacio de trabajo')}
+              <Box component="span" sx={{ color: 'primary.main' }}>{t('home.heroAccent', ' ideal.')}</Box>
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.65,
+                color: 'text.secondary', maxWidth: 520, mx: 'auto',
+              }}
+            >
+              {t('home.subtitle')}
+            </Typography>
+          </Box>
+        </Box>
 
-          {/* Page Title */}
-          <Typography variant="h3" fontWeight={700} sx={{ mb: 1 }}>
-            {t('home.title')}
-          </Typography>
-          <Typography variant="subtitle1" sx={{ color: 'text.secondary', mb: 4 }}>
-            {t('home.subtitle')}
-          </Typography>
+        <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, pt: 4 }}>
 
           {/* Space Type Tabs */}
           <Tabs

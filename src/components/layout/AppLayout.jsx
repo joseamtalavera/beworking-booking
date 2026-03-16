@@ -1,23 +1,15 @@
 'use client';
 
-import { useState } from 'react';
 import NextLink from 'next/link';
 import {
   AppBar,
   Toolbar,
   Box,
   Button,
-  IconButton,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
   Divider,
   Link,
   Typography,
 } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import XIcon from '@mui/icons-material/X';
@@ -35,13 +27,6 @@ const socialLinks = [
 
 const AppLayout = ({ children }) => {
   const { t, i18n } = useTranslation();
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const navLinks = [
-    { labelKey: 'nav.platform',  href: `${FRONTEND_URL}/platform` },
-    { labelKey: 'nav.spaces',    href: '/' },
-    { labelKey: 'nav.pricing',   href: `${FRONTEND_URL}/prices` },
-  ];
 
   const footerColumns = [
     {
@@ -131,7 +116,6 @@ const AppLayout = ({ children }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            position: 'relative',
           }}
         >
           {/* Logo */}
@@ -139,126 +123,26 @@ const AppLayout = ({ children }) => {
             <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
           </Box>
 
-          {/* Desktop nav links — viewport-centered */}
-          <Box sx={{
-            display: { xs: 'none', md: 'flex' },
-            alignItems: 'center',
-            gap: 0.5,
-            position: 'absolute',
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}>
-            {navLinks.map((link) => (
-              <Button
-                key={link.labelKey}
-                {...linkProps(link.href)}
-                sx={{
-                  fontSize: '0.875rem',
-                  fontWeight: 400,
-                  color: 'text.primary',
-                  textTransform: 'none',
-                  px: 1.5,
-                  py: 0.75,
-                  borderRadius: '6px',
-                  '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.04)' },
-                }}
-              >
-                {t(link.labelKey)}
-              </Button>
-            ))}
-          </Box>
-
-          {/* Right: lang toggle + sign in + get started — desktop */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
+          {/* Right: lang toggle + be-working.com link */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
             <Button
               component="a"
-              href={`${FRONTEND_URL}/main/login`}
+              href={FRONTEND_URL}
               sx={{
-                fontSize: '0.875rem',
-                fontWeight: 400,
-                color: 'text.primary',
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                color: 'primary.main',
                 textTransform: 'none',
                 px: 1.5,
-                '&:hover': { backgroundColor: 'transparent', color: 'text.secondary' },
+                '&:hover': { backgroundColor: 'transparent', color: 'primary.dark' },
               }}
             >
-              {t('nav.signIn')}
+              be-working.com →
             </Button>
-            <Button
-              variant="contained"
-              component="a"
-              href={`${FRONTEND_URL}/main/register`}
-              sx={{ borderRadius: '999px', px: 3, py: 0.875, fontSize: '0.875rem' }}
-            >
-              {t('nav.getStarted')}
-            </Button>
-          </Box>
-
-          {/* Mobile: lang toggle + hamburger */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
-            <LangToggle />
-            <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }}>
-              <MenuIcon />
-            </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
-
-      {/* Mobile drawer */}
-      <Drawer
-        anchor="right"
-        open={mobileOpen}
-        onClose={() => setMobileOpen(false)}
-        PaperProps={{ sx: { width: 280, pt: 2, px: 1, bgcolor: '#ffffff' } }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1 }}>
-          <IconButton onClick={() => setMobileOpen(false)}>
-            <CloseIcon />
-          </IconButton>
-        </Box>
-        <List>
-          {navLinks.map((link) => (
-            <ListItemButton
-              key={link.labelKey}
-              {...linkProps(link.href)}
-              onClick={() => setMobileOpen(false)}
-              sx={{ borderRadius: '8px', mx: 1, '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}
-            >
-              <ListItemText
-                primary={t(link.labelKey)}
-                primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
-              />
-            </ListItemButton>
-          ))}
-        </List>
-        <Divider sx={{ my: 1.5, mx: 2, borderColor: 'rgba(0,0,0,0.06)' }} />
-        <List>
-          <ListItemButton
-            component="a"
-            href={`${FRONTEND_URL}/main/login`}
-            onClick={() => setMobileOpen(false)}
-            sx={{ borderRadius: '8px', mx: 1 }}
-          >
-            <ListItemText
-              primary={t('nav.signIn')}
-              primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400 }}
-            />
-          </ListItemButton>
-        </List>
-        <Box sx={{ px: 2, pb: 2, mt: 1 }}>
-          <Button
-            variant="contained"
-            fullWidth
-            component="a"
-            href={`${FRONTEND_URL}/main/register`}
-            onClick={() => setMobileOpen(false)}
-            sx={{ borderRadius: '999px', py: 1.25, fontSize: '0.875rem' }}
-          >
-            {t('nav.getStarted')}
-          </Button>
-        </Box>
-      </Drawer>
 
       {/* Spacer for fixed AppBar */}
       <Box sx={{ height: 64 }} />
