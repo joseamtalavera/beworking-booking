@@ -364,16 +364,25 @@ const SelectBookingDetails = ({ room, onContinue }) => {
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             {t('booking.additionalDetails')}
           </Typography>
-          <TextField
-            size="small"
-            label={t('booking.notesOptional')}
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            fullWidth
-            multiline
-            minRows={2}
-            placeholder={t('booking.notesPlaceholder')}
-          />
+          <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', borderRadius: 3 }}>
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: '100%' }}>
+              <TextField
+                variant="standard"
+                label={t('booking.notesOptional')}
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                fullWidth
+                multiline
+                minRows={2}
+                placeholder={t('booking.notesPlaceholder')}
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={{
+                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
+                  '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 },
+                }}
+              />
+            </Box>
+          </Paper>
         </Stack>
       </Paper>
 
