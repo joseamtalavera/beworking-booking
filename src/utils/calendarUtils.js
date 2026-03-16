@@ -167,6 +167,32 @@ export const coversSlot = (booking, slotId) => {
   return slotMinutes >= startMinutes && slotMinutes < endMinutes;
 };
 
+export const getBookedSlotIds = (bloqueos = []) => {
+  const booked = new Set();
+  for (const bloqueo of bloqueos) {
+    const startMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaIni));
+    const endMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaFin));
+    if (startMinutes == null || endMinutes == null) continue;
+    for (let m = startMinutes; m < endMinutes; m += 30) {
+      booked.add(padTime(m));
+    }
+  }
+  return booked;
+};
+
+export const getMaxEndTime = (startTime, bloqueos = []) => {
+  const startMinutes = timeStringToMinutes(startTime);
+  if (startMinutes == null) return null;
+  let earliest = null;
+  for (const bloqueo of bloqueos) {
+    const bStart = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaIni));
+    if (bStart != null && bStart > startMinutes) {
+      if (earliest == null || bStart < earliest) earliest = bStart;
+    }
+  }
+  return earliest != null ? padTime(earliest) : null;
+};
+
 export const addMinutesToTime = (timeString, minutesToAdd) => {
   const minutes = timeStringToMinutes(timeString);
   if (minutes == null) {

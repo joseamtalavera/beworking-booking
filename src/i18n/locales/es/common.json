@@ -112,6 +112,7 @@
     "date": "Fecha",
     "startTime": "Hora de inicio",
     "endTime": "Hora de fin",
+    "slotBooked": "Reservado",
     "additionalDetails": "Detalles adicionales",
     "numberOfAttendees": "N\u00famero de asistentes",
     "notesOptional": "Notas (opcional)",

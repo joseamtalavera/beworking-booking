@@ -112,6 +112,7 @@
     "date": "Date",
     "startTime": "Start time",
     "endTime": "End time",
+    "slotBooked": "Booked",
     "additionalDetails": "Additional details",
     "numberOfAttendees": "Number of attendees",
     "notesOptional": "Notes (optional)",

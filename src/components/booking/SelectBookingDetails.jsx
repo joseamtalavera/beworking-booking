@@ -22,7 +22,8 @@ import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchPublicAvailability } from '../../api/bookings';
 import RoomCalendarGrid, { CalendarLegend } from './RoomCalendarGrid';
-import { addMinutesToTime } from '../../utils/calendarUtils';
+import TimeSlotSelect from './TimeSlotSelect';
+import { addMinutesToTime, buildTimeSlots, getBookedSlotIds, getMaxEndTime } from '../../utils/calendarUtils';
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
@@ -73,6 +74,27 @@ const SelectBookingDetails = ({ room, onContinue }) => {
     );
   }, [bloqueos, room?.productName]);
 
+  const timeSlots = useMemo(() => buildTimeSlots(), []);
+
+  const bookedSlotIds = useMemo(() => getBookedSlotIds(roomBloqueos), [roomBloqueos]);
+
+  const maxEndTime = useMemo(
+    () => getMaxEndTime(schedule.startTime, roomBloqueos),
+    [schedule.startTime, roomBloqueos]
+  );
+
+  // Auto-adjust if selected startTime is booked
+  useEffect(() => {
+    if (!schedule.startTime || bookedSlotIds.size === 0) return;
+    if (bookedSlotIds.has(schedule.startTime)) {
+      const next = timeSlots.find((s) => !bookedSlotIds.has(s.id));
+      if (next) {
+        setSchedule({ startTime: next.id, endTime: addMinutesToTime(next.id, 60) });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bookedSlotIds]);
+
   const selectedSlotKey = useMemo(() => {
     if (schedule.startTime) {
       return `${room?.id || 'room'}-${schedule.startTime}`;
@@ -89,10 +111,6 @@ const SelectBookingDetails = ({ room, onContinue }) => {
   const handleDateChange = (event) => {
     const value = event.target.value;
     setSchedule({ date: value, dateTo: value });
-  };
-
-  const handleTimeChange = (field) => (event) => {
-    setSchedule({ [field]: event.target.value });
   };
 
   const handleAttendeesChange = (event) => {
@@ -188,36 +206,26 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
 
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <TextField
-                variant="standard"
-                type="time"
+              <TimeSlotSelect
                 label={t('booking.startTime')}
                 value={schedule.startTime || DEFAULT_TIME_RANGE.start}
-                onChange={handleTimeChange('startTime')}
-                fullWidth
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.startTime ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
+                onChange={(val) => setSchedule({ startTime: val })}
+                slots={timeSlots}
+                bookedSlotIds={bookedSlotIds}
               />
             </Box>
             <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
             <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
 
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-              <TextField
-                variant="standard"
-                type="time"
+              <TimeSlotSelect
                 label={t('booking.endTime')}
                 value={schedule.endTime || DEFAULT_TIME_RANGE.end}
-                onChange={handleTimeChange('endTime')}
-                fullWidth
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.endTime ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
+                onChange={(val) => setSchedule({ endTime: val })}
+                slots={timeSlots}
+                bookedSlotIds={bookedSlotIds}
+                minTime={schedule.startTime ? addMinutesToTime(schedule.startTime, 30) : undefined}
+                maxTime={maxEndTime || undefined}
               />
             </Box>
             <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
