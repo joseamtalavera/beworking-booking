@@ -428,7 +428,7 @@ const HomePage = () => {
               component="h1"
               sx={{
                 fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
-                fontWeight: 800, lineHeight: 1.15, letterSpacing: '-0.02em',
+                fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em',
                 color: 'text.primary', mb: 2,
               }}
             >
