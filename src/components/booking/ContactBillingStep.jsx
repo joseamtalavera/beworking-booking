@@ -21,6 +21,22 @@ import { useBookingFlow } from '../../store/useBookingFlow';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 import { useTranslation } from 'react-i18next';
 
+const fieldSx = (hasValue) => ({
+  '& .MuiInputLabel-root': {
+    fontSize: '0.75rem',
+    fontWeight: 700,
+    color: hasValue ? 'primary.main' : 'text.primary',
+    textTransform: 'uppercase',
+    letterSpacing: '0.04em',
+    transition: 'color 0.2s',
+  },
+  '& .MuiInput-input': {
+    fontSize: '0.875rem',
+    color: hasValue ? 'text.primary' : 'text.secondary',
+    py: 0.25,
+  },
+});
+
 const initialVisitorForm = {
   firstName: '',
   lastName: '',
@@ -270,36 +286,36 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             {/* Name row */}
             <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.firstName')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.firstName')} placeholder={t('contact.firstNamePlaceholder')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.firstName)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.lastName')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.lastName')} placeholder={t('contact.lastNamePlaceholder')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.lastName)} />
               </Box>
             </Paper>
 
             {/* Email & Phone row */}
             <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" type="email" label={t('contact.email')} value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" type="email" label={t('contact.email')} placeholder={t('contact.emailPlaceholder')} value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.email)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.phone')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.phone')} placeholder={t('contact.phonePlaceholder')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.phone)} />
               </Box>
             </Paper>
 
             {/* Company & Tax ID row */}
             <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.company')} value={formState.company} onChange={handleChange('company')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.company')} placeholder={t('contact.companyPlaceholder')} value={formState.company} onChange={handleChange('company')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.company)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.vatTaxId')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.vatTaxId')} placeholder={t('contact.vatTaxIdPlaceholder')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.taxId)} />
               </Box>
             </Paper>
           </Stack>
@@ -325,29 +341,29 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             {/* Address row */}
             <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.addressLine1')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.addressLine1')} placeholder={t('contact.addressLine1Placeholder')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.addressLine1)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.addressLine2')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.addressLine2')} placeholder={t('contact.addressLine2Placeholder')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.addressLine2)} />
               </Box>
             </Paper>
 
             {/* City, Postal, Country row */}
             <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.city')} value={formState.city} onChange={handleChange('city')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.city')} placeholder={t('contact.cityPlaceholder')} value={formState.city} onChange={handleChange('city')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.city)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.postalCode')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.postalCode')} placeholder={t('contact.postalCodePlaceholder')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.postalCode)} />
               </Box>
               <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
               <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
               <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                <TextField variant="standard" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }} />
+                <TextField variant="standard" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.country)} />
               </Box>
             </Paper>
           </Stack>
