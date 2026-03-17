@@ -427,7 +427,7 @@ const HomePage = () => {
             <Typography
               component="h1"
               sx={{
-                fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
                 fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em',
                 color: 'text.primary', mb: 2,
               }}
