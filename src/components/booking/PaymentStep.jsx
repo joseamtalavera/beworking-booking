@@ -202,11 +202,33 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
         sessionStorage.removeItem(PENDING_BOOKING_KEY);
-        setSubmitting(false);
+
+        // Auto-refund: backend may have refunded already, but if it was unreachable we do it from here
+        let refunded = false;
         let errMsg = bookingErr?.message || '';
         try { errMsg = JSON.parse(errMsg)?.message || errMsg; } catch (_) {}
+        const alreadyRefunded = errMsg.toLowerCase().includes('refunded');
+
+        if (!alreadyRefunded && rawPaymentsBase && result.paymentIntent?.id) {
+          try {
+            await fetch(`${rawPaymentsBase}/api/refunds`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ payment_intent_id: result.paymentIntent.id }),
+            });
+            refunded = true;
+          } catch (refundErr) {
+            console.error('Auto-refund failed:', refundErr);
+          }
+        } else {
+          refunded = alreadyRefunded;
+        }
+
+        setSubmitting(false);
         if (errMsg.toLowerCase().includes('conflict') || errMsg.toLowerCase().includes('overlap')) {
           setError(t('payment.slotUnavailableRefunded'));
+        } else if (refunded) {
+          setError(t('payment.bookingFailedRefunded', { defaultValue: 'No se ha podido crear la reserva. Tu pago ha sido reembolsado automáticamente.' }));
         } else {
           setError(t('payment.paymentSuccessBookingFailed', { ref: result.paymentIntent.id }));
         }
