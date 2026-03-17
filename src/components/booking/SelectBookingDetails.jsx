@@ -27,6 +27,17 @@ import { addMinutesToTime, buildTimeSlots, getBookedSlotIds, getMaxEndTime } fro
 import { useTranslation } from 'react-i18next';
 
 const DEFAULT_TIME_RANGE = { start: '09:00', end: '10:00' };
+
+const pillFieldSx = (hasValue) => ({
+  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: hasValue ? 'primary.main' : 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em', transition: 'color 0.2s' },
+  '& .MuiInput-input': { fontSize: '0.875rem', color: hasValue ? 'text.primary' : 'text.secondary', py: 0.25 },
+});
+
+const pillFieldNumberSx = (hasValue) => ({
+  ...pillFieldSx(hasValue),
+  '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
+  '& input[type=number]': { MozAppearance: 'textfield' },
+});
 const WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const DAY_JS_MAP = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
 
@@ -196,10 +207,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 onChange={handleDateChange}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.date ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
+                sx={pillFieldSx(schedule.date)}
               />
             </Box>
             <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
@@ -236,16 +244,12 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 variant="standard"
                 type="number"
                 label={t('booking.numberOfAttendees')}
+                placeholder="1"
                 value={schedule.attendees || ''}
                 onChange={handleAttendeesChange}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: schedule.attendees ? 'text.primary' : 'text.secondary', py: 0.25 },
-                  '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
-                  '& input[type=number]': { MozAppearance: 'textfield' },
-                }}
+                sx={pillFieldNumberSx(schedule.attendees)}
               />
             </Box>
           </Paper>
@@ -292,7 +296,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                     variant="standard" type="date" label={t('booking.dateFrom')}
                     value={schedule.date || ''} onChange={(e) => setSchedule({ date: e.target.value })}
                     fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                    sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }}
+                    sx={pillFieldSx(schedule.date)}
                   />
                 </Box>
                 <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
@@ -302,7 +306,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                     variant="standard" type="date" label={t('booking.dateTo')}
                     value={schedule.dateTo || ''} onChange={(e) => setSchedule({ dateTo: e.target.value })}
                     fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                    sx={{ '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' }, '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 } }}
+                    sx={pillFieldSx(schedule.dateTo)}
                   />
                 </Box>
               </Paper>
@@ -384,10 +388,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 minRows={2}
                 placeholder={t('booking.notesPlaceholder')}
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', py: 0.25 },
-                }}
+                sx={pillFieldSx(note)}
               />
             </Box>
           </Paper>

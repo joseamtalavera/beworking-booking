@@ -48,6 +48,11 @@ const getMonthEnd = (startDate, months) => {
 
 const getMonthStart = (yearMonth) => `${yearMonth}-01`;
 
+const pillFieldSx = (hasValue) => ({
+  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: hasValue ? 'primary.main' : 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em', transition: 'color 0.2s' },
+  '& .MuiInput-input': { fontSize: '0.875rem', color: hasValue ? 'text.primary' : 'text.secondary', py: 0.25 },
+});
+
 const SelectDeskDetails = ({ room, onContinue }) => {
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
@@ -237,10 +242,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                   fullWidth
                   slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultDate } }}
-                  sx={{
-                    '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                    '& .MuiInput-input': { fontSize: '0.875rem', color: selectedDate ? 'text.primary' : 'text.secondary', py: 0.25 },
-                  }}
+                  sx={pillFieldSx(selectedDate)}
                 />
               </Box>
             </Paper>
@@ -264,10 +266,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                     onChange={(e) => setSelectedMonth(e.target.value)}
                     fullWidth
                     slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultMonth } }}
-                    sx={{
-                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                      '& .MuiInput-input': { fontSize: '0.875rem', color: selectedMonth ? 'text.primary' : 'text.secondary', py: 0.25 },
-                    }}
+                    sx={pillFieldSx(selectedMonth)}
                   />
                 </Box>
               </Paper>
