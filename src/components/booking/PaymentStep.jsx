@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Box,
@@ -26,7 +26,8 @@ import { timeStringToMinutes } from '../../utils/calendarUtils';
 import { useTranslation } from 'react-i18next';
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
-const paymentsBaseUrl = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL;
+const rawPaymentsBase = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL || '';
+const paymentsBaseUrl = rawPaymentsBase.replace(/\/api\/?$/, '');
 const VAT_RATE = 0.21;
 const PENDING_BOOKING_KEY = 'beworking_pending_booking';
 
@@ -911,4 +912,50 @@ const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => {
   );
 };
 
-export default PaymentStep;
+class PaymentErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, info) {
+    console.error('PaymentStep crashed:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+          <Stack spacing={2} alignItems="center">
+            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              Algo salió mal
+            </Typography>
+            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              No se pudo cargar el formulario de pago. Intenta recargar la página o usa otro navegador.
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={() => window.location.reload()}
+              sx={{ borderRadius: 999, px: 4, py: 1.25, textTransform: 'none', fontWeight: 700 }}
+            >
+              Recargar página
+            </Button>
+          </Stack>
+        </Paper>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const PaymentStepWithBoundary = (props) => (
+  <PaymentErrorBoundary>
+    <PaymentStep {...props} />
+  </PaymentErrorBoundary>
+);
+
+export default PaymentStepWithBoundary;
