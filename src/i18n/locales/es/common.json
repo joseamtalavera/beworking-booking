@@ -272,6 +272,104 @@
       }
     }
   },
+  "register": {
+    "title": "Crea tu cuenta",
+    "steps": ["Cuenta", "Empresa", "Ciudad", "Pago"],
+    "fields": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "company": "Nombre de la empresa",
+      "taxId": "NIF / CIF",
+      "phone": "Teléfono"
+    },
+    "errors": {
+      "nameRequired": "El nombre es obligatorio.",
+      "emailRequired": "Introduce un correo electrónico válido.",
+      "emailTaken": "Este correo ya está registrado.",
+      "passwordMin": "La contraseña debe tener al menos 8 caracteres.",
+      "passwordMatch": "Las contraseñas no coinciden.",
+      "termsRequired": "Debes aceptar los términos y condiciones."
+    },
+    "trialBanner": "30 días gratis, luego {{price}}€/mes",
+    "termsLabel": "He leído y acepto los <terms>términos y condiciones</terms>.",
+    "submitTrial": "Empezar prueba gratuita",
+    "back": "Atrás",
+    "next": "Continuar",
+    "success": "¡Cuenta creada! Tu prueba de 30 días ha comenzado. Revisa tu correo para verificar tu cuenta.",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "signIn": "Iniciar sesión",
+    "planStep": {
+      "heading": "Elige tu plan",
+      "errorRequired": "Selecciona un plan."
+    },
+    "locationStep": {
+      "heading": "Elige tu ciudad",
+      "subheading": "Selecciona la ciudad donde quieres registrar tu empresa.",
+      "errorRequired": "Selecciona una ciudad."
+    },
+    "locations": {
+      "malaga": {
+        "city": "Málaga",
+        "address": "Calle Alejandro Dumas, 17 · Oficinas",
+        "zip": "29004 Málaga, España"
+      },
+      "sevilla": {
+        "city": "Sevilla",
+        "address": "Próximamente",
+        "zip": "Sevilla, España"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "label": "Oficina Virtual",
+      "title": "Tu dirección profesional ",
+      "titleAccent": "desde 15€/mes.",
+      "titleCity": "Tu dirección profesional en {{city}} ",
+      "subtitle": "Domicilio legal, recepción de correo, acceso a espacios y plataforma de gestión — todo incluido. Sin depósito, sin permanencia.",
+      "bullets": [
+        "Sin depósito ni permanencia",
+        "Alta en menos de 24h",
+        "Plataforma y IA incluidas"
+      ]
+    },
+    "benefits": {
+      "label": "Incluido en tu plan",
+      "title": "Mucho más que ",
+      "titleAccent": "una dirección.",
+      "items": [
+        { "title": "Domicilio legal y fiscal", "desc": "Dirección registrada válida ante Hacienda, bancos y registros mercantiles. Tu empresa visible en Google Maps." },
+        { "title": "Recepción de correo", "desc": "Recibimos tu correspondencia y paquetes. Escaneo gratuito y notificación inmediata por email." },
+        { "title": "Acceso a BeSpaces", "desc": "Pases gratuitos de coworking y salas de reuniones en nuestra red de espacios físicos." },
+        { "title": "Plataforma incluida", "desc": "Panel de gestión con contactos, facturación, buzón digital y asistente IA — todo incluido en tu plan." }
+      ]
+    },
+    "pricing": {
+      "label": "Precios",
+      "title": "Un plan para cada etapa de ",
+      "titleAccent": "tu negocio.",
+      "popular": "Popular",
+      "perMonth": "/mes",
+      "trialBadge": "30 días gratis",
+      "vatNote": "30 días de prueba gratis. Todos los precios + IVA. Sin permanencia.",
+      "choosePlan": "Elegir plan",
+      "plans": [
+        { "name": "Basic", "price": "15", "popular": true, "features": ["Domicilio fiscal y legal", "Recepción de correo", "Buzón digital", "Plataforma BeWorking", "50 consultas IA/mes", "Tokens IA adicionales disponibles"] },
+        { "name": "Pro", "price": "25", "features": ["Todo en Basic", "5 pases coworking/mes", "Salas de reuniones", "Atención de llamadas", "200 consultas IA/mes", "Firma digital"] },
+        { "name": "Max", "price": "90", "features": ["Todo en Pro", "Pases ilimitados", "Logo en recepción", "Prioridad en soporte", "IA ilimitada", "Agentic Workers"] }
+      ]
+    },
+    "trust": {
+      "stats": [
+        { "value": "2020", "label": "Fundada" },
+        { "value": "500+", "label": "Empresas" },
+        { "value": "99.9%", "label": "Disponibilidad" }
+      ]
+    },
+    "lang": "EN"
+  },
   "myBookings": {
     "title": "Mis reservas próximas",
     "space": "Espacio",

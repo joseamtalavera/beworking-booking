@@ -259,6 +259,104 @@
       }
     }
   },
+  "register": {
+    "title": "Create your account",
+    "steps": ["Account", "Company", "City", "Payment"],
+    "fields": {
+      "name": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "company": "Company name",
+      "taxId": "Tax ID (VAT)",
+      "phone": "Phone"
+    },
+    "errors": {
+      "nameRequired": "Full name is required.",
+      "emailRequired": "Please enter a valid email.",
+      "emailTaken": "This email is already registered.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "passwordMatch": "Passwords do not match.",
+      "termsRequired": "You must accept the terms and conditions."
+    },
+    "trialBanner": "30 days free, then €{{price}}/month",
+    "termsLabel": "I have read and accept the <terms>terms and conditions</terms>.",
+    "submitTrial": "Start free trial",
+    "back": "Back",
+    "next": "Continue",
+    "success": "Account created! Your 30-day free trial has started. Check your email to verify your account.",
+    "alreadyHaveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "planStep": {
+      "heading": "Choose your plan",
+      "errorRequired": "Please select a plan."
+    },
+    "locationStep": {
+      "heading": "Choose your city",
+      "subheading": "Select the city where you want to register your company.",
+      "errorRequired": "Please select a city."
+    },
+    "locations": {
+      "malaga": {
+        "city": "Málaga",
+        "address": "Calle Alejandro Dumas, 17 · Oficinas",
+        "zip": "29004 Málaga, Spain"
+      },
+      "sevilla": {
+        "city": "Sevilla",
+        "address": "Coming soon",
+        "zip": "Sevilla, Spain"
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "label": "Virtual Office",
+      "title": "Your professional address ",
+      "titleAccent": "from €15/month.",
+      "titleCity": "Your professional address in {{city}} ",
+      "subtitle": "Legal domicile, mail reception, workspace access and management platform — all included. No deposit, no commitment.",
+      "bullets": [
+        "No deposit or commitment",
+        "Set up in less than 24h",
+        "Platform and AI included"
+      ]
+    },
+    "benefits": {
+      "label": "Included in your plan",
+      "title": "Much more than ",
+      "titleAccent": "just an address.",
+      "items": [
+        { "title": "Legal & fiscal address", "desc": "Registered address valid for tax authorities, banks and business registries. Your company visible on Google Maps." },
+        { "title": "Mail reception", "desc": "We receive your mail and packages. Free scanning and instant email notification." },
+        { "title": "BeSpaces access", "desc": "Free coworking passes and meeting rooms across our network of physical spaces." },
+        { "title": "Platform included", "desc": "Management dashboard with contacts, billing, digital mailbox and AI assistant — all included in your plan." }
+      ]
+    },
+    "pricing": {
+      "label": "Pricing",
+      "title": "A plan for every stage of ",
+      "titleAccent": "your business.",
+      "popular": "Popular",
+      "perMonth": "/month",
+      "trialBadge": "30 days free",
+      "vatNote": "30-day free trial. All prices + VAT. No commitment.",
+      "choosePlan": "Choose plan",
+      "plans": [
+        { "name": "Basic", "price": "15", "popular": true, "features": ["Legal & fiscal address", "Mail reception", "Digital mailbox", "BeWorking Platform", "50 AI queries/month", "Extra AI tokens available"] },
+        { "name": "Pro", "price": "25", "features": ["Everything in Basic", "5 coworking passes/month", "Meeting rooms", "Call handling", "200 AI queries/month", "Digital signature"] },
+        { "name": "Max", "price": "90", "features": ["Everything in Pro", "Unlimited passes", "Logo at reception", "Priority support", "Unlimited AI", "Agentic Workers"] }
+      ]
+    },
+    "trust": {
+      "stats": [
+        { "value": "2020", "label": "Founded" },
+        { "value": "500+", "label": "Companies" },
+        { "value": "99.9%", "label": "Uptime" }
+      ]
+    },
+    "lang": "ES"
+  },
   "myBookings": {
     "title": "My upcoming bookings",
     "space": "Space",

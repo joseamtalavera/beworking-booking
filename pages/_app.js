@@ -24,6 +24,8 @@ export default function MyApp(props) {
     }
   }, []);
 
+  const getLayout = Component.getLayout || ((page) => <AppLayout>{page}</AppLayout>);
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -33,9 +35,7 @@ export default function MyApp(props) {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <QueryClientProvider client={queryClient}>
-          <AppLayout>
-            <Component {...pageProps} />
-          </AppLayout>
+          {getLayout(<Component {...pageProps} />)}
         </QueryClientProvider>
       </ThemeProvider>
     </CacheProvider>
