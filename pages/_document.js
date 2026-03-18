@@ -13,13 +13,13 @@ export default class MyDocument extends Document {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-          <meta name="description" content="Reserva salas de reuniones, coworking y oficinas virtuales en BeWorking." />
+          <meta name="description" content="Salas de reuniones, coworking y oficinas virtuales en Malaga. Reserva tu espacio ideal en BeSpaces." />
           <meta property="og:type" content="website" />
-          <meta property="og:title" content="BeSpaces — BeWorking" />
+          <meta property="og:title" content="BeSpaces — Espacios de trabajo en Malaga" />
           <meta property="og:description" content="Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio." />
           <meta property="og:image" content="https://be-spaces.com/og-image.jpg" />
           <meta property="og:url" content="https://be-spaces.com" />
-          <meta property="og:site_name" content="BeWorking" />
+          <meta property="og:site_name" content="BeSpaces" />
         </Head>
         <body>
           <Main />

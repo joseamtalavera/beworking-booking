@@ -401,7 +401,7 @@ const HomePage = () => {
     <>
       <Head>
         <title>BeSpaces | Meeting Rooms, Coworking & Virtual Office</title>
-        <meta name="description" content="Meeting rooms, coworking desks, and virtual offices — find the right workspace for your business." />
+        <link rel="canonical" href="https://be-spaces.com" />
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
         {/* ─── HERO ─── */}
