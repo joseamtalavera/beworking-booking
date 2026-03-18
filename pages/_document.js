@@ -17,8 +17,8 @@ export default class MyDocument extends Document {
           <meta property="og:type" content="website" />
           <meta property="og:title" content="BeSpaces — BeWorking" />
           <meta property="og:description" content="Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio." />
-          <meta property="og:image" content="https://booking.be-working.com/og-image.jpg" />
-          <meta property="og:url" content="https://booking.be-working.com" />
+          <meta property="og:image" content="https://be-spaces.com/og-image.jpg" />
+          <meta property="og:url" content="https://be-spaces.com" />
           <meta property="og:site_name" content="BeWorking" />
         </Head>
         <body>

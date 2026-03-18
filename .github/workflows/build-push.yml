@@ -57,11 +57,12 @@ jobs:
           push: true
           tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:${{ inputs.image_tag || 'main' }}
           build-args: |
-            NEXT_PUBLIC_API_BASE_URL=/api
+            NEXT_PUBLIC_API_BASE_URL=https://app.be-working.com/api
             NEXT_PUBLIC_FRONTEND_URL=https://www.be-working.com
             NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ steps.stripe.outputs.pk }}
-            NEXT_PUBLIC_PAYMENTS_BASE_URL=https://stripe.be-working.com
+            NEXT_PUBLIC_PAYMENTS_BASE_URL=https://app.be-working.com/payments/api
             NEXT_PUBLIC_STRIPE_TENANT=beworking
+            NEXT_PUBLIC_LOGIN_URL=https://www.be-working.com/main/login
 
       - name: Download current task definition
         run: |

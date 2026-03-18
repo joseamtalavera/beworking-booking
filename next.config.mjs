@@ -13,6 +13,10 @@ const nextConfig = {
         hostname: 'be-working.com',
       },
       {
+        protocol: 'https',
+        hostname: 'be-spaces.com',
+      },
+      {
         protocol: 'http',
         hostname: 'localhost',
       },

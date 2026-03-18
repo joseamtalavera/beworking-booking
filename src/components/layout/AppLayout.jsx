@@ -138,7 +138,7 @@ const AppLayout = ({ children }) => {
                 '&:hover': { backgroundColor: 'transparent', color: 'primary.dark' },
               }}
             >
-              be-working.com →
+              be-working.com
             </Button>
           </Box>
         </Toolbar>

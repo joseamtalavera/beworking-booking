@@ -391,7 +391,7 @@ const HomePage = () => {
 
   const handleTabChange = (event, newValue) => {
     if (newValue === 2) {
-      window.open('https://oficinavirtual.be-working.com/malaga', '_blank');
+      router.push('/malaga/oficina-virtual');
       return;
     }
     setActiveTab(newValue);
