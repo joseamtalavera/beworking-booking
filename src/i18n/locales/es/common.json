@@ -358,12 +358,13 @@
       "popular": "Popular",
       "perMonth": "/mes",
       "trialBadge": "30 días gratis",
-      "vatNote": "30 días de prueba gratis. Todos los precios + IVA. Sin permanencia.",
+      "vatNote": "Todos los planes incluyen la Plataforma BeWorking completa: firma digital, Agentic Workers y todas las herramientas. ¿Necesitas más consultas MariaAI? Cambia de plan en cualquier momento.",
+      "trialNote": "30 días de prueba gratis. Todos los precios + IVA. Sin permanencia.",
       "choosePlan": "Elegir plan",
       "plans": [
-        { "name": "Basic", "price": "15", "popular": true, "features": ["Domicilio fiscal y legal", "Recepción de correo", "Buzón digital", "Plataforma BeWorking", "50 consultas IA/mes", "Tokens IA adicionales disponibles"] },
-        { "name": "Pro", "price": "25", "features": ["Todo en Basic", "5 pases coworking/mes", "Salas de reuniones", "Atención de llamadas", "200 consultas IA/mes", "Firma digital"] },
-        { "name": "Max", "price": "90", "features": ["Todo en Pro", "Pases ilimitados", "Logo en recepción", "Prioridad en soporte", "IA ilimitada", "Agentic Workers"] }
+        { "name": "Basic", "price": "15", "popular": true, "description": "Dirección empresarial registrada para tu empresa.", "features": ["Domicilio fiscal y legal", "Recepción de correo", "Buzón digital", "Plataforma BeWorking completa", "Acceso reservas BeSpaces", "50 consultas MariaAI/mes"] },
+        { "name": "Pro", "price": "25", "description": "Todo en Basic más atención presencial y más IA.", "features": ["Todo en Basic", "200 consultas MariaAI/mes", "Atención de llamadas", "Multi-usuario (3 usuarios)", "Logo en recepción", "Soporte en automatizaciones"] },
+        { "name": "Max", "price": "90", "description": "Acceso completo sin límites a todo BeWorking.", "features": ["Todo en Pro", "MariaAI ilimitada", "Gestor dedicado", "Prioridad en soporte", "API access", "Features personalizadas"] }
       ]
     },
     "trust": {

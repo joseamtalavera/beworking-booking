@@ -498,9 +498,14 @@ export default function OficinaVirtualPage() {
                     {t('landing.pricing.popular')}
                   </Box>
                 )}
-                <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: 'text.primary', mb: 1 }}>
+                <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
                   {plan.name}
                 </Typography>
+                {plan.description && (
+                  <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
+                    {plan.description}
+                  </Typography>
+                )}
                 <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 1 }}>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'text.primary', lineHeight: 1 }}>
                     {plan.price}€
@@ -534,8 +539,11 @@ export default function OficinaVirtualPage() {
             ))}
           </Box>
 
-          <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.875rem', color: 'text.secondary' }}>
+          <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.8125rem', color: 'text.secondary', maxWidth: 700, mx: 'auto', lineHeight: 1.6 }}>
             {t('landing.pricing.vatNote')}
+          </Typography>
+          <Typography sx={{ textAlign: 'center', mt: 1.5, fontSize: '0.8125rem', color: 'text.secondary' }}>
+            {t('landing.pricing.trialNote')}
           </Typography>
         </Box>
       </Box>
