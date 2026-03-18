@@ -279,11 +279,19 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
   }
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ position: 'relative', overflow: 'visible' }}>
+      <Box sx={{
+        position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
+        bgcolor: 'primary.main', color: '#fff', px: 2.5, py: 0.5,
+        borderRadius: '8px', fontSize: '0.8125rem', fontWeight: 700,
+        letterSpacing: '0.03em', whiteSpace: 'nowrap', zIndex: 1,
+      }}>
+        {t('register.trialRibbon', '30 días gratis')}
+      </Box>
       <Typography
         component="h1"
         variant="h4"
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', textAlign: 'center' }}
+        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', textAlign: 'center', mt: 1 }}
       >
         {t('register.title')}
       </Typography>

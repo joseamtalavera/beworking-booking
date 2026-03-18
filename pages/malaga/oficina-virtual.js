@@ -542,7 +542,7 @@ export default function OficinaVirtualPage() {
           <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.8125rem', color: 'text.secondary', maxWidth: 700, mx: 'auto', lineHeight: 1.6 }}>
             {t('landing.pricing.vatNote')}
           </Typography>
-          <Typography sx={{ textAlign: 'center', mt: 1.5, fontSize: '0.8125rem', color: 'text.secondary' }}>
+          <Typography sx={{ textAlign: 'center', mt: 1.5, fontSize: '0.875rem', fontWeight: 600, color: 'primary.main' }}>
             {t('landing.pricing.trialNote')}
           </Typography>
         </Box>

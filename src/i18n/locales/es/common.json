@@ -300,6 +300,7 @@
     "trialBanner": "30 días gratis, luego {{price}}€/mes",
     "termsLabel": "He leído y acepto los <terms>términos y condiciones</terms>.",
     "submitTrial": "Empezar prueba gratuita",
+    "trialRibbon": "30 días gratis",
     "back": "Atrás",
     "next": "Continuar",
     "success": "¡Cuenta creada! Tu prueba de 30 días ha comenzado. Revisa tu correo para verificar tu cuenta.",

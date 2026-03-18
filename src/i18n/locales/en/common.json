@@ -287,6 +287,7 @@
     "trialBanner": "30 days free, then €{{price}}/month",
     "termsLabel": "I have read and accept the <terms>terms and conditions</terms>.",
     "submitTrial": "Start free trial",
+    "trialRibbon": "30 days free",
     "back": "Back",
     "next": "Continue",
     "success": "Account created! Your 30-day free trial has started. Check your email to verify your account.",
