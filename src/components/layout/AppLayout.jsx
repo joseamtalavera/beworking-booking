@@ -38,6 +38,15 @@ const AppLayout = ({ children }) => {
       ],
     },
     {
+      titleKey: 'footer.malaga',
+      links: [
+        { labelKey: 'footer.links.malaga',           href: '/malaga' },
+        { labelKey: 'footer.links.meetingRooms',      href: '/malaga/salas-de-reunion' },
+        { labelKey: 'footer.links.coworking',         href: '/malaga/coworking' },
+        { labelKey: 'footer.links.virtualOffice',     href: '/malaga/oficina-virtual' },
+      ],
+    },
+    {
       titleKey: 'footer.company',
       links: [
         { labelKey: 'footer.links.about',    soon: true },

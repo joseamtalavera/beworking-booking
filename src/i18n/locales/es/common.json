@@ -11,6 +11,7 @@
     "company": "Empresa",
     "legal": "Legal",
     "connect": "Contacto",
+    "malaga": "M\u00e1laga",
     "tagline": "BeWorking \u2014 Infraestructura empresarial europea.",
     "location": "M\u00e1laga, Espa\u00f1a \u00b7 Tallinn, Estonia",
     "links": {
@@ -25,7 +26,11 @@
       "terms": "T\u00e9rminos",
       "privacy": "Privacidad",
       "cookies": "Cookies",
-      "sitemap": "Mapa del sitio"
+      "sitemap": "Mapa del sitio",
+      "malaga": "M\u00e1laga",
+      "meetingRooms": "Salas de reuni\u00f3n",
+      "coworking": "Coworking",
+      "virtualOffice": "Oficina Virtual"
     }
   },
   "common": {
