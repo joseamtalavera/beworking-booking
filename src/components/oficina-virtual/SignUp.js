@@ -443,7 +443,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
             <Button variant="outlined" onClick={() => setStep(1)} sx={{ borderRadius: '999px', px: 3 }}>
               {t('register.back')}
             </Button>
-            <Button type="submit" variant="contained" disabled={loading} sx={{ borderRadius: '999px', px: 4 }}>
+            <Button type="submit" variant="contained" disabled={loading || (!!siteKey && !turnstileToken)} sx={{ borderRadius: '999px', px: 4 }}>
               {loading ? <CircularProgress size={22} color="inherit" /> : t('register.next')}
             </Button>
           </Box>
