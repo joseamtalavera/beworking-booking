@@ -55,7 +55,7 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-function PaymentForm({ onBack, onSubmit, loading, plan, t }) {
+function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paymentReady, setPaymentReady] = useState(false);
@@ -76,6 +76,8 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t }) {
       <Box sx={{ border: '1px solid rgba(0,0,0,0.12)', borderRadius: 2, p: 2 }}>
         <PaymentElement onChange={(e) => setPaymentReady(e.complete)} />
       </Box>
+
+      {termsSlot}
 
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 2 }}>
         <Button
@@ -308,59 +310,64 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
 
       {/* Step 0: Account */}
       {step === 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.name')}</FormLabel>
-            <TextField required fullWidth placeholder="Jon Snow" value={form.name} onChange={handleChange('name')} error={!!errors.name} helperText={errors.name || ''} />
-          </FormControl>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.email')}</FormLabel>
-            <TextField required fullWidth type="email" placeholder="your@email.com" value={form.email} onChange={handleChange('email')} error={!!errors.email || emailTaken} helperText={errors.email || ''} />
-          </FormControl>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.password')}</FormLabel>
-            <TextField required fullWidth type="password" placeholder="••••••••" value={form.password} onChange={handleChange('password')} error={!!errors.password} helperText={errors.password || ''} />
-          </FormControl>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.confirmPassword')}</FormLabel>
-            <TextField required fullWidth type="password" placeholder="••••••••" value={form.confirmPassword} onChange={handleChange('confirmPassword')} error={!!errors.confirmPassword} helperText={errors.confirmPassword || ''} />
-          </FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-            <Button variant="contained" onClick={goToStep1} sx={{ borderRadius: '999px', px: 4 }}>
-              {t('register.next')}
-            </Button>
+        <form onSubmit={(e) => { e.preventDefault(); goToStep1(); }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.name')}</FormLabel>
+              <TextField required fullWidth placeholder="Jon Snow" value={form.name} onChange={handleChange('name')} error={!!errors.name} helperText={errors.name || ''} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.email')}</FormLabel>
+              <TextField required fullWidth type="email" placeholder="your@email.com" value={form.email} onChange={handleChange('email')} error={!!errors.email || emailTaken} helperText={errors.email || ''} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.password')}</FormLabel>
+              <TextField required fullWidth type="password" placeholder="••••••••" value={form.password} onChange={handleChange('password')} error={!!errors.password} helperText={errors.password || ''} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.confirmPassword')}</FormLabel>
+              <TextField required fullWidth type="password" placeholder="••••••••" value={form.confirmPassword} onChange={handleChange('confirmPassword')} error={!!errors.confirmPassword} helperText={errors.confirmPassword || ''} />
+            </FormControl>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
+              <Button type="submit" variant="contained" sx={{ borderRadius: '999px', px: 4 }}>
+                {t('register.next')}
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        </form>
       )}
 
       {/* Step 1: Company */}
       {step === 1 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.company')}</FormLabel>
-            <TextField fullWidth placeholder="Acme Inc." value={form.company} onChange={handleChange('company')} />
-          </FormControl>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.taxId')}</FormLabel>
-            <TextField fullWidth placeholder="B12345678" value={form.taxId} onChange={handleChange('taxId')} />
-          </FormControl>
-          <FormControl>
-            <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.phone')}</FormLabel>
-            <TextField fullWidth placeholder="+34 600 000 000" value={form.phone} onChange={handleChange('phone')} />
-          </FormControl>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
-            <Button variant="outlined" onClick={() => setStep(0)} sx={{ borderRadius: '999px', px: 3 }}>
-              {t('register.back')}
-            </Button>
-            <Button variant="contained" onClick={() => setStep(2)} sx={{ borderRadius: '999px', px: 4 }}>
-              {t('register.next')}
-            </Button>
+        <form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.company')}</FormLabel>
+              <TextField fullWidth placeholder="Acme Inc." value={form.company} onChange={handleChange('company')} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.taxId')}</FormLabel>
+              <TextField fullWidth placeholder="B12345678" value={form.taxId} onChange={handleChange('taxId')} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.phone')}</FormLabel>
+              <TextField fullWidth placeholder="+34 600 000 000" value={form.phone} onChange={handleChange('phone')} />
+            </FormControl>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
+              <Button variant="outlined" onClick={() => setStep(0)} sx={{ borderRadius: '999px', px: 3 }}>
+                {t('register.back')}
+              </Button>
+              <Button type="submit" variant="contained" sx={{ borderRadius: '999px', px: 4 }}>
+                {t('register.next')}
+              </Button>
+            </Box>
           </Box>
-        </Box>
+        </form>
       )}
 
       {/* Step 2: City */}
       {step === 2 && (
+        <form onSubmit={(e) => { e.preventDefault(); goToStep3(); }}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography sx={{ fontWeight: 600, fontSize: '1.0625rem', textAlign: 'center' }}>
             {t('register.locationStep.heading')}
@@ -436,11 +443,12 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
             <Button variant="outlined" onClick={() => setStep(1)} sx={{ borderRadius: '999px', px: 3 }}>
               {t('register.back')}
             </Button>
-            <Button variant="contained" onClick={goToStep3} disabled={loading} sx={{ borderRadius: '999px', px: 4 }}>
+            <Button type="submit" variant="contained" disabled={loading} sx={{ borderRadius: '999px', px: 4 }}>
               {loading ? <CircularProgress size={22} color="inherit" /> : t('register.next')}
             </Button>
           </Box>
         </Box>
+        </form>
       )}
 
       {/* Step 3: Plan + Payment */}
@@ -491,28 +499,31 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
               loading={loading}
               plan={PLANS[selectedPlan]}
               t={t}
+              termsSlot={
+                <>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={termsAccepted}
+                        onChange={(e) => { setTermsAccepted(e.target.checked); setErrors((prev) => ({ ...prev, terms: '' })); }}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <span>
+                        <Trans i18nKey="register.termsLabel" components={{
+                          terms: <Link href={`${FRONTEND_URL}/main/terminos`} target="_blank" rel="noopener" sx={{ fontWeight: 700, textDecoration: 'none', color: 'primary.main' }} />,
+                        }} />
+                      </span>
+                    }
+                  />
+                  {errors.terms && (
+                    <Typography color="error" sx={{ fontSize: '0.9rem', mt: -1 }}>{errors.terms}</Typography>
+                  )}
+                </>
+              }
             />
           </Elements>
-
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={termsAccepted}
-                onChange={(e) => { setTermsAccepted(e.target.checked); setErrors((prev) => ({ ...prev, terms: '' })); }}
-                color="primary"
-              />
-            }
-            label={
-              <span>
-                <Trans i18nKey="register.termsLabel" components={{
-                  terms: <Link href={`${FRONTEND_URL}/main/terminos`} target="_blank" rel="noopener" sx={{ fontWeight: 700, textDecoration: 'none', color: 'primary.main' }} />,
-                }} />
-              </span>
-            }
-          />
-          {errors.terms && (
-            <Typography color="error" sx={{ fontSize: '0.9rem', mt: -1 }}>{errors.terms}</Typography>
-          )}
 
         </Box>
       )}
