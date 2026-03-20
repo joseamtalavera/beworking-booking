@@ -234,6 +234,7 @@ const SelectBookingDetails = ({ room, onContinue }) => {
                 bookedSlotIds={bookedSlotIds}
                 minTime={schedule.startTime ? addMinutesToTime(schedule.startTime, 30) : undefined}
                 maxTime={maxEndTime || undefined}
+                isEndTime
               />
             </Box>
             <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
