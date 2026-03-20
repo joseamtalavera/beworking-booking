@@ -479,7 +479,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', ap
                     '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.02)' },
                   }}
                 >
-                  {key === 'pro' && (
+                  {key === 'basic' && (
                     <Box sx={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 0.3, bgcolor: 'primary.main', color: '#fff', px: 1, py: 0.2, borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
                       <StarIcon sx={{ fontSize: '0.75rem' }} /> Popular
                     </Box>
