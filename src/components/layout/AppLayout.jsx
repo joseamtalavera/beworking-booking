@@ -132,22 +132,39 @@ const AppLayout = ({ children }) => {
             <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
           </Box>
 
-          {/* Right: lang toggle + be-working.com link */}
+          {/* Right: lang toggle + login + register */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
             <Button
               component="a"
-              href={FRONTEND_URL}
+              href={`${FRONTEND_URL}/main/login`}
               sx={{
+                display: { xs: 'none', sm: 'inline-flex' },
                 fontSize: '0.8125rem',
                 fontWeight: 500,
-                color: 'primary.main',
+                color: 'text.primary',
                 textTransform: 'none',
                 px: 1.5,
-                '&:hover': { backgroundColor: 'transparent', color: 'primary.dark' },
+                '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
               }}
             >
-              be-working.com
+              {t('nav.signIn')}
+            </Button>
+            <Button
+              component="a"
+              href="/register"
+              variant="contained"
+              sx={{
+                fontSize: '0.8125rem',
+                fontWeight: 600,
+                textTransform: 'none',
+                borderRadius: '999px',
+                px: 2.5,
+                py: 0.875,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t('nav.getStarted')}
             </Button>
           </Box>
         </Toolbar>
