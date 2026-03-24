@@ -284,15 +284,21 @@
       "passwordMatch": "Passwords do not match.",
       "termsRequired": "You must accept the terms and conditions."
     },
-    "trialBanner": "30 days free, then €{{price}}/month",
+    "trialBanner": "€{{price}}/month",
     "termsLabel": "I have read and accept the <terms>terms and conditions</terms>.",
-    "submitTrial": "Start free trial",
-    "trialRibbon": "30 days free",
+    "submitTrial": "Subscribe",
+    "trialRibbon": "",
     "back": "Back",
     "next": "Continue",
-    "success": "Account created! Your 30-day free trial has started. Check your email to verify your account.",
+    "success": "Account created! Check your email to verify your account.",
     "alreadyHaveAccount": "Already have an account?",
     "signIn": "Sign in",
+    "simple": {
+      "title": "Create your account",
+      "submit": "Create account",
+      "successTitle": "Check your email",
+      "successBody": "We sent a confirmation link to your email. Click it to activate your account."
+    },
     "planStep": {
       "heading": "Choose your plan",
       "errorRequired": "Please select a plan."
@@ -345,9 +351,9 @@
       "titleAccent": "your business.",
       "popular": "Popular",
       "perMonth": "/month",
-      "trialBadge": "30 days free",
+      "trialBadge": "",
       "vatNote": "All plans include the full BeWorking Platform: digital signature, Agentic Workers, and all tools. Need more MariaAI queries? Switch plans anytime.",
-      "trialNote": "30-day free trial. All prices + VAT. No commitment.",
+      "trialNote": "All prices + VAT. No commitment.",
       "choosePlan": "Choose plan",
       "plans": [
         { "name": "Basic", "price": "15", "popular": true, "description": "Registered business address for your company.", "features": ["Legal & fiscal address", "Mail reception", "Digital mailbox", "Full BeWorking Platform", "BeSpaces booking access", "50 MariaAI queries/month"] },

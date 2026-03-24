@@ -297,15 +297,22 @@
       "passwordMatch": "Las contraseñas no coinciden.",
       "termsRequired": "Debes aceptar los términos y condiciones."
     },
-    "trialBanner": "30 días gratis, luego {{price}}€/mes",
+    "trialBanner": "{{price}}€/mes",
     "termsLabel": "He leído y acepto los <terms>términos y condiciones</terms>.",
-    "submitTrial": "Empezar prueba gratuita",
-    "trialRibbon": "30 días gratis",
+    "submitTrial": "Suscribirse",
+    "trialRibbon": "",
     "back": "Atrás",
     "next": "Continuar",
-    "success": "¡Cuenta creada! Tu prueba de 30 días ha comenzado. Revisa tu correo para verificar tu cuenta.",
+    "success": "¡Cuenta creada! Revisa tu correo para verificar tu cuenta.",
     "alreadyHaveAccount": "¿Ya tienes cuenta?",
     "signIn": "Iniciar sesión",
+    "simple": {
+      "title": "Crea tu cuenta",
+      "subtitle": "Acceso gratuito a la plataforma BeWorking.",
+      "submit": "Crear cuenta",
+      "successTitle": "Revisa tu correo",
+      "successBody": "Te hemos enviado un enlace de confirmación. Haz clic para activar tu cuenta."
+    },
     "planStep": {
       "heading": "Elige tu plan",
       "errorRequired": "Selecciona un plan."
@@ -358,9 +365,9 @@
       "titleAccent": "tu negocio.",
       "popular": "Popular",
       "perMonth": "/mes",
-      "trialBadge": "30 días gratis",
+      "trialBadge": "",
       "vatNote": "Todos los planes incluyen la Plataforma BeWorking completa: firma digital, Agentic Workers y todas las herramientas. ¿Necesitas más consultas MariaAI? Cambia de plan en cualquier momento.",
-      "trialNote": "30 días de prueba gratis. Todos los precios + IVA. Sin permanencia.",
+      "trialNote": "Todos los precios + IVA. Sin permanencia.",
       "choosePlan": "Elegir plan",
       "plans": [
         { "name": "Basic", "price": "15", "popular": true, "description": "Dirección empresarial registrada para tu empresa.", "features": ["Domicilio fiscal y legal", "Recepción de correo", "Buzón digital", "Plataforma BeWorking completa", "Acceso reservas BeSpaces", "50 consultas MariaAI/mes"] },
