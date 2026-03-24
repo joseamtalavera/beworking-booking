@@ -9,6 +9,7 @@ import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import Seo from '@/components/oficina-virtual/Seo';
@@ -652,14 +653,21 @@ function OVLayout({ children }) {
               sx={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: 0.5,
+                gap: 0.75,
                 fontSize: '0.8125rem',
-                fontWeight: 500,
-                color: 'text.secondary',
-                '&:hover': { color: 'primary.main' },
+                fontWeight: 600,
+                color: 'primary.main',
+                px: 1.5,
+                py: 0.5,
+                borderRadius: '999px',
+                border: '1px solid',
+                borderColor: 'primary.main',
+                transition: 'all 0.2s ease',
+                '&:hover': { bgcolor: 'rgba(0,150,36,0.06)' },
               }}
             >
-              📞 +34 951 905 967
+              <PhoneOutlinedIcon sx={{ fontSize: 16 }} />
+              +34 951 905 967
             </MuiLink>
           </Box>
         </Toolbar>
