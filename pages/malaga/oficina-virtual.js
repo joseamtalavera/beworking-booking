@@ -647,16 +647,19 @@ function OVLayout({ children }) {
               {t('landing.lang')}
             </Button>
             <MuiLink
-              href={FRONTEND_URL_LAYOUT}
+              href="tel:+34951905967"
               underline="none"
               sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
                 fontSize: '0.8125rem',
                 fontWeight: 500,
-                color: 'primary.main',
-                '&:hover': { color: 'primary.dark' },
+                color: 'text.secondary',
+                '&:hover': { color: 'primary.main' },
               }}
             >
-              be-working.com →
+              📞 +34 951 905 967
             </MuiLink>
           </Box>
         </Toolbar>
