@@ -605,15 +605,34 @@ const PaymentStep = ({ room, onBack }) => {
     const endMins = timeStringToMinutes(schedule.endTime);
     if (startMins == null || endMins == null || endMins <= startMins) return null;
     const hours = (endMins - startMins) / 60;
-    const subtotal = hours * room.priceFrom;
+    const perSession = hours * room.priceFrom;
+
+    // Count recurring sessions
+    const DAY_MAP = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
+    let sessions = 1;
+    if (schedule?.recurring && schedule?.weekdays?.length && schedule?.date && schedule?.dateTo) {
+      const selectedDays = new Set(schedule.weekdays.map((d) => DAY_MAP[d]));
+      let count = 0;
+      const cursor = new Date(schedule.date + 'T00:00:00');
+      const end = new Date(schedule.dateTo + 'T00:00:00');
+      while (cursor <= end) {
+        if (selectedDays.has(cursor.getDay())) count++;
+        cursor.setDate(cursor.getDate() + 1);
+      }
+      if (count > 0) sessions = count;
+    }
+
+    const subtotal = perSession * sessions;
     const vat = subtotal * VAT_RATE;
     const total = subtotal + vat;
     return {
       subtotal: subtotal.toFixed(2),
       vat: vat.toFixed(2),
       total: total.toFixed(2),
+      sessions,
+      perSession: perSession.toFixed(2),
     };
-  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, schedule?.bookingType, isDesk, isSubscription]);
+  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, schedule?.bookingType, isDesk, isSubscription, schedule?.recurring, schedule?.weekdays, schedule?.date, schedule?.dateTo]);
 
   const estimatedTotal = pricing?.total ?? null;
 
