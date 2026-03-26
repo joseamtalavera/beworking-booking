@@ -129,7 +129,7 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href={FRONTEND_URL} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src="/beworking_logo_clean.svg" alt="BeWorking" style={{ height: 26, width: 130, cursor: 'pointer' }} />
+            <img src="/bespaces_logo.png" alt="BeSpaces" style={{ height: 26, width: 'auto', cursor: 'pointer' }} />
           </Box>
 
           {/* Right: lang toggle + login + register */}
