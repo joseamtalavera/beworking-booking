@@ -55,10 +55,11 @@ const buildBookingPayload = (visitor, schedule, room, isDesk, extraFields = {}) 
     billingPostalCode: billing.postalCode || '',
     productName,
     date: schedule?.date || '',
-    dateTo: isDesk ? (schedule?.dateTo || '') : undefined,
+    dateTo: (isDesk || schedule?.recurring) ? (schedule?.dateTo || '') : undefined,
     startTime: schedule?.startTime || '',
     endTime: schedule?.endTime || '',
     attendees: schedule?.attendees || 1,
+    weekdays: schedule?.recurring && schedule?.weekdays?.length ? schedule.weekdays : undefined,
     ...extraFields,
   };
 };

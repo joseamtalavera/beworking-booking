@@ -47,8 +47,10 @@ const SelectBookingDetails = ({ room, onContinue }) => {
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
   const [note, setNote] = useState('');
-  const [recurring, setRecurring] = useState(false);
-  const [weekdays, setWeekdays] = useState([]);
+  const recurring = schedule.recurring || false;
+  const setRecurring = (val) => setSchedule({ recurring: val });
+  const weekdays = schedule.weekdays || [];
+  const setWeekdays = (val) => setSchedule({ weekdays: val });
 
   useEffect(() => {
     if (!schedule.startTime) {
