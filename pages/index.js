@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
+  Button,
   Divider,
   IconButton,
   Paper,
@@ -449,30 +450,29 @@ const HomePage = () => {
         <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, pt: 4 }}>
 
           {/* Space Type Tabs */}
-          <Tabs
-            value={activeTab}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            allowScrollButtonsMobile
-            sx={{
-              mb: 4,
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontWeight: 600,
-                minHeight: 48
-              }
-            }}
-          >
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 4 }}>
             {spaceTypes.map((type, index) => (
-              <Tab
+              <Button
                 key={type.value}
-                icon={type.icon}
-                label={t(type.labelKey)}
-                iconPosition="start"
-              />
+                startIcon={type.icon}
+                onClick={() => handleTabChange(null, index)}
+                variant={activeTab === index ? 'contained' : 'outlined'}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  borderRadius: '999px',
+                  px: 3,
+                  py: 1,
+                  ...(activeTab === index
+                    ? { bgcolor: 'primary.main', color: '#fff', '&:hover': { bgcolor: 'primary.dark' } }
+                    : { borderColor: 'divider', color: 'text.primary', '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.04)' } }
+                  ),
+                }}
+              >
+                {t(type.labelKey)}
+              </Button>
             ))}
-          </Tabs>
+          </Stack>
         </Box>
 
         {activeTab === 2 ? (
