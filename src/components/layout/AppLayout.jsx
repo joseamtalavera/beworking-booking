@@ -129,7 +129,9 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href={FRONTEND_URL} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <img src="/green_bespaces.png" alt="BeSpaces" style={{ height: 30, width: 'auto', cursor: 'pointer' }} />
+            <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, fontSize: '1.35rem', color: '#009624', letterSpacing: '-0.02em', cursor: 'pointer', lineHeight: 1 }}>
+              bespaces<span style={{ color: '#fb923c' }}>.</span>
+            </span>
           </Box>
 
           {/* Right: lang toggle + login + register */}
