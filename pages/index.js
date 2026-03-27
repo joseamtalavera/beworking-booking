@@ -452,6 +452,9 @@ const HomePage = () => {
           <Tabs
             value={activeTab}
             onChange={handleTabChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
               mb: 4,
               '& .MuiTab-root': {
