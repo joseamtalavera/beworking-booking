@@ -1,0 +1,18 @@
+<svg width="550" height="150" viewBox="0 0 550 150" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .logo-text { 
+        fill: #2c8c4a; 
+        font-family: sans-serif; 
+        font-weight: 800; 
+        font-size: 90px; 
+        letter-spacing: -2px;
+      }
+      .dot { fill: #f3c959; }
+    </style>
+  </defs>
+
+  <text x="10" y="110" class="logo-text">bespaces</text>
+
+  <circle class="dot" cx="420" cy="100" r="12" />
+</svg>
