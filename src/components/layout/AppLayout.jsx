@@ -129,7 +129,7 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href={FRONTEND_URL} sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, fontSize: '1.6rem', color: '#009624', letterSpacing: '-0.02em', cursor: 'pointer', lineHeight: 1 }}>
+            <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, fontSize: '1.8rem', color: '#009624', letterSpacing: '-0.02em', cursor: 'pointer', lineHeight: 1 }}>
               bespaces<span style={{ color: '#fb923c' }}>.</span>
             </span>
           </Box>
