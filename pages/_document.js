@@ -20,6 +20,8 @@ export default class MyDocument extends Document {
           <meta property="og:image" content="https://be-spaces.com/og-image.jpg" />
           <meta property="og:url" content="https://be-spaces.com" />
           <meta property="og:site_name" content="BeSpaces" />
+          <link rel="alternate" hreflang="es" href="https://be-spaces.com" />
+          <link rel="alternate" hreflang="en" href="https://be-spaces.com" />
         </Head>
         <body>
           <Main />
