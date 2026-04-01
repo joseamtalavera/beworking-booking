@@ -12,7 +12,7 @@ export default class MyDocument extends Document {
           <meta name="theme-color" content="#009624" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700&display=swap" rel="stylesheet" />
           <meta name="description" content="Salas de reuniones, coworking y oficinas virtuales en Malaga. Reserva tu espacio ideal en BeSpaces." />
           <meta property="og:type" content="website" />
           <meta property="og:title" content="BeSpaces — Espacios de trabajo en Malaga" />

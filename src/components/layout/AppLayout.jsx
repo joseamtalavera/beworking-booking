@@ -129,8 +129,8 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <span style={{ fontFamily: '"Inter", sans-serif', fontWeight: 700, fontSize: '1.8rem', color: '#009624', letterSpacing: '-0.02em', cursor: 'pointer', lineHeight: 1 }}>
-              bespaces<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#fb923c', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
+            <span style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 600, fontSize: '1.8rem', color: '#007a1d', letterSpacing: '-0.01em', cursor: 'pointer', lineHeight: 1 }}>
+              bespaces<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#d4a843', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
             </span>
           </Box>
 
