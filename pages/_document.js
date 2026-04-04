@@ -8,15 +8,13 @@ export default class MyDocument extends Document {
     return (
       <Html lang="es">
         <Head>
-          <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18059296882" />
           <script
             dangerouslySetInnerHTML={{
-              __html: `
-                window.dataLayer = window.dataLayer || [];
-                window.gtag = function(){dataLayer.push(arguments);};
-                window.gtag('js', new Date());
-                window.gtag('config', 'AW-18059296882');
-              `,
+              __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-T5BD4L36');`,
             }}
           />
           <link rel="icon" href="/new_favicon.png" />
@@ -35,6 +33,12 @@ export default class MyDocument extends Document {
           <link rel="alternate" hreflang="en" href="https://be-spaces.com" />
         </Head>
         <body>
+          <noscript
+            dangerouslySetInnerHTML={{
+              __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5BD4L36"
+height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+            }}
+          />
           <Main />
           <NextScript />
         </body>
