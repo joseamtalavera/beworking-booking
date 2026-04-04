@@ -13,9 +13,9 @@ export default class MyDocument extends Document {
             dangerouslySetInnerHTML={{
               __html: `
                 window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'AW-18059296882');
+                window.gtag = function(){dataLayer.push(arguments);};
+                window.gtag('js', new Date());
+                window.gtag('config', 'AW-18059296882');
               `,
             }}
           />
