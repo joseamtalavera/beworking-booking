@@ -17,6 +17,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-T5BD4L36');`,
             }}
           />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function(){dataLayer.push(arguments);};
+              `,
+            }}
+          />  
           <link rel="icon" href="/new_favicon.png" />
           <meta name="theme-color" content="#009624" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
