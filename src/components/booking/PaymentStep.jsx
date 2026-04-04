@@ -240,7 +240,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   };
 
   if (success) {
-    return <SuccessMessage amount={`€${amount}`} />;
+    return <SuccessMessage amount={`€${amount}`} valueCents={amountCents} transactionId={result?.paymentIntent?.id} />;
   }
 
   return (
@@ -359,7 +359,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
   };
 
   if (success) {
-    return <SuccessMessage amount={`€${monthlyAmount.toFixed(2)}/month`} isSubscription />;
+    return <SuccessMessage amount={`€${monthlyAmount.toFixed(2)}/month`} isSubscription valueCents={Math.round(monthlyAmount * 100)} />;
   }
 
   return (
@@ -521,8 +521,20 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
 };
 
 /* ─── Success message ─── */
-const SuccessMessage = ({ amount, isSubscription }) => {
+const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-18059296882/sCQbCN_vt5QcEPKArKND',
+        value: valueCents ? valueCents / 100 : 0,
+        currency: 'EUR',
+        transaction_id: transactionId || '',
+      });
+    }
+  }, []);
+
   return (
     <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
       <Stack spacing={3} alignItems="center">
