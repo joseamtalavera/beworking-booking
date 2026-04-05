@@ -70,7 +70,7 @@ export default function MalagaHub() {
                   letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
                 }}
               >
-                BeSpaces — {location.displayName}
+                BeWorking — {location.displayName}
               </Typography>
               <Typography
                 component="h1"

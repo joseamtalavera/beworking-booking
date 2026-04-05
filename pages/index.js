@@ -401,8 +401,8 @@ const HomePage = () => {
   return (
     <>
       <Head>
-        <title>BeSpaces | Meeting Rooms, Coworking & Virtual Office</title>
-        <meta name="description" content="Salas de reuniones, coworking y oficinas virtuales en Málaga. Reserva tu espacio ideal en BeSpaces." />
+        <title>BeWorking | Meeting Rooms, Coworking & Virtual Office</title>
+        <meta name="description" content="Salas de reuniones, coworking y oficinas virtuales en Málaga. Reserva tu espacio ideal en BeWorking." />
         <link rel="canonical" href="https://be-working.com" />
       </Head>
       <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
@@ -424,7 +424,7 @@ const HomePage = () => {
                 letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
               }}
             >
-              BeSpaces
+              BeWorking
             </Typography>
             <Typography
               component="h1"

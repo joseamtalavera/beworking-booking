@@ -1,7 +1,7 @@
 {
   "nav": {
     "platform": "Platform",
-    "spaces": "BeSpaces",
+    "spaces": "Spaces",
     "pricing": "Pricing",
     "signIn": "Sign in",
     "getStarted": "Create account"
@@ -12,11 +12,11 @@
     "legal": "Legal",
     "connect": "Connect",
     "malaga": "Málaga",
-    "tagline": "BeSpaces — A Globaltechno Product.",
+    "tagline": "BeWorking — A Globaltechno Product.",
     "location": "Malaga, Spain · Tallinn, Estonia",
     "links": {
       "platform": "Platform",
-      "spaces": "BeSpaces",
+      "spaces": "Spaces",
       "pricing": "Pricing",
       "about": "About",
       "careers": "Careers",
@@ -42,7 +42,7 @@
     "backToDiscovery": "Back to discovery"
   },
   "home": {
-    "title": "BeSpaces",
+    "title": "Spaces",
     "subtitle": "Meeting rooms, coworking desks, and virtual offices — find the right workspace for your business.",
     "meetingRooms": "Meeting Rooms",
     "coworking": "Coworking",
@@ -432,7 +432,7 @@
           "desc": "We receive your mail and packages. Free scanning and instant email notification."
         },
         {
-          "title": "BeSpaces access",
+          "title": "BeWorking access",
           "desc": "Free coworking passes and meeting rooms across our network of physical spaces."
         },
         {
@@ -462,7 +462,7 @@
             "Mail reception",
             "Digital mailbox",
             "Full BeWorking Platform",
-            "BeSpaces booking access",
+            "BeWorking booking access",
             "50 MariaAI queries/month"
           ]
         },
@@ -536,7 +536,7 @@
     "tabs": {
       "overview": "Overview",
       "businessAddress": "Business Address",
-      "beSpaces": "BeSpaces",
+      "beSpaces": "Spaces",
       "integrations": "Integrations",
       "automation": "Automation",
       "spaceCatalog": "Space Catalog",
@@ -672,7 +672,7 @@
         ]
       },
       "spaces": {
-        "label": "BeSpaces",
+        "label": "Spaces",
         "items": [
           {
             "q": "What types of spaces are available?",
@@ -680,7 +680,7 @@
           },
           {
             "q": "How do I book a space?",
-            "a": "Open the BeSpaces section in your dashboard or visit be-spaces.com. Select a date, time, and room type — then confirm."
+            "a": "Open the BeWorking section in your dashboard or visit be-working.com. Select a date, time, and room type — then confirm."
           },
           {
             "q": "Can I book a space without a subscription?",

@@ -161,7 +161,7 @@ export default function Coworking() {
                 letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
               }}
             >
-              BeSpaces
+              BeWorking
             </Typography>
             <Typography
               component="h1"

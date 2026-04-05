@@ -1,7 +1,7 @@
 {
   "nav": {
     "platform": "Plataforma",
-    "spaces": "BeSpaces",
+    "spaces": "Spaces",
     "pricing": "Precios",
     "signIn": "Iniciar sesión",
     "getStarted": "Crear cuenta"
@@ -12,11 +12,11 @@
     "legal": "Legal",
     "connect": "Contacto",
     "malaga": "Málaga",
-    "tagline": "BeSpaces — Un Producto de Globaltechno.",
+    "tagline": "BeWorking — Un Producto de Globaltechno.",
     "location": "Málaga, España · Tallinn, Estonia",
     "links": {
       "platform": "Plataforma",
-      "spaces": "BeSpaces",
+      "spaces": "Spaces",
       "pricing": "Precios",
       "about": "Nosotros",
       "careers": "Empleo",
@@ -42,7 +42,7 @@
     "backToDiscovery": "Volver al catálogo"
   },
   "home": {
-    "title": "BeSpaces",
+    "title": "Spaces",
     "subtitle": "Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio.",
     "meetingRooms": "Salas de reuniones",
     "coworking": "Coworking",
@@ -446,7 +446,7 @@
           "desc": "Recibimos tu correspondencia y paquetes. Escaneo gratuito y notificación inmediata por email."
         },
         {
-          "title": "Acceso a BeSpaces",
+          "title": "Acceso a BeWorking",
           "desc": "Pases gratuitos de coworking y salas de reuniones en nuestra red de espacios físicos."
         },
         {
@@ -476,7 +476,7 @@
             "Recepción de correo",
             "Buzón digital",
             "Plataforma BeWorking completa",
-            "Acceso reservas BeSpaces",
+            "Acceso reservas BeWorking",
             "50 consultas MariaAI/mes"
           ]
         },
@@ -550,7 +550,7 @@
     "tabs": {
       "overview": "Resumen",
       "businessAddress": "Domicilio Fiscal",
-      "beSpaces": "BeSpaces",
+      "beSpaces": "Spaces",
       "integrations": "Integraciones",
       "automation": "Automatización",
       "spaceCatalog": "Catálogo de Espacios",
@@ -686,7 +686,7 @@
         ]
       },
       "spaces": {
-        "label": "BeSpaces",
+        "label": "Spaces",
         "items": [
           {
             "q": "¿Qué tipos de espacios están disponibles?",
@@ -694,7 +694,7 @@
           },
           {
             "q": "¿Cómo reservo un espacio?",
-            "a": "Accede a la sección BeSpaces en tu panel o visita be-spaces.com. Selecciona fecha, hora y tipo de sala — y confirma."
+            "a": "Accede a la sección BeWorking en tu panel o visita be-working.com. Selecciona fecha, hora y tipo de sala — y confirma."
           },
           {
             "q": "¿Puedo reservar sin suscripción?",

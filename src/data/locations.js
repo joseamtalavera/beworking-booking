@@ -18,19 +18,19 @@ const locations = {
     ],
     seo: {
       city: {
-        title: 'Espacios de trabajo en Malaga | BeSpaces',
-        description: 'Salas de reuniones, coworking y oficinas virtuales en Malaga. Reserva tu espacio ideal en BeSpaces.',
+        title: 'Espacios de trabajo en Malaga | BeWorking',
+        description: 'Salas de reuniones, coworking y oficinas virtuales en Malaga. Reserva tu espacio ideal en BeWorking.',
       },
       meetingRooms: {
-        title: 'Salas de reunion en Malaga | BeSpaces',
+        title: 'Salas de reunion en Malaga | BeWorking',
         description: 'Reserva salas de reuniones equipadas en Malaga. Wifi, proyector y todo lo que necesitas para tu reunion.',
       },
       coworking: {
-        title: 'Coworking en Malaga | BeSpaces',
+        title: 'Coworking en Malaga | BeWorking',
         description: 'Espacios de coworking flexibles en Malaga. Escritorios dedicados con todo incluido.',
       },
       virtualOffice: {
-        title: 'Oficina virtual en Malaga | BeSpaces',
+        title: 'Oficina virtual en Malaga | BeWorking',
         description: 'Oficina virtual en Malaga desde 15EUR/mes. Domicilio fiscal, recepcion de correo y acceso a espacios de trabajo.',
       },
     },
