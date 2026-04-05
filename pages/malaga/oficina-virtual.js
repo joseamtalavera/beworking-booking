@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Box, Typography, Button, Dialog, IconButton, AppBar, Toolbar, Link as MuiLink } from '@mui/material';
+import { Box, Typography, Button, Dialog, IconButton } from '@mui/material';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -10,8 +10,6 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
 import Seo from '@/components/oficina-virtual/Seo';
 import StructuredData from '@/components/oficina-virtual/StructuredData';
 import orgData from '@/components/oficina-virtual/structuredData/orgData';
@@ -590,135 +588,3 @@ export default function OficinaVirtualPage() {
   );
 }
 
-// Use the landing-ov Layout instead of the default AppLayout
-function OVLayout({ children }) {
-  const { t, i18n } = useTranslation();
-  const FRONTEND_URL_LAYOUT = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
-
-  const toggleLang = () => {
-    const next = i18n.language === 'es' ? 'en' : 'es';
-    i18n.changeLanguage(next);
-    if (typeof window !== 'undefined') localStorage.setItem('beworking_lang', next);
-  };
-
-  return (
-    <Box sx={{ bgcolor: '#fafafa', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <AppBar
-        position="fixed"
-        color="default"
-        elevation={0}
-        sx={{
-          bgcolor: 'rgba(250,250,250,0.85)',
-          backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
-          boxShadow: 'none',
-        }}
-      >
-        <Toolbar
-          sx={{
-            height: 56,
-            maxWidth: 1100,
-            width: '100%',
-            mx: 'auto',
-            px: { xs: 2, sm: 3 },
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <span style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 600, fontSize: '1.8rem', color: '#007a1d', letterSpacing: '-0.01em', cursor: 'pointer', lineHeight: 1 }}>
-              beworking<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#d4a843', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
-            </span>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Button
-              onClick={toggleLang}
-              size="small"
-              sx={{
-                minWidth: 'auto',
-                px: 1.5,
-                py: 0.5,
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                color: 'text.secondary',
-                border: '1px solid rgba(0,0,0,0.12)',
-                borderRadius: '6px',
-                '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' },
-              }}
-            >
-              {t('landing.lang')}
-            </Button>
-            <MuiLink
-              href="tel:+34951905967"
-              underline="none"
-              sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.5,
-                fontSize: '0.875rem',
-                fontWeight: 700,
-                color: 'primary.main',
-                transition: 'opacity 0.2s ease',
-                '&:hover': { opacity: 0.7 },
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="#009624">
-                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-              </svg>
-              +34 951 905 967
-            </MuiLink>
-          </Box>
-        </Toolbar>
-      </AppBar>
-
-      <Box sx={{ height: 56 }} />
-
-      <Box sx={{ flex: 1 }}>
-        {children}
-      </Box>
-
-      <Box
-        component="footer"
-        sx={{
-          bgcolor: '#1a1a1a',
-          color: 'rgba(255,255,255,0.5)',
-          py: 3,
-          px: 3,
-        }}
-      >
-        <Box
-          sx={{
-            maxWidth: 1100,
-            mx: 'auto',
-            display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'center', sm: 'center' },
-            gap: 1.5,
-          }}
-        >
-          <Typography sx={{ fontSize: '0.8125rem' }}>
-            © {new Date().getFullYear()} BeWorking — Calle Alejandro Dumas 17, Oficinas, 29004 Málaga · +34 951 905 967
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <MuiLink href={`${FRONTEND_URL_LAYOUT}/aviso-legal`} target="_blank" rel="noopener" underline="none" sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)', '&:hover': { color: '#fff' } }}>
-              Legal
-            </MuiLink>
-            <MuiLink href={`${FRONTEND_URL_LAYOUT}/politica-de-privacidad`} target="_blank" rel="noopener" underline="none" sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.5)', '&:hover': { color: '#fff' } }}>
-              Privacidad
-            </MuiLink>
-            <MuiLink href="https://www.linkedin.com/company/beworking" target="_blank" rel="noopener" aria-label="LinkedIn" sx={{ color: 'rgba(255,255,255,0.5)', '&:hover': { color: '#fff' } }}>
-              <LinkedInIcon sx={{ fontSize: 18 }} />
-            </MuiLink>
-            <MuiLink href="https://www.instagram.com/beworkingmalaga" target="_blank" rel="noopener" aria-label="Instagram" sx={{ color: 'rgba(255,255,255,0.5)', '&:hover': { color: '#fff' } }}>
-              <InstagramIcon sx={{ fontSize: 18 }} />
-            </MuiLink>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-
-OficinaVirtualPage.getLayout = (page) => <OVLayout>{page}</OVLayout>;

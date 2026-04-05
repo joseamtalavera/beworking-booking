@@ -278,6 +278,34 @@ const AppLayout = ({ children }) => {
             >
               {t('footer.connect')}
             </Typography>
+            <Link
+              href="mailto:info@be-working.com"
+              underline="none"
+              sx={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.8)',
+                mb: 1,
+                '&:hover': { color: 'common.white' },
+              }}
+            >
+              info@be-working.com
+            </Link>
+            <Link
+              href="tel:+34951905967"
+              underline="none"
+              sx={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.8)',
+                mb: 2,
+                '&:hover': { color: 'common.white' },
+              }}
+            >
+              +34 951 905 967
+            </Link>
             <Box sx={{ display: 'flex', gap: 2 }}>
               {socialLinks.map((social) => (
                 <Link
