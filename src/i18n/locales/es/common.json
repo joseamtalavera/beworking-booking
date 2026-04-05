@@ -3,7 +3,7 @@
     "platform": "Plataforma",
     "spaces": "BeSpaces",
     "pricing": "Precios",
-    "signIn": "Iniciar sesi\u00f3n",
+    "signIn": "Iniciar sesión",
     "getStarted": "Crear cuenta"
   },
   "footer": {
@@ -11,9 +11,9 @@
     "company": "Empresa",
     "legal": "Legal",
     "connect": "Contacto",
-    "malaga": "M\u00e1laga",
-    "tagline": "BeSpaces \u2014 Un Producto de Globaltechno.",
-    "location": "M\u00e1laga, Espa\u00f1a \u00b7 Tallinn, Estonia",
+    "malaga": "Málaga",
+    "tagline": "BeSpaces — Un Producto de Globaltechno.",
+    "location": "Málaga, España · Tallinn, Estonia",
     "links": {
       "platform": "Plataforma",
       "spaces": "BeSpaces",
@@ -23,12 +23,12 @@
       "press": "Prensa",
       "contact": "Contacto",
       "faq": "Preguntas frecuentes",
-      "terms": "T\u00e9rminos",
+      "terms": "Términos",
       "privacy": "Privacidad",
       "cookies": "Cookies",
       "sitemap": "Mapa del sitio",
-      "malaga": "M\u00e1laga",
-      "meetingRooms": "Salas de reuni\u00f3n",
+      "malaga": "Málaga",
+      "meetingRooms": "Salas de reunión",
       "coworking": "Coworking",
       "virtualOffice": "Oficina Virtual"
     }
@@ -39,7 +39,7 @@
     "cancel": "Cancelar",
     "loading": "Cargando sala...",
     "roomNotFound": "Sala no encontrada",
-    "backToDiscovery": "Volver al cat\u00e1logo"
+    "backToDiscovery": "Volver al catálogo"
   },
   "home": {
     "title": "BeSpaces",
@@ -48,14 +48,14 @@
     "coworking": "Coworking",
     "virtualOffice": "Oficina Virtual",
     "businessAddress": "Domicilio Fiscal y Social",
-    "where": "D\u00f3nde",
+    "where": "Dónde",
     "wherePlaceholder": "Buscar destinos",
-    "when": "Cu\u00e1ndo",
-    "whenPlaceholder": "A\u00f1adir fechas",
+    "when": "Cuándo",
+    "whenPlaceholder": "Añadir fechas",
     "time": "Hora",
-    "timePlaceholder": "A\u00f1adir hora",
-    "who": "Qui\u00e9n",
-    "whoPlaceholder": "A\u00f1adir invitados",
+    "timePlaceholder": "Añadir hora",
+    "who": "Quién",
+    "whoPlaceholder": "Añadir invitados",
     "searchSpaces": "Buscar espacios",
     "showingSpaces": "Mostrando {{count}} espacios",
     "showingSpace": "Mostrando {{count}} espacio",
@@ -63,7 +63,7 @@
     "allCentros": "Todos los centros"
   },
   "card": {
-    "instantBooking": "Reserva instant\u00e1nea",
+    "instantBooking": "Reserva instantánea",
     "meetingRoom": "Sala de reuniones",
     "desk": "Escritorio",
     "from": "Desde",
@@ -76,15 +76,15 @@
     "share": "Compartir",
     "save": "Guardar",
     "photos": "{{count}} fotos",
-    "description": "Descripci\u00f3n",
+    "description": "Descripción",
     "amenities": "Servicios incluidos",
-    "cancellation": "Pol\u00edtica de cancelaci\u00f3n",
+    "cancellation": "Política de cancelación",
     "instructions": "Instrucciones",
     "availability": "Disponibilidad",
     "availabilityDesc": "Consulta los bloques reservados y solicita tu horario ideal. La disponibilidad se sincroniza con el panel de Agenda del dashboard.",
     "selectDate": "Seleccionar fecha",
     "startBooking": "Comenzar reserva",
-    "location": "Ubicaci\u00f3n"
+    "location": "Ubicación"
   },
   "calendar": {
     "room": "Sala",
@@ -101,14 +101,14 @@
     "legendBooked": "Reservado"
   },
   "modal": {
-    "title": "\u00bfC\u00f3mo quieres continuar?",
-    "subtitle": "Puedes seguir como invitado o iniciar sesi\u00f3n para usar tus datos guardados.",
-    "signIn": "Iniciar sesi\u00f3n",
+    "title": "¿Cómo quieres continuar?",
+    "subtitle": "Puedes seguir como invitado o iniciar sesión para usar tus datos guardados.",
+    "signIn": "Iniciar sesión",
     "continueAsGuest": "Seguir como invitado"
   },
   "stepper": {
     "selectDetails": "Seleccionar detalles",
-    "contactBilling": "Contacto y facturaci\u00f3n",
+    "contactBilling": "Contacto y facturación",
     "reviewPayment": "Revisión y pago"
   },
   "booking": {
@@ -119,9 +119,9 @@
     "endTime": "Hora de fin",
     "slotBooked": "Reservado",
     "additionalDetails": "Detalles adicionales",
-    "numberOfAttendees": "N\u00famero de asistentes",
+    "numberOfAttendees": "Número de asistentes",
     "notesOptional": "Notas (opcional)",
-    "notesPlaceholder": "Cualquier requisito o petici\u00f3n especial...",
+    "notesPlaceholder": "Cualquier requisito o petición especial...",
     "fetchError": "No se pudo obtener la disponibilidad.",
     "capacityFrom": "Capacidad {{capacity}} · desde {{price}} {{unit}}",
     "recurringBooking": "Reserva recurrente",
@@ -170,8 +170,8 @@
       "firstNameRequired": "El nombre es obligatorio",
       "lastNameRequired": "Los apellidos son obligatorios",
       "emailRequired": "El email es obligatorio",
-      "emailInvalid": "Introduce un email v\u00e1lido",
-      "phoneRequired": "El tel\u00e9fono es obligatorio"
+      "emailInvalid": "Introduce un email válido",
+      "phoneRequired": "El teléfono es obligatorio"
     }
   },
   "pricing": {
@@ -181,45 +181,45 @@
     "total": "Total",
     "monthlyTotal": "Total mensual",
     "perMonth": "/mes",
-    "subscriptionNote": "{{months}} meses \u2014 primer mes cobrado ahora, luego mensualmente",
-    "day": "D\u00eda",
-    "period": "Per\u00edodo",
+    "subscriptionNote": "{{months}} meses — primer mes cobrado ahora, luego mensualmente",
+    "day": "Día",
+    "period": "Período",
     "dateLabel": "Fecha",
     "time": "Hora",
     "deskLabel": "Escritorio",
     "attendees": "Asistentes",
-    "oneDay": "1 d\u00eda",
+    "oneDay": "1 día",
     "months": "{{count}} meses",
     "month": "{{count}} mes"
   },
   "payment": {
     "securePayment": "Pago seguro con Stripe",
-    "slotUnavailable": "Este horario ya no est\u00e1 disponible. Vuelve atr\u00e1s y selecciona otro horario.",
-    "slotUnavailableRefunded": "Este horario ya estaba reservado. Tu pago ha sido reembolsado autom\u00e1ticamente. Vuelve atr\u00e1s y selecciona otro horario.",
+    "slotUnavailable": "Este horario ya no está disponible. Vuelve atrás y selecciona otro horario.",
+    "slotUnavailableRefunded": "Este horario ya estaba reservado. Tu pago ha sido reembolsado automáticamente. Vuelve atrás y selecciona otro horario.",
     "paymentFailed": "El pago ha fallado",
-    "paymentSuccessBookingFailed": "Tu pago se ha procesado pero no se pudo crear la reserva (es posible que el horario ya est\u00e9 ocupado). Cont\u00e1ctanos para un reembolso. Referencia: {{ref}}",
-    "processing": "Procesando\u2026",
-    "pay": "Pagar \u20ac{{amount}}",
-    "monthlySubscription": "Suscripci\u00f3n mensual",
-    "chargedToday": "Cobro hoy: \u20ac{{amount}}",
-    "thenMonthly": "Luego \u20ac{{amount}}/mes durante {{remaining}} {{label}} restantes",
+    "paymentSuccessBookingFailed": "Tu pago se ha procesado pero no se pudo crear la reserva (es posible que el horario ya esté ocupado). Contáctanos para un reembolso. Referencia: {{ref}}",
+    "processing": "Procesando…",
+    "pay": "Pagar €{{amount}}",
+    "monthlySubscription": "Suscripción mensual",
+    "chargedToday": "Cobro hoy: €{{amount}}",
+    "thenMonthly": "Luego €{{amount}}/mes durante {{remaining}} {{label}} restantes",
     "monthSingular": "mes",
     "monthPlural": "meses",
-    "subscribe": "Suscribirse \u2014 \u20ac{{amount}}/mes",
+    "subscribe": "Suscribirse — €{{amount}}/mes",
     "cardSetupFailed": "Error al configurar la tarjeta",
-    "subscriptionFailed": "Error al crear la suscripci\u00f3n",
+    "subscriptionFailed": "Error al crear la suscripción",
     "freeBooking": "Reserva gratuita",
     "freeBookingDesc": "Esta es tu reserva gratuita ({{used}} de {{limit}} este mes).",
     "free": "GRATIS",
     "confirmFreeBooking": "Confirmar reserva gratuita",
     "failedToCreate": "Error al crear la reserva",
-    "bookingConfirmed": "\u00a1Reserva confirmada!",
-    "subscriptionActivated": "Tu suscripci\u00f3n de {{amount}} ha sido activada. Recibir\u00e1s un email de confirmaci\u00f3n con las instrucciones de acceso.",
-    "paymentProcessed": "Tu pago de {{amount}} se ha procesado correctamente. Recibir\u00e1s un email de confirmaci\u00f3n con las instrucciones de acceso.",
-    "browseMore": "Ver m\u00e1s espacios",
-    "preparingPayment": "Preparando pago seguro\u2026",
-    "serviceNotConfigured": "La URL del servicio de pago no est\u00e1 configurada",
-    "stripeNotConfigured": "La clave p\u00fablica de Stripe no est\u00e1 configurada",
+    "bookingConfirmed": "¡Reserva confirmada!",
+    "subscriptionActivated": "Tu suscripción de {{amount}} ha sido activada. Recibirás un email de confirmación con las instrucciones de acceso.",
+    "paymentProcessed": "Tu pago de {{amount}} se ha procesado correctamente. Recibirás un email de confirmación con las instrucciones de acceso.",
+    "browseMore": "Ver más espacios",
+    "preparingPayment": "Preparando pago seguro…",
+    "serviceNotConfigured": "La URL del servicio de pago no está configurada",
+    "stripeNotConfigured": "La clave pública de Stripe no está configurada",
     "failedToInitialize": "Error al inicializar el pago",
     "notAvailable": "El pago no está disponible en este momento."
   },
@@ -232,12 +232,30 @@
     "benefits": {
       "heading": "Todo lo que debe ofrecer una dirección empresarial.",
       "items": [
-        { "title": "Dirección Legal y Fiscal", "body": "Una dirección empresarial registrada válida ante Hacienda, bancos y registros mercantiles." },
-        { "title": "Escaneo de Correo", "body": "El correo físico se recibe, escanea y sube a tu panel automáticamente." },
-        { "title": "Privacidad Total", "body": "Mantén tu dirección personal fuera de los registros públicos y documentos oficiales." },
-        { "title": "Alta en Registros", "body": "Tu empresa aparece en Google Maps, directorios empresariales y registros públicos." },
-        { "title": "Acceso 24/7", "body": "Tu buzón digital está disponible a cualquier hora, desde cualquier dispositivo." },
-        { "title": "Salas de Reuniones", "body": "Usa nuestras salas profesionales cuando necesites reunirte con clientes en persona." }
+        {
+          "title": "Dirección Legal y Fiscal",
+          "body": "Una dirección empresarial registrada válida ante Hacienda, bancos y registros mercantiles."
+        },
+        {
+          "title": "Escaneo de Correo",
+          "body": "El correo físico se recibe, escanea y sube a tu panel automáticamente."
+        },
+        {
+          "title": "Privacidad Total",
+          "body": "Mantén tu dirección personal fuera de los registros públicos y documentos oficiales."
+        },
+        {
+          "title": "Alta en Registros",
+          "body": "Tu empresa aparece en Google Maps, directorios empresariales y registros públicos."
+        },
+        {
+          "title": "Acceso 24/7",
+          "body": "Tu buzón digital está disponible a cualquier hora, desde cualquier dispositivo."
+        },
+        {
+          "title": "Salas de Reuniones",
+          "body": "Usa nuestras salas profesionales cuando necesites reunirte con clientes en persona."
+        }
       ]
     },
     "location": {
@@ -249,12 +267,26 @@
     },
     "services": {
       "heading": "Qué incluye",
-      "items": ["WiFi de alta velocidad", "Aparcamiento", "Transporte público cercano", "Salas de reuniones", "Servicio de recepción", "Gestión de correo", "Dirección empresarial", "Acceso 24/7"]
+      "items": [
+        "WiFi de alta velocidad",
+        "Aparcamiento",
+        "Transporte público cercano",
+        "Salas de reuniones",
+        "Servicio de recepción",
+        "Gestión de correo",
+        "Dirección empresarial",
+        "Acceso 24/7"
+      ]
     },
     "form": {
       "heading": "Registra tu oficina",
       "subheading": "Configura tu oficina virtual en minutos.",
-      "steps": ["Datos personales", "Datos de empresa", "Elige tu plan", "Confirmación"],
+      "steps": [
+        "Datos personales",
+        "Datos de empresa",
+        "Elige tu plan",
+        "Confirmación"
+      ],
       "fields": {
         "name": "Nombre completo",
         "email": "Correo electrónico",
@@ -263,14 +295,55 @@
         "taxId": "NIF / CIF",
         "industry": "Sector",
         "selectPlan": "Selecciona un plan",
-        "industries": ["Tecnología", "Consultoría", "Marketing", "Legal", "Contabilidad", "Diseño", "E-commerce", "Salud", "Educación", "Otro"]
+        "industries": [
+          "Tecnología",
+          "Consultoría",
+          "Marketing",
+          "Legal",
+          "Contabilidad",
+          "Diseño",
+          "E-commerce",
+          "Salud",
+          "Educación",
+          "Otro"
+        ]
       },
       "plans": [
-        { "name": "Básico", "price": "29€/mes", "features": ["Dirección legal", "Escaneo de correo (5/mes)", "Panel online"] },
-        { "name": "Profesional", "price": "59€/mes", "features": ["Dirección legal", "Escaneo ilimitado", "2h sala de reuniones/mes", "Atención telefónica"] },
-        { "name": "Premium", "price": "99€/mes", "features": ["Dirección legal", "Escaneo ilimitado", "8h sala de reuniones/mes", "Soporte dedicado"] }
+        {
+          "name": "Básico",
+          "price": "29€/mes",
+          "features": [
+            "Dirección legal",
+            "Escaneo de correo (5/mes)",
+            "Panel online"
+          ]
+        },
+        {
+          "name": "Profesional",
+          "price": "59€/mes",
+          "features": [
+            "Dirección legal",
+            "Escaneo ilimitado",
+            "2h sala de reuniones/mes",
+            "Atención telefónica"
+          ]
+        },
+        {
+          "name": "Premium",
+          "price": "99€/mes",
+          "features": [
+            "Dirección legal",
+            "Escaneo ilimitado",
+            "8h sala de reuniones/mes",
+            "Soporte dedicado"
+          ]
+        }
       ],
-      "buttons": { "next": "Continuar", "back": "Atrás", "submit": "Completar registro" },
+      "buttons": {
+        "next": "Continuar",
+        "back": "Atrás",
+        "submit": "Completar registro"
+      },
       "confirmation": {
         "heading": "¡Estás registrado!",
         "body": "Nos pondremos en contacto pronto para activar tu oficina virtual. Revisa tu bandeja de entrada."
@@ -279,7 +352,12 @@
   },
   "register": {
     "title": "Crea tu cuenta",
-    "steps": ["Cuenta", "Empresa", "Ciudad", "Pago"],
+    "steps": [
+      "Cuenta",
+      "Empresa",
+      "Ciudad",
+      "Pago"
+    ],
     "fields": {
       "name": "Nombre completo",
       "email": "Correo electrónico",
@@ -353,10 +431,22 @@
       "title": "Mucho más que ",
       "titleAccent": "una dirección.",
       "items": [
-        { "title": "Domicilio legal y fiscal", "desc": "Dirección registrada válida ante Hacienda, bancos y registros mercantiles. Tu empresa visible en Google Maps." },
-        { "title": "Recepción de correo", "desc": "Recibimos tu correspondencia y paquetes. Escaneo gratuito y notificación inmediata por email." },
-        { "title": "Acceso a BeSpaces", "desc": "Pases gratuitos de coworking y salas de reuniones en nuestra red de espacios físicos." },
-        { "title": "Plataforma incluida", "desc": "Panel de gestión con contactos, facturación, buzón digital y asistente IA — todo incluido en tu plan." }
+        {
+          "title": "Domicilio legal y fiscal",
+          "desc": "Dirección registrada válida ante Hacienda, bancos y registros mercantiles. Tu empresa visible en Google Maps."
+        },
+        {
+          "title": "Recepción de correo",
+          "desc": "Recibimos tu correspondencia y paquetes. Escaneo gratuito y notificación inmediata por email."
+        },
+        {
+          "title": "Acceso a BeSpaces",
+          "desc": "Pases gratuitos de coworking y salas de reuniones en nuestra red de espacios físicos."
+        },
+        {
+          "title": "Plataforma incluida",
+          "desc": "Panel de gestión con contactos, facturación, buzón digital y asistente IA — todo incluido en tu plan."
+        }
       ]
     },
     "pricing": {
@@ -370,16 +460,62 @@
       "trialNote": "Todos los precios + IVA. Sin permanencia.",
       "choosePlan": "Elegir plan",
       "plans": [
-        { "name": "Basic", "price": "15", "popular": true, "description": "Dirección empresarial registrada para tu empresa.", "features": ["Domicilio fiscal y legal", "Recepción de correo", "Buzón digital", "Plataforma BeWorking completa", "Acceso reservas BeSpaces", "50 consultas MariaAI/mes"] },
-        { "name": "Pro", "price": "25", "description": "Todo en Basic más atención presencial y más IA.", "features": ["Todo en Basic", "200 consultas MariaAI/mes", "Atención de llamadas", "Multi-usuario (3 usuarios)", "Logo en recepción", "Soporte en automatizaciones"] },
-        { "name": "Max", "price": "90", "description": "Acceso completo sin límites a todo BeWorking.", "features": ["Todo en Pro", "MariaAI ilimitada", "Gestor dedicado", "Prioridad en soporte", "API access", "Features personalizadas"] }
+        {
+          "name": "Basic",
+          "price": "15",
+          "popular": true,
+          "description": "Dirección empresarial registrada para tu empresa.",
+          "features": [
+            "Domicilio fiscal y legal",
+            "Recepción de correo",
+            "Buzón digital",
+            "Plataforma BeWorking completa",
+            "Acceso reservas BeSpaces",
+            "50 consultas MariaAI/mes"
+          ]
+        },
+        {
+          "name": "Pro",
+          "price": "25",
+          "description": "Todo en Basic más atención presencial y más IA.",
+          "features": [
+            "Todo en Basic",
+            "200 consultas MariaAI/mes",
+            "Atención de llamadas",
+            "Multi-usuario (3 usuarios)",
+            "Logo en recepción",
+            "Soporte en automatizaciones"
+          ]
+        },
+        {
+          "name": "Max",
+          "price": "90",
+          "description": "Acceso completo sin límites a todo BeWorking.",
+          "features": [
+            "Todo en Pro",
+            "MariaAI ilimitada",
+            "Gestor dedicado",
+            "Prioridad en soporte",
+            "API access",
+            "Features personalizadas"
+          ]
+        }
       ]
     },
     "trust": {
       "stats": [
-        { "value": "2020", "label": "Fundada" },
-        { "value": "500+", "label": "Empresas" },
-        { "value": "99.9%", "label": "Disponibilidad" }
+        {
+          "value": "2020",
+          "label": "Fundada"
+        },
+        {
+          "value": "500+",
+          "label": "Empresas"
+        },
+        {
+          "value": "99.9%",
+          "label": "Disponibilidad"
+        }
       ]
     },
     "lang": "EN"
@@ -397,5 +533,118 @@
     "confirmCancel": "Sí, cancelar",
     "loadError": "No se pudieron cargar tus reservas.",
     "cancelError": "No se pudo cancelar la reserva. Inténtalo de nuevo."
+  },
+  "platform": {
+    "hero": {
+      "label": "Plataforma",
+      "heading": "Tu oficina digital para operar tu negocio",
+      "headingAccent": "con IA.",
+      "subheading": "Clientes, comunicaciones, tareas y automatización — todo conectado en un solo lugar."
+    },
+    "tabs": {
+      "overview": "Resumen",
+      "businessAddress": "Domicilio Fiscal",
+      "beSpaces": "BeSpaces",
+      "integrations": "Integraciones",
+      "automation": "Automatización",
+      "spaceCatalog": "Catálogo de Espacios",
+      "reports": "Informes",
+      "contacts": "Contactos",
+      "invoicing": "Facturación",
+      "spaces": "Espacios",
+      "mailbox": "Buzón",
+      "settings": "Configuración"
+    },
+    "features": {
+      "overview": {
+        "heading": "Tu negocio de un vistazo.",
+        "body": "Consulta tu actividad, próximas reservas, facturas pendientes y correo reciente desde una sola pantalla unificada."
+      },
+      "contacts": {
+        "heading": "Tu agenda completa.",
+        "body": "Clientes, leads y socios — almacenados, etiquetados y buscables. Vinculados a facturas, reservas e historial de comunicaciones."
+      },
+      "invoicing": {
+        "heading": "Facturación sin complicaciones.",
+        "body": "Crea, envía y rastrea facturas con un clic. Exportación en PDF, estado de pago e historial de facturación — todo incluido."
+      },
+      "spaces": {
+        "heading": "Reserva la sala adecuada.",
+        "body": "Consulta disponibilidad, filtra por capacidad y características, y confirma una reserva en segundos."
+      },
+      "mailbox": {
+        "heading": "Tu correo, digitalizado.",
+        "body": "El correo físico recibido en tu dirección se escanea, nombra y deposita automáticamente en tu buzón digital."
+      },
+      "settings": {
+        "heading": "Tu cuenta, tus reglas.",
+        "body": "Gestiona usuarios, datos de facturación, notificaciones e integraciones desde un panel de configuración unificado."
+      },
+      "beSpaces": {
+        "heading": "Espacios profesionales para tu equipo.",
+        "body": "Reserva salas de reuniones, escritorios y espacios de coworking en tiempo real. Integrado con tu oficina digital para una experiencia sin fricciones."
+      },
+      "integrations": {
+        "heading": "Conecta tus herramientas favoritas.",
+        "body": "Google Workspace, Microsoft 365, Slack, Stripe y más — sincroniza tus herramientas externas con tu oficina digital. Todo en un solo lugar."
+      },
+      "automation": {
+        "heading": "Automatiza flujos de trabajo.",
+        "body": "Crea reglas, disparadores y acciones automáticas para eliminar tareas repetitivas. MariaAI orquesta todo por ti."
+      },
+      "spaceCatalog": {
+        "heading": "Explora todos los espacios disponibles.",
+        "body": "Consulta el catálogo completo de salas, escritorios y oficinas. Filtra por capacidad, equipamiento y precio."
+      },
+      "reports": {
+        "heading": "Datos que impulsan decisiones.",
+        "body": "Informes de actividad, uso de espacios, facturación y rendimiento de tu equipo — todo accesible desde tu panel."
+      }
+    },
+    "integrations": {
+      "tabs": {
+        "productivity": "Productividad",
+        "communication": "Comunicación",
+        "finance": "Finanzas",
+        "calendar": "Calendario",
+        "storage": "Almacenamiento",
+        "developer": "Desarrollo"
+      },
+      "features": {
+        "productivity": {
+          "heading": "Tu stack de productividad, unificado.",
+          "body": "Conecta Google Workspace, Microsoft 365, Notion y otras herramientas que tu equipo usa a diario. Documentos, tareas y proyectos — todo visible desde un solo lugar."
+        },
+        "communication": {
+          "heading": "Todas las conversaciones, una bandeja.",
+          "body": "Trae Slack, Microsoft Teams, Discord y email a tu panel de BeWorking. No pierdas ningún mensaje, sin importar el canal."
+        },
+        "finance": {
+          "heading": "Herramientas financieras, conectadas.",
+          "body": "Sincroniza Stripe, Holded, BBVA y tus herramientas contables. Facturas, pagos y conciliación fluyen automáticamente a tu panel."
+        },
+        "calendar": {
+          "heading": "Calendarios sincronizados.",
+          "body": "Google Calendar, Outlook y Cal.com — fusionados en una sola vista. Reservas, reuniones y disponibilidad actualizados en tiempo real."
+        },
+        "storage": {
+          "heading": "Archivos de cualquier nube.",
+          "body": "Google Drive, Dropbox, OneDrive — accede y gestiona archivos de cualquier proveedor de almacenamiento sin salir de tu espacio."
+        },
+        "developer": {
+          "heading": "Pensado para equipos técnicos.",
+          "body": "GitHub, GitLab y n8n se integran directamente. Automatiza flujos, rastrea repositorios y dispara acciones desde tu panel."
+        }
+      }
+    },
+    "departmentsCta": {
+      "heading": "8 departamentos AI para tu empresa.",
+      "body": "CRM, Contabilidad, RRHH, Proyectos, Marketing y más — cada uno potenciado por IA e integrado con las principales apps de negocio.",
+      "button": "Explorar Integraciones"
+    },
+    "cta": {
+      "heading": "¿Listo para gestionar tu negocio desde un solo lugar?",
+      "button": "Crear Oficina Digital"
+    }
   }
 }

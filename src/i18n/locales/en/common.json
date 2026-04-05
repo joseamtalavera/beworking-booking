@@ -11,7 +11,7 @@
     "company": "Company",
     "legal": "Legal",
     "connect": "Connect",
-    "malaga": "M\u00e1laga",
+    "malaga": "Málaga",
     "tagline": "BeSpaces — A Globaltechno Product.",
     "location": "Malaga, Spain · Tallinn, Estonia",
     "links": {
@@ -27,7 +27,7 @@
       "privacy": "Privacy",
       "cookies": "Cookies",
       "sitemap": "Sitemap",
-      "malaga": "M\u00e1laga",
+      "malaga": "Málaga",
       "meetingRooms": "Meeting Rooms",
       "coworking": "Coworking",
       "virtualOffice": "Virtual Office"
@@ -168,7 +168,7 @@
     "total": "Total",
     "monthlyTotal": "Monthly total",
     "perMonth": "/month",
-    "subscriptionNote": "{{months}} months \u2014 first month charged now, then monthly",
+    "subscriptionNote": "{{months}} months — first month charged now, then monthly",
     "day": "Day",
     "period": "Period",
     "dateLabel": "Date",
@@ -185,14 +185,14 @@
     "slotUnavailableRefunded": "This time slot was already booked. Your payment has been automatically refunded. Please go back and select a different time.",
     "paymentFailed": "Payment failed",
     "paymentSuccessBookingFailed": "Your payment was processed but the booking could not be created (the time slot may have been taken). Please contact us for a refund. Reference: {{ref}}",
-    "processing": "Processing\u2026",
-    "pay": "Pay \u20ac{{amount}}",
+    "processing": "Processing…",
+    "pay": "Pay €{{amount}}",
     "monthlySubscription": "Monthly subscription",
-    "chargedToday": "Charged today: \u20ac{{amount}}",
-    "thenMonthly": "Then \u20ac{{amount}}/month for {{remaining}} remaining {{label}}",
+    "chargedToday": "Charged today: €{{amount}}",
+    "thenMonthly": "Then €{{amount}}/month for {{remaining}} remaining {{label}}",
     "monthSingular": "month",
     "monthPlural": "months",
-    "subscribe": "Subscribe \u2014 \u20ac{{amount}}/month",
+    "subscribe": "Subscribe — €{{amount}}/month",
     "cardSetupFailed": "Card setup failed",
     "subscriptionFailed": "Subscription creation failed",
     "freeBooking": "Free booking",
@@ -204,7 +204,7 @@
     "subscriptionActivated": "Your subscription of {{amount}} has been activated. You'll receive a confirmation email shortly with access instructions.",
     "paymentProcessed": "Your payment of {{amount}} has been processed successfully. You'll receive a confirmation email shortly with access instructions.",
     "browseMore": "Browse more spaces",
-    "preparingPayment": "Preparing secure payment\u2026",
+    "preparingPayment": "Preparing secure payment…",
     "serviceNotConfigured": "Payment service URL is not configured",
     "stripeNotConfigured": "Stripe publishable key is not configured",
     "failedToInitialize": "Failed to initialize payment",
@@ -219,12 +219,30 @@
     "benefits": {
       "heading": "Everything a business address should offer.",
       "items": [
-        { "title": "Legal & Fiscal Address", "body": "A registered business address valid for tax authorities, banks, and registries." },
-        { "title": "Mail Scanning", "body": "Physical mail is received, scanned, and uploaded to your dashboard automatically." },
-        { "title": "Complete Privacy", "body": "Keep your personal address off public registries and official documents." },
-        { "title": "Registry Listing", "body": "Your company appears on Google Maps, business directories, and public registries." },
-        { "title": "24/7 Access", "body": "Your digital mailbox is available around the clock, from any device." },
-        { "title": "Meeting Rooms", "body": "Use our professional meeting rooms when you need to meet clients in person." }
+        {
+          "title": "Legal & Fiscal Address",
+          "body": "A registered business address valid for tax authorities, banks, and registries."
+        },
+        {
+          "title": "Mail Scanning",
+          "body": "Physical mail is received, scanned, and uploaded to your dashboard automatically."
+        },
+        {
+          "title": "Complete Privacy",
+          "body": "Keep your personal address off public registries and official documents."
+        },
+        {
+          "title": "Registry Listing",
+          "body": "Your company appears on Google Maps, business directories, and public registries."
+        },
+        {
+          "title": "24/7 Access",
+          "body": "Your digital mailbox is available around the clock, from any device."
+        },
+        {
+          "title": "Meeting Rooms",
+          "body": "Use our professional meeting rooms when you need to meet clients in person."
+        }
       ]
     },
     "location": {
@@ -236,12 +254,26 @@
     },
     "services": {
       "heading": "What's included",
-      "items": ["High-speed WiFi", "Parking", "Public transport access", "Meeting rooms", "Reception service", "Mail handling", "Business address", "24/7 access"]
+      "items": [
+        "High-speed WiFi",
+        "Parking",
+        "Public transport access",
+        "Meeting rooms",
+        "Reception service",
+        "Mail handling",
+        "Business address",
+        "24/7 access"
+      ]
     },
     "form": {
       "heading": "Register your office",
       "subheading": "Set up your virtual office in minutes.",
-      "steps": ["Personal details", "Company details", "Choose your plan", "Confirmation"],
+      "steps": [
+        "Personal details",
+        "Company details",
+        "Choose your plan",
+        "Confirmation"
+      ],
       "fields": {
         "name": "Full name",
         "email": "Email address",
@@ -250,14 +282,55 @@
         "taxId": "NIF / Tax ID",
         "industry": "Industry",
         "selectPlan": "Select a plan",
-        "industries": ["Technology", "Consulting", "Marketing", "Legal", "Accounting", "Design", "E-commerce", "Healthcare", "Education", "Other"]
+        "industries": [
+          "Technology",
+          "Consulting",
+          "Marketing",
+          "Legal",
+          "Accounting",
+          "Design",
+          "E-commerce",
+          "Healthcare",
+          "Education",
+          "Other"
+        ]
       },
       "plans": [
-        { "name": "Basic", "price": "€29/mo", "features": ["Legal address", "Mail scanning (5/mo)", "Online dashboard"] },
-        { "name": "Professional", "price": "€59/mo", "features": ["Legal address", "Unlimited mail scanning", "2 meeting room hours/mo", "Phone answering"] },
-        { "name": "Premium", "price": "€99/mo", "features": ["Legal address", "Unlimited mail scanning", "8 meeting room hours/mo", "Dedicated support"] }
+        {
+          "name": "Basic",
+          "price": "€29/mo",
+          "features": [
+            "Legal address",
+            "Mail scanning (5/mo)",
+            "Online dashboard"
+          ]
+        },
+        {
+          "name": "Professional",
+          "price": "€59/mo",
+          "features": [
+            "Legal address",
+            "Unlimited mail scanning",
+            "2 meeting room hours/mo",
+            "Phone answering"
+          ]
+        },
+        {
+          "name": "Premium",
+          "price": "€99/mo",
+          "features": [
+            "Legal address",
+            "Unlimited mail scanning",
+            "8 meeting room hours/mo",
+            "Dedicated support"
+          ]
+        }
       ],
-      "buttons": { "next": "Continue", "back": "Back", "submit": "Complete registration" },
+      "buttons": {
+        "next": "Continue",
+        "back": "Back",
+        "submit": "Complete registration"
+      },
       "confirmation": {
         "heading": "You're registered!",
         "body": "We'll be in touch shortly to activate your virtual office. Check your inbox for next steps."
@@ -266,7 +339,12 @@
   },
   "register": {
     "title": "Create your account",
-    "steps": ["Account", "Company", "City", "Payment"],
+    "steps": [
+      "Account",
+      "Company",
+      "City",
+      "Payment"
+    ],
     "fields": {
       "name": "Full name",
       "email": "Email",
@@ -339,10 +417,22 @@
       "title": "Much more than ",
       "titleAccent": "just an address.",
       "items": [
-        { "title": "Legal & fiscal address", "desc": "Registered address valid for tax authorities, banks and business registries. Your company visible on Google Maps." },
-        { "title": "Mail reception", "desc": "We receive your mail and packages. Free scanning and instant email notification." },
-        { "title": "BeSpaces access", "desc": "Free coworking passes and meeting rooms across our network of physical spaces." },
-        { "title": "Platform included", "desc": "Management dashboard with contacts, billing, digital mailbox and AI assistant — all included in your plan." }
+        {
+          "title": "Legal & fiscal address",
+          "desc": "Registered address valid for tax authorities, banks and business registries. Your company visible on Google Maps."
+        },
+        {
+          "title": "Mail reception",
+          "desc": "We receive your mail and packages. Free scanning and instant email notification."
+        },
+        {
+          "title": "BeSpaces access",
+          "desc": "Free coworking passes and meeting rooms across our network of physical spaces."
+        },
+        {
+          "title": "Platform included",
+          "desc": "Management dashboard with contacts, billing, digital mailbox and AI assistant — all included in your plan."
+        }
       ]
     },
     "pricing": {
@@ -356,16 +446,62 @@
       "trialNote": "All prices + VAT. No commitment.",
       "choosePlan": "Choose plan",
       "plans": [
-        { "name": "Basic", "price": "15", "popular": true, "description": "Registered business address for your company.", "features": ["Legal & fiscal address", "Mail reception", "Digital mailbox", "Full BeWorking Platform", "BeSpaces booking access", "50 MariaAI queries/month"] },
-        { "name": "Pro", "price": "25", "description": "Everything in Basic plus in-person support and more AI.", "features": ["Everything in Basic", "200 MariaAI queries/month", "Call handling", "Multi-user (3 users)", "Logo at reception", "Automation support"] },
-        { "name": "Max", "price": "90", "description": "Full unlimited access to everything BeWorking.", "features": ["Everything in Pro", "Unlimited MariaAI", "Dedicated manager", "Priority support", "API access", "Custom features"] }
+        {
+          "name": "Basic",
+          "price": "15",
+          "popular": true,
+          "description": "Registered business address for your company.",
+          "features": [
+            "Legal & fiscal address",
+            "Mail reception",
+            "Digital mailbox",
+            "Full BeWorking Platform",
+            "BeSpaces booking access",
+            "50 MariaAI queries/month"
+          ]
+        },
+        {
+          "name": "Pro",
+          "price": "25",
+          "description": "Everything in Basic plus in-person support and more AI.",
+          "features": [
+            "Everything in Basic",
+            "200 MariaAI queries/month",
+            "Call handling",
+            "Multi-user (3 users)",
+            "Logo at reception",
+            "Automation support"
+          ]
+        },
+        {
+          "name": "Max",
+          "price": "90",
+          "description": "Full unlimited access to everything BeWorking.",
+          "features": [
+            "Everything in Pro",
+            "Unlimited MariaAI",
+            "Dedicated manager",
+            "Priority support",
+            "API access",
+            "Custom features"
+          ]
+        }
       ]
     },
     "trust": {
       "stats": [
-        { "value": "2020", "label": "Founded" },
-        { "value": "500+", "label": "Companies" },
-        { "value": "99.9%", "label": "Uptime" }
+        {
+          "value": "2020",
+          "label": "Founded"
+        },
+        {
+          "value": "500+",
+          "label": "Companies"
+        },
+        {
+          "value": "99.9%",
+          "label": "Uptime"
+        }
       ]
     },
     "lang": "ES"
@@ -383,5 +519,118 @@
     "confirmCancel": "Yes, cancel",
     "loadError": "Could not load your bookings.",
     "cancelError": "Could not cancel this booking. Please try again."
+  },
+  "platform": {
+    "hero": {
+      "label": "Platform",
+      "heading": "Your digital office to run your business",
+      "headingAccent": "with AI.",
+      "subheading": "Clients, communications, tasks and automation — all connected in one place."
+    },
+    "tabs": {
+      "overview": "Overview",
+      "businessAddress": "Business Address",
+      "beSpaces": "BeSpaces",
+      "integrations": "Integrations",
+      "automation": "Automation",
+      "spaceCatalog": "Space Catalog",
+      "reports": "Reports",
+      "contacts": "Contacts",
+      "invoicing": "Invoicing",
+      "spaces": "Spaces",
+      "mailbox": "Mailbox",
+      "settings": "Settings"
+    },
+    "features": {
+      "overview": {
+        "heading": "Business at a glance.",
+        "body": "See your activity, upcoming bookings, pending invoices, and recent mail from one unified screen. Built for daily use."
+      },
+      "contacts": {
+        "heading": "Your full contact book.",
+        "body": "Clients, leads, and partners — stored, tagged, and searchable. Linked to invoices, bookings, and communication history."
+      },
+      "invoicing": {
+        "heading": "Invoicing without the overhead.",
+        "body": "Create, send, and track invoices with one click. PDF export, payment status, and billing history — all built in."
+      },
+      "spaces": {
+        "heading": "Book the right room.",
+        "body": "View available rooms, filter by capacity and features, and confirm a booking in seconds. No back-and-forth required."
+      },
+      "mailbox": {
+        "heading": "Your mail, digitized.",
+        "body": "Physical mail received at your business address is scanned, named, and placed in your mailbox automatically."
+      },
+      "settings": {
+        "heading": "Your account, your rules.",
+        "body": "Manage users, billing details, notification preferences, and integrations from one unified settings panel."
+      },
+      "beSpaces": {
+        "heading": "Professional spaces for your team.",
+        "body": "Book meeting rooms, desks, and coworking spaces in real time. Integrated with your digital office for a seamless experience."
+      },
+      "integrations": {
+        "heading": "Connect your favorite tools.",
+        "body": "Google Workspace, Microsoft 365, Slack, Stripe and more — sync your external tools with your digital office. Everything in one place."
+      },
+      "automation": {
+        "heading": "Automate your workflows.",
+        "body": "Create rules, triggers, and automatic actions to eliminate repetitive tasks. MariaAI orchestrates it all for you."
+      },
+      "spaceCatalog": {
+        "heading": "Explore all available spaces.",
+        "body": "Browse the full catalog of rooms, desks, and offices. Filter by capacity, equipment, and price."
+      },
+      "reports": {
+        "heading": "Data that drives decisions.",
+        "body": "Activity reports, space usage, billing, and team performance — all accessible from your dashboard."
+      }
+    },
+    "integrations": {
+      "tabs": {
+        "productivity": "Productivity",
+        "communication": "Communication",
+        "finance": "Finance",
+        "calendar": "Calendar",
+        "storage": "Storage",
+        "developer": "Developer"
+      },
+      "features": {
+        "productivity": {
+          "heading": "Your productivity stack, unified.",
+          "body": "Connect Google Workspace, Microsoft 365, Notion, and other tools your team uses daily. Documents, tasks, and projects — all visible from one place."
+        },
+        "communication": {
+          "heading": "Every conversation, one inbox.",
+          "body": "Bring Slack, Microsoft Teams, Discord, and email into your BeWorking dashboard. Never miss a message, regardless of channel."
+        },
+        "finance": {
+          "heading": "Financial tools, connected.",
+          "body": "Sync Stripe, Holded, BBVA, and your accounting tools. Invoices, payments, and reconciliation flow automatically into your dashboard."
+        },
+        "calendar": {
+          "heading": "Calendars in sync.",
+          "body": "Google Calendar, Outlook, and Cal.com — all merged into a single view. Bookings, meetings, and availability updated in real time."
+        },
+        "storage": {
+          "heading": "Files from every cloud.",
+          "body": "Google Drive, Dropbox, OneDrive — access and manage files from any storage provider without leaving your workspace."
+        },
+        "developer": {
+          "heading": "Built for technical teams.",
+          "body": "GitHub, GitLab, and n8n integrate directly. Automate workflows, track repos, and trigger actions from your dashboard."
+        }
+      }
+    },
+    "departmentsCta": {
+      "heading": "8 AI departments for your company.",
+      "body": "CRM, Accounting, HR, Projects, Marketing and more — each powered by AI and integrated with all major business apps.",
+      "button": "Explore Integrations"
+    },
+    "cta": {
+      "heading": "Ready to run your business from one place?",
+      "button": "Create Digital Office"
+    }
   }
 }

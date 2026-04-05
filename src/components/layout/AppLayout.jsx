@@ -130,8 +130,24 @@ const AppLayout = ({ children }) => {
           {/* Logo */}
           <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <span style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 600, fontSize: '1.8rem', color: '#007a1d', letterSpacing: '-0.01em', cursor: 'pointer', lineHeight: 1 }}>
-              bespaces<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#d4a843', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
+              beworking<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#d4a843', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
             </span>
+          </Box>
+
+          {/* Center: nav links */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3 }}>
+            <NextLink href="/malaga/salas-de-reunion" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
+              {t('nav.meetingRooms', { defaultValue: 'Meeting Rooms' })}
+            </NextLink>
+            <NextLink href="/malaga/coworking" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
+              {t('nav.coworking', { defaultValue: 'Coworking' })}
+            </NextLink>
+            <NextLink href="/malaga/oficina-virtual" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
+              {t('nav.virtualOffice', { defaultValue: 'Oficina Virtual' })}
+            </NextLink>
+            <NextLink href="/platform" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
+              {t('nav.platform', { defaultValue: 'Platform' })}
+            </NextLink>
           </Box>
 
           {/* Right: lang toggle + login + register */}
