@@ -145,7 +145,7 @@ const AppLayout = ({ children }) => {
               {t('nav.virtualOffice', { defaultValue: 'Oficina Virtual' })}
             </NextLink>
             <NextLink href="/platform" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-              {t('nav.platform', { defaultValue: 'Platform' })}
+              {t('nav.superapp', { defaultValue: 'SuperApp' })}
             </NextLink>
           </Box>
 
