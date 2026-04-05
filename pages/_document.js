@@ -26,11 +26,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <meta property="og:type" content="website" />
           <meta property="og:title" content="BeSpaces — Espacios de trabajo en Malaga" />
           <meta property="og:description" content="Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio." />
-          <meta property="og:image" content="https://be-spaces.com/og-image.jpg" />
-          <meta property="og:url" content="https://be-spaces.com" />
+          <meta property="og:image" content="https://be-working.com/og-image.jpg" />
+          <meta property="og:url" content="https://be-working.com" />
           <meta property="og:site_name" content="BeSpaces" />
-          <link rel="alternate" hreflang="es" href="https://be-spaces.com" />
-          <link rel="alternate" hreflang="en" href="https://be-spaces.com" />
+          <link rel="alternate" hreflang="es" href="https://be-working.com" />
+          <link rel="alternate" hreflang="en" href="https://be-working.com" />
         </Head>
         <body>
           <noscript

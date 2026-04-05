@@ -19,7 +19,7 @@ import { styled } from '@mui/material/styles';
 import TurnstileWidget from '../oficina-virtual/TurnstileWidget';
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://www.be-working.com';
+const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
 const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 const Card = styled(MuiCard)(({ theme }) => ({

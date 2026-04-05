@@ -140,7 +140,7 @@ export default function SalasDeReunion() {
       <Head>
         <title>{location.seo.meetingRooms.title}</title>
         <meta name="description" content={location.seo.meetingRooms.description} />
-        <link rel="canonical" href="https://be-spaces.com/malaga/salas-de-reunion" />
+        <link rel="canonical" href="https://be-working.com/malaga/salas-de-reunion" />
       </Head>
 
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>

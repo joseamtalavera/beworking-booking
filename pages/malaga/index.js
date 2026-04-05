@@ -47,7 +47,7 @@ export default function MalagaHub() {
       <Head>
         <title>{location.seo.city.title}</title>
         <meta name="description" content={location.seo.city.description} />
-        <link rel="canonical" href="https://be-spaces.com/malaga" />
+        <link rel="canonical" href="https://be-working.com/malaga" />
       </Head>
 
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>

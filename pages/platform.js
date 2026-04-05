@@ -55,11 +55,11 @@ export default function Platform() {
       <Head>
         <title>Platform — BeWorking</title>
         <meta name="description" content="One dashboard for every part of your business. Built-in tools and external integrations — invoicing, contacts, mailbox, and 50+ connected apps." />
-        <link rel="canonical" href="https://be-spaces.com/platform" />
+        <link rel="canonical" href="https://be-working.com/platform" />
         <meta property="og:title" content="Platform — BeWorking" />
         <meta property="og:description" content="One dashboard for every part of your business. Built-in tools and external integrations." />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://be-spaces.com/platform" />
+        <meta property="og:url" content="https://be-working.com/platform" />
       </Head>
 
       {/* Platform Hero */}

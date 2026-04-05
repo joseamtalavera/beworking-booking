@@ -136,8 +136,8 @@ export default function OficinaVirtualPage() {
         title={`Oficina Virtual en ${city} — BeWorking desde 15€/mes`}
         description="Domicilio legal y fiscal, recepción de correo, coworking y plataforma de gestión incluida. Sin depósito, sin permanencia. Empieza hoy."
         image="/BeWorking_optimized.jpg"
-        url="https://be-spaces.com/malaga/oficina-virtual"
-        canonical="https://be-spaces.com/malaga/oficina-virtual"
+        url="https://be-working.com/malaga/oficina-virtual"
+        canonical="https://be-working.com/malaga/oficina-virtual"
       />
       <StructuredData data={orgData} />
 

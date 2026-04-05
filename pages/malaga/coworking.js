@@ -131,7 +131,7 @@ export default function Coworking() {
       <Head>
         <title>{location.seo.coworking.title}</title>
         <meta name="description" content={location.seo.coworking.description} />
-        <link rel="canonical" href="https://be-spaces.com/malaga/coworking" />
+        <link rel="canonical" href="https://be-working.com/malaga/coworking" />
       </Head>
 
       <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
