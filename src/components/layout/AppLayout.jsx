@@ -12,7 +12,6 @@ import {
 } from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import XIcon from '@mui/icons-material/X';
 import { useTranslation } from 'react-i18next';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
@@ -22,7 +21,6 @@ const isExternal = (href) => /^https?:\/\//.test(href);
 const socialLinks = [
   { Icon: LinkedInIcon, href: 'https://www.linkedin.com/company/beworking', label: 'LinkedIn' },
   { Icon: InstagramIcon, href: 'https://www.instagram.com/beworkingmalaga', label: 'Instagram' },
-  { Icon: XIcon, href: 'https://x.com/beworking', label: 'X' },
 ];
 
 const AppLayout = ({ children }) => {
@@ -32,8 +30,10 @@ const AppLayout = ({ children }) => {
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'footer.links.platform',  href: '/platform' },
-        { labelKey: 'footer.links.spaces',    href: '/' },
+        { labelKey: 'footer.links.platform',       href: '/platform' },
+        { labelKey: 'footer.links.meetingRooms',   href: '/malaga/salas-de-reunion' },
+        { labelKey: 'footer.links.coworking',      href: '/malaga/coworking' },
+        { labelKey: 'footer.links.virtualOffice',  href: '/malaga/oficina-virtual' },
       ],
     },
     {
