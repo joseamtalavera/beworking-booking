@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import NextLink from 'next/link';
 import {
   AppBar,
@@ -9,7 +10,14 @@ import {
   Divider,
   Link,
   Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
 } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +33,14 @@ const socialLinks = [
 
 const AppLayout = ({ children }) => {
   const { t, i18n } = useTranslation();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { href: '/malaga/salas-de-reunion', labelKey: 'nav.meetingRooms', fallback: 'Meeting Rooms' },
+    { href: '/malaga/coworking',        labelKey: 'nav.coworking',    fallback: 'Coworking' },
+    { href: '/malaga/oficina-virtual',  labelKey: 'nav.virtualOffice', fallback: 'Oficina Virtual' },
+    { href: '/platform',                labelKey: 'nav.superapp',     fallback: 'SuperApp' },
+  ];
 
   const footerColumns = [
     {
@@ -133,30 +149,23 @@ const AppLayout = ({ children }) => {
             </span>
           </Box>
 
-          {/* Center: nav links */}
+          {/* Center: nav links (desktop only) */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3 }}>
-            <NextLink href="/malaga/salas-de-reunion" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-              {t('nav.meetingRooms', { defaultValue: 'Meeting Rooms' })}
-            </NextLink>
-            <NextLink href="/malaga/coworking" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-              {t('nav.coworking', { defaultValue: 'Coworking' })}
-            </NextLink>
-            <NextLink href="/malaga/oficina-virtual" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-              {t('nav.virtualOffice', { defaultValue: 'Oficina Virtual' })}
-            </NextLink>
-            <NextLink href="/platform" style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-              {t('nav.superapp', { defaultValue: 'SuperApp' })}
-            </NextLink>
+            {navLinks.map((link) => (
+              <NextLink key={link.href} href={link.href} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
+                {t(link.labelKey, { defaultValue: link.fallback })}
+              </NextLink>
+            ))}
           </Box>
 
-          {/* Right: lang toggle + login + register */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+
+          {/* Right desktop: lang toggle + login + register */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
             <Button
               component={NextLink}
               href="/login"
               sx={{
-                display: { xs: 'none', sm: 'inline-flex' },
                 fontSize: '0.8125rem',
                 fontWeight: 500,
                 color: 'text.primary',
@@ -184,8 +193,72 @@ const AppLayout = ({ children }) => {
               {t('nav.getStarted')}
             </Button>
           </Box>
+
+          {/* Right mobile: lang toggle + hamburger */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
+            <LangToggle />
+            <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }} aria-label="Open menu">
+              <MenuIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
+
+      {/* Mobile drawer */}
+      <Drawer
+        anchor="right"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        PaperProps={{ sx: { width: 280, pt: 2, px: 1, bgcolor: '#ffffff' } }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', px: 1 }}>
+          <IconButton onClick={() => setMobileOpen(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Box>
+        <List>
+          {navLinks.map((link) => (
+            <ListItemButton
+              key={link.href}
+              component={NextLink}
+              href={link.href}
+              onClick={() => setMobileOpen(false)}
+              sx={{ borderRadius: '8px', mx: 1, '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}
+            >
+              <ListItemText
+                primary={t(link.labelKey, { defaultValue: link.fallback })}
+                primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
+              />
+            </ListItemButton>
+          ))}
+        </List>
+        <Divider sx={{ my: 1.5, mx: 2, borderColor: 'rgba(0,0,0,0.06)' }} />
+        <List>
+          <ListItemButton
+            component={NextLink}
+            href="/login"
+            onClick={() => setMobileOpen(false)}
+            sx={{ borderRadius: '8px', mx: 1 }}
+          >
+            <ListItemText
+              primary={t('nav.signIn')}
+              primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400 }}
+            />
+          </ListItemButton>
+        </List>
+        <Box sx={{ px: 2, pb: 2, mt: 1 }}>
+          <Button
+            variant="contained"
+            fullWidth
+            component="a"
+            href="/register"
+            onClick={() => setMobileOpen(false)}
+            sx={{ borderRadius: '999px', py: 1.25, fontSize: '0.875rem' }}
+          >
+            {t('nav.getStarted')}
+          </Button>
+        </Box>
+      </Drawer>
 
       {/* Spacer for fixed AppBar */}
       <Box sx={{ height: 64 }} />
