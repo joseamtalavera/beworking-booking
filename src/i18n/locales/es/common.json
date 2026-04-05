@@ -139,39 +139,45 @@
     "weekday_sunday": "D"
   },
   "contact": {
-    "title": "Datos de contacto",
-    "subtitle": "Los usaremos para confirmar tu reserva y enviarte las instrucciones de acceso.",
-    "firstName": "Nombre",
-    "firstNamePlaceholder": "Ej. María",
-    "lastName": "Apellidos",
-    "lastNamePlaceholder": "Ej. García López",
-    "email": "Email",
-    "emailPlaceholder": "tu@email.com",
-    "phone": "Teléfono",
-    "phonePlaceholder": "+34 600 000 000",
-    "company": "Empresa",
-    "companyPlaceholder": "Nombre de la empresa",
-    "vatTaxId": "NIF / CIF",
-    "vatTaxIdPlaceholder": "B12345678",
-    "billingAddress": "Dirección de facturación",
-    "optional": "opcional",
-    "billingSubtitle": "Solo necesario si quieres factura.",
-    "addressLine1": "Dirección línea 1",
-    "addressLine1Placeholder": "Calle, número, piso",
-    "addressLine2": "Dirección línea 2",
-    "addressLine2Placeholder": "Oficina, edificio...",
-    "city": "Ciudad",
-    "cityPlaceholder": "Ej. Málaga",
-    "postalCode": "Código postal",
-    "postalCodePlaceholder": "29001",
-    "country": "País",
-    "continueToPayment": "Continuar al pago",
-    "errors": {
-      "firstNameRequired": "El nombre es obligatorio",
-      "lastNameRequired": "Los apellidos son obligatorios",
-      "emailRequired": "El email es obligatorio",
-      "emailInvalid": "Introduce un email válido",
-      "phoneRequired": "El teléfono es obligatorio"
+    "hero": {
+      "label": "Contacto",
+      "heading": "Ponte en contacto.",
+      "subheading": "Te respondemos en menos de un día hábil."
+    },
+    "form": {
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "subject": "Asunto",
+      "message": "Tu mensaje",
+      "button": "Enviar mensaje",
+      "subjects": [
+        "Consulta general",
+        "Oficina Digital",
+        "Espacios y reservas",
+        "Plataforma y cuenta",
+        "Facturación",
+        "Otro"
+      ],
+      "success": "¡Mensaje enviado! Nos pondremos en contacto pronto.",
+      "error": "Algo salió mal. Inténtalo de nuevo o escríbenos directamente."
+    },
+    "info": {
+      "heading": "Nuestras oficinas",
+      "email": "info@be-working.com",
+      "offices": [
+        {
+          "city": "Málaga, España",
+          "address": "Calle Alejandro Dumas, 17 · Oficinas",
+          "zip": "29004 Málaga",
+          "phone": "+34 951 905 967"
+        },
+        {
+          "city": "Tallinn, Estonia",
+          "address": "Sepapaja tn 6",
+          "zip": "15551 Tallinn",
+          "phone": "+372 54520699"
+        }
+      ]
     }
   },
   "pricing": {
@@ -645,6 +651,111 @@
     "cta": {
       "heading": "¿Listo para gestionar tu negocio desde un solo lugar?",
       "button": "Crear Oficina Digital"
+    }
+  },
+  "faq": {
+    "hero": {
+      "label": "FAQ",
+      "heading": "Preguntas frecuentes.",
+      "subheading": "Todo lo que necesitas saber sobre BeWorking."
+    },
+    "categories": {
+      "general": {
+        "label": "General",
+        "items": [
+          {
+            "q": "¿Qué es BeWorking?",
+            "a": "La oficina digital para gestionar tu negocio con IA desde un solo lugar."
+          },
+          {
+            "q": "¿Es BeWorking una plataforma online?",
+            "a": "Sí, BeWorking es una plataforma 100% digital accesible desde cualquier lugar."
+          },
+          {
+            "q": "¿Para quién es BeWorking?",
+            "a": "BeWorking está diseñado para autónomos, startups, equipos remotos y empresas que necesitan presencia profesional en España sin el coste de una oficina física."
+          },
+          {
+            "q": "¿Cómo empiezo?",
+            "a": "Crea una cuenta gratuita para acceder a todas las funcionalidades."
+          },
+          {
+            "q": "¿Está disponible en varios idiomas?",
+            "a": "Sí. La plataforma está disponible en español e inglés."
+          }
+        ]
+      },
+      "spaces": {
+        "label": "BeSpaces",
+        "items": [
+          {
+            "q": "¿Qué tipos de espacios están disponibles?",
+            "a": "Ofrecemos puestos de coworking, oficinas privadas, salas de reuniones y salas de formación en nuestra sede de Málaga."
+          },
+          {
+            "q": "¿Cómo reservo un espacio?",
+            "a": "Accede a la sección BeSpaces en tu panel o visita be-spaces.com. Selecciona fecha, hora y tipo de sala — y confirma."
+          },
+          {
+            "q": "¿Puedo reservar sin suscripción?",
+            "a": "Sí. Los pases de día y reservas individuales están disponibles sin plan mensual."
+          },
+          {
+            "q": "¿Qué incluye el espacio?",
+            "a": "Todos los espacios incluyen WiFi de alta velocidad, aire acondicionado y acceso a zonas comunes. Las salas de reuniones incluyen pizarra."
+          },
+          {
+            "q": "¿Con cuánta antelación puedo reservar?",
+            "a": "No existe una antelación fija. Puedes reservar en cualquier momento según disponibilidad."
+          }
+        ]
+      },
+      "platform": {
+        "label": "Plataforma",
+        "items": [
+          {
+            "q": "¿Qué incluye la plataforma?",
+            "a": "La plataforma incluye panel de resumen, facturación, almacenamiento (buzón), reserva de espacios, integraciones, automatizaciones, informes y configuración — todo en un lugar."
+          },
+          {
+            "q": "¿Hay app móvil?",
+            "a": "Aún no. La plataforma es completamente responsive y funciona en navegadores móviles. Una app nativa está en la hoja de ruta."
+          },
+          {
+            "q": "¿Pueden acceder varios usuarios a la misma cuenta?",
+            "a": "Sí. Puedes invitar a miembros del equipo desde el panel de configuración y asignar roles."
+          },
+          {
+            "q": "¿Puedo exportar mis facturas?",
+            "a": "Sí. Todas las facturas se pueden exportar en PDF o descargar en bloque desde la pestaña de Facturación."
+          },
+          {
+            "q": "¿Dónde se almacenan mis datos?",
+            "a": "Tus datos se almacenan en servidores seguros de AWS en la UE (Estocolmo, región eu-north-1)."
+          }
+        ]
+      },
+      "billing": {
+        "label": "Facturación",
+        "items": [
+          {
+            "q": "¿Qué métodos de pago se aceptan?",
+            "a": "Aceptamos todas las tarjetas de crédito y débito principales a través de Stripe. La transferencia bancaria a través de Stripe también está disponible."
+          },
+          {
+            "q": "¿Cómo funciona la facturación?",
+            "a": "Los planes se facturan mensual, trimestral, semestral o anualmente. Puedes cambiar o cancelar en cualquier momento desde la configuración."
+          },
+          {
+            "q": "¿Puedo obtener una factura de mi suscripción?",
+            "a": "Sí. Las facturas se generan automáticamente y están disponibles en la sección de Facturación de tu cuenta."
+          },
+          {
+            "q": "¿Los precios incluyen IVA?",
+            "a": "Los precios mostrados no incluyen IVA. El IVA se aplica en el momento del pago según tu país de residencia."
+          }
+        ]
+      }
     }
   }
 }

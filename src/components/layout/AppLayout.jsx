@@ -32,9 +32,8 @@ const AppLayout = ({ children }) => {
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'footer.links.platform',  href: `${FRONTEND_URL}/platform` },
+        { labelKey: 'footer.links.platform',  href: '/platform' },
         { labelKey: 'footer.links.spaces',    href: '/' },
-        { labelKey: 'footer.links.pricing',   href: `${FRONTEND_URL}/prices` },
       ],
     },
     {
@@ -52,15 +51,15 @@ const AppLayout = ({ children }) => {
         { labelKey: 'footer.links.about',    soon: true },
         { labelKey: 'footer.links.careers',  soon: true },
         { labelKey: 'footer.links.press',    soon: true },
-        { labelKey: 'footer.links.contact',  href: `${FRONTEND_URL}/contact` },
-        { labelKey: 'footer.links.faq',      href: `${FRONTEND_URL}/faq` },
+        { labelKey: 'footer.links.contact',  href: '/contact' },
+        { labelKey: 'footer.links.faq',      href: '/faq' },
       ],
     },
     {
       titleKey: 'footer.legal',
       links: [
-        { labelKey: 'footer.links.terms',    soon: true },
-        { labelKey: 'footer.links.privacy',  soon: true },
+        { labelKey: 'footer.links.terms',    href: '/aviso-legal' },
+        { labelKey: 'footer.links.privacy',  href: '/politica-de-privacidad' },
         { labelKey: 'footer.links.cookies',  soon: true },
         { labelKey: 'footer.links.sitemap',  soon: true },
       ],
@@ -154,8 +153,8 @@ const AppLayout = ({ children }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
             <Button
-              component="a"
-              href={`${FRONTEND_URL}/main/login`}
+              component={NextLink}
+              href="/login"
               sx={{
                 display: { xs: 'none', sm: 'inline-flex' },
                 fontSize: '0.8125rem',

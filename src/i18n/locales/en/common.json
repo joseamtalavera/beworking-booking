@@ -126,39 +126,45 @@
     "capacityFrom": "Capacity {{capacity}} · from {{price}} {{unit}}"
   },
   "contact": {
-    "title": "Contact details",
-    "subtitle": "We'll use this to confirm your booking and send access instructions.",
-    "firstName": "First name",
-    "firstNamePlaceholder": "e.g. John",
-    "lastName": "Last name",
-    "lastNamePlaceholder": "e.g. Smith",
-    "email": "Email",
-    "emailPlaceholder": "you@email.com",
-    "phone": "Phone",
-    "phonePlaceholder": "+34 600 000 000",
-    "company": "Company",
-    "companyPlaceholder": "Company name",
-    "vatTaxId": "VAT / Tax ID",
-    "vatTaxIdPlaceholder": "B12345678",
-    "billingAddress": "Billing address",
-    "optional": "optional",
-    "billingSubtitle": "Required only if you need an invoice.",
-    "addressLine1": "Address line 1",
-    "addressLine1Placeholder": "Street, number, floor",
-    "addressLine2": "Address line 2",
-    "addressLine2Placeholder": "Office, building...",
-    "city": "City",
-    "cityPlaceholder": "e.g. Málaga",
-    "postalCode": "Postal code",
-    "postalCodePlaceholder": "29001",
-    "country": "Country",
-    "continueToPayment": "Continue to payment",
-    "errors": {
-      "firstNameRequired": "First name is required",
-      "lastNameRequired": "Last name is required",
-      "emailRequired": "Email is required",
-      "emailInvalid": "Enter a valid email address",
-      "phoneRequired": "Phone number is required"
+    "hero": {
+      "label": "Contact",
+      "heading": "Get in touch.",
+      "subheading": "We'll get back to you within one business day."
+    },
+    "form": {
+      "name": "Full name",
+      "email": "Email address",
+      "subject": "Subject",
+      "message": "Your message",
+      "button": "Send message",
+      "subjects": [
+        "General enquiry",
+        "Digital Office",
+        "Spaces & booking",
+        "Platform & account",
+        "Billing",
+        "Other"
+      ],
+      "success": "Message sent! We'll be in touch shortly.",
+      "error": "Something went wrong. Please try again or email us directly."
+    },
+    "info": {
+      "heading": "Our offices",
+      "email": "info@be-working.com",
+      "offices": [
+        {
+          "city": "Málaga, Spain",
+          "address": "Calle Alejandro Dumas, 17 · Oficinas",
+          "zip": "29004 Málaga",
+          "phone": "+34 951 905 967"
+        },
+        {
+          "city": "Tallinn, Estonia",
+          "address": "Sepapaja tn 6",
+          "zip": "15551 Tallinn",
+          "phone": "+372 54520699"
+        }
+      ]
     }
   },
   "pricing": {
@@ -631,6 +637,111 @@
     "cta": {
       "heading": "Ready to run your business from one place?",
       "button": "Create Digital Office"
+    }
+  },
+  "faq": {
+    "hero": {
+      "label": "FAQ",
+      "heading": "Frequently asked questions.",
+      "subheading": "Everything you need to know about BeWorking."
+    },
+    "categories": {
+      "general": {
+        "label": "General",
+        "items": [
+          {
+            "q": "What is BeWorking?",
+            "a": "The digital office to manage your business with AI from one single place."
+          },
+          {
+            "q": "Is BeWorking an online platform?",
+            "a": "Yes, BeWorking is a 100% digital platform accessible from anywhere."
+          },
+          {
+            "q": "Who is BeWorking for?",
+            "a": "BeWorking is designed for freelancers, startups, remote teams, and established companies that need a professional business presence in Spain without the cost of a traditional office."
+          },
+          {
+            "q": "How do I get started?",
+            "a": "Create a free account to access all features."
+          },
+          {
+            "q": "Is BeWorking available in multiple languages?",
+            "a": "Yes. The platform supports Spanish and English."
+          }
+        ]
+      },
+      "spaces": {
+        "label": "BeSpaces",
+        "items": [
+          {
+            "q": "What types of spaces are available?",
+            "a": "We offer coworking desks, private offices, meeting rooms, and training rooms at our Málaga location."
+          },
+          {
+            "q": "How do I book a space?",
+            "a": "Open the BeSpaces section in your dashboard or visit be-spaces.com. Select a date, time, and room type — then confirm."
+          },
+          {
+            "q": "Can I book a space without a subscription?",
+            "a": "Yes. Day passes and individual room bookings are available without a monthly plan."
+          },
+          {
+            "q": "What's included in the space?",
+            "a": "All spaces include high-speed WiFi, air conditioning, and access to common areas. Meeting rooms include a whiteboard."
+          },
+          {
+            "q": "How far in advance can I book?",
+            "a": "There is no fixed advance booking limit. You can book at any time based on availability."
+          }
+        ]
+      },
+      "platform": {
+        "label": "Platform",
+        "items": [
+          {
+            "q": "What does the platform include?",
+            "a": "The platform includes a dashboard (overview), invoicing, file storage (mailbox), space booking, integrations, automations, reports, and settings — all in one place."
+          },
+          {
+            "q": "Is there a mobile app?",
+            "a": "Not yet. The platform is fully responsive and works on mobile browsers. A native app is on the roadmap."
+          },
+          {
+            "q": "Can multiple users access the same account?",
+            "a": "Yes. You can invite team members from the Settings panel and assign roles."
+          },
+          {
+            "q": "Can I export my invoices?",
+            "a": "Yes. All invoices can be exported as PDF or downloaded in bulk from the Invoicing tab."
+          },
+          {
+            "q": "Where is my data stored?",
+            "a": "Your data is stored on secure AWS servers in the EU (Stockholm, eu-north-1 region)."
+          }
+        ]
+      },
+      "billing": {
+        "label": "Billing",
+        "items": [
+          {
+            "q": "What payment methods are accepted?",
+            "a": "We accept credit cards, debit cards, and bank transfers via Stripe."
+          },
+          {
+            "q": "How does billing work?",
+            "a": "Plans are billed monthly, quarterly, semi-annually, or annually. You can switch or cancel at any time from your account settings."
+          },
+          {
+            "q": "Can I get an invoice for my subscription?",
+            "a": "Yes. Invoices are generated automatically and available in the Billing section of your account."
+          },
+          {
+            "q": "Do prices include VAT?",
+            "a": "Prices shown are exclusive of VAT. VAT is applied at checkout based on your country of residence."
+          }
+        ]
+      }
     }
   }
 }
