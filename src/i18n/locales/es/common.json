@@ -543,7 +543,7 @@
   },
   "platform": {
     "hero": {
-      "label": "Plataforma",
+      "label": "SuperApp",
       "heading": "Tu oficina digital para operar tu negocio",
       "headingAccent": "con IA.",
       "subheading": "Clientes, comunicaciones, tareas y automatización — todo conectado en un solo lugar."
@@ -651,7 +651,7 @@
     },
     "cta": {
       "heading": "¿Listo para gestionar tu negocio desde un solo lugar?",
-      "button": "Crear Oficina Digital"
+      "button": "Crear cuenta"
     }
   },
   "faq": {

@@ -90,7 +90,7 @@ export default function Platform() {
             <Button
               variant="contained"
               component={NextLink}
-              href="/"
+              href="/register"
               sx={{ borderRadius: '999px', px: 4, py: 1.25, fontSize: '0.875rem' }}
             >
               {t('platform.cta.button')}

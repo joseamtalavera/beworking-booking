@@ -529,7 +529,7 @@
   },
   "platform": {
     "hero": {
-      "label": "Platform",
+      "label": "SuperApp",
       "heading": "Your digital office to run your business",
       "headingAccent": "with AI.",
       "subheading": "Clients, communications, tasks and automation — all connected in one place."
@@ -637,7 +637,7 @@
     },
     "cta": {
       "heading": "Ready to run your business from one place?",
-      "button": "Create Digital Office"
+      "button": "Create account"
     }
   },
   "faq": {
