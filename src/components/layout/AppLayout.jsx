@@ -51,6 +51,7 @@ const AppLayout = ({ children }) => {
         { labelKey: 'footer.links.about',    soon: true },
         { labelKey: 'footer.links.careers',  soon: true },
         { labelKey: 'footer.links.press',    soon: true },
+        { labelKey: 'footer.links.contact',  href: '/contact' },
         { labelKey: 'footer.links.faq',      href: '/faq' },
       ],
     },
@@ -210,7 +211,7 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             gap: { xs: 4, md: 6 },
           }}
         >
@@ -263,35 +264,45 @@ const AppLayout = ({ children }) => {
               )}
             </Box>
           ))}
-        </Box>
 
-        <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: 'rgba(255,255,255,0.1)' }} />
-
-        {/* Unified contact bar: email + phone + socials + location */}
-        <Box
-          sx={{
-            maxWidth: 1200,
-            mx: 'auto',
-            display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', md: 'center' },
-            gap: { xs: 2.5, md: 1.5 },
-          }}
-        >
-          {/* Left: email + phone + socials */}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: { xs: 2, md: 3 } }}>
+          {/* Connect column */}
+          <Box>
+            <Typography
+              sx={{
+                fontSize: '0.8125rem',
+                fontWeight: 500,
+                color: 'rgba(255,255,255,0.5)',
+                mb: 2.5,
+                letterSpacing: '0.02em',
+              }}
+            >
+              {t('footer.connect')}
+            </Typography>
             <Link
               href="mailto:info@be-working.com"
               underline="none"
-              sx={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)', '&:hover': { color: 'common.white' } }}
+              sx={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.8)',
+                mb: 1,
+                '&:hover': { color: 'common.white' },
+              }}
             >
               info@be-working.com
             </Link>
             <Link
               href="tel:+34951905967"
               underline="none"
-              sx={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.8)', '&:hover': { color: 'common.white' } }}
+              sx={{
+                display: 'block',
+                fontSize: '0.875rem',
+                fontWeight: 400,
+                color: 'rgba(255,255,255,0.8)',
+                mb: 2,
+                '&:hover': { color: 'common.white' },
+              }}
             >
               +34 951 905 967
             </Link>
@@ -303,23 +314,37 @@ const AppLayout = ({ children }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  sx={{ color: 'rgba(255,255,255,0.6)', '&:hover': { color: 'common.white' } }}
+                  sx={{
+                    color: 'rgba(255,255,255,0.6)',
+                    transition: 'color 0.15s ease',
+                    '&:hover': { color: 'common.white' },
+                  }}
                 >
                   <social.Icon sx={{ fontSize: 20 }} />
                 </Link>
               ))}
             </Box>
           </Box>
-          {/* Right: tagline + location */}
-          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 0.5, sm: 2 }, alignItems: { xs: 'flex-start', sm: 'center' } }}>
-            <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-              {t('footer.location')}
-            </Typography>
-          </Box>
         </Box>
-        <Box sx={{ maxWidth: 1200, mx: 'auto', mt: 2 }}>
-          <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>
+
+        <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: 'rgba(255,255,255,0.1)' }} />
+
+        <Box
+          sx={{
+            maxWidth: 1200,
+            mx: 'auto',
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: 1.5,
+          }}
+        >
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
             {t('footer.tagline')}
+          </Typography>
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
+            {t('footer.location')}
           </Typography>
         </Box>
       </Box>
