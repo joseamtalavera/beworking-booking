@@ -389,24 +389,24 @@ const RoomDetailPage = () => {
             >
               {t('common.back')}
             </Button>
-            <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
-              <Stack spacing={1}>
-                <Typography variant="overline" sx={{ color: 'text.secondary', letterSpacing: 1.2 }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'flex-start' }} spacing={2}>
+              <Stack spacing={0.75} sx={{ minWidth: 0, flex: 1 }}>
+                <Typography variant="overline" sx={{ color: 'text.secondary', letterSpacing: 1.2, fontSize: { xs: '0.7rem', md: '0.75rem' } }}>
                   {room.centro}
                 </Typography>
-                <Typography variant="h3" sx={{ fontWeight: 800 }}>
+                <Typography variant="h3" sx={{ fontWeight: 800, fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }, lineHeight: 1.15 }}>
                   {room.name}
                 </Typography>
                 {room.subtitle && (
-                  <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                  <Typography variant="h6" sx={{ color: 'text.secondary', fontWeight: 600, fontSize: { xs: '0.95rem', sm: '1.1rem', md: '1.25rem' }, lineHeight: 1.4 }}>
                     {room.subtitle}
                   </Typography>
                 )}
-                  <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body1" sx={{ color: 'text.secondary', fontSize: { xs: '0.875rem', md: '1rem' } }}>
                   {`${t('room.capacity', { count: room.capacity })} · ${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={2} alignItems="center">
+              <Stack direction="row" spacing={1} alignItems="center" sx={{ flexShrink: 0 }}>
                 <Button
                   size="small"
                   startIcon={<IosShareOutlinedIcon />}
