@@ -449,7 +449,7 @@
       "popular": "Popular",
       "perMonth": "/month",
       "trialBadge": "",
-      "vatNote": "All plans include the full BeWorking Platform: digital signature, Agentic Workers, and all tools. Need more MariaAI queries? Switch plans anytime.",
+      "vatNote": "All plans include the full BeWorking Platform: digital signature, Agentic Workers, and all tools. Switch plans anytime.",
       "trialNote": "All prices + VAT. No commitment.",
       "choosePlan": "Choose plan",
       "plans": [
@@ -463,8 +463,7 @@
             "Mail reception",
             "Digital mailbox",
             "Full BeWorking Platform",
-            "BeWorking booking access",
-            "50 MariaAI queries/month"
+            "BeWorking booking access"
           ]
         },
         {
@@ -473,7 +472,6 @@
           "description": "Everything in Basic plus in-person support and more AI.",
           "features": [
             "Everything in Basic",
-            "200 MariaAI queries/month",
             "Call handling",
             "Multi-user (3 users)",
             "Logo at reception",
@@ -486,7 +484,6 @@
           "description": "Full unlimited access to everything BeWorking.",
           "features": [
             "Everything in Pro",
-            "Unlimited MariaAI",
             "Dedicated manager",
             "Priority support",
             "API access",
@@ -583,7 +580,7 @@
       },
       "automation": {
         "heading": "Automate your workflows.",
-        "body": "Create rules, triggers, and automatic actions to eliminate repetitive tasks. MariaAI orchestrates it all for you."
+        "body": "Create rules, triggers, and automatic actions to eliminate repetitive tasks. Your AI orchestrates it all for you."
       },
       "spaceCatalog": {
         "heading": "Explore all available spaces.",

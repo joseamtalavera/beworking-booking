@@ -463,7 +463,7 @@
       "popular": "Popular",
       "perMonth": "/mes",
       "trialBadge": "",
-      "vatNote": "Todos los planes incluyen la Plataforma BeWorking completa: firma digital, Agentic Workers y todas las herramientas. ¿Necesitas más consultas MariaAI? Cambia de plan en cualquier momento.",
+      "vatNote": "Todos los planes incluyen la Plataforma BeWorking completa: firma digital, Agentic Workers y todas las herramientas. Cambia de plan en cualquier momento.",
       "trialNote": "Todos los precios + IVA. Sin permanencia.",
       "choosePlan": "Elegir plan",
       "plans": [
@@ -477,8 +477,7 @@
             "Recepción de correo",
             "Buzón digital",
             "Plataforma BeWorking completa",
-            "Acceso reservas BeWorking",
-            "50 consultas MariaAI/mes"
+            "Acceso reservas BeWorking"
           ]
         },
         {
@@ -487,7 +486,6 @@
           "description": "Todo en Basic más atención presencial y más IA.",
           "features": [
             "Todo en Basic",
-            "200 consultas MariaAI/mes",
             "Atención de llamadas",
             "Multi-usuario (3 usuarios)",
             "Logo en recepción",
@@ -500,7 +498,6 @@
           "description": "Acceso completo sin límites a todo BeWorking.",
           "features": [
             "Todo en Pro",
-            "MariaAI ilimitada",
             "Gestor dedicado",
             "Prioridad en soporte",
             "API access",
@@ -597,7 +594,7 @@
       },
       "automation": {
         "heading": "Automatiza flujos de trabajo.",
-        "body": "Crea reglas, disparadores y acciones automáticas para eliminar tareas repetitivas. MariaAI orquesta todo por ti."
+        "body": "Crea reglas, disparadores y acciones automáticas para eliminar tareas repetitivas. Tu IA orquesta todo por ti."
       },
       "spaceCatalog": {
         "heading": "Explora todos los espacios disponibles.",
