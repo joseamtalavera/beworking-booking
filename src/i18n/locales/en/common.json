@@ -484,7 +484,7 @@
           "name": "Basic",
           "price": "15",
           "popular": true,
-          "description": "Registered business address for your company.",
+          "description": "Registered business address.",
           "features": [
             "Legal & fiscal address",
             "Mail reception",
@@ -496,7 +496,7 @@
         {
           "name": "Pro",
           "price": "25",
-          "description": "Everything in Basic plus in-person support and more AI.",
+          "description": "Everything in Basic plus custom website.",
           "features": [
             "Everything in Basic",
             "Call handling",
@@ -508,13 +508,13 @@
         {
           "name": "Max",
           "price": "90",
-          "description": "Full unlimited access to everything BeWorking.",
+          "description": "Unlimited integrations and automations.",
           "features": [
             "Everything in Pro",
             "Dedicated manager",
             "Priority support",
             "Integrations",
-            "Custom features"
+            "Automations"
           ]
         }
       ]

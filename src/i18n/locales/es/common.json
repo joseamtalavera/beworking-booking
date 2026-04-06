@@ -498,7 +498,7 @@
           "name": "Basic",
           "price": "15",
           "popular": true,
-          "description": "Dirección empresarial registrada para tu empresa.",
+          "description": "Dirección empresarial registrada.",
           "features": [
             "Domicilio fiscal y legal",
             "Recepción de correo",
@@ -510,7 +510,7 @@
         {
           "name": "Pro",
           "price": "25",
-          "description": "Todo en Basic más atención presencial y más IA.",
+          "description": "Todo en Basic más Web personalizada.",
           "features": [
             "Todo en Basic",
             "Atención de llamadas",
@@ -522,13 +522,13 @@
         {
           "name": "Max",
           "price": "90",
-          "description": "Acceso completo sin límites a todo BeWorking.",
+          "description": "Integraciones y automatizaciones sin límites.",
           "features": [
             "Todo en Pro",
             "Gestor dedicado",
             "Prioridad en soporte",
             "Integraciones",
-            "Features personalizadas"
+            "Automatizaciones"
           ]
         }
       ]
