@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
   AppBar,
@@ -33,6 +34,8 @@ const socialLinks = [
 
 const AppLayout = ({ children }) => {
   const { t, i18n } = useTranslation();
+  const router = useRouter();
+  const isOV = router.pathname === '/malaga/oficina-virtual';
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
@@ -176,27 +179,60 @@ const AppLayout = ({ children }) => {
             >
               {t('nav.signIn')}
             </Button>
-            <Button
-              component="a"
-              href="/register"
-              variant="contained"
-              sx={{
-                fontSize: '0.8125rem',
-                fontWeight: 600,
-                textTransform: 'none',
-                borderRadius: '999px',
-                px: 2.5,
-                py: 0.875,
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {t('nav.getStarted')}
-            </Button>
+            {isOV ? (
+              <Link
+                href="tel:+34951905967"
+                underline="none"
+                sx={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 0.5,
+                  fontSize: '0.875rem',
+                  fontWeight: 700,
+                  color: 'primary.main',
+                  '&:hover': { opacity: 0.7 },
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#009624">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+                +34 951 905 967
+              </Link>
+            ) : (
+              <Button
+                component="a"
+                href="/register"
+                variant="contained"
+                sx={{
+                  fontSize: '0.8125rem',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  borderRadius: '999px',
+                  px: 2.5,
+                  py: 0.875,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {t('nav.getStarted')}
+              </Button>
+            )}
           </Box>
 
-          {/* Right mobile: lang toggle + hamburger */}
+          {/* Right mobile: lang toggle + phone (OV) or hamburger */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
             <LangToggle />
+            {isOV && (
+              <Link
+                href="tel:+34951905967"
+                underline="none"
+                sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
+                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                </svg>
+                +34 951 905 967
+              </Link>
+            )}
             <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }} aria-label="Open menu">
               <MenuIcon />
             </IconButton>
