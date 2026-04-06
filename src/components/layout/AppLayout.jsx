@@ -349,7 +349,7 @@ const AppLayout = ({ children }) => {
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', sm: 'center' },
+            alignItems: { xs: 'center', sm: 'center' },
             gap: 1.5,
           }}
         >
@@ -370,6 +370,9 @@ const AppLayout = ({ children }) => {
               </Link>
             ))}
           </Box>
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
+            {t('footer.location')}
+          </Typography>
         </Box>
       </Box>
 
