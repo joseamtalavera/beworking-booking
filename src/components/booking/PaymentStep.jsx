@@ -982,6 +982,35 @@ class PaymentErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
+      // Check if a pending booking was just completed (payment succeeded but render crashed)
+      let bookingCompleted = false;
+      try {
+        bookingCompleted = !sessionStorage.getItem('beworking_pending_booking');
+      } catch (_) {}
+
+      if (bookingCompleted) {
+        return (
+          <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+            <Stack spacing={2} alignItems="center">
+              <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                ¡Reserva confirmada!
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                Tu pago se ha procesado correctamente. Recibirás un email de confirmación en breve.
+              </Typography>
+              <Button
+                href="/"
+                variant="contained"
+                sx={{ borderRadius: 999, px: 4, py: 1.25, textTransform: 'none', fontWeight: 700 }}
+              >
+                Volver al inicio
+              </Button>
+            </Stack>
+          </Paper>
+        );
+      }
+
       return (
         <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
           <Stack spacing={2} alignItems="center">
