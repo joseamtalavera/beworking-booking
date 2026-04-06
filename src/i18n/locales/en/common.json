@@ -166,7 +166,34 @@
           "phone": "+372 54520699"
         }
       ]
-    }
+    },
+    "title": "Contact details",
+    "subtitle": "Enter your details to complete the booking.",
+    "firstName": "First name",
+    "firstNamePlaceholder": "Your first name",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "Your last name",
+    "email": "Email",
+    "emailPlaceholder": "you@email.com",
+    "phone": "Phone",
+    "phonePlaceholder": "+34 600 000 000",
+    "company": "Company",
+    "companyPlaceholder": "Your company name",
+    "vatTaxId": "Tax ID / VAT",
+    "vatTaxIdPlaceholder": "B12345678",
+    "billingAddress": "Billing address",
+    "optional": "optional",
+    "billingSubtitle": "Used on your invoices.",
+    "addressLine1": "Address line 1",
+    "addressLine1Placeholder": "Street, number...",
+    "addressLine2": "Address line 2",
+    "addressLine2Placeholder": "Floor, door...",
+    "city": "City",
+    "cityPlaceholder": "Málaga",
+    "postalCode": "Postal code",
+    "postalCodePlaceholder": "29004",
+    "country": "Country",
+    "continueToPayment": "Continue to payment"
   },
   "pricing": {
     "subtotal": "Subtotal",

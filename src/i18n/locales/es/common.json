@@ -179,7 +179,34 @@
           "phone": "+372 54520699"
         }
       ]
-    }
+    },
+    "title": "Datos de contacto",
+    "subtitle": "Introduce tus datos para completar la reserva.",
+    "firstName": "Nombre",
+    "firstNamePlaceholder": "Tu nombre",
+    "lastName": "Apellidos",
+    "lastNamePlaceholder": "Tus apellidos",
+    "email": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "phone": "Teléfono",
+    "phonePlaceholder": "+34 600 000 000",
+    "company": "Empresa",
+    "companyPlaceholder": "Nombre de tu empresa",
+    "vatTaxId": "NIF/CIF",
+    "vatTaxIdPlaceholder": "B12345678",
+    "billingAddress": "Dirección de facturación",
+    "optional": "opcional",
+    "billingSubtitle": "Se usará en tus facturas.",
+    "addressLine1": "Dirección línea 1",
+    "addressLine1Placeholder": "Calle, número...",
+    "addressLine2": "Dirección línea 2",
+    "addressLine2Placeholder": "Piso, puerta...",
+    "city": "Ciudad",
+    "cityPlaceholder": "Málaga",
+    "postalCode": "Código postal",
+    "postalCodePlaceholder": "29004",
+    "country": "País",
+    "continueToPayment": "Continuar al pago"
   },
   "pricing": {
     "subtotal": "Subtotal",
