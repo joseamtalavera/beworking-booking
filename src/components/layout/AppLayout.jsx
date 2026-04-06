@@ -284,7 +284,7 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
+            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
             gap: { xs: 4, md: 6 },
           }}
         >
@@ -347,15 +347,12 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'flex',
-            flexDirection: { xs: 'column', sm: 'row' },
-            justifyContent: 'space-between',
-            alignItems: { xs: 'flex-start', sm: 'center' },
+            flexDirection: 'column',
+            alignItems: 'center',
             gap: 1.5,
+            textAlign: 'center',
           }}
         >
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-            {t('footer.tagline')}
-          </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {socialLinks.map((social) => (
               <Link
@@ -373,6 +370,9 @@ const AppLayout = ({ children }) => {
               {t('footer.location')}
             </Typography>
           </Box>
+          <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>
+            {t('footer.tagline')}
+          </Typography>
         </Box>
       </Box>
 
