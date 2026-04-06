@@ -48,7 +48,7 @@
     "meetingRooms": "Meeting Rooms",
     "coworking": "Coworking",
     "virtualOffice": "Virtual Office",
-    "businessAddress": "Business Address",
+    "businessAddress": "Virtual Office",
     "where": "Where",
     "wherePlaceholder": "Search destinations",
     "when": "When",
@@ -533,7 +533,7 @@
     },
     "tabs": {
       "overview": "Overview",
-      "businessAddress": "Business Address",
+      "businessAddress": "Virtual Office",
       "beSpaces": "Spaces",
       "integrations": "Integrations",
       "automation": "Automation",
