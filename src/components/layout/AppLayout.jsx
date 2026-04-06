@@ -347,12 +347,15 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'flex-start', sm: 'center' },
             gap: 1.5,
-            textAlign: 'center',
           }}
         >
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
+            {t('footer.tagline')}
+          </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {socialLinks.map((social) => (
               <Link
@@ -366,13 +369,7 @@ const AppLayout = ({ children }) => {
                 <social.Icon sx={{ fontSize: 18 }} />
               </Link>
             ))}
-            <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-              {t('footer.location')}
-            </Typography>
           </Box>
-          <Typography sx={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.35)' }}>
-            {t('footer.tagline')}
-          </Typography>
         </Box>
       </Box>
 
