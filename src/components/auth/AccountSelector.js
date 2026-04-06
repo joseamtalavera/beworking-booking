@@ -37,7 +37,7 @@ export default function AccountSelector({ accounts, selectionToken, role, onBack
     setError('');
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080'}/api/auth/select-account`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api'}/auth/select-account`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
