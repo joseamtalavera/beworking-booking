@@ -65,10 +65,10 @@ const AppLayout = ({ children }) => {
       titleKey: 'footer.company',
       links: [
         { labelKey: 'footer.links.about',    soon: true },
-        { labelKey: 'footer.links.careers',  soon: true },
-        { labelKey: 'footer.links.press',    soon: true },
         { labelKey: 'footer.links.contact',  href: '/contact' },
         { labelKey: 'footer.links.faq',      href: '/faq' },
+        { label: 'info@be-working.com',      href: 'mailto:info@be-working.com' },
+        { label: '+34 951 905 967',          href: 'tel:+34951905967' },
       ],
     },
     {
@@ -284,7 +284,7 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
+            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
             gap: { xs: 4, md: 6 },
           }}
         >
@@ -314,11 +314,11 @@ const AppLayout = ({ children }) => {
                       cursor: 'default',
                     }}
                   >
-                    {t(link.labelKey)}
+                    {link.label || t(link.labelKey)}
                   </Typography>
                 ) : (
                   <Link
-                    key={link.labelKey}
+                    key={link.labelKey || link.label}
                     {...linkProps(link.href)}
                     underline="none"
                     sx={{
@@ -331,73 +331,13 @@ const AppLayout = ({ children }) => {
                       '&:hover': { color: 'common.white' },
                     }}
                   >
-                    {t(link.labelKey)}
+                    {link.label || t(link.labelKey)}
                   </Link>
                 )
               )}
             </Box>
           ))}
 
-          {/* Connect column */}
-          <Box>
-            <Typography
-              sx={{
-                fontSize: '0.8125rem',
-                fontWeight: 500,
-                color: 'rgba(255,255,255,0.5)',
-                mb: 2.5,
-                letterSpacing: '0.02em',
-              }}
-            >
-              {t('footer.connect')}
-            </Typography>
-            <Link
-              href="mailto:info@be-working.com"
-              underline="none"
-              sx={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: 400,
-                color: 'rgba(255,255,255,0.8)',
-                mb: 1,
-                '&:hover': { color: 'common.white' },
-              }}
-            >
-              info@be-working.com
-            </Link>
-            <Link
-              href="tel:+34951905967"
-              underline="none"
-              sx={{
-                display: 'block',
-                fontSize: '0.875rem',
-                fontWeight: 400,
-                color: 'rgba(255,255,255,0.8)',
-                mb: 2,
-                '&:hover': { color: 'common.white' },
-              }}
-            >
-              +34 951 905 967
-            </Link>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              {socialLinks.map((social) => (
-                <Link
-                  key={social.label}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={social.label}
-                  sx={{
-                    color: 'rgba(255,255,255,0.6)',
-                    transition: 'color 0.15s ease',
-                    '&:hover': { color: 'common.white' },
-                  }}
-                >
-                  <social.Icon sx={{ fontSize: 20 }} />
-                </Link>
-              ))}
-            </Box>
-          </Box>
         </Box>
 
         <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: 'rgba(255,255,255,0.1)' }} />
@@ -416,9 +356,23 @@ const AppLayout = ({ children }) => {
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
             {t('footer.tagline')}
           </Typography>
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-            {t('footer.location')}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            {socialLinks.map((social) => (
+              <Link
+                key={social.label}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={social.label}
+                sx={{ color: 'rgba(255,255,255,0.5)', '&:hover': { color: 'common.white' } }}
+              >
+                <social.Icon sx={{ fontSize: 18 }} />
+              </Link>
+            ))}
+            <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
+              {t('footer.location')}
+            </Typography>
+          </Box>
         </Box>
       </Box>
 
