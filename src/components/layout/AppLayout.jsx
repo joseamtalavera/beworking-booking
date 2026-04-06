@@ -225,12 +225,12 @@ const AppLayout = ({ children }) => {
               <Link
                 href="tel:+34951905967"
                 underline="none"
-                sx={{ display: { xs: 'none', sm: 'inline-flex' }, alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
+                sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
                   <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                 </svg>
-                +34 951 905 967
+                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>+34 951 905 967</Box>
               </Link>
             )}
             <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }} aria-label="Open menu">
