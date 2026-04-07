@@ -80,11 +80,11 @@ export default function Platform() {
           >
             {t('platform.hero.label')}
           </Typography>
-          <Typography variant="h2" component="h1" sx={{ color: 'text.primary', maxWidth: 700, mx: 'auto', fontSize: { xs: '2rem', md: '3rem' }, fontWeight: 700, lineHeight: 1.15 }}>
+          <Typography component="h1" sx={{ color: 'text.primary', maxWidth: 700, mx: 'auto', fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)', fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em' }}>
             {t('platform.hero.heading')}{' '}
             <Box component="span" sx={{ color: 'primary.main' }}>{t('platform.hero.headingAccent')}</Box>
           </Typography>
-          <Typography component="p" sx={{ color: 'text.secondary', maxWidth: 560, mx: 'auto', mt: 4, fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.6, display: 'block' }}>
+          <Typography component="p" sx={{ color: 'text.secondary', maxWidth: 560, mx: 'auto', mt: 4, fontSize: '1.125rem', lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
             {t('platform.hero.subheading')}
           </Typography>
           <Box sx={{ mt: 4 }}>
@@ -186,10 +186,10 @@ export default function Platform() {
                 >
                   {t(`${tab.i18nPrefix}.tabs.${tab.label || tab.key}`)}
                 </Typography>
-                <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.5rem', md: '2rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+                <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
                   {t(`${tab.i18nPrefix}.features.${tab.key}.heading`)}
                 </Typography>
-                <Typography component="p" sx={{ color: 'text.secondary', mt: 4, fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.6, display: 'block' }}>
+                <Typography component="p" sx={{ color: 'text.secondary', mt: 4, fontSize: '1.125rem', lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
                   {t(`${tab.i18nPrefix}.features.${tab.key}.body`)}
                 </Typography>
               </Box>
@@ -224,7 +224,7 @@ export default function Platform() {
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
                 {t('platform.tabs.overview', { defaultValue: 'Planes' })}
               </Typography>
-              <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+              <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
                 {i18n.language === 'es' ? 'Elige el plan que mejor se adapta a ti' : 'Choose the plan that fits you best'}
               </Typography>
             </Box>
