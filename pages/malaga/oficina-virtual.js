@@ -255,18 +255,20 @@ export default function OficinaVirtualPage() {
                   />
                 </Box>
                 <Box>
-                  <Typography sx={{ fontSize: { xs: '1.5rem', md: '1.75rem' }, fontWeight: 500, color: 'text.primary', mb: 1.5 }}>
+                  <Typography component="h2" sx={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em', color: 'text.primary' }}>
                     {pilar.title}
                   </Typography>
-                  <Typography sx={{ fontSize: '1rem', color: 'primary.main', fontWeight: 500, mb: 2.5, lineHeight: 1.5 }}>
+                  <Typography component="p" sx={{ fontSize: '1.125rem', color: 'text.secondary', mt: 4, lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
                     {pilar.description}
                   </Typography>
+                  <Box sx={{ mt: 3 }}>
                   {pilar.benefits.map((b) => (
                     <Box key={b} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
                       <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
                       <Typography sx={{ fontSize: '0.9375rem', color: 'text.secondary', lineHeight: 1.6 }}>{b}</Typography>
                     </Box>
                   ))}
+                  </Box>
                 </Box>
               </Box>
             );
