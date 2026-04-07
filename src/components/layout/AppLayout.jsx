@@ -143,6 +143,7 @@ const AppLayout = ({ children }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            position: 'relative',
           }}
         >
           {/* Logo */}
@@ -152,8 +153,8 @@ const AppLayout = ({ children }) => {
             </span>
           </Box>
 
-          {/* Center: nav links (desktop only) */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3 }}>
+          {/* Center: nav links (desktop only) — absolutely centered */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
             {navLinks.map((link) => (
               <NextLink key={link.href} href={link.href} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
                 {t(link.labelKey, { defaultValue: link.fallback })}
