@@ -461,7 +461,7 @@ export default function OficinaVirtualPage() {
               maxWidth: 1000, mx: 'auto',
             }}
           >
-            {plans.map((plan, idx) => (
+            {plans.map((plan) => (
               <Box
                 key={plan.name}
                 sx={{
@@ -469,7 +469,7 @@ export default function OficinaVirtualPage() {
                   border: plan.popular ? '2px solid' : '1px solid rgba(0,0,0,0.08)',
                   borderColor: plan.popular ? 'primary.main' : undefined,
                   borderRadius: '16px', p: { xs: 3, md: 4 },
-                  display: 'flex', flexDirection: 'column', position: 'relative',
+                  display: 'flex', flexDirection: 'column', position: 'relative', height: '100%',
                   transition: 'transform 0.2s, box-shadow 0.2s',
                   '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 40px rgba(0,0,0,0.1)' },
                 }}
@@ -481,30 +481,25 @@ export default function OficinaVirtualPage() {
                     borderRadius: '0 0 8px 8px', fontSize: '0.75rem', fontWeight: 600,
                     letterSpacing: '0.04em', textTransform: 'uppercase',
                   }}>
-                    {t('landing.pricing.popular')}
+                    POPULAR
                   </Box>
                 )}
                 <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
                   {plan.name}
                 </Typography>
-                {plan.description && (
-                  <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
-                    {plan.description}
-                  </Typography>
-                )}
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 1 }}>
+                <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
+                  {plan.description}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2.5 }}>
                   <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
                     {plan.price}€
                   </Typography>
                   <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', ml: 0.5 }}>
-                    {t('landing.pricing.perMonth')}
+                    /mes
                   </Typography>
                 </Box>
-                <Typography sx={{ fontSize: '0.8125rem', fontWeight: 600, color: 'primary.main', mb: 2.5 }}>
-                  {t('landing.pricing.trialBadge')}
-                </Typography>
                 <Box sx={{ flex: 1 }}>
-                  {(plan.features || []).map((f) => (
+                  {plan.features.map((f) => (
                     <Box key={f} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
                       <CheckCircleOutlineIcon sx={{ fontSize: 16, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
                       <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', lineHeight: 1.5 }}>{f}</Typography>
@@ -513,13 +508,11 @@ export default function OficinaVirtualPage() {
                 </Box>
                 <Button
                   variant={plan.popular ? 'contained' : 'outlined'}
-                  onClick={() => scrollToForm(plan.key || ['basic', 'pro', 'max'][idx])}
-                  sx={{
-                    borderRadius: '999px', mt: 2, py: 1.2,
-                    fontWeight: 600, fontSize: '0.875rem',
-                  }}
+                  onClick={() => scrollToForm(plan.key)}
+                  fullWidth
+                  sx={{ borderRadius: '999px', mt: 2, py: 1.2, fontWeight: 600, fontSize: '0.875rem' }}
                 >
-                  {t('landing.pricing.choosePlan')}
+                  {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
                 </Button>
               </Box>
             ))}
