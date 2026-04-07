@@ -481,18 +481,6 @@
       "choosePlan": "Choose plan",
       "plans": [
         {
-          "name": "Free",
-          "price": "0",
-          "description": "Start free with your account.",
-          "features": [
-            "BeWorking Platform",
-            "BeWorking space booking",
-            "Management dashboard",
-            "Basic invoicing",
-            "Email support"
-          ]
-        },
-        {
           "name": "Basic",
           "price": "15",
           "popular": true,

@@ -495,18 +495,6 @@
       "choosePlan": "Elegir plan",
       "plans": [
         {
-          "name": "Free",
-          "price": "0",
-          "description": "Empieza gratis con tu cuenta.",
-          "features": [
-            "Plataforma BeWorking",
-            "Reserva de espacios BeWorking",
-            "Panel de gestión",
-            "Facturación básica",
-            "Soporte por email"
-          ]
-        },
-        {
           "name": "Basic",
           "price": "15",
           "popular": true,
