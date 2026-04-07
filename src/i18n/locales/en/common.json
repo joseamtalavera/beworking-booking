@@ -481,16 +481,28 @@
       "choosePlan": "Choose plan",
       "plans": [
         {
+          "name": "Free",
+          "price": "0",
+          "description": "Start free with your account.",
+          "features": [
+            "BeWorking Platform",
+            "BeWorking space booking",
+            "Management dashboard",
+            "Basic invoicing",
+            "Email support"
+          ]
+        },
+        {
           "name": "Basic",
           "price": "15",
           "popular": true,
           "description": "Registered business address.",
           "features": [
+            "Everything in Free",
             "Legal & fiscal address",
             "Mail reception",
             "Digital mailbox",
-            "Full BeWorking Platform",
-            "BeWorking space booking"
+            "Logo at reception"
           ]
         },
         {
@@ -501,20 +513,8 @@
             "Everything in Basic",
             "Call handling",
             "Multi-user (3 users)",
-            "Logo at reception",
-            "Corporate website"
-          ]
-        },
-        {
-          "name": "Max",
-          "price": "90",
-          "description": "Unlimited integrations and automations.",
-          "features": [
-            "Everything in Pro",
             "Dedicated manager",
-            "Priority support",
-            "Integrations",
-            "Automations"
+            "Corporate website"
           ]
         }
       ]

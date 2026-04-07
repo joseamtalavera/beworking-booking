@@ -495,16 +495,28 @@
       "choosePlan": "Elegir plan",
       "plans": [
         {
+          "name": "Free",
+          "price": "0",
+          "description": "Empieza gratis con tu cuenta.",
+          "features": [
+            "Plataforma BeWorking",
+            "Reserva de espacios BeWorking",
+            "Panel de gestión",
+            "Facturación básica",
+            "Soporte por email"
+          ]
+        },
+        {
           "name": "Basic",
           "price": "15",
           "popular": true,
           "description": "Dirección empresarial registrada.",
           "features": [
+            "Todo en Free",
             "Domicilio fiscal y legal",
             "Recepción de correo",
             "Buzón digital",
-            "Plataforma BeWorking completa",
-            "Reserva de espacios BeWorking"
+            "Logo en recepción"
           ]
         },
         {
@@ -515,20 +527,8 @@
             "Todo en Basic",
             "Atención de llamadas",
             "Multi-usuario (3 usuarios)",
-            "Logo en recepción",
-            "Web corporativa"
-          ]
-        },
-        {
-          "name": "Max",
-          "price": "90",
-          "description": "Integraciones y automatizaciones sin límites.",
-          "features": [
-            "Todo en Pro",
             "Gestor dedicado",
-            "Prioridad en soporte",
-            "Integraciones",
-            "Automatizaciones"
+            "Web corporativa"
           ]
         }
       ]
