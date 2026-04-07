@@ -238,33 +238,52 @@ export default function Platform() {
             ].map((plan) => (
               <ScrollReveal key={plan.name} direction="up">
                 <Box sx={{
-                  bgcolor: '#fff', borderRadius: 3, p: 3.5, height: '100%',
-                  border: '2px solid', borderColor: plan.popular ? 'primary.main' : 'divider',
-                  position: 'relative', display: 'flex', flexDirection: 'column',
+                  bgcolor: '#ffffff',
+                  border: plan.popular ? '2px solid' : '1px solid rgba(0,0,0,0.08)',
+                  borderColor: plan.popular ? 'primary.main' : undefined,
+                  borderRadius: '16px', p: { xs: 3, md: 4 },
+                  display: 'flex', flexDirection: 'column', position: 'relative', height: '100%',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 40px rgba(0,0,0,0.1)' },
                 }}>
                   {plan.popular && (
-                    <Chip label="POPULAR" size="small" sx={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', fontWeight: 700, fontSize: '0.7rem', bgcolor: 'primary.main', color: '#fff', borderRadius: '999px', px: 1.5, height: 24 }} />
+                    <Box sx={{
+                      position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
+                      bgcolor: 'primary.main', color: '#fff', px: 2.5, py: 0.5,
+                      borderRadius: '0 0 8px 8px', fontSize: '0.75rem', fontWeight: 600,
+                      letterSpacing: '0.04em', textTransform: 'uppercase',
+                    }}>
+                      POPULAR
+                    </Box>
                   )}
-                  <Typography variant="h6" sx={{ fontWeight: 700 }}>{plan.name}</Typography>
-                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, fontSize: '0.85rem' }}>{plan.description}</Typography>
-                  <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mb: 2 }}>
-                    <Typography sx={{ fontSize: '2.25rem', fontWeight: 800, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
-                    <Typography variant="body2" color="text.secondary">/mes</Typography>
-                  </Stack>
-                  <Stack spacing={1.25} sx={{ flex: 1, mb: 2.5 }}>
+                  <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
+                    {plan.name}
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
+                    {plan.description}
+                  </Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2.5 }}>
+                    <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
+                      {plan.price}€
+                    </Typography>
+                    <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', ml: 0.5 }}>
+                      /mes
+                    </Typography>
+                  </Box>
+                  <Box sx={{ flex: 1 }}>
                     {plan.features.map((f) => (
-                      <Stack key={f} direction="row" spacing={1} alignItems="flex-start">
-                        <CheckCircleOutlinedIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.2 }} />
-                        <Typography variant="body2" sx={{ lineHeight: 1.5 }}>{f}</Typography>
-                      </Stack>
+                      <Box key={f} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
+                        <CheckCircleOutlinedIcon sx={{ fontSize: 16, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
+                        <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', lineHeight: 1.5 }}>{f}</Typography>
+                      </Box>
                     ))}
-                  </Stack>
+                  </Box>
                   <Button
                     variant={plan.popular ? 'contained' : 'outlined'}
-                    fullWidth
                     component={NextLink}
                     href={plan.href}
-                    sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
+                    fullWidth
+                    sx={{ borderRadius: '999px', mt: 2, py: 1.2, fontWeight: 600, fontSize: '0.875rem' }}
                   >
                     {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
                   </Button>
@@ -273,7 +292,7 @@ export default function Platform() {
             ))}
           </Box>
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
+          <Typography sx={{ textAlign: 'center', color: 'text.secondary', mt: 4, fontSize: '0.8125rem' }}>
             {i18n.language === 'es' ? 'Todos los precios + IVA. Sin permanencia.' : 'All prices + VAT. No commitment.'}
           </Typography>
         </Box>

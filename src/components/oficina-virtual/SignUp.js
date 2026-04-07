@@ -32,7 +32,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 const DEFAULT_PLANS = {
   basic: { name: 'Basic', price: 15, priceCents: 1500 },
   pro: { name: 'Pro', price: 25, priceCents: 2500 },
-  max: { name: 'Max', price: 90, priceCents: 9000 },
 };
 
 const LOCATION_KEYS = ['malaga', 'sevilla'];
@@ -101,14 +100,8 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
   );
 }
 
-export default function SignUp({ defaultPlan = 'basic', defaultLocation = '', apiPlans = null }) {
-  // Build PLANS map from API data or fall back to defaults
-  const PLANS = apiPlans
-    ? apiPlans.reduce((acc, p) => {
-        acc[p.key] = { name: p.name, price: Number(p.price), priceCents: Math.round(Number(p.price) * 100) };
-        return acc;
-      }, {})
-    : DEFAULT_PLANS;
+export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) {
+  const PLANS = DEFAULT_PLANS;
   const { t } = useTranslation();
   const router = useRouter();
   const { plan: planParam } = router.query;

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { Box, Typography, Button, Dialog, IconButton } from '@mui/material';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
@@ -15,8 +15,6 @@ import StructuredData from '@/components/oficina-virtual/StructuredData';
 import orgData from '@/components/oficina-virtual/structuredData/orgData';
 import SignUp from '@/components/oficina-virtual/SignUp';
 
-const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
 const BENEFIT_ICONS = [AccountBalanceIcon, MailOutlineIcon, MeetingRoomIcon, DashboardOutlinedIcon];
 
 const PILARS = [
@@ -85,31 +83,19 @@ export default function OficinaVirtualPage() {
   const locationKey = 'malaga';
   const { t, i18n } = useTranslation();
   const formRef = useRef(null);
-  const [apiPlans, setApiPlans] = useState(null);
   const [chosenPlan, setChosenPlan] = useState('basic');
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [modalImageIndex, setModalImageIndex] = useState(null);
   const [galleryDialogOpen, setGalleryDialogOpen] = useState(false);
   const imagesPerPage = 4;
 
-  useEffect(() => {
-    fetch(`${API_URL}/public/plans`)
-      .then((r) => r.ok ? r.json() : null)
-      .then((data) => { if (data) setApiPlans(data); })
-      .catch(() => {});
-  }, []);
-
   const benefits = t('landing.benefits.items', { returnObjects: true }) || [];
-  const i18nPlans = t('landing.pricing.plans', { returnObjects: true }) || [];
   const stats = t('landing.trust.stats', { returnObjects: true }) || [];
 
-  // Merge API prices into i18n plan data (API is source of truth for price/popular)
-  const plans = i18nPlans.map((p, idx) => {
-    if (!apiPlans) return p;
-    const match = apiPlans.find((a) => a.name === p.name || a.key === (p.key || ['basic', 'pro', 'max'][idx]));
-    if (!match) return p;
-    return { ...p, price: match.price, popular: match.popular, key: match.key, features: match.features || p.features };
-  });
+  const plans = [
+    { name: 'Basic', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección empresarial registrada.' : 'Registered business address.', features: i18n.language === 'es' ? ['Todo en Free', 'Domicilio fiscal y legal', 'Recepción de correo', 'Buzón digital', 'Logo en recepción'] : ['Everything in Free', 'Legal & fiscal address', 'Mail reception', 'Digital mailbox', 'Logo at reception'] },
+    { name: 'Pro', key: 'pro', price: '25', description: i18n.language === 'es' ? 'Todo en Basic más Web personalizada.' : 'Everything in Basic plus custom website.', features: i18n.language === 'es' ? ['Todo en Basic', 'Atención de llamadas', 'Multi-usuario (3 usuarios)', 'Gestor dedicado', 'Web corporativa'] : ['Everything in Basic', 'Call handling', 'Multi-user (3 users)', 'Dedicated manager', 'Corporate website'] },
+  ];
   const bullets = t('landing.hero.bullets', { returnObjects: true }) || [];
 
   const scrollToForm = (planKey) => {
@@ -210,7 +196,7 @@ export default function OficinaVirtualPage() {
 
           {/* Right — registration form */}
           <Box ref={formRef}>
-            <SignUp defaultPlan={chosenPlan} defaultLocation={locationKey} apiPlans={apiPlans} />
+            <SignUp defaultPlan={chosenPlan} defaultLocation={locationKey} />
           </Box>
         </Box>
       </Box>
@@ -472,7 +458,7 @@ export default function OficinaVirtualPage() {
               display: 'grid',
               gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
               gap: 3, mt: 8, alignItems: 'stretch',
-              maxWidth: 700, mx: 'auto',
+              maxWidth: 1000, mx: 'auto',
             }}
           >
             {plans.map((plan, idx) => (
@@ -507,7 +493,7 @@ export default function OficinaVirtualPage() {
                   </Typography>
                 )}
                 <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 1 }}>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'text.primary', lineHeight: 1 }}>
+                  <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
                     {plan.price}€
                   </Typography>
                   <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', ml: 0.5 }}>
@@ -539,7 +525,7 @@ export default function OficinaVirtualPage() {
             ))}
           </Box>
 
-          <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.8125rem', color: 'text.secondary', maxWidth: 700, mx: 'auto', lineHeight: 1.6 }}>
+          <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.8125rem', color: 'text.secondary', maxWidth: 1000, mx: 'auto', lineHeight: 1.6 }}>
             {t('landing.pricing.vatNote')}
           </Typography>
           <Typography sx={{ textAlign: 'center', mt: 1.5, fontSize: '0.875rem', fontWeight: 600, color: 'primary.main' }}>
