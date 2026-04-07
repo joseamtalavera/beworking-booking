@@ -14,7 +14,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'be-spaces.com',
+        hostname: 'be-working.com',
       },
       {
         protocol: 'http',

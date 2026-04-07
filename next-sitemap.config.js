@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: 'https://be-spaces.com',
+  siteUrl: 'https://be-working.com',
   generateRobotsTxt: true,
   outDir: './public',
   exclude: [
