@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Box, Typography, Button, Dialog, IconButton } from '@mui/material';
+import { Box, Typography, Button, Dialog, IconButton, Stack, Chip } from '@mui/material';
 import Image from 'next/image';
 import { useTranslation } from 'react-i18next';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
@@ -431,86 +431,50 @@ export default function OficinaVirtualPage() {
       </Box>
 
       {/* ─── PRICING ─── */}
-      <Box sx={{ bgcolor: '#ffffff', py: { xs: '80px', md: '96px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-          <Typography
-            sx={{
-              fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-              letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2, textAlign: 'center',
-            }}
-          >
-            {t('landing.pricing.label')}
-          </Typography>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12,
-              letterSpacing: '-0.03em', color: 'text.primary', textAlign: 'center',
-              maxWidth: 600, mx: 'auto',
-            }}
-          >
-            {t('landing.pricing.title')}
-            <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.pricing.titleAccent')}</Box>
-          </Typography>
+      <Box sx={{ bgcolor: '#ffffff', py: { xs: '80px', md: '112px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+        <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
+          <Box sx={{ textAlign: 'center', mb: 8 }}>
+            <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
+              {t('landing.pricing.label')}
+            </Typography>
+            <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+              {t('landing.pricing.title')}
+              <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.pricing.titleAccent')}</Box>
+            </Typography>
+          </Box>
 
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-              gap: 3, mt: 8, alignItems: 'stretch',
-              maxWidth: 1000, mx: 'auto',
-            }}
-          >
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, alignItems: 'stretch', maxWidth: 700, mx: 'auto' }}>
             {plans.map((plan) => (
               <Box
                 key={plan.name}
                 sx={{
-                  bgcolor: '#ffffff',
-                  border: plan.popular ? '2px solid' : '1px solid rgba(0,0,0,0.08)',
-                  borderColor: plan.popular ? 'primary.main' : undefined,
-                  borderRadius: '16px', p: { xs: 3, md: 4 },
-                  display: 'flex', flexDirection: 'column', position: 'relative', height: '100%',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  '&:hover': { transform: 'translateY(-4px)', boxShadow: '0 12px 40px rgba(0,0,0,0.1)' },
+                  bgcolor: '#fff', borderRadius: 3, p: 3.5, height: '100%',
+                  border: '2px solid', borderColor: plan.popular ? 'primary.main' : 'divider',
+                  position: 'relative', display: 'flex', flexDirection: 'column',
                 }}
               >
                 {plan.popular && (
-                  <Box sx={{
-                    position: 'absolute', top: -1, left: '50%', transform: 'translateX(-50%)',
-                    bgcolor: 'primary.main', color: '#fff', px: 2.5, py: 0.5,
-                    borderRadius: '0 0 8px 8px', fontSize: '0.75rem', fontWeight: 600,
-                    letterSpacing: '0.04em', textTransform: 'uppercase',
-                  }}>
-                    POPULAR
-                  </Box>
+                  <Chip label="POPULAR" size="small" sx={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', fontWeight: 700, fontSize: '0.7rem', bgcolor: 'primary.main', color: '#fff', borderRadius: '999px', px: 1.5, height: 24 }} />
                 )}
-                <Typography sx={{ fontSize: '1.125rem', fontWeight: 600, color: 'text.primary', mb: 0.5 }}>
-                  {plan.name}
-                </Typography>
-                <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mb: 1.5, lineHeight: 1.5 }}>
-                  {plan.description}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'baseline', mb: 2.5 }}>
-                  <Typography sx={{ fontSize: '2.5rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>
-                    {plan.price}€
-                  </Typography>
-                  <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', ml: 0.5 }}>
-                    /mes
-                  </Typography>
-                </Box>
-                <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>{plan.name}</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, fontSize: '0.85rem' }}>{plan.description}</Typography>
+                <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mb: 2 }}>
+                  <Typography sx={{ fontSize: '2.25rem', fontWeight: 800, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
+                  <Typography variant="body2" color="text.secondary">/mes</Typography>
+                </Stack>
+                <Stack spacing={1.25} sx={{ flex: 1, mb: 2.5 }}>
                   {plan.features.map((f) => (
-                    <Box key={f} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
-                      <CheckCircleOutlineIcon sx={{ fontSize: 16, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
-                      <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', lineHeight: 1.5 }}>{f}</Typography>
-                    </Box>
+                    <Stack key={f} direction="row" spacing={1} alignItems="flex-start">
+                      <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.2 }} />
+                      <Typography variant="body2" sx={{ lineHeight: 1.5 }}>{f}</Typography>
+                    </Stack>
                   ))}
-                </Box>
+                </Stack>
                 <Button
                   variant={plan.popular ? 'contained' : 'outlined'}
-                  onClick={() => scrollToForm(plan.key)}
                   fullWidth
-                  sx={{ borderRadius: '999px', mt: 2, py: 1.2, fontWeight: 600, fontSize: '0.875rem' }}
+                  onClick={() => scrollToForm(plan.key)}
+                  sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
                 >
                   {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
                 </Button>
@@ -518,10 +482,10 @@ export default function OficinaVirtualPage() {
             ))}
           </Box>
 
-          <Typography sx={{ textAlign: 'center', mt: 4, fontSize: '0.8125rem', color: 'text.secondary', maxWidth: 1000, mx: 'auto', lineHeight: 1.6 }}>
+          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
             {t('landing.pricing.vatNote')}
           </Typography>
-          <Typography sx={{ textAlign: 'center', mt: 1.5, fontSize: '0.875rem', fontWeight: 600, color: 'primary.main' }}>
+          <Typography variant="body2" sx={{ textAlign: 'center', mt: 1.5, fontWeight: 600, color: 'primary.main' }}>
             {t('landing.pricing.trialNote')}
           </Typography>
         </Box>
