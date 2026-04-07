@@ -222,10 +222,11 @@ export default function Platform() {
           <ScrollReveal direction="up">
             <Box sx={{ textAlign: 'center', mb: 8 }}>
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
-                {t('platform.tabs.overview', { defaultValue: 'Planes' })}
+                {i18n.language === 'es' ? 'PRECIOS' : 'PRICING'}
               </Typography>
               <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
-                {i18n.language === 'es' ? 'Elige el plan que mejor se adapta a ti' : 'Choose the plan that fits you best'}
+                {i18n.language === 'es' ? 'Elige el plan que mejor ' : 'Choose the plan that '}
+                <Box component="span" sx={{ color: 'primary.main' }}>{i18n.language === 'es' ? 'se adapta a ti' : 'fits you best'}</Box>
               </Typography>
             </Box>
           </ScrollReveal>
