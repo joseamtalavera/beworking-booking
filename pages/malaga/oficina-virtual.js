@@ -483,10 +483,12 @@ export default function OficinaVirtualPage() {
           </Box>
 
           <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
-            {t('landing.pricing.vatNote')}
+            {i18n.language === 'es'
+              ? 'Todos los planes incluyen la Plataforma BeWorking completa: panel de gestión, facturación y todas las herramientas. Cambia de plan en cualquier momento.'
+              : 'All plans include the full BeWorking Platform: management dashboard, invoicing and all tools. Change your plan at any time.'}
           </Typography>
           <Typography variant="body2" sx={{ textAlign: 'center', mt: 1.5, fontWeight: 600, color: 'primary.main' }}>
-            {t('landing.pricing.trialNote')}
+            {i18n.language === 'es' ? 'Todos los precios + IVA. Sin permanencia.' : 'All prices + VAT. No commitment.'}
           </Typography>
         </Box>
       </Box>
