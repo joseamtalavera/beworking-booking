@@ -437,7 +437,7 @@ export default function OficinaVirtualPage() {
             <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
               {t('landing.pricing.label')}
             </Typography>
-            <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+            <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
               {t('landing.pricing.title')}
               <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.pricing.titleAccent')}</Box>
             </Typography>

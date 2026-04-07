@@ -224,7 +224,7 @@ export default function Platform() {
               <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
                 {t('platform.tabs.overview', { defaultValue: 'Planes' })}
               </Typography>
-              <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+              <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
                 {i18n.language === 'es' ? 'Elige el plan que mejor se adapta a ti' : 'Choose the plan that fits you best'}
               </Typography>
             </Box>
