@@ -470,8 +470,9 @@ export default function OficinaVirtualPage() {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+              gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
               gap: 3, mt: 8, alignItems: 'stretch',
+              maxWidth: 700, mx: 'auto',
             }}
           >
             {plans.map((plan, idx) => (

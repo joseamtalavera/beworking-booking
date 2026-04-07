@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
-import { Box, Typography, Button, Tabs, Tab, Chip } from '@mui/material';
+import { Box, Typography, Button, Tabs, Tab, Chip, Stack } from '@mui/material';
+import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
@@ -21,7 +22,7 @@ const TABS = [
 const NAV_HEIGHT = 56;
 
 export default function Platform() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
   const sectionRefs = useRef([]);
 
@@ -214,6 +215,69 @@ export default function Platform() {
           </Box>
         </Box>
       ))}
+
+      {/* Pricing Section */}
+      <Box sx={{ bgcolor: '#fafafa', py: { xs: '80px', md: '112px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+        <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
+          <ScrollReveal direction="up">
+            <Box sx={{ textAlign: 'center', mb: 8 }}>
+              <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
+                {t('platform.tabs.overview', { defaultValue: 'Planes' })}
+              </Typography>
+              <Typography variant="h3" component="h2" sx={{ color: 'text.primary', fontSize: { xs: '1.75rem', md: '2.25rem' }, fontWeight: 700, lineHeight: 1.2 }}>
+                {i18n.language === 'es' ? 'Elige el plan que mejor se adapta a ti' : 'Choose the plan that fits you best'}
+              </Typography>
+            </Box>
+          </ScrollReveal>
+
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' }, gap: 3, alignItems: 'stretch' }}>
+            {[
+              { name: 'Free', price: '0', description: i18n.language === 'es' ? 'Empieza gratis con tu cuenta.' : 'Start free with your account.', features: i18n.language === 'es' ? ['Plataforma BeWorking', 'Reserva de espacios BeWorking', 'Panel de gestión', 'Facturación básica', 'Soporte por email'] : ['BeWorking Platform', 'BeWorking space booking', 'Management dashboard', 'Basic invoicing', 'Email support'], href: '/register' },
+              { name: 'Basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección empresarial registrada.' : 'Registered business address.', features: i18n.language === 'es' ? ['Todo en Free', 'Domicilio fiscal y legal', 'Recepción de correo', 'Buzón digital', 'Logo en recepción'] : ['Everything in Free', 'Legal & fiscal address', 'Mail reception', 'Digital mailbox', 'Logo at reception'], href: '/malaga/oficina-virtual' },
+              { name: 'Pro', price: '25', description: i18n.language === 'es' ? 'Todo en Basic más Web personalizada.' : 'Everything in Basic plus custom website.', features: i18n.language === 'es' ? ['Todo en Basic', 'Atención de llamadas', 'Multi-usuario (3 usuarios)', 'Gestor dedicado', 'Web corporativa'] : ['Everything in Basic', 'Call handling', 'Multi-user (3 users)', 'Dedicated manager', 'Corporate website'], href: '/malaga/oficina-virtual' },
+            ].map((plan) => (
+              <ScrollReveal key={plan.name} direction="up">
+                <Box sx={{
+                  bgcolor: '#fff', borderRadius: 3, p: 3.5, height: '100%',
+                  border: '2px solid', borderColor: plan.popular ? 'primary.main' : 'divider',
+                  position: 'relative', display: 'flex', flexDirection: 'column',
+                }}>
+                  {plan.popular && (
+                    <Chip label="POPULAR" size="small" sx={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', fontWeight: 700, fontSize: '0.7rem', bgcolor: 'primary.main', color: '#fff', borderRadius: '999px', px: 1.5, height: 24 }} />
+                  )}
+                  <Typography variant="h6" sx={{ fontWeight: 700 }}>{plan.name}</Typography>
+                  <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, fontSize: '0.85rem' }}>{plan.description}</Typography>
+                  <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mb: 2 }}>
+                    <Typography sx={{ fontSize: '2.25rem', fontWeight: 800, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
+                    <Typography variant="body2" color="text.secondary">/mes</Typography>
+                  </Stack>
+                  <Stack spacing={1.25} sx={{ flex: 1, mb: 2.5 }}>
+                    {plan.features.map((f) => (
+                      <Stack key={f} direction="row" spacing={1} alignItems="flex-start">
+                        <CheckCircleOutlinedIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.2 }} />
+                        <Typography variant="body2" sx={{ lineHeight: 1.5 }}>{f}</Typography>
+                      </Stack>
+                    ))}
+                  </Stack>
+                  <Button
+                    variant={plan.popular ? 'contained' : 'outlined'}
+                    fullWidth
+                    component={NextLink}
+                    href={plan.href}
+                    sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
+                  >
+                    {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
+                  </Button>
+                </Box>
+              </ScrollReveal>
+            ))}
+          </Box>
+
+          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
+            {i18n.language === 'es' ? 'Todos los precios + IVA. Sin permanencia.' : 'All prices + VAT. No commitment.'}
+          </Typography>
+        </Box>
+      </Box>
 
     </>
   );
