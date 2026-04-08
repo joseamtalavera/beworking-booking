@@ -525,15 +525,15 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (typeof window.gtag === 'function') {
+    if (typeof window.gtag === 'function' && transactionId) {
       window.gtag('event', 'conversion', {
         send_to: 'AW-18059296882/sCQbCN_vt5QcEPKArKND',
         value: valueCents ? valueCents / 100 : 0,
         currency: 'EUR',
-        transaction_id: transactionId || '',
+        transaction_id: transactionId,
       });
     }
-  }, []);
+  }, [transactionId, valueCents]);
 
   return (
     <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
