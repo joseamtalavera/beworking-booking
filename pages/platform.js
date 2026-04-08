@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
-import { Box, Typography, Button, Tabs, Tab, Chip, Stack } from '@mui/material';
+import { Box, Typography, Button, Tabs, Tab, Chip, Stack, Dialog, DialogContent, IconButton } from '@mui/material';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import SignUp from '@/components/oficina-virtual/SignUp';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
@@ -24,6 +26,8 @@ const NAV_HEIGHT = 56;
 export default function Platform() {
   const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [signupPlan, setSignupPlan] = useState('basic');
   const sectionRefs = useRef([]);
 
   const handleTabClick = (_, index) => {
@@ -260,15 +264,26 @@ export default function Platform() {
                       </Stack>
                     ))}
                   </Stack>
-                  <Button
-                    variant={plan.popular ? 'contained' : 'outlined'}
-                    fullWidth
-                    component={NextLink}
-                    href={plan.href}
-                    sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
-                  >
-                    {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
-                  </Button>
+                  {plan.href === '/register' ? (
+                    <Button
+                      variant="outlined"
+                      fullWidth
+                      component={NextLink}
+                      href="/register"
+                      sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
+                    >
+                      {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant={plan.popular ? 'contained' : 'outlined'}
+                      fullWidth
+                      onClick={() => { setSignupPlan(plan.name.toLowerCase()); setSignupOpen(true); }}
+                      sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
+                    >
+                      {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
+                    </Button>
+                  )}
                 </Box>
               </ScrollReveal>
             ))}
@@ -285,6 +300,23 @@ export default function Platform() {
         </Box>
       </Box>
 
+      {/* SignUp modal for Basic/Pro plans */}
+      <Dialog
+        open={signupOpen}
+        onClose={() => setSignupOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: 3, maxHeight: '90vh' } }}
+      >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1, pb: 0 }}>
+          <IconButton onClick={() => setSignupOpen(false)} size="small">
+            <CloseRoundedIcon />
+          </IconButton>
+        </Box>
+        <DialogContent sx={{ pt: 0 }}>
+          <SignUp defaultPlan={signupPlan} defaultLocation="malaga" />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
