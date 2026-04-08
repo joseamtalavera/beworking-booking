@@ -525,13 +525,14 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
   const { t } = useTranslation();
 
   useEffect(() => {
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      event: 'purchase',
-      value: valueCents ? valueCents / 100 : 0,
-      currency: 'EUR',
-      transaction_id: transactionId || '',
-    });
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-18059296882/sCQbCN_vt5QcEPKArKND',
+        value: valueCents ? valueCents / 100 : 0,
+        currency: 'EUR',
+        transaction_id: transactionId || '',
+      });
+    }
   }, []);
 
   return (
