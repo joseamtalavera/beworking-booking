@@ -114,8 +114,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [selectedPlan, setSelectedPlan] = useState(defaultPlan);
   const [selectedLocation, setSelectedLocation] = useState(defaultLocation);
   const [clientSecret, setClientSecret] = useState('');
-  const [stripeCustomerId, setStripeCustomerId] = useState('');
-  const [setupIntentId, setSetupIntentId] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [apiError, setApiError] = useState('');
@@ -183,20 +181,27 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setApiError('');
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/auth/setup-intent`, {
+      // Register user and create Stripe subscription — returns clientSecret for payment
+      const res = await fetch(`${API_URL}/auth/register-with-trial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: form.email, name: form.name }),
+        body: JSON.stringify({
+          name: form.name, email: form.email, password: form.password,
+          phone: form.phone, company: form.company, taxId: form.taxId,
+          plan: selectedPlan, location: selectedLocation,
+        }),
       });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.message || 'Failed to initialize payment');
-      }
       const data = await res.json();
-      setClientSecret(data.clientSecret);
-      setStripeCustomerId(data.customerId);
-      setSetupIntentId(data.setupIntentId);
-      setStep(3);
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to create account');
+      }
+      if (data.clientSecret) {
+        setClientSecret(data.clientSecret);
+        setStep(3);
+      } else {
+        // No payment needed (free plan)
+        setSuccess(true);
+      }
     } catch (err) {
       setApiError(err.message);
     } finally {
@@ -212,36 +217,16 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setLoading(true);
     setApiError('');
     try {
-      const checkRes = await fetch(`${API_URL}/auth/check-email?email=${encodeURIComponent(form.email)}`);
-      const checkData = await checkRes.json();
-      if (!checkData.available) {
-        setApiError(t('register.errors.emailTaken'));
-        setLoading(false);
-        return;
-      }
-
-      const { error: stripeError, setupIntent } = await stripe.confirmSetup({
+      const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
         elements,
         confirmParams: { return_url: window.location.href },
         redirect: 'if_required',
       });
       if (stripeError) { setApiError(stripeError.message); setLoading(false); return; }
-
-      const res = await fetch(`${API_URL}/auth/register-with-trial`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name, email: form.email, password: form.password,
-          phone: form.phone, company: form.company, taxId: form.taxId,
-          plan: selectedPlan, location: selectedLocation,
-          setupIntentId: setupIntent.id, stripeCustomerId,
-        }),
-      });
-      const result = await res.json();
-      if (res.ok) {
+      if (paymentIntent && paymentIntent.status === 'succeeded') {
         setSuccess(true);
       } else {
-        setApiError(result.message || 'Error creating account.');
+        setApiError(i18n.language === 'es' ? 'El pago no se completó. Inténtalo de nuevo.' : 'Payment not completed. Please try again.');
       }
     } catch {
       setApiError('Network error.');
