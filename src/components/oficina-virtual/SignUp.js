@@ -67,7 +67,7 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
     <Stack spacing={2.5}>
       <Alert severity="info" sx={{ borderRadius: 2 }}>
         <Typography sx={{ fontWeight: 600 }}>
-          Plan {plan.name} — {t('register.trialBanner', { price: plan.price })}
+          Plan {plan.name} — {plan.price}€/mes + IVA = {(plan.price * 1.21).toFixed(2)}€/mes
         </Typography>
       </Alert>
 
