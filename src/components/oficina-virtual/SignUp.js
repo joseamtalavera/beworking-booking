@@ -23,7 +23,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
 import { styled } from '@mui/material/styles';
-import TurnstileWidget from './TurnstileWidget';
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
@@ -121,11 +120,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [success, setSuccess] = useState(false);
   const [apiError, setApiError] = useState('');
   const [emailTaken, setEmailTaken] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileReset, setTurnstileReset] = useState(0);
   const [termsAccepted, setTermsAccepted] = useState(false);
-
-  const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const stepLabels = t('register.steps', { returnObjects: true }) || ['Account', 'Company', 'Address', 'Payment'];
 
   useEffect(() => {
@@ -233,7 +228,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
           name: form.name, email: form.email, password: form.password,
           phone: form.phone, company: form.company, taxId: form.taxId,
           plan: selectedPlan, location: selectedLocation,
-          setupIntentId: setupIntent.id, stripeCustomerId, turnstileToken,
+          setupIntentId: setupIntent.id, stripeCustomerId,
         }),
       });
       const result = await res.json();
@@ -241,10 +236,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         setSuccess(true);
       } else {
         setApiError(result.message || 'Error creating account.');
-        if ((result?.message || '').toLowerCase().includes('turnstile')) {
-          setTurnstileToken('');
-          setTurnstileReset((prev) => prev + 1);
-        }
       }
     } catch {
       setApiError('Network error.');
@@ -412,23 +403,11 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
             <Typography color="error" sx={{ fontSize: '0.875rem', textAlign: 'center' }}>{errors.location}</Typography>
           )}
 
-          {siteKey && (
-            <Box sx={{ my: 1 }}>
-              <TurnstileWidget
-                siteKey={siteKey}
-                onSuccess={(token) => setTurnstileToken(token)}
-                onError={() => setTurnstileToken('')}
-                onExpire={() => setTurnstileToken('')}
-                resetSignal={turnstileReset}
-              />
-            </Box>
-          )}
-
           <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
             <Button variant="outlined" onClick={() => setStep(1)} sx={{ borderRadius: '999px', px: 3 }}>
               {t('register.back')}
             </Button>
-            <Button type="submit" variant="contained" disabled={loading || (!!siteKey && !turnstileToken)} sx={{ borderRadius: '999px', px: 4 }}>
+            <Button type="submit" variant="contained" disabled={loading} sx={{ borderRadius: '999px', px: 4 }}>
               {loading ? <CircularProgress size={22} color="inherit" /> : t('register.next')}
             </Button>
           </Box>
