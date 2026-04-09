@@ -181,7 +181,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setApiError('');
     setLoading(true);
     try {
-      // Register user and create Stripe subscription — returns clientSecret for payment
+      // Register user + create Stripe subscription (incomplete until payment confirmed)
       const res = await fetch(`${API_URL}/auth/register-with-trial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -197,10 +197,9 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       }
       if (data.clientSecret) {
         setClientSecret(data.clientSecret);
-        setStep(3);
+        setStep(3); // Show payment form with real amount
       } else {
-        // No payment needed (free plan)
-        setSuccess(true);
+        setSuccess(true); // Free plan, no payment needed
       }
     } catch (err) {
       setApiError(err.message);
