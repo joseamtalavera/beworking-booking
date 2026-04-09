@@ -101,7 +101,7 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
 
 export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) {
   const PLANS = DEFAULT_PLANS;
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { plan: planParam } = router.query;
 
@@ -156,7 +156,13 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     const errs = {};
     if (!form.name.trim()) errs.name = t('register.errors.nameRequired');
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) errs.email = t('register.errors.emailRequired');
-    if (!form.password || form.password.length < 8) errs.password = t('register.errors.passwordMin');
+    if (!form.password || form.password.length < 8) {
+      errs.password = t('register.errors.passwordMin');
+    } else if (!/[a-z]/.test(form.password) || !/[A-Z]/.test(form.password) || !/\d/.test(form.password) || !/[^a-zA-Z0-9]/.test(form.password)) {
+      errs.password = i18n.language === 'es'
+        ? 'La contraseña debe incluir mayúscula, minúscula, número y carácter especial'
+        : 'Password must include uppercase, lowercase, number and special character';
+    }
     if (form.password !== form.confirmPassword) errs.confirmPassword = t('register.errors.passwordMatch');
     if (Object.keys(errs).length > 0) { setErrors(errs); return false; }
     const emailOk = await checkEmail(form.email);
@@ -298,7 +304,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
             </FormControl>
             <FormControl>
               <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.password')}</FormLabel>
-              <TextField required fullWidth type="password" placeholder="••••••••" value={form.password} onChange={handleChange('password')} error={!!errors.password} helperText={errors.password || ''} />
+              <TextField required fullWidth type="password" placeholder="••••••••" value={form.password} onChange={handleChange('password')} error={!!errors.password} helperText={errors.password || (i18n.language === 'es' ? 'Mín. 8 caracteres: mayúscula, minúscula, número y especial (!@#...)' : 'Min. 8 chars: uppercase, lowercase, number & special (!@#...)')} />
             </FormControl>
             <FormControl>
               <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.confirmPassword')}</FormLabel>
