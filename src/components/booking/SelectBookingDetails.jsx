@@ -12,11 +12,11 @@ import {
   Paper,
   Stack,
   Switch,
-  TextField,
   ToggleButton,
   ToggleButtonGroup,
   Typography
 } from '@mui/material';
+import TextField from '../common/ClearableTextField';
 import EventRepeatRoundedIcon from '@mui/icons-material/EventRepeatRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';

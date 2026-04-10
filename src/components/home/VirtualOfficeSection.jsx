@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import {
   Box, Button, Card, CardContent, MenuItem,
-  Stack, Step, StepLabel, Stepper, TextField, Typography,
+  Stack, Step, StepLabel, Stepper, Typography,
 } from '@mui/material';
+import TextField from '../common/ClearableTextField';
 import GavelIcon from '@mui/icons-material/Gavel';
 import ScannerIcon from '@mui/icons-material/Scanner';
 import LockIcon from '@mui/icons-material/Lock';

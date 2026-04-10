@@ -9,9 +9,9 @@ import {
   Divider,
   Paper,
   Stack,
-  TextField,
   Typography
 } from '@mui/material';
+import TextField from '../common/ClearableTextField';
 import { alpha } from '@mui/material/styles';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';

@@ -22,9 +22,9 @@ import {
   Switch,
   Tab,
   Tabs,
-  TextField,
   Typography
 } from '@mui/material';
+import TextField from '../common/ClearableTextField';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LocationOnRoundedIcon from '@mui/icons-material/LocationOnRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';

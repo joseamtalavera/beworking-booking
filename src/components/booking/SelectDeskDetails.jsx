@@ -8,9 +8,9 @@ import {
   CircularProgress,
   Paper,
   Stack,
-  TextField,
   Typography
 } from '@mui/material';
+import TextField from '../common/ClearableTextField';
 import { alpha } from '@mui/material/styles';
 import { useQuery } from '@tanstack/react-query';
 import { useBookingFlow } from '../../store/useBookingFlow';
