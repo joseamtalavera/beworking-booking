@@ -1,0 +1,84 @@
+name: Build, Push & Deploy (staging)
+
+on:
+  push:
+    branches: [staging]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: eu-north-1
+  ECR_REPO: beworking-booking
+  ECS_CLUSTER: beworking-cluster
+  ECS_SERVICE: beworking-staging-booking-service
+  CONTAINER_NAME: beworking-staging-booking
+  TASK_DEF_FAMILY: beworking-staging-booking-task
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Fetch staging Stripe publishable key
+        id: stripe
+        run: |
+          PK=$(aws secretsmanager get-secret-value \
+            --secret-id staging/beworking/stripe-publishable-key \
+            --query SecretString --output text)
+          echo "::add-mask::$PK"
+          echo "pk=$PK" >> "$GITHUB_OUTPUT"
+
+      - name: Login to ECR
+        id: ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:staging
+          build-args: |
+            NEXT_PUBLIC_API_BASE_URL=https://app-staging.be-working.com/api
+            NEXT_PUBLIC_FRONTEND_URL=https://staging.be-working.com
+            NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ steps.stripe.outputs.pk }}
+            NEXT_PUBLIC_PAYMENTS_BASE_URL=https://stripe-staging.be-working.com
+            NEXT_PUBLIC_STRIPE_TENANT=beworking
+            NEXT_PUBLIC_LOGIN_URL=https://staging.be-working.com/login
+            NEXT_PUBLIC_ADMIN_DASHBOARD_URL=https://app-staging.be-working.com/admin
+            NEXT_PUBLIC_USER_DASHBOARD_URL=https://app-staging.be-working.com/user
+            NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAACLWFtT3btn8gjYe
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition ${{ env.TASK_DEF_FAMILY }} \
+            --query taskDefinition \
+            --output json > task-def.json
+
+      - name: Update image in task definition
+        id: render
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-def.json
+          container-name: ${{ env.CONTAINER_NAME }}
+          image: ${{ steps.ecr.outputs.registry }}/${{ env.ECR_REPO }}:staging
+
+      - name: Deploy to ECS
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+          task-definition: ${{ steps.render.outputs.task-definition }}
+          service: ${{ env.ECS_SERVICE }}
+          cluster: ${{ env.ECS_CLUSTER }}
+          wait-for-service-stability: true
