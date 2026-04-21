@@ -58,7 +58,7 @@ jobs:
             NEXT_PUBLIC_LOGIN_URL=https://staging.be-working.com/login
             NEXT_PUBLIC_ADMIN_DASHBOARD_URL=https://app-staging.be-working.com/admin
             NEXT_PUBLIC_USER_DASHBOARD_URL=https://app-staging.be-working.com/user
-            NEXT_PUBLIC_TURNSTILE_SITE_KEY=0x4AAAAAACLWFtT3btn8gjYe
+            NEXT_PUBLIC_TURNSTILE_SITE_KEY=1x00000000000000000000AA
 
       - name: Download current task definition
         run: |
