@@ -44,7 +44,7 @@ function Reveal({ children, delay = 0 }) {
 }
 
 function BigImage({ src, alt, aspect, fit = 'cover' }) {
-  const aspectRatio = aspect || { xs: '4/3', md: '4/5' };
+  const aspectRatio = aspect || '1 / 1';
   return (
     <Box
       sx={{
@@ -73,7 +73,7 @@ function BigImage({ src, alt, aspect, fit = 'cover' }) {
 }
 
 function PricingSection({
-  id, eyebrow, brand, brandNumber, priceNote, headline, subhead, highlights, cta, href,
+  id, eyebrow, brand, brandNumber, headline, subhead, highlights, cta, href,
   image, imageAlt, reverse = false, bgColor = '#ffffff',
 }) {
   return (
@@ -117,10 +117,10 @@ function PricingSection({
               component="h2"
               sx={{
                 margin: 0,
-                fontSize: 'clamp(3.5rem, 9vw, 6.5rem)',
+                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
                 fontWeight: 500,
-                lineHeight: 1,
-                letterSpacing: '-0.04em',
+                lineHeight: 1.12,
+                letterSpacing: '-0.03em',
                 color: 'text.primary',
                 display: 'flex',
                 alignItems: 'baseline',
@@ -140,26 +140,14 @@ function PricingSection({
             </Box>
 
             <Typography
-              sx={{
-                fontSize: '1rem',
-                fontWeight: 500,
-                color: 'primary.main',
-                mt: 1,
-                letterSpacing: '0.01em',
-              }}
-            >
-              {priceNote}
-            </Typography>
-
-            <Typography
               component="p"
               sx={{
-                fontSize: { xs: '1.375rem', md: '1.625rem' },
+                fontSize: { xs: '1.125rem', md: '1.1875rem' },
                 fontWeight: 500,
-                lineHeight: 1.25,
-                letterSpacing: '-0.02em',
+                lineHeight: 1.35,
+                letterSpacing: '-0.01em',
                 color: 'text.primary',
-                mt: 3,
+                mt: 2,
               }}
             >
               {headline}
@@ -247,10 +235,10 @@ function SimpleSection({
             <Typography
               component="h2"
               sx={{
-                fontSize: 'clamp(2.5rem, 5.5vw, 4rem)',
+                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
                 fontWeight: 500,
-                lineHeight: 1.05,
-                letterSpacing: '-0.035em',
+                lineHeight: 1.12,
+                letterSpacing: '-0.03em',
                 color: 'text.primary',
               }}
             >
@@ -321,10 +309,10 @@ function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body,
             <Typography
               component="h2"
               sx={{
-                fontSize: 'clamp(2.5rem, 5.5vw, 4rem)',
+                fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
                 fontWeight: 500,
-                lineHeight: 1.05,
-                letterSpacing: '-0.035em',
+                lineHeight: 1.12,
+                letterSpacing: '-0.03em',
                 color: 'text.primary',
               }}
             >
@@ -388,10 +376,10 @@ function FinalCtaStrip({ eyebrow, headline, subhead, cta }) {
           <Typography
             component="h2"
             sx={{
-              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)',
               fontWeight: 500,
-              lineHeight: 1.08,
-              letterSpacing: '-0.035em',
+              lineHeight: 1.12,
+              letterSpacing: '-0.03em',
               color: 'text.primary',
             }}
           >
@@ -485,9 +473,9 @@ export default function HomePage() {
           <Typography
             component="h1"
             sx={{
-              fontSize: 'clamp(2.5rem, 6vw, 4.75rem)',
+              fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
               fontWeight: 500,
-              lineHeight: 1.05,
+              lineHeight: 1.08,
               letterSpacing: '-0.035em',
               color: 'text.primary',
             }}
@@ -556,7 +544,6 @@ export default function HomePage() {
         eyebrow={t('home.apple.oficina15.eyebrow')}
         brand={t('home.apple.oficina15.brand')}
         brandNumber={t('home.apple.oficina15.brandNumber')}
-        priceNote={t('home.apple.oficina15.priceNote')}
         headline={t('home.apple.oficina15.headline')}
         subhead={t('home.apple.oficina15.subhead')}
         highlights={Array.isArray(oficina15Highlights) ? oficina15Highlights : []}
@@ -573,7 +560,6 @@ export default function HomePage() {
         eyebrow={t('home.apple.oficina90.eyebrow')}
         brand={t('home.apple.oficina90.brand')}
         brandNumber={t('home.apple.oficina90.brandNumber')}
-        priceNote={t('home.apple.oficina90.priceNote')}
         headline={t('home.apple.oficina90.headline')}
         subhead={t('home.apple.oficina90.subhead')}
         highlights={Array.isArray(oficina90Highlights) ? oficina90Highlights : []}
@@ -611,7 +597,6 @@ export default function HomePage() {
         href="/platform"
         image="/platform/oveview.png"
         imageAlt="BeWorking SuperApp — Overview del dashboard"
-        imageAspect={{ xs: '16/10', md: '16/10' }}
         imageFit="cover"
         bgColor="#f5f5f7"
       />
