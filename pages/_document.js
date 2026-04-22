@@ -6,8 +6,9 @@ import createEmotionCache from '@/createEmotionCache';
 export default class MyDocument extends Document {
   render() {
     return (
-      <Html lang="es">
+      <Html lang="es" translate="no">
         <Head>
+          <meta name="google" content="notranslate" />
           <script
             dangerouslySetInnerHTML={{
               __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
