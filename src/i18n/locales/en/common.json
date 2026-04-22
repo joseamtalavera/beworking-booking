@@ -61,7 +61,44 @@
     "showingSpaces": "Showing {{count}} spaces",
     "showingSpace": "Showing {{count}} space",
     "allLocations": "All locations",
-    "allCentros": "All Centros"
+    "allCentros": "All Centros",
+    "apple": {
+      "heroBrand": "BeWorking",
+      "heroTagline": "Workspaces and software to grow your business.",
+      "heroCtaExplore": "Explore",
+      "oficinaVirtual": {
+        "eyebrow": "Virtual Office",
+        "title": "Your professional address,",
+        "titleAccent": "from €15/month.",
+        "subhead": "Legal and fiscal domicile in Málaga, mail reception and full management platform.",
+        "body": "No deposit, no commitment. Includes access to the SuperApp and 2 hours of meeting room per month.",
+        "cta": "Learn more"
+      },
+      "coworking": {
+        "eyebrow": "Coworking",
+        "title": "Your desk in Málaga,",
+        "titleAccent": "from €90/month.",
+        "subhead": "Dedicated desk, 24/7 access, and a community of professionals beside you.",
+        "body": "Natural light, meeting rooms, fully equipped kitchen and monthly events. Fibre Wi-Fi and unlimited coffee.",
+        "cta": "Book a desk"
+      },
+      "salas": {
+        "eyebrow": "Training & meeting rooms",
+        "title": "Fully equipped rooms,",
+        "titleAccent": "by the hour.",
+        "subhead": "Rooms for training, team meetings, events or recording. Book on the spot.",
+        "body": "4K screens, whiteboard, video conferencing, capacity 4 to 20 people. Optional coffee-break.",
+        "cta": "View rooms"
+      },
+      "superapp": {
+        "eyebrow": "SuperApp",
+        "title": "Your digital office,",
+        "titleAccent": "all in one platform.",
+        "subhead": "Contacts, invoicing, accounting, chat, calendar and booking management.",
+        "body": "Included in your plan. Access from any device. Integrated with Stripe for automatic payments.",
+        "cta": "Discover the SuperApp"
+      }
+    }
   },
   "card": {
     "instantBooking": "Instant booking",

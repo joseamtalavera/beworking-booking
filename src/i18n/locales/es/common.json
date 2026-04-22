@@ -61,7 +61,44 @@
     "showingSpaces": "Mostrando {{count}} espacios",
     "showingSpace": "Mostrando {{count}} espacio",
     "allLocations": "Todas las ubicaciones",
-    "allCentros": "Todos los centros"
+    "allCentros": "Todos los centros",
+    "apple": {
+      "heroBrand": "BeWorking",
+      "heroTagline": "Espacios y software para hacer crecer tu empresa.",
+      "heroCtaExplore": "Explorar",
+      "oficinaVirtual": {
+        "eyebrow": "Oficina Virtual",
+        "title": "Tu dirección profesional,",
+        "titleAccent": "desde 15€/mes.",
+        "subhead": "Domicilio legal y fiscal en Málaga, recepción de correo y plataforma de gestión.",
+        "body": "Sin depósito, sin permanencia. Incluye acceso a la SuperApp y 2 horas de sala de reunión al mes.",
+        "cta": "Más información"
+      },
+      "coworking": {
+        "eyebrow": "Coworking",
+        "title": "Tu puesto en Málaga,",
+        "titleAccent": "desde 90€/mes.",
+        "subhead": "Escritorio dedicado, acceso 24/7 y una comunidad de profesionales a tu lado.",
+        "body": "Luz natural, salas de reunión, cocina equipada y eventos mensuales. Wi-Fi de fibra y café ilimitado.",
+        "cta": "Reservar escritorio"
+      },
+      "salas": {
+        "eyebrow": "Salas de formación y reunión",
+        "title": "Salas equipadas,",
+        "titleAccent": "por horas.",
+        "subhead": "Aulas para formación, reuniones de equipo, eventos o grabación. Reserva al momento.",
+        "body": "Pantallas 4K, pizarra, videoconferencia, capacidad de 4 a 20 personas. Coffee-break opcional.",
+        "cta": "Ver salas"
+      },
+      "superapp": {
+        "eyebrow": "SuperApp",
+        "title": "Tu oficina digital,",
+        "titleAccent": "en una sola plataforma.",
+        "subhead": "Contactos, facturación, contabilidad, chat, agenda y gestión de reservas.",
+        "body": "Incluida en tu plan. Accede desde cualquier dispositivo. Integrada con Stripe para cobros automáticos.",
+        "cta": "Descubrir la SuperApp"
+      }
+    }
   },
   "card": {
     "instantBooking": "Reserva instantánea",
