@@ -61,7 +61,73 @@
     "showingSpaces": "Mostrando {{count}} espacios",
     "showingSpace": "Mostrando {{count}} espacio",
     "allLocations": "Todas las ubicaciones",
-    "allCentros": "Todos los centros"
+    "allCentros": "Todos los centros",
+    "apple": {
+      "heroBrand": "BeWorking",
+      "heroTitle": "Encuentra tu espacio de trabajo",
+      "heroTitleAccent": "ideal.",
+      "heroSubtitle": "Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio.",
+      "quickNavSalas": "Salas",
+      "quickNavCoworking": "Coworking",
+      "quickNavVirtualOffice": "Oficina Virtual",
+      "quickNavSuperapp": "SuperApp",
+      "oficina15": {
+        "eyebrow": "Oficina Virtual",
+        "brand": "Oficina",
+        "brandNumber": "15",
+        "priceNote": "desde 15€/mes",
+        "headline": "Tu dirección profesional en Málaga.",
+        "subhead": "Domicilio legal y fiscal, recepción de correo y plataforma de gestión — todo incluido, sin depósito ni permanencia.",
+        "highlights": [
+          "Domicilio fiscal visible en Google Maps",
+          "Recepción de correo y paquetería con aviso al instante",
+          "2 horas de sala de reunión cada mes",
+          "Acceso completo a la SuperApp"
+        ],
+        "cta": "Empezar por 15€/mes"
+      },
+      "oficina90": {
+        "eyebrow": "Coworking",
+        "brand": "Oficina",
+        "brandNumber": "90",
+        "priceNote": "desde 90€/mes",
+        "headline": "Tu escritorio dedicado en el centro de Málaga.",
+        "subhead": "Un sitio fijo que es tuyo, con una comunidad de profesionales al lado y acceso 24/7.",
+        "highlights": [
+          "Escritorio dedicado con cajonera y llave",
+          "Acceso 24/7 los 365 días del año",
+          "Salas de reunión, cocina equipada y terraza",
+          "Eventos mensuales y networking"
+        ],
+        "cta": "Reservar escritorio"
+      },
+      "salas": {
+        "eyebrow": "Salas de formación y reunión",
+        "headline": "Salas equipadas, por horas.",
+        "subhead": "Aulas y salas para formación, reuniones, eventos o grabación — con todo listo para empezar.",
+        "highlights": [
+          "Capacidad de 4 a 20 personas",
+          "Pantalla 4K, pizarra y videoconferencia",
+          "Wi-Fi de fibra y café ilimitado",
+          "Coffee-break y catering opcionales"
+        ],
+        "cta": "Ver salas disponibles"
+      },
+      "superapp": {
+        "eyebrow": "SuperApp",
+        "headline": "Tu oficina digital,",
+        "headlineAccent": "en una sola plataforma.",
+        "subhead": "Contactos, facturación, contabilidad, chat, agenda y gestión de reservas — todo integrado y accesible desde cualquier dispositivo.",
+        "body": "Incluida en tu plan. Conectada con Stripe para cobros automáticos. Diseñada para que gestiones tu negocio en minutos, no en horas.",
+        "cta": "Descubrir la SuperApp"
+      },
+      "finalCta": {
+        "eyebrow": "¿Aún con dudas?",
+        "headline": "Explora todos nuestros espacios.",
+        "subhead": "Reserva salas por horas o suscríbete a un espacio fijo — tú eliges.",
+        "cta": "Ver espacios"
+      }
+    }
   },
   "card": {
     "instantBooking": "Reserva instantánea",

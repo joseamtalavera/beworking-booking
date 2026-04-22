@@ -61,7 +61,73 @@
     "showingSpaces": "Showing {{count}} spaces",
     "showingSpace": "Showing {{count}} space",
     "allLocations": "All locations",
-    "allCentros": "All Centros"
+    "allCentros": "All Centros",
+    "apple": {
+      "heroBrand": "BeWorking",
+      "heroTitle": "Find your",
+      "heroTitleAccent": "ideal workspace.",
+      "heroSubtitle": "Meeting rooms, coworking and virtual offices — find the right space for your business.",
+      "quickNavSalas": "Rooms",
+      "quickNavCoworking": "Coworking",
+      "quickNavVirtualOffice": "Virtual Office",
+      "quickNavSuperapp": "SuperApp",
+      "oficina15": {
+        "eyebrow": "Virtual Office",
+        "brand": "Oficina",
+        "brandNumber": "15",
+        "priceNote": "from €15/month",
+        "headline": "Your professional address in Málaga.",
+        "subhead": "Legal and fiscal domicile, mail reception and full management platform — all included, no deposit, no commitment.",
+        "highlights": [
+          "Fiscal address visible on Google Maps",
+          "Mail & parcel reception with instant notification",
+          "2 hours of meeting room every month",
+          "Full access to the SuperApp"
+        ],
+        "cta": "Start from €15/month"
+      },
+      "oficina90": {
+        "eyebrow": "Coworking",
+        "brand": "Oficina",
+        "brandNumber": "90",
+        "priceNote": "from €90/month",
+        "headline": "Your dedicated desk in central Málaga.",
+        "subhead": "A fixed spot that's yours, with a community of professionals beside you and 24/7 access.",
+        "highlights": [
+          "Dedicated desk with lockable cabinet",
+          "24/7 access, 365 days a year",
+          "Meeting rooms, fully equipped kitchen and terrace",
+          "Monthly events and networking"
+        ],
+        "cta": "Book a desk"
+      },
+      "salas": {
+        "eyebrow": "Training & meeting rooms",
+        "headline": "Fully equipped rooms, by the hour.",
+        "subhead": "Rooms for training, meetings, events or recording — everything ready to go from the first minute.",
+        "highlights": [
+          "Capacity for 4 to 20 people",
+          "4K screen, whiteboard and video conferencing",
+          "Fibre Wi-Fi and unlimited coffee",
+          "Optional coffee-break and catering"
+        ],
+        "cta": "View available rooms"
+      },
+      "superapp": {
+        "eyebrow": "SuperApp",
+        "headline": "Your digital office,",
+        "headlineAccent": "all in one platform.",
+        "subhead": "Contacts, invoicing, accounting, chat, calendar and booking management — all integrated and accessible from any device.",
+        "body": "Included in your plan. Connected to Stripe for automatic payments. Designed to let you run your business in minutes, not hours.",
+        "cta": "Discover the SuperApp"
+      },
+      "finalCta": {
+        "eyebrow": "Still deciding?",
+        "headline": "Browse all our spaces.",
+        "subhead": "Book rooms by the hour or subscribe to a fixed space — it's your call.",
+        "cta": "View spaces"
+      }
+    }
   },
   "card": {
     "instantBooking": "Instant booking",
