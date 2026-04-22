@@ -291,7 +291,7 @@ function SimpleSection({
   );
 }
 
-function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body, cta, href, image, imageAlt, imageAspect, imageFit, bgColor = '#ffffff' }) {
+function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body, cta, href, image, imageAlt, imageAspect, imageFit, reverse = false, bgColor = '#ffffff' }) {
   return (
     <Box component="section" id={id} sx={{ bgcolor: bgColor, py: { xs: 10, md: 14 }, px: 3 }}>
       <Box
@@ -302,6 +302,8 @@ function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body,
           gridTemplateColumns: { xs: '1fr', md: '4fr 6fr' },
           gap: { xs: 5, md: 8 },
           alignItems: 'center',
+          direction: { md: reverse ? 'rtl' : 'ltr' },
+          '& > *': { direction: 'ltr' },
         }}
       >
         <Reveal>
@@ -602,6 +604,7 @@ export default function HomePage() {
         image="/platform/oveview.png"
         imageAlt="BeWorking SuperApp — Overview del dashboard"
         imageFit="cover"
+        reverse
         bgColor="#f5f5f7"
       />
 
