@@ -253,7 +253,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
 
   if (success) {
     return (
-      <Card variant="outlined">
+      <Card variant="outlined" translate="no">
         <Box sx={{ textAlign: 'center', py: 4 }}>
           <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
             {t('register.success')}
@@ -272,7 +272,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   }
 
   return (
-    <Card variant="outlined" sx={{ position: 'relative', overflow: 'visible' }}>
+    <Card variant="outlined" translate="no" sx={{ position: 'relative', overflow: 'visible' }}>
       <Typography
         component="h1"
         variant="h4"
@@ -326,11 +326,11 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl>
               <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.company')}</FormLabel>
-              <TextField fullWidth placeholder="Acme Inc." value={form.company} onChange={handleChange('company')} />
+              <TextField fullWidth placeholder="Acme Inc. / Jon Snow" value={form.company} onChange={handleChange('company')} />
             </FormControl>
             <FormControl>
               <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.taxId')}</FormLabel>
-              <TextField fullWidth placeholder="B12345678" value={form.taxId} onChange={handleChange('taxId')} />
+              <TextField fullWidth placeholder="B12345678 / 12345678A" value={form.taxId} onChange={handleChange('taxId')} />
             </FormControl>
             <FormControl>
               <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.phone')}</FormLabel>

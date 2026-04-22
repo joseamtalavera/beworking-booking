@@ -375,7 +375,7 @@
     "title": "Create your account",
     "steps": [
       "Account",
-      "Company",
+      "Billing",
       "City",
       "Payment"
     ],
@@ -384,8 +384,8 @@
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm password",
-      "company": "Company name",
-      "taxId": "Tax ID (VAT)",
+      "company": "Company or full name",
+      "taxId": "VAT or Passport",
       "phone": "Phone"
     },
     "errors": {

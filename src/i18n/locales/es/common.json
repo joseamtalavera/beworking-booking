@@ -388,7 +388,7 @@
     "title": "Crea tu cuenta",
     "steps": [
       "Cuenta",
-      "Empresa",
+      "Facturación",
       "Ciudad",
       "Pago"
     ],
@@ -397,8 +397,8 @@
       "email": "Correo electrónico",
       "password": "Contraseña",
       "confirmPassword": "Confirmar contraseña",
-      "company": "Nombre de la empresa",
-      "taxId": "NIF / CIF",
+      "company": "Empresa o nombre completo",
+      "taxId": "NIF / DNI / Pasaporte",
       "phone": "Teléfono"
     },
     "errors": {
