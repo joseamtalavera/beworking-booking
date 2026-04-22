@@ -584,8 +584,8 @@ export default function HomePage() {
         highlights={Array.isArray(salasHighlights) ? salasHighlights : []}
         cta={t('home.apple.salas.cta')}
         href="/malaga/salas-de-reunion"
-        image="/DSC_2684_optimized.webp"
-        imageAlt="Salas de formación y reunión BeWorking Málaga"
+        image="https://beworking-uploads-eu.s3.eu-north-1.amazonaws.com/catalog/5f9372c0-d1f4-4417-8deb-62654211e902-BEWORKING%2001.jpg"
+        imageAlt="Sala de reuniones A4 BeWorking Málaga"
         bgColor="#ffffff"
       />
 
