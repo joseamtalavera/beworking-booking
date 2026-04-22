@@ -108,7 +108,8 @@
       },
       "salas": {
         "eyebrow": "Salas de formación y reunión",
-        "headline": "Salas equipadas, por horas.",
+        "headline": "Salas equipadas,",
+        "headlineAccent": "por horas.",
         "subhead": "Aulas y salas para formación, reuniones, eventos o grabación — con todo listo para empezar.",
         "highlights": [
           "Capacidad hasta 50 personas",

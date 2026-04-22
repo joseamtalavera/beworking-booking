@@ -44,7 +44,7 @@ function Reveal({ children, delay = 0 }) {
 }
 
 function BigImage({ src, alt, aspect, fit = 'cover' }) {
-  const aspectRatio = aspect || '1 / 1';
+  const aspectRatio = aspect || '3 / 2';
   return (
     <Box
       sx={{
@@ -91,8 +91,8 @@ function PricingSection({
           maxWidth: 1180,
           mx: 'auto',
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-          gap: { xs: 5, md: 10 },
+          gridTemplateColumns: { xs: '1fr', md: '4fr 6fr' },
+          gap: { xs: 5, md: 8 },
           alignItems: 'center',
           direction: { md: reverse ? 'rtl' : 'ltr' },
           '& > *': { direction: 'ltr' },
@@ -210,7 +210,7 @@ function PricingSection({
 }
 
 function SimpleSection({
-  id, eyebrow, headline, subhead, highlights, cta, href,
+  id, eyebrow, headline, headlineAccent, subhead, highlights, cta, href,
   image, imageAlt, reverse = false, bgColor = '#ffffff',
 }) {
   return (
@@ -220,8 +220,8 @@ function SimpleSection({
           maxWidth: 1180,
           mx: 'auto',
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-          gap: { xs: 5, md: 10 },
+          gridTemplateColumns: { xs: '1fr', md: '4fr 6fr' },
+          gap: { xs: 5, md: 8 },
           alignItems: 'center',
           direction: { md: reverse ? 'rtl' : 'ltr' },
           '& > *': { direction: 'ltr' },
@@ -243,6 +243,9 @@ function SimpleSection({
               }}
             >
               {headline}
+              {headlineAccent && (
+                <> <Box component="span" sx={{ color: 'primary.main' }}>{headlineAccent}</Box></>
+              )}
             </Typography>
             <Typography sx={{ fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.6, color: 'text.secondary', mt: 3, maxWidth: 500 }}>
               {subhead}
@@ -576,6 +579,7 @@ export default function HomePage() {
         id="salas"
         eyebrow={t('home.apple.salas.eyebrow')}
         headline={t('home.apple.salas.headline')}
+        headlineAccent={t('home.apple.salas.headlineAccent')}
         subhead={t('home.apple.salas.subhead')}
         highlights={Array.isArray(salasHighlights) ? salasHighlights : []}
         cta={t('home.apple.salas.cta')}

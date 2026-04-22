@@ -93,8 +93,7 @@ export default function OficinaVirtualPage() {
   const stats = t('landing.trust.stats', { returnObjects: true }) || [];
 
   const plans = [
-    { name: 'Basic', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección empresarial registrada.' : 'Registered business address.', features: i18n.language === 'es' ? ['Todo en Free', 'Domicilio fiscal y legal', 'Recepción de correo', 'Buzón digital', 'Logo en recepción'] : ['Everything in Free', 'Legal & fiscal address', 'Mail reception', 'Digital mailbox', 'Logo at reception'] },
-    { name: 'Pro', key: 'pro', price: '25', description: i18n.language === 'es' ? 'Todo en Basic más Web personalizada.' : 'Everything in Basic plus custom website.', features: i18n.language === 'es' ? ['Todo en Basic', 'Atención de llamadas', 'Multi-usuario (3 usuarios)', 'Gestor dedicado', 'Web corporativa'] : ['Everything in Basic', 'Call handling', 'Multi-user (3 users)', 'Dedicated manager', 'Corporate website'] },
+    { name: 'Oficina15', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección profesional en Málaga, domicilio legal y fiscal, recepción de correo y acceso a la SuperApp.' : 'Professional address in Málaga, legal & fiscal domicile, mail reception and full SuperApp access.', features: i18n.language === 'es' ? ['Domicilio fiscal y legal', 'Recepción de correo y paquetería', 'Logo en recepción', '5 días gratis de coworking al mes', 'Acceso completo a la SuperApp'] : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 free coworking days per month', 'Full access to the SuperApp'] },
   ];
   const bullets = t('landing.hero.bullets', { returnObjects: true }) || [];
 
@@ -445,43 +444,72 @@ export default function OficinaVirtualPage() {
             </Typography>
           </Box>
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, gap: 3, alignItems: 'stretch', maxWidth: 700, mx: 'auto' }}>
-            {plans.map((plan) => (
-              <Box
-                key={plan.name}
-                sx={{
-                  bgcolor: '#fff', borderRadius: 3, p: 3.5, height: '100%',
-                  border: '2px solid', borderColor: plan.popular ? 'primary.main' : 'divider',
-                  position: 'relative', display: 'flex', flexDirection: 'column',
-                }}
-              >
-                {plan.popular && (
-                  <Chip label="POPULAR" size="small" sx={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', fontWeight: 700, fontSize: '0.7rem', bgcolor: 'primary.main', color: '#fff', borderRadius: '999px', px: 1.5, height: 24 }} />
-                )}
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>{plan.name}</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary', mb: 1.5, fontSize: '0.85rem' }}>{plan.description}</Typography>
-                <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mb: 2 }}>
-                  <Typography sx={{ fontSize: '2.25rem', fontWeight: 800, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
-                  <Typography variant="body2" color="text.secondary">/mes</Typography>
-                </Stack>
-                <Stack spacing={1.25} sx={{ flex: 1, mb: 2.5 }}>
-                  {plan.features.map((f) => (
-                    <Stack key={f} direction="row" spacing={1} alignItems="flex-start">
-                      <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.2 }} />
-                      <Typography variant="body2" sx={{ lineHeight: 1.5 }}>{f}</Typography>
-                    </Stack>
-                  ))}
-                </Stack>
-                <Button
-                  variant={plan.popular ? 'contained' : 'outlined'}
-                  fullWidth
-                  onClick={() => scrollToForm(plan.key)}
-                  sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.25 }}
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '4fr 5fr' }, gap: { xs: 4, md: 6 }, alignItems: 'center' }}>
+            <Box>
+              {plans.map((plan) => (
+                <Box
+                  key={plan.name}
+                  sx={{
+                    bgcolor: '#fff', borderRadius: 3, p: { xs: 3, md: 4 },
+                    border: '2px solid', borderColor: 'primary.main',
+                    position: 'relative', display: 'flex', flexDirection: 'column',
+                    boxShadow: '0 20px 60px -20px rgba(0,150,36,0.25)',
+                  }}
                 >
-                  {i18n.language === 'es' ? 'Elegir plan' : 'Choose plan'}
-                </Button>
-              </Box>
-            ))}
+                  <Box
+                    component="h3"
+                    sx={{
+                      margin: 0,
+                      fontSize: 'clamp(2rem, 4vw, 3rem)',
+                      fontWeight: 500,
+                      lineHeight: 1,
+                      letterSpacing: '-0.03em',
+                      color: 'text.primary',
+                      display: 'flex',
+                      alignItems: 'baseline',
+                    }}
+                  >
+                    <span>Oficina</span>
+                    <Box component="span" sx={{ color: 'primary.main', fontWeight: 600, ml: '0.04em' }}>15</Box>
+                  </Box>
+                  <Typography sx={{ color: 'text.secondary', mt: 1.5, fontSize: '0.9375rem', lineHeight: 1.5 }}>{plan.description}</Typography>
+                  <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mt: 2.5, mb: 2.5 }}>
+                    <Typography sx={{ fontSize: '2.75rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
+                    <Typography variant="body2" color="text.secondary">/mes</Typography>
+                  </Stack>
+                  <Stack spacing={1.25} sx={{ mb: 3 }}>
+                    {plan.features.map((f) => (
+                      <Stack key={f} direction="row" spacing={1.25} alignItems="flex-start">
+                        <CheckCircleOutlineIcon sx={{ fontSize: 20, color: 'primary.main', mt: '2px' }} />
+                        <Typography variant="body2" sx={{ lineHeight: 1.55 }}>{f}</Typography>
+                      </Stack>
+                    ))}
+                  </Stack>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => scrollToForm(plan.key)}
+                    sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.35, fontSize: '0.9375rem', boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
+                  >
+                    {i18n.language === 'es' ? 'Empezar por 15€/mes' : 'Start from €15/month'}
+                  </Button>
+                </Box>
+              ))}
+            </Box>
+            <Box
+              component="img"
+              src="/DSC_2312 (Mediano)_optimized.webp"
+              alt="Oficina Virtual BeWorking — sala A1 en Málaga"
+              loading="lazy"
+              sx={{
+                width: '100%',
+                aspectRatio: '3 / 2',
+                objectFit: 'cover',
+                borderRadius: '20px',
+                boxShadow: '0 30px 80px -20px rgba(0,0,0,0.25)',
+                display: 'block',
+              }}
+            />
           </Box>
 
           <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>

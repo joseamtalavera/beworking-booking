@@ -30,7 +30,6 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 const DEFAULT_PLANS = {
   basic: { name: 'Basic', price: 15, priceCents: 1500 },
-  pro: { name: 'Pro', price: 25, priceCents: 2500 },
 };
 
 const LOCATION_KEYS = ['malaga', 'sevilla'];
@@ -425,43 +424,46 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       {/* Step 3: Plan + Payment */}
       {step === 3 && clientSecret && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          {/* Plan selector */}
-          <Typography sx={{ fontWeight: 600, fontSize: '0.9375rem', textAlign: 'center' }}>
-            {t('register.planStep.heading')}
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1.5 }}>
-            {Object.entries(PLANS).map(([key, plan]) => {
-              const isSelected = selectedPlan === key;
-              return (
-                <Box
-                  key={key}
-                  onClick={() => { setSelectedPlan(key); setErrors((prev) => ({ ...prev, plan: '' })); }}
-                  sx={{
-                    flex: 1,
-                    border: isSelected ? '2px solid' : '1px solid rgba(0,0,0,0.12)',
-                    borderColor: isSelected ? 'primary.main' : undefined,
-                    borderRadius: '12px',
-                    p: 1.5,
-                    cursor: 'pointer',
-                    textAlign: 'center',
-                    bgcolor: isSelected ? 'rgba(0,150,36,0.04)' : 'transparent',
-                    transition: 'all 0.15s ease',
-                    position: 'relative',
-                    '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.02)' },
-                  }}
-                >
-                  {key === 'basic' && (
-                    <Box sx={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 0.3, bgcolor: 'primary.main', color: '#fff', px: 1, py: 0.2, borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
-                      <StarIcon sx={{ fontSize: '0.75rem' }} /> Popular
+          {Object.keys(PLANS).length > 1 && (
+            <>
+              <Typography sx={{ fontWeight: 600, fontSize: '0.9375rem', textAlign: 'center' }}>
+                {t('register.planStep.heading')}
+              </Typography>
+              <Box sx={{ display: 'flex', gap: 1.5 }}>
+                {Object.entries(PLANS).map(([key, plan]) => {
+                  const isSelected = selectedPlan === key;
+                  return (
+                    <Box
+                      key={key}
+                      onClick={() => { setSelectedPlan(key); setErrors((prev) => ({ ...prev, plan: '' })); }}
+                      sx={{
+                        flex: 1,
+                        border: isSelected ? '2px solid' : '1px solid rgba(0,0,0,0.12)',
+                        borderColor: isSelected ? 'primary.main' : undefined,
+                        borderRadius: '12px',
+                        p: 1.5,
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                        bgcolor: isSelected ? 'rgba(0,150,36,0.04)' : 'transparent',
+                        transition: 'all 0.15s ease',
+                        position: 'relative',
+                        '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.02)' },
+                      }}
+                    >
+                      {key === 'basic' && (
+                        <Box sx={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 0.3, bgcolor: 'primary.main', color: '#fff', px: 1, py: 0.2, borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
+                          <StarIcon sx={{ fontSize: '0.75rem' }} /> Popular
+                        </Box>
+                      )}
+                      <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem' }}>{plan.name}</Typography>
+                      <Typography sx={{ fontWeight: 700, fontSize: '1.25rem', color: 'primary.main' }}>{plan.price}€</Typography>
+                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>/mes</Typography>
                     </Box>
-                  )}
-                  <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem' }}>{plan.name}</Typography>
-                  <Typography sx={{ fontWeight: 700, fontSize: '1.25rem', color: 'primary.main' }}>{plan.price}€</Typography>
-                  <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>/mes</Typography>
-                </Box>
-              );
-            })}
-          </Box>
+                  );
+                })}
+              </Box>
+            </>
+          )}
 
           <Elements stripe={stripePromise} options={{ clientSecret, appearance: { theme: 'stripe' } }}>
             <PaymentForm

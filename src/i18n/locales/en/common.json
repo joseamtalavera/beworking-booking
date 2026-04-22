@@ -108,7 +108,8 @@
       },
       "salas": {
         "eyebrow": "Training & meeting rooms",
-        "headline": "Fully equipped rooms, by the hour.",
+        "headline": "Fully equipped rooms,",
+        "headlineAccent": "by the hour.",
         "subhead": "Rooms for training, meetings, events or recording — everything ready to go from the first minute.",
         "highlights": [
           "Capacity up to 50 people",
