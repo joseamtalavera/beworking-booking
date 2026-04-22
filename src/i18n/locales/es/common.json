@@ -69,13 +69,13 @@
       "heroBrand": "BeWorking",
       "heroTitle": "Encuentra tu espacio de trabajo",
       "heroTitleAccent": "ideal.",
-      "heroSubtitle": "Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio.",
+      "heroSubtitle": "Oficinas, salas de reuniones y domiciliación de empresas — encuentra el espacio ideal para tu negocio.",
       "quickNavOficina15": "Oficina15",
       "quickNavOficina90": "Oficina90",
-      "quickNavMeetingRooms": "Meeting Rooms",
+      "quickNavMeetingRooms": "Salas de reuniones",
       "quickNavSuperapp": "SuperApp",
       "oficina15": {
-        "eyebrow": "Oficina Virtual",
+        "eyebrow": "Oficina15",
         "brand": "Oficina",
         "brandNumber": "15",
         "priceNote": "desde 15€/mes",
@@ -91,7 +91,7 @@
         "cta": "Empezar por 15€/mes"
       },
       "oficina90": {
-        "eyebrow": "Coworking",
+        "eyebrow": "Oficina90",
         "brand": "Oficina",
         "brandNumber": "90",
         "priceNote": "desde 90€/mes",
@@ -107,7 +107,7 @@
         "cta": "Reservar escritorio"
       },
       "salas": {
-        "eyebrow": "Salas de formación y reunión",
+        "eyebrow": "Salas de reuniones",
         "headline": "Salas equipadas,",
         "headlineAccent": "por horas.",
         "subhead": "Aulas y salas para formación, reuniones, eventos o grabación — con todo listo para empezar.",

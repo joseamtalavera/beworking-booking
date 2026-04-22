@@ -69,13 +69,13 @@
       "heroBrand": "BeWorking",
       "heroTitle": "Find your",
       "heroTitleAccent": "ideal workspace.",
-      "heroSubtitle": "Meeting rooms, coworking and virtual offices — find the right space for your business.",
+      "heroSubtitle": "Offices, meeting rooms and business domiciliation — find the right space for your business.",
       "quickNavOficina15": "Oficina15",
       "quickNavOficina90": "Oficina90",
       "quickNavMeetingRooms": "Meeting Rooms",
       "quickNavSuperapp": "SuperApp",
       "oficina15": {
-        "eyebrow": "Virtual Office",
+        "eyebrow": "Oficina15",
         "brand": "Oficina",
         "brandNumber": "15",
         "priceNote": "from €15/month",
@@ -91,7 +91,7 @@
         "cta": "Start from €15/month"
       },
       "oficina90": {
-        "eyebrow": "Coworking",
+        "eyebrow": "Oficina90",
         "brand": "Oficina",
         "brandNumber": "90",
         "priceNote": "from €90/month",
@@ -107,7 +107,7 @@
         "cta": "Book a desk"
       },
       "salas": {
-        "eyebrow": "Training & meeting rooms",
+        "eyebrow": "Meeting Rooms",
         "headline": "Fully equipped rooms,",
         "headlineAccent": "by the hour.",
         "subhead": "Rooms for training, meetings, events or recording — everything ready to go from the first minute.",
