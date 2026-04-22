@@ -299,8 +299,8 @@ function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body,
           maxWidth: 1180,
           mx: 'auto',
           display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-          gap: { xs: 5, md: 10 },
+          gridTemplateColumns: { xs: '1fr', md: '4fr 6fr' },
+          gap: { xs: 5, md: 8 },
           alignItems: 'center',
         }}
       >
