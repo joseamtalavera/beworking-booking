@@ -93,7 +93,7 @@ export default function OficinaVirtualPage() {
   const stats = t('landing.trust.stats', { returnObjects: true }) || [];
 
   const plans = [
-    { name: 'Oficina15', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección profesional en Málaga, domicilio legal y fiscal, recepción de correo y acceso a la SuperApp.' : 'Professional address in Málaga, legal & fiscal domicile, mail reception and full SuperApp access.', features: i18n.language === 'es' ? ['Domicilio fiscal y legal', 'Recepción de correo y paquetería', 'Logo en recepción', '5 días gratis de coworking al mes', 'Acceso completo a la SuperApp'] : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 free coworking days per month', 'Full access to the SuperApp'] },
+    { name: 'Oficina15', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección profesional en Málaga, domicilio legal y fiscal, recepción de correo y acceso a la SuperApp.' : 'Professional address in Málaga, legal & fiscal domicile, mail reception and full SuperApp access.', features: i18n.language === 'es' ? ['Domicilio fiscal y legal', 'Recepción de correo y paquetería', 'Logo en recepción', '5 días de oficina al mes', 'Acceso completo a la SuperApp'] : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 days of office per month', 'Full access to the SuperApp'] },
   ];
   const bullets = t('landing.hero.bullets', { returnObjects: true }) || [];
 
