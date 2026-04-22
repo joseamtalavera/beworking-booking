@@ -5,7 +5,10 @@
     "pricing": "Pricing",
     "signIn": "Sign in",
     "getStarted": "Create free account",
-    "superapp": "SuperApp"
+    "superapp": "SuperApp",
+    "oficina15": "Oficina15",
+    "oficina90": "Oficina90",
+    "meetingRooms": "Meeting Rooms"
   },
   "footer": {
     "product": "Product",
@@ -67,9 +70,9 @@
       "heroTitle": "Find your",
       "heroTitleAccent": "ideal workspace.",
       "heroSubtitle": "Meeting rooms, coworking and virtual offices — find the right space for your business.",
-      "quickNavSalas": "Rooms",
-      "quickNavCoworking": "Coworking",
-      "quickNavVirtualOffice": "Virtual Office",
+      "quickNavOficina15": "Oficina15",
+      "quickNavOficina90": "Oficina90",
+      "quickNavMeetingRooms": "Meeting Rooms",
       "quickNavSuperapp": "SuperApp",
       "oficina15": {
         "eyebrow": "Virtual Office",
@@ -81,8 +84,9 @@
         "highlights": [
           "Fiscal address visible on Google Maps",
           "Mail & parcel reception with instant notification",
-          "2 hours of meeting room every month",
-          "Full access to the SuperApp"
+          "5 free days every month",
+          "Full access to the SuperApp",
+          "From €15/month"
         ],
         "cta": "Start from €15/month"
       },
@@ -96,8 +100,8 @@
         "highlights": [
           "Dedicated desk with lockable cabinet",
           "24/7 access, 365 days a year",
-          "Meeting rooms, fully equipped kitchen and terrace",
-          "Monthly events and networking"
+          "Monthly events and networking",
+          "From €90/month"
         ],
         "cta": "Book a desk"
       },
@@ -108,8 +112,8 @@
         "highlights": [
           "Capacity for 4 to 20 people",
           "4K screen, whiteboard and video conferencing",
-          "Fibre Wi-Fi and unlimited coffee",
-          "Optional coffee-break and catering"
+          "Optional coffee-break and catering",
+          "From €5/hour"
         ],
         "cta": "View available rooms"
       },

@@ -43,12 +43,13 @@ function Reveal({ children, delay = 0 }) {
   );
 }
 
-function BigImage({ src, alt }) {
+function BigImage({ src, alt, aspect, fit = 'cover' }) {
+  const aspectRatio = aspect || { xs: '4/3', md: '4/5' };
   return (
     <Box
       sx={{
         width: '100%',
-        aspectRatio: { xs: '4/3', md: '4/5' },
+        aspectRatio,
         borderRadius: '20px',
         overflow: 'hidden',
         boxShadow: '0 30px 80px -20px rgba(0,0,0,0.25)',
@@ -63,7 +64,7 @@ function BigImage({ src, alt }) {
         sx={{
           width: '100%',
           height: '100%',
-          objectFit: 'cover',
+          objectFit: fit,
           display: 'block',
         }}
       />
@@ -299,7 +300,7 @@ function SimpleSection({
   );
 }
 
-function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body, cta, href, image, imageAlt, bgColor = '#ffffff' }) {
+function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body, cta, href, image, imageAlt, imageAspect, imageFit, bgColor = '#ffffff' }) {
   return (
     <Box component="section" id={id} sx={{ bgcolor: bgColor, py: { xs: 10, md: 14 }, px: 3 }}>
       <Box
@@ -360,7 +361,7 @@ function SuperAppSection({ id, eyebrow, headline, headlineAccent, subhead, body,
           </Box>
         </Reveal>
         <Reveal delay={0.1}>
-          <BigImage src={image} alt={imageAlt} />
+          <BigImage src={image} alt={imageAlt} aspect={imageAspect} fit={imageFit} />
         </Reveal>
       </Box>
     </Box>
@@ -435,9 +436,9 @@ export default function HomePage() {
   }, []);
 
   const quickNav = [
-    { id: 'salas', labelKey: 'home.apple.quickNavSalas', icon: <MeetingRoomRoundedIcon fontSize="small" /> },
-    { id: 'oficina90', labelKey: 'home.apple.quickNavCoworking', icon: <DeskRoundedIcon fontSize="small" /> },
-    { id: 'oficina15', labelKey: 'home.apple.quickNavVirtualOffice', icon: <BusinessRoundedIcon fontSize="small" /> },
+    { id: 'oficina15', labelKey: 'home.apple.quickNavOficina15', icon: <BusinessRoundedIcon fontSize="small" /> },
+    { id: 'oficina90', labelKey: 'home.apple.quickNavOficina90', icon: <DeskRoundedIcon fontSize="small" /> },
+    { id: 'salas', labelKey: 'home.apple.quickNavMeetingRooms', icon: <MeetingRoomRoundedIcon fontSize="small" /> },
     { id: 'superapp', labelKey: 'home.apple.quickNavSuperapp', icon: <DashboardRoundedIcon fontSize="small" /> },
   ];
 
@@ -526,14 +527,20 @@ export default function HomePage() {
                 sx={{
                   borderRadius: '999px',
                   textTransform: 'none',
-                  fontWeight: 500,
+                  fontWeight: 600,
                   fontSize: '0.875rem',
                   px: 2.5,
                   py: 0.875,
-                  color: 'text.primary',
-                  borderColor: 'divider',
-                  bgcolor: '#ffffff',
-                  '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.04)' },
+                  color: 'primary.main',
+                  borderColor: 'rgba(0,150,36,0.3)',
+                  bgcolor: 'rgba(0,150,36,0.04)',
+                  '& .MuiButton-startIcon': { color: 'primary.main' },
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    bgcolor: 'primary.main',
+                    color: '#fff',
+                    '& .MuiButton-startIcon': { color: '#fff' },
+                  },
                 }}
               >
                 {t(n.labelKey)}
@@ -555,8 +562,8 @@ export default function HomePage() {
         highlights={Array.isArray(oficina15Highlights) ? oficina15Highlights : []}
         cta={t('home.apple.oficina15.cta')}
         href="/malaga/oficina-virtual"
-        image="/pilar1.2final_optimized.webp"
-        imageAlt="Oficina Virtual BeWorking — dirección profesional en Málaga"
+        image="/DSC_2312 (Mediano)_optimized.webp"
+        imageAlt="Oficina Virtual BeWorking — sala A1 en Málaga"
         bgColor="#ffffff"
       />
 
@@ -572,7 +579,7 @@ export default function HomePage() {
         highlights={Array.isArray(oficina90Highlights) ? oficina90Highlights : []}
         cta={t('home.apple.oficina90.cta')}
         href="/malaga/coworking"
-        image="/DSC_2660_optimized.webp"
+        image="/DSC_2281 (Mediano)_optimized.webp"
         imageAlt="Coworking BeWorking — escritorios en Málaga"
         reverse
         bgColor="#f5f5f7"
@@ -602,8 +609,10 @@ export default function HomePage() {
         body={t('home.apple.superapp.body')}
         cta={t('home.apple.superapp.cta')}
         href="/platform"
-        image="/pilar4.1final_optimized.webp"
-        imageAlt="BeWorking SuperApp — oficina digital"
+        image="/platform/oveview.png"
+        imageAlt="BeWorking SuperApp — Overview del dashboard"
+        imageAspect={{ xs: '16/10', md: '16/10' }}
+        imageFit="cover"
         bgColor="#f5f5f7"
       />
 

@@ -39,9 +39,9 @@ const AppLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
+    { href: '/malaga/oficina-virtual',  labelKey: 'nav.oficina15',    fallback: 'Oficina15' },
+    { href: '/malaga/coworking',        labelKey: 'nav.oficina90',    fallback: 'Oficina90' },
     { href: '/malaga/salas-de-reunion', labelKey: 'nav.meetingRooms', fallback: 'Meeting Rooms' },
-    { href: '/malaga/coworking',        labelKey: 'nav.coworking',    fallback: 'Coworking' },
-    { href: '/malaga/oficina-virtual',  labelKey: 'nav.virtualOffice', fallback: 'Oficina Virtual' },
     { href: '/platform',                labelKey: 'nav.superapp',     fallback: 'SuperApp' },
   ];
 
@@ -49,19 +49,19 @@ const AppLayout = ({ children }) => {
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'footer.links.platform',       href: '/platform' },
-        { labelKey: 'footer.links.meetingRooms',   href: '/malaga/salas-de-reunion' },
-        { labelKey: 'footer.links.coworking',      href: '/malaga/coworking' },
-        { labelKey: 'footer.links.virtualOffice',  href: '/malaga/oficina-virtual' },
+        { labelKey: 'nav.oficina15',      href: '/malaga/oficina-virtual' },
+        { labelKey: 'nav.oficina90',      href: '/malaga/coworking' },
+        { labelKey: 'nav.meetingRooms',   href: '/malaga/salas-de-reunion' },
+        { labelKey: 'footer.links.platform', href: '/platform' },
       ],
     },
     {
       titleKey: 'footer.malaga',
       links: [
-        { labelKey: 'footer.links.malaga',           href: '/malaga' },
-        { labelKey: 'footer.links.meetingRooms',      href: '/malaga/salas-de-reunion' },
-        { labelKey: 'footer.links.coworking',         href: '/malaga/coworking' },
-        { labelKey: 'footer.links.virtualOffice',     href: '/malaga/oficina-virtual' },
+        { labelKey: 'footer.links.malaga', href: '/malaga' },
+        { labelKey: 'nav.oficina15',       href: '/malaga/oficina-virtual' },
+        { labelKey: 'nav.oficina90',       href: '/malaga/coworking' },
+        { labelKey: 'nav.meetingRooms',    href: '/malaga/salas-de-reunion' },
       ],
     },
     {

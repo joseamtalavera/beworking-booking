@@ -5,7 +5,10 @@
     "pricing": "Precios",
     "signIn": "Iniciar sesión",
     "getStarted": "Crear cuenta gratis",
-    "superapp": "SuperApp"
+    "superapp": "SuperApp",
+    "oficina15": "Oficina15",
+    "oficina90": "Oficina90",
+    "meetingRooms": "Salas de reuniones"
   },
   "footer": {
     "product": "Producto",
@@ -67,9 +70,9 @@
       "heroTitle": "Encuentra tu espacio de trabajo",
       "heroTitleAccent": "ideal.",
       "heroSubtitle": "Salas de reuniones, coworking y oficinas virtuales — encuentra el espacio ideal para tu negocio.",
-      "quickNavSalas": "Salas",
-      "quickNavCoworking": "Coworking",
-      "quickNavVirtualOffice": "Oficina Virtual",
+      "quickNavOficina15": "Oficina15",
+      "quickNavOficina90": "Oficina90",
+      "quickNavMeetingRooms": "Meeting Rooms",
       "quickNavSuperapp": "SuperApp",
       "oficina15": {
         "eyebrow": "Oficina Virtual",
@@ -81,8 +84,9 @@
         "highlights": [
           "Domicilio fiscal visible en Google Maps",
           "Recepción de correo y paquetería con aviso al instante",
-          "2 horas de sala de reunión cada mes",
-          "Acceso completo a la SuperApp"
+          "5 días gratis cada mes",
+          "Acceso completo a la SuperApp",
+          "Desde 15€/mes"
         ],
         "cta": "Empezar por 15€/mes"
       },
@@ -96,8 +100,8 @@
         "highlights": [
           "Escritorio dedicado con cajonera y llave",
           "Acceso 24/7 los 365 días del año",
-          "Salas de reunión, cocina equipada y terraza",
-          "Eventos mensuales y networking"
+          "Eventos mensuales y networking",
+          "Desde 90€/mes"
         ],
         "cta": "Reservar escritorio"
       },
@@ -108,8 +112,8 @@
         "highlights": [
           "Capacidad de 4 a 20 personas",
           "Pantalla 4K, pizarra y videoconferencia",
-          "Wi-Fi de fibra y café ilimitado",
-          "Coffee-break y catering opcionales"
+          "Coffee-break y catering opcionales",
+          "Desde 5€/hora"
         ],
         "cta": "Ver salas disponibles"
       },
