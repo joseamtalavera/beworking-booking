@@ -10,6 +10,18 @@ export default class MyDocument extends Document {
         <Head>
           <meta name="google" content="notranslate" />
           <script
+            data-cookieconsent="ignore"
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag("consent","default",{ad_personalization:"denied",ad_storage:"denied",ad_user_data:"denied",analytics_storage:"denied",functionality_storage:"denied",personalization_storage:"denied",security_storage:"granted",wait_for_update:500});gtag("set","ads_data_redaction",true);gtag("set","url_passthrough",false);`,
+            }}
+          />
+          <script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="0a1d63ec-3704-4162-9c99-7a3641fefeb2"
+            type="text/javascript"
+          />
+          <script
             dangerouslySetInnerHTML={{
               __html: `window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments);};(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -17,7 +29,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-T5BD4L36');`,
             }}
-          />  
+          />
           <link rel="icon" href="/new_favicon.png" />
           <meta name="theme-color" content="#009624" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
