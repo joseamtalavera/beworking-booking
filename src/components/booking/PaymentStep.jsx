@@ -525,15 +525,17 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (typeof window.gtag === 'function' && transactionId) {
-      window.gtag('event', 'conversion', {
-        send_to: 'AW-18059296882/sCQbCN_vt5QcEPKArKND',
+    if (transactionId) {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        event: 'booking_completed',
+        transactionId,
         value: valueCents ? valueCents / 100 : 0,
         currency: 'EUR',
-        transaction_id: transactionId,
+        isSubscription: !!isSubscription,
       });
     }
-  }, [transactionId, valueCents]);
+  }, [transactionId, valueCents, isSubscription]);
 
   return (
     <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>

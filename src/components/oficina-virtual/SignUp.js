@@ -243,6 +243,16 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       const result = await res.json();
       if (res.ok) {
         setSuccess(true);
+        if (selectedPlan === 'basic') {
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            event: 'purchase_completed',
+            transactionId: result?.subscriptionId || setupIntent?.id,
+            value: PLANS.basic.price,
+            currency: 'EUR',
+            plan: 'oficina15',
+          });
+        }
       } else {
         setApiError(result.message || 'Error creating account.');
       }
