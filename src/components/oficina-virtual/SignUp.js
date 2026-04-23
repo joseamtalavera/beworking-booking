@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
@@ -26,7 +26,6 @@ import { styled } from '@mui/material/styles';
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
 
 const DEFAULT_PLANS = {
   basic: { name: 'Basic', price: 15, priceCents: 1500 },
@@ -120,6 +119,10 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [emailTaken, setEmailTaken] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const stepLabels = t('register.steps', { returnObjects: true }) || ['Account', 'Company', 'Address', 'Payment'];
+  const stripePromise = useMemo(
+    () => step >= 2 ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null,
+    [step]
+  );
 
   useEffect(() => {
     if (planParam && PLANS[planParam]) setSelectedPlan(planParam);
