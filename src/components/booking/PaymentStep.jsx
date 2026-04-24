@@ -74,6 +74,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [paymentIntentId, setPaymentIntentId] = useState('');
   const isDesk = room?.priceUnit === '/month';
   const [redirectRecoveryDone, setRedirectRecoveryDone] = useState(false);
 
@@ -112,6 +113,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
         savedPayload.stripePaymentIntentId = paymentIntent.id;
         await createPublicBooking(savedPayload);
         sessionStorage.removeItem(PENDING_BOOKING_KEY);
+        setPaymentIntentId(paymentIntent.id);
         setSuccess(true);
       } catch (bookingErr) {
         console.error('Failed to create booking after 3DS redirect:', bookingErr);
@@ -199,6 +201,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
         });
         sessionStorage.removeItem(PENDING_BOOKING_KEY);
         setSubmitting(false);
+        setPaymentIntentId(result.paymentIntent.id);
         setSuccess(true);
       } catch (bookingErr) {
         console.error('Failed to create booking after payment:', bookingErr);
@@ -240,7 +243,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   };
 
   if (success) {
-    return <SuccessMessage amount={`€${amount}`} valueCents={amountCents} transactionId={result?.paymentIntent?.id} />;
+    return <SuccessMessage amount={`€${amount}`} valueCents={Math.round((parseFloat(amount) || 0) * 100)} transactionId={paymentIntentId} />;
   }
 
   return (
