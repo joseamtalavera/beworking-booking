@@ -6,8 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useTranslation } from 'react-i18next';
 
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
-const LOGIN_URL = `${FRONTEND_URL}/main/login`;
+const LOGIN_URL = '/login';
 
 // Modal dialog wrapper for booking flow
 const BookingFlowModal = ({ open, onClose, onContinue }) => {

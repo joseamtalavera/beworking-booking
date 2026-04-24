@@ -274,7 +274,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography sx={{ textAlign: 'center' }}>
             {t('register.alreadyHaveAccount')}{' '}
-            <Link href={`${FRONTEND_URL}/main/login`} sx={{ textDecoration: 'none', fontWeight: 700 }}>
+            <Link href="/login" sx={{ textDecoration: 'none', fontWeight: 700 }}>
               {t('register.signIn')}
             </Link>
           </Typography>
@@ -517,7 +517,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Typography sx={{ textAlign: 'center' }}>
           {t('register.alreadyHaveAccount')}{' '}
-          <Link href={`${FRONTEND_URL}/main/login`} sx={{ textDecoration: 'none', fontWeight: 700 }}>
+          <Link href="/login" sx={{ textDecoration: 'none', fontWeight: 700 }}>
             {t('register.signIn')}
           </Link>
         </Typography>
