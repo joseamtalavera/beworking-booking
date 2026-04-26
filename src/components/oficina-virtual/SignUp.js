@@ -25,7 +25,6 @@ import StarIcon from '@mui/icons-material/Star';
 import { styled } from '@mui/material/styles';
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://be-working.com';
 
 const DEFAULT_PLANS = {
   basic: { name: 'Basic', price: 15, priceCents: 1500 },
@@ -498,7 +497,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
                     label={
                       <span>
                         <Trans i18nKey="register.termsLabel" components={{
-                          terms: <Link href={`${FRONTEND_URL}/main/terminos`} target="_blank" rel="noopener" sx={{ fontWeight: 700, textDecoration: 'none', color: 'primary.main' }} />,
+                          terms: <Link href="/aviso-legal" target="_blank" rel="noopener" sx={{ fontWeight: 700, textDecoration: 'none', color: 'primary.main' }} />,
                         }} />
                       </span>
                     }
