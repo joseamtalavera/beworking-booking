@@ -892,7 +892,7 @@
     "s8SubsB2": "No se reembolsan periodos ya iniciados ni cuotas correspondientes a servicios ya prestados.",
     "s8SubsB3": "Al activar la suscripción, el cliente solicita expresamente su prestación inmediata; conforme al art. 103.a del Real Decreto Legislativo 1/2007, una vez iniciada la prestación efectiva del servicio el reembolso queda limitado al importe correspondiente al periodo no consumido.",
     "s8ModsTitle": "Modificaciones",
-    "s8ModsBody": "Los cambios de fecha u hora están sujetos a disponibilidad y a confirmación por correo electrónico. La aceptación de la modificación no constituye un derecho del cliente.",
+    "s8ModsBody": "Los cambios de fecha u hora están sujetos a disponibilidad y a confirmación por correo electrónico. La aceptación de la modificación no constituye un derecho del cliente. BeWorking se reserva el derecho a solicitar justificación formal del motivo de la modificación.",
     "s8ForceTitle": "Causa imputable a BeWorking o fuerza mayor",
     "s8ForceBody": "Cuando la imposibilidad de prestar el servicio derive de causa imputable a BeWorking o de fuerza mayor (cierre administrativo del centro, fallo eléctrico prolongado u otras causas no atribuibles al cliente), BeWorking ofrecerá la recolocación de la reserva en una fecha alternativa o, a su discreción, el reembolso del importe correspondiente al servicio no prestado.",
     "s8RefundTitle": "Forma de reembolso",
