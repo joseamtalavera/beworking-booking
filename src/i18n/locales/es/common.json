@@ -843,5 +843,57 @@
         ]
       }
     }
+  },
+  "cookies": {
+    "title": "Política de Cookies",
+    "lastUpdated": "Última actualización: 28 de abril de 2026",
+    "intro": "La presente Política de Cookies regula el uso de cookies y tecnologías similares en el sitio web be-working.com, en cumplimiento del artículo 22.2 de la Ley 34/2002, de Servicios de la Sociedad de la Información (LSSI-CE), del Reglamento (UE) 2016/679 (RGPD) y de la Ley Orgánica 3/2018 (LOPDGDD).",
+    "s1Title": "1. ¿Qué son las cookies?",
+    "s1Body": "Una cookie es un pequeño fichero de texto que un sitio web guarda en el navegador o dispositivo del usuario cuando lo visita. Las cookies permiten al sitio recordar información sobre la visita, como el idioma preferido, el estado de inicio de sesión o elementos del carrito, y son útiles para mejorar la experiencia de uso, así como para fines analíticos o publicitarios.",
+    "s2Title": "2. Tipos de cookies que utilizamos",
+    "s2Body": "Clasificamos las cookies según las directrices de la Agencia Española de Protección de Datos (AEPD):",
+    "s2NecessaryLabel": "Cookies estrictamente necesarias",
+    "s2NecessaryBody": "imprescindibles para la prestación del servicio (autenticación, seguridad, gestión del consentimiento). Están exentas de consentimiento conforme al art. 22.2 LSSI.",
+    "s2StatisticsLabel": "Cookies estadísticas",
+    "s2StatisticsBody": "nos ayudan a entender de forma agregada cómo se usa el sitio. Solo se activan con el consentimiento explícito del usuario.",
+    "s2MarketingLabel": "Cookies de marketing",
+    "s2MarketingBody": "actualmente no utilizamos cookies de marketing ni publicidad personalizada.",
+    "s3Title": "3. Cookies en uso",
+    "s3HeaderName": "Nombre",
+    "s3HeaderProvider": "Proveedor",
+    "s3HeaderPurpose": "Finalidad",
+    "s3HeaderDuration": "Duración",
+    "s3HeaderCategory": "Categoría",
+    "s3Note": "Cloudflare Turnstile, utilizado para protección anti-bot en formularios, emite tokens efímeros que no persisten como cookies en el navegador.",
+    "purposes": {
+      "consent": "Almacena el estado de consentimiento del usuario para cookies en este dominio.",
+      "authAccess": "Mantiene la sesión del usuario autenticado (token JWT, httpOnly).",
+      "authRefresh": "Permite renovar el token de sesión sin volver a iniciar sesión (httpOnly).",
+      "stripeFraud": "Detección de fraude y prevención durante el procesamiento de pagos.",
+      "ga4Visitor": "Identifica al visitante de forma anónima para medir el uso del sitio.",
+      "gaDistinguish": "Distingue visitantes para análisis de uso agregado."
+    },
+    "categories": {
+      "necessary": "Necesaria",
+      "statistics": "Estadística"
+    },
+    "durations": {
+      "twelveMonths": "12 meses",
+      "fifteenMin": "15 minutos",
+      "sevenDays": "7 días",
+      "yearOrSession": "1 año / sesión",
+      "twoYears": "2 años",
+      "twentyFourHours": "24 horas"
+    },
+    "s4Title": "4. Cookies de terceros",
+    "s4Body": "Algunas cookies son emitidas por terceros para prestarnos servicios (Google para analítica, Stripe para procesamiento de pagos, Cookiebot para gestión del consentimiento). Estos terceros pueden tratar los datos en países fuera del Espacio Económico Europeo; consulte sus respectivas políticas para más información.",
+    "s5Title": "5. Cómo gestionar tus preferencias",
+    "s5Body": "Puedes aceptar, rechazar o configurar el uso de cookies en cualquier momento desde el panel de preferencias. Tu elección se guardará durante 12 meses, salvo que la borres manualmente.",
+    "s5Button": "Gestionar preferencias de cookies",
+    "s5BrowserNote": "También puedes eliminar las cookies directamente desde tu navegador. Encontrarás instrucciones en la documentación oficial de cada navegador:",
+    "s6Title": "6. Cambios en esta política",
+    "s6Body": "Podemos actualizar esta Política de Cookies para reflejar cambios en nuestras prácticas o por motivos legales. La fecha de \"última actualización\" indicada al inicio te permite identificar cuándo se publicó la versión vigente.",
+    "s7Title": "7. Contacto",
+    "s7Body": "Para cualquier consulta sobre esta política puedes escribirnos a"
   }
 }
