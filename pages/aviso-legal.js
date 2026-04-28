@@ -31,7 +31,7 @@ export default function AvisoLegal() {
             Aviso Legal y Condiciones de Uso
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 4 }}>
-            Última actualización: 26 de abril de 2026
+            Última actualización: 28 de abril de 2026
           </Typography>
 
           <P>
@@ -132,7 +132,59 @@ export default function AvisoLegal() {
             </P>
           </Section>
 
-          <Section id="modificaciones" title="8. Modificaciones">
+          <Section id="cancelaciones" title="8. Cancelaciones y reembolsos">
+            <P>
+              Las condiciones de cancelación y reembolso aplicables a los servicios contratados a
+              través del Sitio Web son las siguientes:
+            </P>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 2, mb: 1, color: 'text.primary' }}>
+              Reservas por horas o días (salas, despachos, hot-desk)
+            </Typography>
+            <Box component="ul" sx={{ color: 'text.secondary', lineHeight: 1.75, pl: 3, mb: 2 }}>
+              <li>Modificaciones y cancelaciones admitidas hasta <strong>24 horas antes</strong> del inicio, solicitándolas por correo electrónico a info@be-working.com.</li>
+              <li>Las cancelaciones tardías o ausencias (no-show) no dan derecho a reembolso ni a abono.</li>
+              <li>Por tratarse de servicios prestados en fechas y horas determinadas (art. 103.l del Real Decreto Legislativo 1/2007), no resulta aplicable el derecho de desistimiento previsto para contratos a distancia.</li>
+            </Box>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 2, mb: 1, color: 'text.primary' }}>
+              Suscripciones (oficina virtual, planes mensuales o de duración prolongada)
+            </Typography>
+            <Box component="ul" sx={{ color: 'text.secondary', lineHeight: 1.75, pl: 3, mb: 2 }}>
+              <li>La cancelación surte efecto al cierre del periodo de facturación en curso y debe comunicarse por correo electrónico con al menos 7 días de antelación.</li>
+              <li>No se reembolsan periodos ya iniciados ni cuotas correspondientes a servicios ya prestados.</li>
+              <li>Al activar la suscripción, el cliente solicita expresamente su prestación inmediata; conforme al art. 103.a del Real Decreto Legislativo 1/2007, una vez iniciada la prestación efectiva del servicio el reembolso queda limitado al importe correspondiente al periodo no consumido.</li>
+            </Box>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 2, mb: 1, color: 'text.primary' }}>
+              Modificaciones
+            </Typography>
+            <P>
+              Los cambios de fecha u hora están sujetos a disponibilidad y a confirmación por correo
+              electrónico. La aceptación de la modificación no constituye un derecho del cliente.
+            </P>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 2, mb: 1, color: 'text.primary' }}>
+              Causa imputable a BeWorking o fuerza mayor
+            </Typography>
+            <P>
+              Cuando la imposibilidad de prestar el servicio derive de causa imputable a BeWorking o
+              de fuerza mayor (cierre administrativo del centro, fallo eléctrico prolongado u otras
+              causas no atribuibles al cliente), BeWorking ofrecerá la recolocación de la reserva en
+              una fecha alternativa o, a su discreción, el reembolso del importe correspondiente al
+              servicio no prestado.
+            </P>
+
+            <Typography variant="subtitle2" sx={{ fontWeight: 700, mt: 2, mb: 1, color: 'text.primary' }}>
+              Forma de reembolso
+            </Typography>
+            <P>
+              Cuando proceda, los reembolsos se realizarán por el mismo medio de pago utilizado en
+              la transacción original, salvo acuerdo expreso en contrario.
+            </P>
+          </Section>
+
+          <Section id="modificaciones" title="9. Modificaciones">
             <P>
               BeWorking se reserva el derecho a modificar, en cualquier momento y sin previo aviso, la
               presentación, configuración y contenidos del Sitio Web, así como las presentes
@@ -140,7 +192,7 @@ export default function AvisoLegal() {
             </P>
           </Section>
 
-          <Section id="ley" title="9. Legislación aplicable y jurisdicción">
+          <Section id="ley" title="10. Legislación aplicable y jurisdicción">
             <P>
               Las presentes condiciones se rigen por la legislación española. Para la resolución de
               cualquier controversia derivada de su interpretación o aplicación, las partes se someten
@@ -150,7 +202,7 @@ export default function AvisoLegal() {
             </P>
           </Section>
 
-          <Section id="contacto" title="10. Contacto">
+          <Section id="contacto" title="11. Contacto">
             <P>
               Para cualquier consulta relativa al presente Aviso Legal, el usuario puede dirigirse a
               BEWORKING OFFICES PARTNERS SL mediante correo electrónico a{' '}
