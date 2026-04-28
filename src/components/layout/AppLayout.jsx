@@ -79,7 +79,7 @@ const AppLayout = ({ children }) => {
       links: [
         { labelKey: 'footer.links.terms',    href: '/aviso-legal' },
         { labelKey: 'footer.links.privacy',  href: '/politica-de-privacidad' },
-        { labelKey: 'footer.links.cookies',  soon: true },
+        { labelKey: 'footer.links.cookies',  href: i18n.language === 'en' ? '/cookie-policy' : '/politica-de-cookies' },
         { labelKey: 'footer.links.sitemap',  soon: true },
       ],
     },
