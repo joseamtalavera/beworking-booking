@@ -23,3 +23,6 @@ pnpm-debug.log*
 
 # Vercel
 .vercel
+
+# Local rebrand working files (drafts, source logos, installers)
+rebrand/
