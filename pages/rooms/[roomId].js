@@ -833,7 +833,10 @@ const RoomDetailPage = () => {
         onContinue={() => {
           setBookingModalOpen(false);
           const query = {};
-          if (router.query.date) query.date = router.query.date;
+          // Carry the date the user selected on this page so the booking form
+          // doesn't reset to today.
+          if (selectedDate) query.date = selectedDate;
+          else if (router.query.date) query.date = router.query.date;
           if (router.query.time) query.time = router.query.time;
           router.push({ pathname: `/rooms/${room.slug ?? room.id}/book`, query });
         }}
