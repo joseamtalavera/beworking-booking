@@ -10,7 +10,7 @@ import {
   useCatalogRooms,
   buildRoomFromProducto,
   isCanonicalDeskProducto,
-  isDeskProducto
+  isDeskProducto,
 } from '@/store/useCatalogRooms';
 import { useBookingFlow } from '@/store/useBookingFlow';
 import BookingStepper from '@/components/booking/BookingStepper';
@@ -21,6 +21,9 @@ import PaymentStep from '@/components/booking/PaymentStep';
 import { useBookingVisitor } from '@/store/useBookingVisitor';
 import { fetchBookingProductos } from '@/api/bookings';
 import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, typography } = tokens;
 
 export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 'page' }) => {
   const { t } = useTranslation();
@@ -37,7 +40,6 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
   useEffect(() => {
     resetFlow();
     resetVisitor();
-    // Apply date/time from search bar if passed via query params
     if (initialDate || initialTime) {
       const patch = {};
       if (initialDate) { patch.date = initialDate; patch.dateTo = initialDate; }
@@ -50,7 +52,7 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
     };
   }, [resetFlow, resetVisitor, initialDate, initialTime, setSchedule]);
 
-  // Populate store on direct entry (when coming straight to /rooms/ma1-desks/book)
+  // Populate store on direct entry
   useEffect(() => {
     if (rooms.length > 0 || !roomId) return;
     let active = true;
@@ -65,7 +67,6 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
         });
         const mesas = data.filter(isDeskProducto);
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));
-
         const deskProducto = data.find(isCanonicalDeskProducto);
 
         if (deskProducto) {
@@ -87,8 +88,7 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
           setRooms(aulaRooms);
         }
       })
-      .catch(() => {})
-      .finally(() => { /* no-op */ });
+      .catch(() => {});
     return () => { active = false; };
   }, [rooms.length, roomId, setRooms]);
 
@@ -119,18 +119,28 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
   };
 
   if (!room) {
-    // If store is empty, we're likely fetching; show a lightweight loading state
     if (rooms.length === 0) {
       return (
         <Box sx={{ minHeight: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('common.loading')}</Typography>
+          <Typography sx={{ ...typography.body, color: colors.ink3 }}>{t('common.loading')}</Typography>
         </Box>
       );
     }
     return (
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
-        <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
-          <Typography variant="h6">{t('common.roomNotFound')}</Typography>
+      <Box sx={{ minHeight: '100vh', bgcolor: colors.bg }}>
+        <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 2, md: 3 }, py: 6 }}>
+          <Box
+            component="h1"
+            sx={{
+              ...typography.h2,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            {t('common.roomNotFound')}
+          </Box>
         </Box>
       </Box>
     );
@@ -139,15 +149,40 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
   return (
     <Stack spacing={layout === 'modal' ? 3 : 4} sx={{ width: '100%' }}>
       <Box>
-        <Typography variant="overline" sx={{ color: 'text.disabled' }}>
-          Booking · {room.centro}
+        <Typography
+          sx={{
+            ...typography.eyebrow,
+            color: colors.brand,
+            textTransform: 'uppercase',
+          }}
+        >
+          {t('booking.eyebrow', 'Booking')} · {room.centro}
         </Typography>
-        <Typography variant="h4" sx={{ fontWeight: 700 }}>
+        <Box
+          component="h1"
+          sx={{
+            ...typography.h2,
+            color: colors.ink,
+            fontFamily: typography.fontFamily,
+            fontFeatureSettings: typography.fontFeatureSettings,
+            m: 0,
+            mt: 0.5,
+          }}
+        >
           {room.name}
-        </Typography>
+        </Box>
       </Box>
 
-      <Paper variant="outlined" sx={{ px: 3, py: 2, borderRadius: 3 }}>
+      <Paper
+        elevation={0}
+        sx={{
+          px: 3,
+          py: 2,
+          borderRadius: `${radius.lg}px`,
+          border: `1px solid ${colors.line}`,
+          bgcolor: colors.bg,
+        }}
+      >
         <BookingStepper />
       </Paper>
 
@@ -163,9 +198,7 @@ const BookingFlowPage = () => {
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
 
-  if (!roomId) {
-    return null; // Still loading router
-  }
+  if (!roomId) return null;
 
   return (
     <>
@@ -173,13 +206,20 @@ const BookingFlowPage = () => {
         <title>Book {room?.name || 'Room'} | BeWorking Booking</title>
         <meta name="description" content={`Complete your booking for ${room?.name || 'this space'} at BeWorking`} />
       </Head>
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
-        <Box sx={{ maxWidth: '1200px', mx: 'auto', px: { xs: 2, md: 3 }, py: 4 }}>
+      <Box sx={{ minHeight: '100vh', bgcolor: colors.bg }}>
+        <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 2, md: 3 }, py: { xs: 4, md: 6 } }}>
           <Button
             component={NextLink}
             href={`/rooms/${roomId}`}
             startIcon={<ArrowBackRoundedIcon />}
-            sx={{ mb: 2, textTransform: 'none', color: 'text.secondary', fontWeight: 600, '&:hover': { color: 'primary.main' } }}
+            sx={{
+              mb: 3,
+              textTransform: 'none',
+              color: colors.ink2,
+              fontWeight: 600,
+              fontSize: '0.9rem',
+              '&:hover': { color: colors.brand, bgcolor: 'transparent' },
+            }}
           >
             {t('common.back')}
           </Button>

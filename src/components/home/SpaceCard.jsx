@@ -3,36 +3,32 @@
 import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import { alpha } from '@mui/material/styles';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
 import SquareFootRoundedIcon from '@mui/icons-material/SquareFootRounded';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
 
 const SpaceCard = ({ space, onBookNow }) => {
   const { t } = useTranslation();
   const [imgIndex, setImgIndex] = useState(0);
 
-  if (!space) {
-    return null;
-  }
+  if (!space) return null;
 
   const images = space.gallery && space.gallery.length > 0
     ? space.gallery
     : space.image ? [space.image] : [];
 
   const handleClick = () => {
-    if (typeof onBookNow === 'function') {
-      onBookNow(space);
-    }
+    if (typeof onBookNow === 'function') onBookNow(space);
   };
 
   const handlePrev = (e) => {
@@ -49,36 +45,46 @@ const SpaceCard = ({ space, onBookNow }) => {
   const deskLabel = space.availableCount ? ` (${space.availableCount} ${t('card.available')})` : '';
   const showArrows = images.length > 1;
 
+  const arrowSx = {
+    position: 'absolute',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    bgcolor: 'rgba(255,255,255,0.92)',
+    opacity: 0,
+    width: 28,
+    height: 28,
+    boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
+    transition: `opacity ${motion.duration} ${motion.ease}`,
+    '&:hover': { bgcolor: '#fff' },
+  };
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        minWidth: 0
-      }}
-    >
-      <Card
+    <Box sx={{ display: 'flex', minWidth: 0 }}>
+      <Box
         sx={{
-          borderRadius: 3,
-          overflow: 'hidden',
-          boxShadow: (theme) => `0 4px 6px -1px ${alpha(theme.palette.common.black, 0.1)}`,
-          transition: 'transform 0.2s, box-shadow 0.2s',
           width: '100%',
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
           minWidth: 0,
           maxWidth: '100%',
+          bgcolor: colors.bg,
+          border: `1px solid ${colors.line}`,
+          borderRadius: `${radius.lg}px`,
+          overflow: 'hidden',
+          transition: `transform ${motion.duration} ${motion.ease}, box-shadow ${motion.duration} ${motion.ease}, border-color ${motion.duration} ${motion.ease}`,
           '&:hover': {
-            transform: 'translateY(-2px)',
-            boxShadow: (theme) => `0 10px 25px -3px ${alpha(theme.palette.common.black, 0.1)}`
-          }
+            transform: 'translateY(-3px)',
+            boxShadow: '0 18px 40px -22px rgba(0,0,0,0.22)',
+            borderColor: colors.brand,
+          },
         }}
       >
         <Box
           sx={{
             position: 'relative',
             flexShrink: 0,
-            height: '160px',
+            height: 168,
             overflow: 'hidden',
             '&:hover .card-nav-arrow': { opacity: 1 },
           }}
@@ -97,55 +103,28 @@ const SpaceCard = ({ space, onBookNow }) => {
             />
           )}
 
-          {/* Left arrow */}
           {showArrows && (
             <IconButton
               className="card-nav-arrow"
               onClick={handlePrev}
               size="small"
-              sx={{
-                position: 'absolute',
-                left: 6,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                bgcolor: 'rgba(255,255,255,0.85)',
-                opacity: 0,
-                transition: 'opacity 0.2s',
-                width: 28,
-                height: 28,
-                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
-                '&:hover': { bgcolor: '#fff' },
-              }}
+              sx={{ ...arrowSx, left: 6 }}
             >
               <ChevronLeftIcon sx={{ fontSize: 18 }} />
             </IconButton>
           )}
 
-          {/* Right arrow */}
           {showArrows && (
             <IconButton
               className="card-nav-arrow"
               onClick={handleNext}
               size="small"
-              sx={{
-                position: 'absolute',
-                right: 6,
-                top: '50%',
-                transform: 'translateY(-50%)',
-                bgcolor: 'rgba(255,255,255,0.85)',
-                opacity: 0,
-                transition: 'opacity 0.2s',
-                width: 28,
-                height: 28,
-                boxShadow: '0 1px 4px rgba(0,0,0,0.15)',
-                '&:hover': { bgcolor: '#fff' },
-              }}
+              sx={{ ...arrowSx, right: 6 }}
             >
               <ChevronRightIcon sx={{ fontSize: 18 }} />
             </IconButton>
           )}
 
-          {/* Dot indicators */}
           {showArrows && (
             <Box
               sx={{
@@ -164,43 +143,36 @@ const SpaceCard = ({ space, onBookNow }) => {
                     width: 6,
                     height: 6,
                     borderRadius: '50%',
-                    bgcolor: i === imgIndex ? '#fff' : 'rgba(255,255,255,0.5)',
-                    transition: 'background-color 0.2s',
+                    bgcolor: i === imgIndex ? '#fff' : 'rgba(255,255,255,0.55)',
+                    transition: `background-color ${motion.duration} ${motion.ease}`,
                   }}
                 />
               ))}
             </Box>
           )}
 
-          <Stack
-            direction="row"
-            spacing={1}
-            sx={{
-              position: 'absolute',
-              top: 10,
-              left: 10
-            }}
-          >
-            {space.instantBooking && (
+          {space.instantBooking && (
+            <Stack direction="row" spacing={1} sx={{ position: 'absolute', top: 10, left: 10 }}>
               <Chip
                 label={t('card.instantBooking')}
                 size="small"
                 sx={{
-                  background: '#ffffff',
-                  color: 'text.primary',
-                  fontWeight: 500,
-                  fontSize: '0.75rem',
-                  '& .MuiChip-label': { color: 'text.primary' }
+                  bgcolor: '#ffffff',
+                  color: colors.ink,
+                  fontWeight: 600,
+                  fontSize: '0.72rem',
+                  borderRadius: `${radius.pill}px`,
+                  height: 24,
+                  '& .MuiChip-label': { color: colors.ink, px: 1.25 },
                 }}
               />
-            )}
-          </Stack>
-
+            </Stack>
+          )}
         </Box>
 
-        <CardContent
+        <Box
           sx={{
-            p: 2,
+            p: 2.25,
             display: 'flex',
             flexDirection: 'column',
             flex: '1 1 auto',
@@ -208,36 +180,36 @@ const SpaceCard = ({ space, onBookNow }) => {
             justifyContent: 'space-between',
             width: '100%',
             maxWidth: '100%',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
           }}
         >
-          <Box sx={{ flex: '1 1 auto', minHeight: 0, width: '100%', maxWidth: '100%' }}>
+          <Box sx={{ flex: '1 1 auto', minHeight: 0, width: '100%' }}>
             <Typography
-              variant="h6"
-              fontWeight={600}
               sx={{
-                mb: 0.75,
+                fontSize: '1rem',
+                fontWeight: 700,
+                color: colors.ink,
+                mb: 0.5,
                 lineHeight: 1.3,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
               }}
             >
               {space.name}
             </Typography>
 
             <Typography
-              variant="body2"
-              color="text.secondary"
               sx={{
+                ...typography.body,
+                color: colors.ink2,
                 mb: 1.25,
-                minHeight: '2rem',
+                minHeight: '2.6rem',
                 lineHeight: 1.5,
                 display: '-webkit-box',
                 WebkitLineClamp: 2,
                 WebkitBoxOrient: 'vertical',
                 overflow: 'hidden',
-                width: '100%'
               }}
             >
               {space.subtitle || space.description}
@@ -247,32 +219,31 @@ const SpaceCard = ({ space, onBookNow }) => {
               direction="row"
               spacing={1.5}
               sx={{
-                mb: 1.25,
+                mb: 1.5,
                 minHeight: '1.5rem',
                 flexWrap: 'wrap',
                 alignItems: 'center',
-                width: '100%'
               }}
             >
-              <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
-                <PeopleAltRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
-                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+              <Stack direction="row" alignItems="center" spacing={0.4}>
+                <PeopleAltRoundedIcon sx={{ fontSize: 15, color: colors.ink3 }} />
+                <Typography sx={{ fontSize: '0.82rem', color: colors.ink2 }}>
                   {space.capacity}
                 </Typography>
               </Stack>
 
               {space.sizeSqm != null && (
-                <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
-                  <SquareFootRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
-                  <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+                <Stack direction="row" alignItems="center" spacing={0.4}>
+                  <SquareFootRoundedIcon sx={{ fontSize: 15, color: colors.ink3 }} />
+                  <Typography sx={{ fontSize: '0.82rem', color: colors.ink2 }}>
                     {space.sizeSqm} m²
                   </Typography>
                 </Stack>
               )}
 
-              <Stack direction="row" alignItems="center" spacing={0.5} sx={{ flexShrink: 0 }}>
-                <BusinessRoundedIcon sx={{ fontSize: 15, color: 'text.secondary' }} />
-                <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+              <Stack direction="row" alignItems="center" spacing={0.4}>
+                <BusinessRoundedIcon sx={{ fontSize: 15, color: colors.ink3 }} />
+                <Typography sx={{ fontSize: '0.82rem', color: colors.ink2, whiteSpace: 'nowrap' }}>
                   {space.typeLabel || (isMeetingRoom ? t('card.meetingRoom') : `${t('card.desk')}${deskLabel}`)}
                 </Typography>
               </Stack>
@@ -283,48 +254,48 @@ const SpaceCard = ({ space, onBookNow }) => {
             direction="row"
             justifyContent="space-between"
             alignItems="center"
-            sx={{
-              mt: 'auto',
-              width: '100%',
-              gap: 1
-            }}
+            sx={{ mt: 'auto', gap: 1 }}
           >
             <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              color="primary"
               sx={{
+                fontSize: '0.95rem',
+                fontWeight: 700,
+                color: colors.brand,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 flex: '0 1 auto',
-                minWidth: 0
+                minWidth: 0,
               }}
             >
-              {t('card.from')} {space.price}
-              {space.priceUnit}
+              {t('card.from')} {space.price}{space.priceUnit}
             </Typography>
 
             <Button
-              variant="contained"
               size="small"
               onClick={handleClick}
+              disabled={!space.isBookable}
+              disableElevation
               sx={{
                 textTransform: 'none',
                 fontWeight: 600,
-                backgroundColor: 'primary.main',
+                fontSize: '0.82rem',
+                bgcolor: colors.brand,
+                color: colors.bg,
+                borderRadius: `${radius.pill}px`,
+                px: 2,
+                py: 0.6,
                 flexShrink: 0,
-                '&:hover': {
-                  backgroundColor: 'primary.dark'
-                }
+                transition: `background-color ${motion.duration} ${motion.ease}`,
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+                '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
               }}
-              disabled={!space.isBookable}
             >
               {t('card.bookNow')}
             </Button>
           </Stack>
-        </CardContent>
-      </Card>
+        </Box>
+      </Box>
     </Box>
   );
 };

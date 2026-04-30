@@ -1,36 +1,85 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NextLink from 'next/link';
 import Head from 'next/head';
-import { Box, Typography, Button, Tabs, Tab, Chip, Stack, Dialog, DialogContent, IconButton } from '@mui/material';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import SignUp from '@/components/oficina-virtual/SignUp';
-import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
+import { Box, Typography, Button } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import PlaceOutlinedIcon from '@mui/icons-material/PlaceOutlined';
 import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { useTranslation } from 'react-i18next';
-import ScrollReveal from '@/components/common/ScrollReveal';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, shadow, motion, typography, layout } = tokens;
 
 const TABS = [
-  { key: 'overview',       icon: DashboardIcon,            screenshot: '/platform/oveview.png',             i18nPrefix: 'platform' },
-  { key: 'mailbox',        icon: MailOutlineIcon,           screenshot: '/platform/domicilio_fiscal.png',    i18nPrefix: 'platform', label: 'businessAddress' },
-  { key: 'beSpaces',       icon: PlaceOutlinedIcon,         screenshot: '/platform/bespaces.png',            i18nPrefix: 'platform' },
-  { key: 'automation',     icon: AutoFixHighOutlinedIcon,   screenshot: '/platform/automatizaciones.png',    i18nPrefix: 'platform', soon: true },
-  { key: 'reports',        icon: AssessmentOutlinedIcon,    screenshot: '/platform/informes.png',            i18nPrefix: 'platform', soon: true },
+  { key: 'overview', icon: DashboardIcon, screenshot: '/platform/oveview.png' },
+  { key: 'mailbox', label: 'businessAddress', icon: MailOutlineIcon, screenshot: '/platform/domicilio_fiscal.png' },
+  { key: 'beSpaces', icon: PlaceOutlinedIcon, screenshot: '/platform/bespaces.png' },
+  { key: 'automation', icon: AutoFixHighOutlinedIcon, screenshot: '/platform/automatizaciones.png', soon: true },
+  { key: 'reports', icon: AssessmentOutlinedIcon, screenshot: '/platform/informes.png', soon: true },
 ];
 
 const NAV_HEIGHT = 56;
 
+const RevealBox = ({ children, sx, delay = 0 }) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <Box
+      ref={ref}
+      sx={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+        transition: `opacity ${motion.durationSlow} ${motion.ease} ${delay}s, transform ${motion.durationSlow} ${motion.ease} ${delay}s`,
+        ...sx,
+      }}
+    >
+      {children}
+    </Box>
+  );
+};
+
 export default function Platform() {
   const { t, i18n } = useTranslation();
+  const isEs = i18n.language === 'es';
   const [activeTab, setActiveTab] = useState(0);
-  const [signupOpen, setSignupOpen] = useState(false);
-  const [signupPlan, setSignupPlan] = useState('basic');
   const sectionRefs = useRef([]);
+  const heroRef = useRef(null);
+  const [heroVisible, setHeroVisible] = useState(false);
 
-  const handleTabClick = (_, index) => {
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  const handleTabClick = (index) => {
     setActiveTab(index);
     const el = sectionRefs.current[index];
     if (el) {
@@ -49,7 +98,7 @@ export default function Platform() {
           }
         });
       },
-      { rootMargin: `-${NAV_HEIGHT + 32}px 0px -55% 0px`, threshold: 0 }
+      { rootMargin: `-${NAV_HEIGHT + 32}px 0px -55% 0px`, threshold: 0 },
     );
     sectionRefs.current.forEach((el) => { if (el) observer.observe(el); });
     return () => observer.disconnect();
@@ -58,37 +107,66 @@ export default function Platform() {
   return (
     <>
       <Head>
-        <title>Platform — BeWorking</title>
-        <meta name="description" content="One dashboard for every part of your business. Built-in tools and external integrations — invoicing, contacts, mailbox, and 50+ connected apps." />
+        <title>{isEs ? 'BeWorkingApp — BeWorking' : 'BeWorkingApp — BeWorking'}</title>
+        <meta
+          name="description"
+          content={isEs
+            ? 'Una sola app para todo tu negocio. Herramientas integradas e integraciones — facturación, contactos, mailbox y más de 50 apps conectadas.'
+            : 'One dashboard for every part of your business. Built-in tools and external integrations — invoicing, contacts, mailbox, and 50+ connected apps.'}
+        />
         <link rel="canonical" href="https://be-working.com/platform" />
-        <meta property="og:title" content="Platform — BeWorking" />
-        <meta property="og:description" content="One dashboard for every part of your business. Built-in tools and external integrations." />
+        <meta property="og:title" content="BeWorkingApp — BeWorking" />
+        <meta property="og:description" content="One dashboard for every part of your business." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://be-working.com/platform" />
       </Head>
 
-      {/* Platform Hero */}
+      {/* Hero */}
       <Box
+        component="section"
+        ref={heroRef}
         sx={{
-          bgcolor: '#ffffff',
-          pt: { xs: '80px', md: '112px' },
-          pb: { xs: '64px', md: '80px' },
-          px: 3,
+          bgcolor: colors.bg,
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 7, md: 10 },
+          px: { xs: 3, md: 5 },
           textAlign: 'center',
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
+          borderBottom: `1px solid ${colors.line}`,
         }}
       >
-        <ScrollReveal direction="up">
+        <Box
+          sx={{
+            maxWidth: 720,
+            mx: 'auto',
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+            transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
+          }}
+        >
           <Typography
-            sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}
+            sx={{
+              ...typography.eyebrow,
+              color: colors.brand,
+              textTransform: 'uppercase',
+              mb: 2,
+            }}
           >
-            {t('platform.hero.label')}
+            {isEs ? 'Plataforma' : 'Platform'}
           </Typography>
-          <Typography component="h1" sx={{ color: 'text.primary', maxWidth: 700, mx: 'auto', fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)', fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em' }}>
-            {t('platform.hero.heading')}{' '}
-            <Box component="span" sx={{ color: 'primary.main' }}>{t('platform.hero.headingAccent')}</Box>
-          </Typography>
-          <Typography component="p" sx={{ color: 'text.secondary', maxWidth: 560, mx: 'auto', mt: 4, fontSize: '1.125rem', lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
+          <Box
+            component="h1"
+            sx={{
+              ...typography.h1,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            BeWorking
+            <Box component="span" sx={{ color: colors.brand, display: 'block' }}>App</Box>
+          </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 560, mx: 'auto' }}>
             {t('platform.hero.subheading')}
           </Typography>
           <Box sx={{ mt: 4 }}>
@@ -96,147 +174,191 @@ export default function Platform() {
               variant="contained"
               component={NextLink}
               href="/register"
-              sx={{ borderRadius: '999px', px: 4, py: 1.25, fontSize: '0.875rem' }}
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                borderRadius: `${radius.pill}px`,
+                px: 3.5,
+                py: 1.4,
+                fontSize: '0.9rem',
+                fontWeight: 600,
+                textTransform: 'none',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
             >
-              {t('platform.cta.button')}
+              {t('platform.cta.button', isEs ? 'Empezar gratis' : 'Get started')}
             </Button>
           </Box>
-        </ScrollReveal>
+        </Box>
       </Box>
 
-      {/* Sticky nav */}
+      {/* Sticky tabs */}
       <Box
         sx={{
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          bgcolor: '#ffffff',
-          borderBottom: '1px solid rgba(0,0,0,0.07)',
-          px: 3,
+          bgcolor: 'rgba(255,255,255,0.92)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: `1px solid ${colors.line}`,
+          px: { xs: 3, md: 5 },
         }}
       >
-        <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-          <Tabs
-            value={activeTab}
-            onChange={handleTabClick}
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              minHeight: NAV_HEIGHT,
-              '& .MuiTabs-flexContainer': { justifyContent: { xs: 'flex-start', md: 'center' } },
-              '& .MuiTabs-indicator': { bgcolor: 'primary.main' },
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontWeight: 400,
-                fontSize: '0.875rem',
-                color: 'text.secondary',
-                minWidth: 'auto',
-                minHeight: NAV_HEIGHT,
-                px: 2.5,
-                '&.Mui-selected': { color: 'text.primary', fontWeight: 500 },
-              },
-            }}
-          >
-            {TABS.map((tab, i) => {
-              const Icon = tab.icon;
-              const tabLabel = tab.label || tab.key;
-              return (
-                <Tab
-                  key={tab.key}
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Icon sx={{ fontSize: 16 }} />
-                      {t(`${tab.i18nPrefix}.tabs.${tabLabel}`)}
-                      {tab.soon && (
-                        <Chip label="Soon" size="small" sx={{ height: 20, fontSize: '0.625rem', fontWeight: 600, bgcolor: 'rgba(0,150,36,0.08)', color: 'primary.main', borderRadius: '6px' }} />
-                      )}
-                    </Box>
-                  }
-                  value={i}
-                />
-              );
-            })}
-          </Tabs>
+        <Box
+          sx={{
+            maxWidth: layout.maxWidth,
+            mx: 'auto',
+            display: 'flex',
+            gap: 1,
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': { display: 'none' },
+            justifyContent: { xs: 'flex-start', md: 'center' },
+            py: 1.5,
+          }}
+        >
+          {TABS.map((tab, i) => {
+            const Icon = tab.icon;
+            const tabLabel = tab.label || tab.key;
+            const active = activeTab === i;
+            return (
+              <Box
+                key={tab.key}
+                role="button"
+                tabIndex={0}
+                onClick={() => handleTabClick(i)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') handleTabClick(i);
+                }}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 0.85,
+                  px: 2,
+                  py: 0.75,
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  letterSpacing: '-0.005em',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  whiteSpace: 'nowrap',
+                  borderRadius: `${radius.pill}px`,
+                  bgcolor: active ? colors.brand : 'transparent',
+                  color: active ? colors.bg : colors.ink2,
+                  border: `1px solid ${active ? colors.brand : colors.line}`,
+                  transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+                  '&:hover': active ? {} : { borderColor: colors.brand, color: colors.brand },
+                }}
+              >
+                <Icon sx={{ fontSize: 16 }} />
+                {t(`platform.tabs.${tabLabel}`)}
+                {tab.soon && (
+                  <Box
+                    component="span"
+                    sx={{
+                      fontSize: '0.6rem',
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                      textTransform: 'uppercase',
+                      bgcolor: active ? 'rgba(255,255,255,0.2)' : colors.brandSoft,
+                      color: active ? colors.bg : colors.brand,
+                      borderRadius: `${radius.sm}px`,
+                      px: 0.85,
+                      py: 0.2,
+                    }}
+                  >
+                    {isEs ? 'Pronto' : 'Soon'}
+                  </Box>
+                )}
+              </Box>
+            );
+          })}
         </Box>
       </Box>
 
-      {/* All sections */}
-      {TABS.map((tab, index) => (
-        <Box
-          key={tab.key}
-          ref={(el) => { sectionRefs.current[index] = el; }}
-          sx={{
-            bgcolor: index % 2 === 0 ? '#ffffff' : '#fafafa',
-            py: { xs: '80px', md: '112px' },
-            px: 3,
-            borderBottom: '1px solid rgba(0,0,0,0.05)',
-          }}
-        >
+      {/* Feature sections */}
+      {TABS.map((tab, index) => {
+        const tabLabel = tab.label || tab.key;
+        const isReverse = index % 2 === 1;
+        return (
           <Box
+            key={tab.key}
+            component="section"
+            ref={(el) => { sectionRefs.current[index] = el; }}
             sx={{
-              maxWidth: 1100,
-              mx: 'auto',
-              display: 'grid',
-              gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-              gap: { xs: 6, md: 10 },
-              alignItems: 'center',
-              direction: index % 2 === 0 ? 'ltr' : 'rtl',
+              bgcolor: index % 2 === 0 ? colors.bg : colors.bgSoft,
+              py: { xs: 9, md: 13 },
+              px: { xs: 3, md: 5 },
             }}
           >
-            <ScrollReveal direction={index % 2 === 0 ? 'left' : 'right'}>
-              <Box sx={{ direction: 'ltr' }}>
+            <Box
+              sx={{
+                maxWidth: layout.maxWidth,
+                mx: 'auto',
+                display: 'grid',
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: { xs: 5, md: 8 },
+                alignItems: 'center',
+                direction: { md: isReverse ? 'rtl' : 'ltr' },
+                '& > *': { direction: 'ltr' },
+              }}
+            >
+              <RevealBox>
                 <Typography
-                  sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}
+                  sx={{
+                    ...typography.eyebrow,
+                    color: colors.brand,
+                    textTransform: 'uppercase',
+                    mb: 2,
+                  }}
                 >
-                  {t(`${tab.i18nPrefix}.tabs.${tab.label || tab.key}`)}
+                  {String(index + 1).padStart(2, '0')} · {t(`platform.tabs.${tabLabel}`)}
                 </Typography>
-                <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
-                  {t(`${tab.i18nPrefix}.features.${tab.key}.heading`)}
+                <Box
+                  component="h2"
+                  sx={{
+                    ...typography.h2,
+                    color: colors.ink,
+                    fontFamily: typography.fontFamily,
+                    fontFeatureSettings: typography.fontFeatureSettings,
+                    m: 0,
+                  }}
+                >
+                  {t(`platform.features.${tab.key}.heading`)}
+                </Box>
+                <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3 }}>
+                  {t(`platform.features.${tab.key}.body`)}
                 </Typography>
-                <Typography component="p" sx={{ color: 'text.secondary', mt: 4, fontSize: '1.125rem', lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
-                  {t(`${tab.i18nPrefix}.features.${tab.key}.body`)}
-                </Typography>
-              </Box>
-            </ScrollReveal>
+              </RevealBox>
 
-            <ScrollReveal direction={index % 2 === 0 ? 'right' : 'left'} delay={0.1}>
-              <Box sx={{ direction: 'ltr' }}>
+              <RevealBox
+                delay={0.1}
+                sx={{
+                  width: '100%',
+                  borderRadius: `${radius.lg}px`,
+                  overflow: 'hidden',
+                  bgcolor: colors.bg,
+                  border: `1px solid ${colors.line}`,
+                  boxShadow: shadow.frame,
+                }}
+              >
                 <Box
                   component="img"
                   src={tab.screenshot}
-                  alt={t(`${tab.i18nPrefix}.tabs.${tab.key}`)}
+                  alt={t(`platform.tabs.${tabLabel}`)}
                   loading="lazy"
                   sx={{
                     width: '100%',
-                    borderRadius: '12px',
-                    boxShadow: '0 8px 40px rgba(0,0,0,0.12)',
-                    border: '1px solid rgba(0,0,0,0.06)',
+                    height: 'auto',
                     display: 'block',
                   }}
                 />
-              </Box>
-            </ScrollReveal>
+              </RevealBox>
+            </Box>
           </Box>
-        </Box>
-      ))}
-
-      {/* SignUp modal (reachable from other CTAs) */}
-      <Dialog
-        open={signupOpen}
-        onClose={() => setSignupOpen(false)}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{ sx: { borderRadius: 3, maxHeight: '90vh' } }}
-      >
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1, pb: 0 }}>
-          <IconButton onClick={() => setSignupOpen(false)} size="small">
-            <CloseRoundedIcon />
-          </IconButton>
-        </Box>
-        <DialogContent sx={{ pt: 0 }}>
-          <SignUp defaultPlan={signupPlan} defaultLocation="malaga" />
-        </DialogContent>
-      </Dialog>
+        );
+      })}
     </>
   );
 }

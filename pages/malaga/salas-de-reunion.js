@@ -1,14 +1,12 @@
 'use client';
 
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import NextLink from 'next/link';
 import {
-  Box, IconButton, Paper, Stack, TextField, Typography, Breadcrumbs, Link,
+  Box, IconButton, Paper, Stack, TextField, Typography,
 } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
@@ -18,8 +16,9 @@ import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
-import ScrollReveal from '@/components/common/ScrollReveal';
+import { tokens } from '@/theme/tokens';
 
+const { colors, motion, typography, layout } = tokens;
 const location = getLocation('malaga');
 
 export default function SalasDeReunion() {
@@ -33,7 +32,24 @@ export default function SalasDeReunion() {
   const [timeFilter, setTimeFilter] = useState('');
   const [people, setPeople] = useState('');
 
-  // Load centros + productos
+  const heroRef = useRef(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   useEffect(() => {
     let active = true;
     const load = async () => {
@@ -53,7 +69,6 @@ export default function SalasDeReunion() {
         setCentros(mapped);
         setProductos(Array.isArray(productosData) ? productosData : []);
 
-        // Populate catalog store
         const centroLabel = mapped.find((c) => c.code === location.centerCode)?.label ?? 'Malaga Workspace';
         const aulas = (productosData || []).filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
@@ -132,8 +147,19 @@ export default function SalasDeReunion() {
       if (timeFilter) query.time = timeFilter;
       router.push({ pathname: `/rooms/${slug}`, query });
     },
-    [router, checkIn, timeFilter]
+    [router, checkIn, timeFilter],
   );
+
+  const filterFieldSx = {
+    '& .MuiInputLabel-root': {
+      fontSize: '0.7rem',
+      fontWeight: 700,
+      color: colors.ink,
+      textTransform: 'uppercase',
+      letterSpacing: '0.06em',
+    },
+    '& .MuiInput-input': { fontSize: '0.9rem', color: colors.ink, py: 0.25 },
+  };
 
   return (
     <>
@@ -143,66 +169,76 @@ export default function SalasDeReunion() {
         <link rel="canonical" href="https://be-working.com/malaga/salas-de-reunion" />
       </Head>
 
-      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-        {/* Hero */}
+      <Box
+        component="section"
+        ref={heroRef}
+        sx={{
+          bgcolor: colors.bg,
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+          textAlign: 'center',
+          borderBottom: `1px solid ${colors.line}`,
+        }}
+      >
         <Box
           sx={{
-            bgcolor: '#ffffff',
-            pt: { xs: 6, md: 10 },
-            pb: { xs: 5, md: 8 },
-            px: 3,
-            borderBottom: '1px solid rgba(0,0,0,0.06)',
-            textAlign: 'center',
+            maxWidth: 720,
+            mx: 'auto',
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+            transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
           }}
         >
-          <Box sx={{ maxWidth: 700, mx: 'auto' }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} sx={{ justifyContent: 'center', display: 'flex', mb: 3 }}>
-              <Link component={NextLink} href="/malaga" underline="hover" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
-                Malaga
-              </Link>
-              <Typography color="text.primary" sx={{ fontSize: '0.875rem' }}>
-                {t('locations.services.meetingRooms', 'Salas de Reunion')}
-              </Typography>
-            </Breadcrumbs>
-            <Typography
-              sx={{
-                fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-                letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
-              }}
-            >
-              BeWorking
-            </Typography>
-            <Typography
-              component="h1"
-              sx={{
-                fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
-                fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em',
-                color: 'text.primary', mb: 2,
-              }}
-            >
-              {t('locations.malaga.meetingRoomsTitle', 'Salas de reunion en')}
-              <Box component="span" sx={{ color: 'primary.main' }}> Malaga.</Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.65,
-                color: 'text.secondary', maxWidth: 520, mx: 'auto',
-              }}
-            >
-              {t('locations.malaga.meetingRoomsSubtitle', 'Espacios equipados para tus reuniones profesionales. Reserva por horas.')}
-            </Typography>
+          <Typography
+            sx={{
+              ...typography.eyebrow,
+              color: colors.brand,
+              textTransform: 'uppercase',
+              mb: 2,
+            }}
+          >
+            {t('locations.services.meetingRooms', 'Salas de reunión')} · Málaga
+          </Typography>
+          <Box
+            component="h1"
+            sx={{
+              ...typography.h1,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            BeWorking<Box component="span" sx={{ color: colors.brand }}>Rooms</Box>
           </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 560, mx: 'auto' }}>
+            {t(
+              'home.evolved.salasPage.subtitle',
+              'Salas equipadas para reuniones, formación o eventos. Reserva por horas, desde 5€/h.',
+            )}
+          </Typography>
         </Box>
+      </Box>
 
-        <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, pt: 4 }}>
-          {/* Search Bar */}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bgSoft,
+          py: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
           <Paper
             elevation={0}
             sx={{
-              mb: 3, border: '1px solid', borderColor: 'divider',
-              backgroundColor: 'background.paper',
-              display: 'flex', alignItems: 'center', overflow: 'hidden',
-              boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
+              mb: 4,
+              border: `1px solid ${colors.line}`,
+              bgcolor: colors.bg,
+              display: 'flex',
+              alignItems: 'center',
+              overflow: 'hidden',
               flexDirection: { xs: 'column', sm: 'row' },
               borderRadius: { xs: 3, sm: 999 },
             }}
@@ -213,13 +249,10 @@ export default function SalasDeReunion() {
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
-                label={t('home.when', 'Cuando')}
+                label={t('home.when', 'Cuándo')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: checkIn ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
+                sx={filterFieldSx}
               />
             </Box>
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
@@ -231,10 +264,7 @@ export default function SalasDeReunion() {
                 label={t('home.time', 'Hora')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: timeFilter ? 'text.primary' : 'text.secondary', py: 0.25 },
-                }}
+                sx={filterFieldSx}
               />
             </Box>
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
@@ -247,8 +277,7 @@ export default function SalasDeReunion() {
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                 sx={{
-                  '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                  '& .MuiInput-input': { fontSize: '0.875rem', color: people ? 'text.primary' : 'text.secondary', py: 0.25 },
+                  ...filterFieldSx,
                   '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
                   '& input[type=number]': { MozAppearance: 'textfield' },
                 }}
@@ -258,9 +287,11 @@ export default function SalasDeReunion() {
               <IconButton
                 aria-label={t('home.searchSpaces', 'Buscar')}
                 sx={{
-                  bgcolor: 'primary.main', color: 'common.white',
-                  width: 44, height: 44,
-                  '&:hover': { bgcolor: 'primary.dark' },
+                  bgcolor: colors.brand,
+                  color: colors.bg,
+                  width: 44,
+                  height: 44,
+                  '&:hover': { bgcolor: colors.brandDeep },
                 }}
               >
                 <SearchRoundedIcon />
@@ -268,24 +299,25 @@ export default function SalasDeReunion() {
             </Box>
           </Paper>
 
-          {/* Results */}
           <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+            <Typography sx={{ fontSize: '0.8rem', color: colors.ink3 }}>
               {t(filteredSpaces.length === 1 ? 'home.showingSpace' : 'home.showingSpaces', { count: filteredSpaces.length })}
             </Typography>
           </Stack>
 
           <Box
             sx={{
-              width: '100%', display: 'grid',
-              gap: (theme) => theme.spacing(3),
+              width: '100%',
+              display: 'grid',
+              gap: 3,
               gridTemplateColumns: {
                 xs: 'repeat(1, minmax(0, 1fr))',
                 sm: 'repeat(2, minmax(0, 1fr))',
                 md: 'repeat(3, minmax(0, 1fr))',
                 lg: 'repeat(4, minmax(0, 1fr))',
               },
-              alignItems: 'stretch', pb: 6,
+              alignItems: 'stretch',
+              pb: 6,
             }}
           >
             {filteredSpaces.map((space) => (

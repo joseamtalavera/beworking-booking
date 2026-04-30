@@ -1,73 +1,131 @@
-import React, { useRef, useState } from 'react';
-import { Box, Typography, Button, Dialog, IconButton, Stack, Chip } from '@mui/material';
-import Image from 'next/image';
+import { useEffect, useRef, useState } from 'react';
+import { Box, Typography, Button, Dialog, IconButton, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import Seo from '@/components/oficina-virtual/Seo';
 import StructuredData from '@/components/oficina-virtual/StructuredData';
 import orgData from '@/components/oficina-virtual/structuredData/orgData';
 import SignUp from '@/components/oficina-virtual/SignUp';
+import { tokens } from '@/theme/tokens';
 
-const BENEFIT_ICONS = [AccountBalanceIcon, MailOutlineIcon, MeetingRoomIcon, DashboardOutlinedIcon];
+const { colors, radius, shadow, motion, typography, layout } = tokens;
 
-const PILARS = [
-  {
-    title: 'Domicilio Legal y Fiscal',
-    image: '/pilar1.2final_optimized.webp',
-    description: 'Te ofrecemos un domicilio legal y fiscal en múltiples ubicaciones.',
-    benefits: [
-      'Cumple con los requisitos legales y fiscales.',
-      'Ubicación visible en Google Maps. Mantén tu privacidad sin usar tu dirección personal.',
-    ],
-  },
-  {
-    title: 'Recepción de Paquetería y Correspondencia',
-    image: '/pilar2final_optimized.webp',
-    description: 'Tu correspondencia siempre atendida: recibimos tu correo y paquetes.',
-    benefits: [
-      'En cuanto recibimos tu correspondencia, te avisamos por email o WhatsApp.',
-      'Escaneo gratuito de cartas y archivo en la SuperApp.',
-      'Recogida de paquetes en horario ampliado.',
-    ],
-  },
-  {
-    title: 'Acceso a la red física BeWorking',
-    image: '/pilar3final_optimized.webp',
-    description: 'Utiliza nuestra red de espacios de trabajo sin coste adicional.',
-    benefits: [
-      'Oficina Física y Sala de Reuniones cuando las necesites.',
-      'Todos estos espacios pertenecen a BeWorking.',
-      'Conecta con emprendedores y freelancers.',
-    ],
-  },
-  {
-    title: 'Uso gratuito de la SuperApp',
-    image: '/pilar4.1final_optimized.webp',
-    description: 'Todas las herramientas de gestión empresarial incluidas en tu plan.',
-    benefits: [
-      'Contactos, MailBox, Contabilidad y Chat con otros Beworkers.',
-      'Motor de Reservas Gratuito para usar nuestros espacios.',
-      'Acceso disponible desde cualquier dispositivo.',
-    ],
-  },
-  {
-    title: 'Eventos Mensuales y Networking',
-    image: '/pilar5final_optimized.webp',
-    description: 'Participa en reuniones, talleres y cafés empresariales.',
-    benefits: [
-      'Eventos Presenciales cada mes organizados por nuestros gestores.',
-      'Conoce a otros Beworkers y crea sinergias.',
-      'Forma parte de una Comunidad activa y en crecimiento.',
-    ],
-  },
-];
+const PILARS_BY_LANG = {
+  es: [
+    {
+      category: 'Address',
+      title: 'Domicilio Legal y Fiscal',
+      image: '/pilar1.2final_optimized.webp',
+      description: 'Te ofrecemos un domicilio legal y fiscal en múltiples ubicaciones.',
+      benefits: [
+        'Cumple con los requisitos legales y fiscales.',
+        'Ubicación visible en Google Maps. Mantén tu privacidad sin usar tu dirección personal.',
+      ],
+    },
+    {
+      category: 'Mail',
+      title: 'Recepción de Paquetería y Correspondencia',
+      image: '/pilar2final_optimized.webp',
+      description: 'Tu correspondencia siempre atendida: recibimos tu correo y paquetes.',
+      benefits: [
+        'En cuanto recibimos tu correspondencia, te avisamos por email o WhatsApp.',
+        'Escaneo gratuito de cartas y archivo en BeWorkingApp.',
+        'Recogida de paquetes en horario ampliado.',
+      ],
+    },
+    {
+      category: 'Space',
+      title: 'Acceso a la red física BeWorking',
+      image: '/pilar3final_optimized.webp',
+      description: 'Utiliza nuestra red de espacios de trabajo sin coste adicional.',
+      benefits: [
+        'Oficina física y sala de reuniones cuando las necesites.',
+        'Todos estos espacios pertenecen a BeWorking.',
+        'Conecta con emprendedores y freelancers.',
+      ],
+    },
+    {
+      category: 'BeWorkingApp',
+      title: 'BeWorkingApp incluida',
+      image: '/pilar4.1final_optimized.webp',
+      description: 'Todas las herramientas de gestión empresarial incluidas en tu plan.',
+      benefits: [
+        'Contactos, MailBox, contabilidad y chat con otros Beworkers.',
+        'Motor de reservas gratuito para usar nuestros espacios.',
+        'Acceso disponible desde cualquier dispositivo.',
+      ],
+    },
+    {
+      category: 'Networking',
+      title: 'Eventos mensuales y networking',
+      image: '/pilar5final_optimized.webp',
+      description: 'Participa en reuniones, talleres y cafés empresariales.',
+      benefits: [
+        'Eventos presenciales cada mes organizados por nuestros gestores.',
+        'Conoce a otros Beworkers y crea sinergias.',
+        'Forma parte de una comunidad activa y en crecimiento.',
+      ],
+    },
+  ],
+  en: [
+    {
+      category: 'Address',
+      title: 'Legal & fiscal address',
+      image: '/pilar1.2final_optimized.webp',
+      description: 'A registered legal and fiscal address in multiple locations.',
+      benefits: [
+        'Compliant with all legal and tax requirements.',
+        'Visible on Google Maps. Keep your privacy without exposing your home address.',
+      ],
+    },
+    {
+      category: 'Mail',
+      title: 'Mail & parcel reception',
+      image: '/pilar2final_optimized.webp',
+      description: 'Your post is always handled — we receive your mail and parcels.',
+      benefits: [
+        'Instant notification by email or WhatsApp when something arrives.',
+        'Free letter scanning and archive inside BeWorkingApp.',
+        'Extended pickup hours for parcels.',
+      ],
+    },
+    {
+      category: 'Space',
+      title: 'Physical BeWorking network',
+      image: '/pilar3final_optimized.webp',
+      description: 'Use our network of physical workspaces at no extra cost.',
+      benefits: [
+        'Physical office and meeting rooms whenever you need them.',
+        'All spaces are operated by BeWorking.',
+        'Connect with entrepreneurs and freelancers.',
+      ],
+    },
+    {
+      category: 'BeWorkingApp',
+      title: 'BeWorkingApp included',
+      image: '/pilar4.1final_optimized.webp',
+      description: 'All the management tools you need, bundled with your plan.',
+      benefits: [
+        'Contacts, mailbox, accounting and chat with other Beworkers.',
+        'Free booking engine to use our spaces.',
+        'Available from any device.',
+      ],
+    },
+    {
+      category: 'Networking',
+      title: 'Monthly events & networking',
+      image: '/pilar5final_optimized.webp',
+      description: 'Join meetups, workshops and business breakfasts.',
+      benefits: [
+        'In-person events every month, hosted by our team.',
+        'Meet other Beworkers and build new connections.',
+        'Be part of an active and growing community.',
+      ],
+    },
+  ],
+};
 
 const GALLERY_IMAGES = [
   '/_MG_1510_optimized.webp', '/_MG_1521_optimized.webp', '/_MG_1541_optimized.webp',
@@ -77,6 +135,36 @@ const GALLERY_IMAGES = [
   '/DSC_2673_optimized.webp', '/DSC_2677_optimized.webp', '/DSC_2684_optimized.webp',
   '/DSC_2689_optimized.webp', '/DSC_2691_optimized.webp', '/DSC_2697_optimized.webp',
 ];
+
+const SectionEyebrow = ({ children }) => (
+  <Typography
+    sx={{
+      ...typography.eyebrow,
+      color: colors.brand,
+      textTransform: 'uppercase',
+      mb: 2,
+      textAlign: 'center',
+    }}
+  >
+    {children}
+  </Typography>
+);
+
+const SectionHeading = ({ children }) => (
+  <Box
+    component="h2"
+    sx={{
+      ...typography.h2,
+      color: colors.ink,
+      fontFamily: typography.fontFamily,
+      fontFeatureSettings: typography.fontFeatureSettings,
+      textAlign: 'center',
+      m: 0,
+    }}
+  >
+    {children}
+  </Box>
+);
 
 export default function OficinaVirtualPage() {
   const city = 'Málaga';
@@ -89,23 +177,44 @@ export default function OficinaVirtualPage() {
   const [galleryDialogOpen, setGalleryDialogOpen] = useState(false);
   const imagesPerPage = 4;
 
-  const benefits = t('landing.benefits.items', { returnObjects: true }) || [];
-  const stats = t('landing.trust.stats', { returnObjects: true }) || [];
+  const heroRef = useRef(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
-  const plans = [
-    { name: 'Oficina15', key: 'basic', price: '15', popular: true, description: i18n.language === 'es' ? 'Dirección profesional en Málaga, domicilio legal y fiscal, recepción de correo y acceso a la SuperApp.' : 'Professional address in Málaga, legal & fiscal domicile, mail reception and full SuperApp access.', features: i18n.language === 'es' ? ['Domicilio fiscal y legal', 'Recepción de correo y paquetería', 'Logo en recepción', '5 días de oficina al mes', 'Acceso completo a la SuperApp'] : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 days of office per month', 'Full access to the SuperApp'] },
-  ];
+  const stats = t('landing.trust.stats', { returnObjects: true }) || [];
   const bullets = t('landing.hero.bullets', { returnObjects: true }) || [];
+  const isEs = i18n.language === 'es';
+  const pilars = PILARS_BY_LANG[isEs ? 'es' : 'en'];
+
+  const plan = {
+    name: 'BeWorkingVirtual',
+    key: 'basic',
+    price: '15',
+    description: isEs
+      ? 'Dirección profesional en Málaga, domicilio legal y fiscal, recepción de correo y acceso a BeWorkingApp.'
+      : 'Professional address in Málaga, legal & fiscal domicile, mail reception and full BeWorkingApp access.',
+    features: isEs
+      ? ['Domicilio fiscal y legal', 'Recepción de correo y paquetería', 'Logo en recepción', '5 días de oficina al mes', 'Acceso completo a BeWorkingApp']
+      : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 days of office per month', 'Full access to BeWorkingApp'],
+  };
 
   const scrollToForm = (planKey) => {
     if (planKey) setChosenPlan(planKey);
     formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  const toggleLang = () => {
-    const next = i18n.language === 'es' ? 'en' : 'es';
-    i18n.changeLanguage(next);
-    if (typeof window !== 'undefined') localStorage.setItem('beworking_lang', next);
   };
 
   const visibleGalleryImages = [
@@ -126,148 +235,167 @@ export default function OficinaVirtualPage() {
 
       {/* ─── HERO ─── */}
       <Box
+        component="section"
+        ref={heroRef}
         sx={{
-          bgcolor: '#ffffff',
-          pt: { xs: '64px', md: '96px' },
-          pb: { xs: '64px', md: '96px' },
-          px: 3,
-          borderBottom: '1px solid rgba(0,0,0,0.06)',
+          bgcolor: colors.bg,
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 8, md: 12 },
+          px: { xs: 3, md: 5 },
+          borderBottom: `1px solid ${colors.line}`,
         }}
       >
         <Box
           sx={{
-            maxWidth: 1100,
+            maxWidth: layout.maxWidth,
             mx: 'auto',
             display: 'grid',
             gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
             gap: { xs: 6, md: 8 },
             alignItems: 'center',
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+            transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
           }}
         >
-          {/* Left — copy */}
           <Box>
-            <Typography
-              sx={{
-                fontSize: '0.75rem',
-                fontWeight: 500,
-                color: 'primary.main',
-                letterSpacing: '0.06em',
-                textTransform: 'uppercase',
-                mb: 2,
-              }}
-            >
-              {t('landing.hero.label')}
+            <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
+              {t('landing.hero.label', 'Oficina virtual')} · {city}
             </Typography>
-            <Typography
+            <Box
               component="h1"
               sx={{
-                fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
-                fontWeight: 500,
-                lineHeight: 1.08,
-                letterSpacing: '-0.035em',
-                color: 'text.primary',
+                ...typography.h1,
+                color: colors.ink,
+                fontFamily: typography.fontFamily,
+                fontFeatureSettings: typography.fontFeatureSettings,
+                m: 0,
               }}
             >
-              {t('landing.hero.titleCity', { city })}
-              <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.hero.titleAccent')}</Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: '1.0625rem', md: '1.1875rem' },
-                lineHeight: 1.65,
-                color: 'text.secondary',
-                mt: 4,
-                maxWidth: 480,
-              }}
-            >
+              BeWorking
+              <Box component="span" sx={{ color: colors.brand, display: 'block' }}>Virtual</Box>
+            </Box>
+            <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 480 }}>
               {t('landing.hero.subtitle')}
             </Typography>
 
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, mt: 4 }}>
+            <Stack direction="row" alignItems="baseline" spacing={1} sx={{ mt: 4 }}>
+              <Typography
+                sx={{
+                  fontSize: { xs: '3rem', md: '4rem' },
+                  fontWeight: 700,
+                  color: colors.brand,
+                  lineHeight: 1,
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                15€
+              </Typography>
+              <Typography sx={{ fontSize: '1.125rem', fontWeight: 500, color: colors.ink2 }}>
+                {isEs ? '/mes' : '/month'}
+              </Typography>
+            </Stack>
+
+            <Stack spacing={1.25} sx={{ mt: 3 }}>
               {bullets.map((bullet) => (
                 <Box key={bullet} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main' }} />
-                  <Typography sx={{ fontSize: '0.9375rem', color: 'text.secondary' }}>{bullet}</Typography>
+                  <CheckCircleOutlineIcon sx={{ fontSize: 18, color: colors.brand }} />
+                  <Typography sx={{ fontSize: '0.9375rem', color: colors.ink2 }}>{bullet}</Typography>
                 </Box>
               ))}
-            </Box>
+            </Stack>
           </Box>
 
-          {/* Right — registration form */}
           <Box ref={formRef}>
             <SignUp defaultPlan={chosenPlan} defaultLocation={locationKey} />
           </Box>
         </Box>
       </Box>
 
-      {/* ─── BENEFITS + PILARS (merged) ─── */}
-      <Box sx={{ bgcolor: '#fafafa', py: { xs: '80px', md: '96px' }, px: 3 }}>
-        <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-          <Typography
-            sx={{
-              fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-              letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2, textAlign: 'center',
-            }}
-          >
-            {t('landing.benefits.label')}
-          </Typography>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12,
-              letterSpacing: '-0.03em', color: 'text.primary', textAlign: 'center',
-              maxWidth: 600, mx: 'auto', mb: 2,
-            }}
-          >
-            {t('landing.benefits.title')}
-            <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.benefits.titleAccent')}</Box>
-          </Typography>
-          <Typography sx={{ textAlign: 'center', color: 'text.secondary', maxWidth: 600, mx: 'auto', mb: 8, fontSize: '1.0625rem', lineHeight: 1.65 }}>
-            {t('landing.pilars.subtitle', 'Descubre los 5 pilares fundamentales de tu Oficina Virtual BeWorking.')}
+      {/* ─── PILARS ─── */}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bg,
+          py: { xs: 10, md: 14 },
+          px: { xs: 3, md: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
+          <SectionEyebrow>{isEs ? '¿Qué incluye?' : 'Included in your plan'}</SectionEyebrow>
+          <SectionHeading>
+            {isEs ? 'Cinco pilares para tu negocio' : 'Five pillars for your business'}
+            <Box component="span" sx={{ color: colors.brand }}>.</Box>
+          </SectionHeading>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, textAlign: 'center', maxWidth: 600, mx: 'auto', mt: 3, mb: { xs: 8, md: 12 } }}>
+            {isEs
+              ? 'Descubre los 5 pilares fundamentales de tu Oficina Virtual BeWorking.'
+              : 'Discover the 5 core pillars of your BeWorking Virtual Office.'}
           </Typography>
 
-          {PILARS.map((pilar, idx) => {
+          {pilars.map((pilar, idx) => {
             const isReverse = idx % 2 === 1;
             return (
               <Box
                 key={pilar.title}
                 sx={{
                   display: 'grid',
-                  gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
-                  gap: { xs: 4, md: 6 },
+                  gridTemplateColumns: { xs: '1fr', md: '5fr 6fr' },
+                  gap: { xs: 4, md: 8 },
                   alignItems: 'center',
-                  mb: { xs: 8, md: 10 },
+                  mb: { xs: 8, md: 12 },
+                  '&:last-of-type': { mb: 0 },
                   direction: { md: isReverse ? 'rtl' : 'ltr' },
                   '& > *': { direction: 'ltr' },
                 }}
               >
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-                  <Box
-                    component="img"
-                    src={pilar.image}
-                    alt={pilar.title}
-                    loading="lazy"
-                    sx={{
-                      width: '100%', maxWidth: 420, height: 'auto',
-                      borderRadius: '16px', objectFit: 'contain',
-                    }}
-                  />
-                </Box>
+                <Box
+                  component="img"
+                  src={pilar.image}
+                  alt={pilar.title}
+                  loading="lazy"
+                  sx={{
+                    width: '100%',
+                    maxWidth: 620,
+                    mx: 'auto',
+                    height: 'auto',
+                    display: 'block',
+                  }}
+                />
                 <Box>
-                  <Typography component="h2" sx={{ fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em', color: 'text.primary' }}>
-                    {pilar.title}
+                  <Typography
+                    sx={{
+                      ...typography.eyebrow,
+                      color: colors.brand,
+                      textTransform: 'uppercase',
+                      mb: 1.5,
+                    }}
+                  >
+                    {String(idx + 1).padStart(2, '0')} · {pilar.category}
                   </Typography>
-                  <Typography component="p" sx={{ fontSize: '1.125rem', color: 'text.secondary', mt: 4, lineHeight: 1.6, letterSpacing: '-0.01em', display: 'block' }}>
+                  <Box
+                    component="h3"
+                    sx={{
+                      ...typography.h2,
+                      color: colors.ink,
+                      fontFamily: typography.fontFamily,
+                      fontFeatureSettings: typography.fontFeatureSettings,
+                      m: 0,
+                    }}
+                  >
+                    {pilar.title}
+                  </Box>
+                  <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 2.5 }}>
                     {pilar.description}
                   </Typography>
-                  <Box sx={{ mt: 3 }}>
-                  {pilar.benefits.map((b) => (
-                    <Box key={b} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
-                      <CheckCircleOutlineIcon sx={{ fontSize: 18, color: 'primary.main', mt: 0.25, flexShrink: 0 }} />
-                      <Typography sx={{ fontSize: '0.9375rem', color: 'text.secondary', lineHeight: 1.6 }}>{b}</Typography>
-                    </Box>
-                  ))}
-                  </Box>
+                  <Stack spacing={1.5} sx={{ mt: 3 }}>
+                    {pilar.benefits.map((b) => (
+                      <Box key={b} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.25 }}>
+                        <CheckCircleOutlineIcon sx={{ fontSize: 18, color: colors.brand, mt: 0.4, flexShrink: 0 }} />
+                        <Typography sx={{ ...typography.body, color: colors.ink2 }}>{b}</Typography>
+                      </Box>
+                    ))}
+                  </Stack>
                 </Box>
               </Box>
             );
@@ -276,33 +404,29 @@ export default function OficinaVirtualPage() {
       </Box>
 
       {/* ─── GALLERY ─── */}
-      <Box sx={{ bgcolor: '#fafafa', py: { xs: '64px', md: '80px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-          <Typography
-            sx={{
-              fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-              letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2, textAlign: 'center',
-            }}
-          >
-            {t('landing.gallery.label', 'Galería')}
-          </Typography>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12,
-              letterSpacing: '-0.03em', color: 'text.primary', textAlign: 'center', mb: 2,
-            }}
-          >
-            {t('landing.gallery.title', 'Nuestros espacios')}
-          </Typography>
-          <Typography sx={{ textAlign: 'center', color: 'text.secondary', maxWidth: 600, mx: 'auto', mb: 6, fontSize: '1.0625rem', lineHeight: 1.65 }}>
-            {t('landing.gallery.subtitle', 'Explora nuestra galería para descubrir más sobre nuestros espacios y servicios.')}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bgSoft,
+          py: { xs: 8, md: 11 },
+          px: { xs: 3, md: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
+          <SectionEyebrow>{isEs ? 'Galería' : 'Gallery'}</SectionEyebrow>
+          <SectionHeading>
+            {isEs ? 'Nuestros espacios' : 'Our spaces'}
+          </SectionHeading>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, textAlign: 'center', maxWidth: 600, mx: 'auto', mt: 3, mb: 6 }}>
+            {isEs
+              ? 'Explora la galería para descubrir nuestros espacios y servicios.'
+              : 'Browse the gallery to explore our spaces and services.'}
           </Typography>
 
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
             <IconButton
               onClick={() => setGalleryIndex((i) => (i - imagesPerPage + GALLERY_IMAGES.length) % GALLERY_IMAGES.length)}
-              sx={{ position: 'absolute', left: 0, zIndex: 2, color: 'primary.main' }}
+              sx={{ position: 'absolute', left: 0, zIndex: 2, color: colors.brand }}
             >
               <ArrowBackIosIcon />
             </IconButton>
@@ -316,9 +440,13 @@ export default function OficinaVirtualPage() {
                   loading="lazy"
                   onClick={() => setModalImageIndex((galleryIndex + i) % GALLERY_IMAGES.length)}
                   sx={{
-                    width: { xs: '45%', sm: '23%' }, height: { xs: 120, sm: 160 },
-                    objectFit: 'cover', borderRadius: '12px', cursor: 'pointer',
-                    transition: 'transform 0.2s', flexShrink: 0,
+                    width: { xs: '45%', sm: '23%' },
+                    height: { xs: 120, sm: 160 },
+                    objectFit: 'cover',
+                    borderRadius: `${radius.md}px`,
+                    cursor: 'pointer',
+                    transition: `transform ${motion.duration} ${motion.ease}`,
+                    flexShrink: 0,
                     '&:hover': { transform: 'scale(1.03)' },
                     display: { xs: i < 2 ? 'block' : 'none', sm: 'block' },
                   }}
@@ -327,22 +455,38 @@ export default function OficinaVirtualPage() {
             </Box>
             <IconButton
               onClick={() => setGalleryIndex((i) => (i + imagesPerPage) % GALLERY_IMAGES.length)}
-              sx={{ position: 'absolute', right: 0, zIndex: 2, color: 'primary.main' }}
+              sx={{ position: 'absolute', right: 0, zIndex: 2, color: colors.brand }}
             >
               <ArrowForwardIosIcon />
             </IconButton>
           </Box>
 
-          <Box sx={{ textAlign: 'center', mt: 4 }}>
-            <Button variant="outlined" onClick={() => setGalleryDialogOpen(true)} sx={{ borderRadius: 999, px: 4, py: 1.2, fontWeight: 600, fontSize: '0.875rem' }}>
-              {t('landing.gallery.viewAll', 'Ver todas las imágenes')}
-            </Button>
+          <Box sx={{ textAlign: 'center', mt: 5 }}>
+            <Box
+              component="button"
+              type="button"
+              onClick={() => setGalleryDialogOpen(true)}
+              sx={{
+                background: 'none',
+                border: 0,
+                p: 0,
+                cursor: 'pointer',
+                fontFamily: 'inherit',
+                fontSize: '0.95rem',
+                fontWeight: 600,
+                color: colors.brand,
+                letterSpacing: '-0.005em',
+                transition: `opacity ${motion.duration} ${motion.ease}`,
+                '&:hover': { opacity: 0.7 },
+              }}
+            >
+              {isEs ? 'Ver todas las imágenes →' : 'View all images →'}
+            </Box>
           </Box>
 
-          {/* Gallery full dialog */}
           <Dialog open={galleryDialogOpen} onClose={() => setGalleryDialogOpen(false)} fullWidth maxWidth="lg">
             <Box sx={{ p: 3, position: 'relative' }}>
-              <IconButton onClick={() => setGalleryDialogOpen(false)} sx={{ position: 'absolute', top: 12, right: 12, color: 'grey.500' }}>✕</IconButton>
+              <IconButton onClick={() => setGalleryDialogOpen(false)} sx={{ position: 'absolute', top: 12, right: 12, color: colors.ink3 }}>✕</IconButton>
               <Box sx={{ display: 'grid', gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)', md: 'repeat(4, 1fr)' }, gap: 1.5, mt: 2 }}>
                 {GALLERY_IMAGES.map((src, i) => (
                   <Box
@@ -353,9 +497,13 @@ export default function OficinaVirtualPage() {
                     loading="lazy"
                     onClick={() => setModalImageIndex(i)}
                     sx={{
-                      width: '100%', height: 140, objectFit: 'cover',
-                      borderRadius: '8px', cursor: 'pointer',
-                      transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' },
+                      width: '100%',
+                      height: 140,
+                      objectFit: 'cover',
+                      borderRadius: `${radius.sm}px`,
+                      cursor: 'pointer',
+                      transition: `transform ${motion.duration} ${motion.ease}`,
+                      '&:hover': { transform: 'scale(1.05)' },
                     }}
                   />
                 ))}
@@ -363,7 +511,6 @@ export default function OficinaVirtualPage() {
             </Box>
           </Dialog>
 
-          {/* Lightbox modal */}
           {modalImageIndex !== null && (
             <Box
               onClick={() => setModalImageIndex(null)}
@@ -378,14 +525,14 @@ export default function OficinaVirtualPage() {
                 component="img"
                 src={GALLERY_IMAGES[modalImageIndex]}
                 alt={`Gallery ${modalImageIndex + 1}`}
-                sx={{ maxWidth: '90vw', maxHeight: '80vh', borderRadius: '12px', boxShadow: 4, mb: 2 }}
+                sx={{ maxWidth: '90vw', maxHeight: '80vh', borderRadius: `${radius.md}px`, boxShadow: 4, mb: 2 }}
                 onClick={(e) => e.stopPropagation()}
               />
               <Box sx={{ display: 'flex', gap: 4 }}>
-                <IconButton onClick={(e) => { e.stopPropagation(); setModalImageIndex((modalImageIndex - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length); }} sx={{ color: 'primary.main' }}>
+                <IconButton onClick={(e) => { e.stopPropagation(); setModalImageIndex((modalImageIndex - 1 + GALLERY_IMAGES.length) % GALLERY_IMAGES.length); }} sx={{ color: colors.brand }}>
                   <ArrowBackIosIcon />
                 </IconButton>
-                <IconButton onClick={(e) => { e.stopPropagation(); setModalImageIndex((modalImageIndex + 1) % GALLERY_IMAGES.length); }} sx={{ color: 'primary.main' }}>
+                <IconButton onClick={(e) => { e.stopPropagation(); setModalImageIndex((modalImageIndex + 1) % GALLERY_IMAGES.length); }} sx={{ color: colors.brand }}>
                   <ArrowForwardIosIcon />
                 </IconButton>
               </Box>
@@ -395,29 +542,24 @@ export default function OficinaVirtualPage() {
       </Box>
 
       {/* ─── MAP ─── */}
-      <Box sx={{ bgcolor: '#ffffff', py: { xs: '64px', md: '80px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <Box sx={{ maxWidth: 1100, mx: 'auto' }}>
-          <Typography
-            sx={{
-              fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-              letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2, textAlign: 'center',
-            }}
-          >
-            {t('landing.map.label', 'Ubicación')}
-          </Typography>
-          <Typography
-            component="h2"
-            sx={{
-              fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12,
-              letterSpacing: '-0.03em', color: 'text.primary', textAlign: 'center', mb: 2,
-            }}
-          >
-            {t('landing.map.title', 'Nuestro BeSpace')}
-          </Typography>
-          <Typography sx={{ textAlign: 'center', color: 'text.secondary', maxWidth: 600, mx: 'auto', mb: 6, fontSize: '1.0625rem', lineHeight: 1.65 }}>
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bg,
+          py: { xs: 8, md: 11 },
+          px: { xs: 3, md: 5 },
+          borderTop: `1px solid ${colors.line}`,
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
+          <SectionEyebrow>{isEs ? 'Localización' : 'Location'}</SectionEyebrow>
+          <SectionHeading>
+            {isEs ? 'Localiza tu BeWorking.' : 'Find your BeWorking.'}
+          </SectionHeading>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, textAlign: 'center', maxWidth: 600, mx: 'auto', mt: 3, mb: 6 }}>
             {t('landing.map.subtitle', 'Calle Alejandro Dumas 17 · Oficinas, 29004 Málaga')}
           </Typography>
-          <Box sx={{ borderRadius: '16px', overflow: 'hidden', height: { xs: 300, md: 420 }, border: '1px solid rgba(0,0,0,0.08)' }}>
+          <Box sx={{ borderRadius: `${radius.lg}px`, overflow: 'hidden', height: { xs: 300, md: 420 }, border: `1px solid ${colors.line}` }}>
             <iframe
               title="BeWorking Location"
               width="100%"
@@ -432,135 +574,171 @@ export default function OficinaVirtualPage() {
       </Box>
 
       {/* ─── PRICING ─── */}
-      <Box sx={{ bgcolor: '#ffffff', py: { xs: '80px', md: '112px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bg,
+          py: { xs: 10, md: 14 },
+          px: { xs: 3, md: 5 },
+          borderTop: `1px solid ${colors.line}`,
+        }}
+      >
         <Box sx={{ maxWidth: 1000, mx: 'auto' }}>
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Typography sx={{ fontSize: '0.75rem', fontWeight: 500, color: 'primary.main', letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2 }}>
-              {t('landing.pricing.label')}
-            </Typography>
-            <Typography component="h2" sx={{ color: 'text.primary', fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', fontWeight: 500, lineHeight: 1.12, letterSpacing: '-0.03em' }}>
-              {t('landing.pricing.title')}
-              <Box component="span" sx={{ color: 'primary.main' }}>{t('landing.pricing.titleAccent')}</Box>
-            </Typography>
+          <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 9 } }}>
+            <SectionEyebrow>{isEs ? 'Precio' : 'Pricing'}</SectionEyebrow>
+            <SectionHeading>
+              {isEs ? 'Un plan, todo incluido' : 'One plan, everything included'}
+              <Box component="span" sx={{ color: colors.brand }}>.</Box>
+            </SectionHeading>
           </Box>
 
-          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', md: '4fr 5fr' }, gap: { xs: 4, md: 6 }, alignItems: 'center' }}>
-            <Box>
-              {plans.map((plan) => (
-                <Box
-                  key={plan.name}
-                  sx={{
-                    bgcolor: '#fff', borderRadius: 3, p: { xs: 3, md: 4 },
-                    border: '2px solid', borderColor: 'primary.main',
-                    position: 'relative', display: 'flex', flexDirection: 'column',
-                    boxShadow: '0 20px 60px -20px rgba(0,150,36,0.25)',
-                  }}
-                >
-                  <Box
-                    component="h3"
-                    sx={{
-                      margin: 0,
-                      fontSize: 'clamp(2rem, 4vw, 3rem)',
-                      fontWeight: 500,
-                      lineHeight: 1,
-                      letterSpacing: '-0.03em',
-                      color: 'text.primary',
-                      display: 'flex',
-                      alignItems: 'baseline',
-                    }}
-                  >
-                    <span>Oficina</span>
-                    <Box component="span" sx={{ color: 'primary.main', fontWeight: 600, ml: '0.04em' }}>15</Box>
-                  </Box>
-                  <Typography sx={{ color: 'text.secondary', mt: 1.5, fontSize: '0.9375rem', lineHeight: 1.5 }}>{plan.description}</Typography>
-                  <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mt: 2.5, mb: 2.5 }}>
-                    <Typography sx={{ fontSize: '2.75rem', fontWeight: 700, color: 'primary.main', lineHeight: 1 }}>{plan.price}€</Typography>
-                    <Typography variant="body2" color="text.secondary">/mes</Typography>
-                  </Stack>
-                  <Stack spacing={1.25} sx={{ mb: 3 }}>
-                    {plan.features.map((f) => (
-                      <Stack key={f} direction="row" spacing={1.25} alignItems="flex-start">
-                        <CheckCircleOutlineIcon sx={{ fontSize: 20, color: 'primary.main', mt: '2px' }} />
-                        <Typography variant="body2" sx={{ lineHeight: 1.55 }}>{f}</Typography>
-                      </Stack>
-                    ))}
-                  </Stack>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    onClick={() => scrollToForm(plan.key)}
-                    sx={{ borderRadius: '999px', textTransform: 'none', fontWeight: 600, py: 1.35, fontSize: '0.9375rem', boxShadow: 'none', '&:hover': { boxShadow: 'none' } }}
-                  >
-                    {i18n.language === 'es' ? 'Empezar por 15€/mes' : 'Start from €15/month'}
-                  </Button>
-                </Box>
-              ))}
-            </Box>
+          <Box
+            sx={{
+              maxWidth: 460,
+              mx: 'auto',
+              bgcolor: colors.bg,
+              borderRadius: `${radius.lg}px`,
+              p: { xs: 3, md: 4 },
+              border: `1px solid ${colors.brand}`,
+              display: 'flex',
+              flexDirection: 'column',
+              boxShadow: shadow.tile,
+            }}
+          >
             <Box
-              component="img"
-              src="/DSC_2312 (Mediano)_optimized.webp"
-              alt="Oficina Virtual BeWorking — sala A1 en Málaga"
-              loading="lazy"
+              component="h3"
               sx={{
-                width: '100%',
-                aspectRatio: '3 / 2',
-                objectFit: 'cover',
-                borderRadius: '20px',
-                boxShadow: '0 30px 80px -20px rgba(0,0,0,0.25)',
-                display: 'block',
+                ...typography.h2,
+                color: colors.ink,
+                fontFamily: typography.fontFamily,
+                fontFeatureSettings: typography.fontFeatureSettings,
+                m: 0,
               }}
-            />
+            >
+              BeWorking<Box component="span" sx={{ color: colors.brand }}>Virtual</Box>
+            </Box>
+            <Typography sx={{ ...typography.body, color: colors.ink2, mt: 1.5 }}>
+              {plan.description}
+            </Typography>
+            <Stack direction="row" alignItems="baseline" spacing={0.5} sx={{ mt: 3, mb: 3 }}>
+              <Typography sx={{ fontSize: '2.75rem', fontWeight: 700, color: colors.brand, lineHeight: 1 }}>
+                {plan.price}€
+              </Typography>
+              <Typography sx={{ ...typography.body, color: colors.ink3 }}>
+                {isEs ? '/mes' : '/mo'}
+              </Typography>
+            </Stack>
+            <Stack spacing={1.25} sx={{ mb: 3 }}>
+              {plan.features.map((f) => (
+                <Stack key={f} direction="row" spacing={1.25} alignItems="flex-start">
+                  <CheckCircleOutlineIcon sx={{ fontSize: 20, color: colors.brand, mt: '2px' }} />
+                  <Typography sx={{ ...typography.body, color: colors.ink2 }}>{f}</Typography>
+                </Stack>
+              ))}
+            </Stack>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={() => scrollToForm(plan.key)}
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                borderRadius: `${radius.pill}px`,
+                textTransform: 'none',
+                fontWeight: 600,
+                py: 1.4,
+                fontSize: '0.9375rem',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
+            >
+              {isEs ? 'Empezar por 15€/mes' : 'Start from €15/month'}
+            </Button>
           </Box>
 
-          <Typography variant="body2" sx={{ textAlign: 'center', color: 'text.secondary', mt: 4 }}>
-            {i18n.language === 'es'
-              ? 'Todos los planes incluyen la Plataforma BeWorking completa: panel de gestión, facturación y todas las herramientas. Cambia de plan en cualquier momento.'
-              : 'All plans include the full BeWorking Platform: management dashboard, invoicing and all tools. Change your plan at any time.'}
+          <Typography sx={{ ...typography.body, textAlign: 'center', color: colors.ink2, mt: 5 }}>
+            {isEs
+              ? 'Todos los planes incluyen BeWorkingApp completo: panel de gestión, facturación y todas las herramientas. Cambia de plan en cualquier momento.'
+              : 'All plans include the full BeWorkingApp: management dashboard, invoicing and all tools. Change your plan at any time.'}
           </Typography>
-          <Typography variant="body2" sx={{ textAlign: 'center', mt: 1.5, fontWeight: 600, color: 'primary.main' }}>
-            {i18n.language === 'es' ? 'Todos los precios + IVA. Sin permanencia.' : 'All prices + VAT. No commitment.'}
+          <Typography sx={{ ...typography.body, textAlign: 'center', mt: 1.5, fontWeight: 600, color: colors.brand }}>
+            {isEs ? 'Todos los precios + IVA. Sin permanencia.' : 'All prices + VAT. No commitment.'}
           </Typography>
         </Box>
       </Box>
 
       {/* ─── TRUST ─── */}
-      <Box sx={{ bgcolor: '#fafafa', py: { xs: '64px', md: '80px' }, px: 3, borderTop: '1px solid rgba(0,0,0,0.06)' }}>
-        <Box sx={{ maxWidth: 800, mx: 'auto', display: 'flex', justifyContent: 'center', gap: { xs: 4, md: 8 }, flexWrap: 'wrap' }}>
-          {stats.map((stat) => (
-            <Box key={stat.label} sx={{ textAlign: 'center' }}>
-              <Typography sx={{ fontSize: { xs: '2rem', md: '2.5rem' }, fontWeight: 700, color: 'text.primary', lineHeight: 1 }}>
-                {stat.value}
-              </Typography>
-              <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', mt: 1 }}>
-                {stat.label}
-              </Typography>
-            </Box>
-          ))}
-        </Box>
-      </Box>
-
-      {/* ─── WhatsApp FAB ─── */}
       <Box
-        component="a"
-        href="https://wa.me/34640369759?text=Hola,%20me%20interesa%20información%20sobre%20la%20oficina%20virtual"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="WhatsApp"
+        component="section"
         sx={{
-          position: 'fixed', bottom: { xs: 20, md: 28 }, right: { xs: 20, md: 28 },
-          width: 56, height: 56, borderRadius: '50%',
-          bgcolor: 'transparent',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 1200,
-          transition: 'transform 0.2s ease, opacity 0.2s ease',
-          '&:hover': { transform: 'scale(1.12)', opacity: 0.8 },
+          bgcolor: colors.bgSoft,
+          py: { xs: 10, md: 13 },
+          px: { xs: 3, md: 5 },
+          borderTop: `1px solid ${colors.line}`,
         }}
       >
-        <svg width="44" height="44" viewBox="0 0 24 24" fill="#25D366">
-          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-        </svg>
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+            <SectionEyebrow>{isEs ? 'Confianza' : 'Trust'}</SectionEyebrow>
+            <SectionHeading>
+              {isEs ? 'Cinco años acompañando negocios.' : 'Five years backing businesses.'}
+            </SectionHeading>
+            <Typography sx={{ ...typography.bodyLg, color: colors.ink2, textAlign: 'center', maxWidth: 620, mx: 'auto', mt: 3 }}>
+              {isEs
+                ? 'Desde 2020, BeWorking es la dirección fiscal y la plataforma de cientos de empresas. Operamos sin caídas — tu negocio nunca se queda fuera.'
+                : 'Since 2020, BeWorking has been the registered address and platform for hundreds of companies. We run without downtime — your business is always on.'}
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              maxWidth: 900,
+              mx: 'auto',
+              display: 'grid',
+              gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+              gap: { xs: 5, md: 8 },
+              alignItems: 'start',
+            }}
+          >
+            {stats.map((stat, i) => {
+              const blurbsEs = [
+                'Año en que empezamos a domiciliar empresas en Málaga.',
+                'Negocios activos confían su dirección fiscal y operativa a BeWorking.',
+                'Disponibilidad de la plataforma. Sin caídas, sin interrupciones.',
+              ];
+              const blurbsEn = [
+                'The year we started hosting registered companies in Málaga.',
+                'Active businesses trust BeWorking with their fiscal and operational address.',
+                'Platform uptime. No downtime, no interruptions.',
+              ];
+              const blurb = (isEs ? blurbsEs : blurbsEn)[i] || '';
+              return (
+                <Box key={stat.label} sx={{ textAlign: 'center' }}>
+                  <Typography
+                    sx={{
+                      fontSize: { xs: '2.75rem', md: '3.5rem' },
+                      fontWeight: 700,
+                      color: colors.ink,
+                      lineHeight: 1,
+                      letterSpacing: '-0.03em',
+                    }}
+                  >
+                    {stat.value}
+                  </Typography>
+                  <Typography sx={{ fontSize: '0.95rem', fontWeight: 600, color: colors.ink, mt: 1.5 }}>
+                    {stat.label}
+                  </Typography>
+                  {blurb && (
+                    <Typography sx={{ ...typography.body, color: colors.ink2, mt: 1.5, maxWidth: 240, mx: 'auto' }}>
+                      {blurb}
+                    </Typography>
+                  )}
+                </Box>
+              );
+            })}
+          </Box>
+        </Box>
       </Box>
     </>
   );
 }
-

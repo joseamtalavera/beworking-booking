@@ -1,50 +1,39 @@
 import * as React from 'react';
-import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
-import Divider from '@mui/material/Divider';
-import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import FormLabel from '@mui/material/FormLabel';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
-import TextField from '../common/ClearableTextField';
 import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { styled } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
+import TextField from '../common/ClearableTextField';
 import TurnstileWidget from '../oficina-virtual/TurnstileWidget';
 import ForgotPassword from './ForgotPassword';
 import AccountSelector from './AccountSelector';
-import { GoogleIcon, SitemarkIcon } from './CustomIcons';
+import { tokens } from '@/theme/tokens';
 
-const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
-  maxWidth: 520,
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: 'auto',
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  borderRadius: 10,
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: 520,
-    padding: theme.spacing(4),
+const { colors, radius, motion, typography } = tokens;
+
+const fieldSx = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: `${radius.md}px`,
+    bgcolor: colors.bg,
+    '& fieldset': { borderColor: colors.line },
+    '&:hover fieldset': { borderColor: colors.ink3 },
+    '&.Mui-focused fieldset': { borderColor: colors.brand, borderWidth: 1 },
   },
-  ...theme.applyStyles('dark', {
-    boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-  }),
-}));
-
+  '& .MuiOutlinedInput-input': { fontSize: '0.95rem' },
+};
 
 export default function SignInCard() {
+  const { t, i18n } = useTranslation();
+  const isEs = i18n.language === 'es';
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
@@ -60,19 +49,14 @@ export default function SignInCard() {
   const [accountSelection, setAccountSelection] = React.useState(null);
   const router = require('next/router').useRouter ? require('next/router').useRouter() : null;
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const handleClickOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const validateInputs = () => {
     let isValid = true;
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage(isEs ? 'Introduce un email válido.' : 'Please enter a valid email address.');
       isValid = false;
     } else {
       setEmailError(false);
@@ -80,7 +64,7 @@ export default function SignInCard() {
     }
     if (!password || password.length < 8) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 8 characters long.');
+      setPasswordErrorMessage(isEs ? 'La contraseña debe tener al menos 8 caracteres.' : 'Password must be at least 8 characters long.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -102,14 +86,10 @@ export default function SignInCard() {
         credentials: 'include',
         body: JSON.stringify(payload),
       });
-      const data = await response.json().catch(err => {
-        return null;
-      });
-      // Developer debug toggle: set sessionStorage.beworking_debug_keep_logs = '1' to prevent redirect and keep logs
+      const data = await response.json().catch(() => null);
       const keepLogs = typeof window !== 'undefined' && window.sessionStorage && window.sessionStorage.getItem('beworking_debug_keep_logs') === '1';
 
       if (response.ok) {
-        // Multi-account: show account picker
         if (data?.accountSelectionRequired) {
           setAccountSelection({
             accounts: data.accounts,
@@ -127,24 +107,21 @@ export default function SignInCard() {
           : baseDestination;
 
         if (keepLogs) {
-          // Developer mode: do not navigate away so console logs remain available
           setFormError('DEBUG: login successful — logs preserved (remove sessionStorage key beworking_debug_keep_logs to allow redirect)');
-        } else {
-          if (typeof window !== 'undefined') {
-            window.location.href = destination;
-          } else if (router) {
-            router.push(destination);
-          }
+        } else if (typeof window !== 'undefined') {
+          window.location.href = destination;
+        } else if (router) {
+          router.push(destination);
         }
       } else {
-        setFormError(data?.message || 'Login failed.');
+        setFormError(data?.message || (isEs ? 'No se pudo iniciar sesión.' : 'Login failed.'));
         if ((data?.message || '').toLowerCase().includes('turnstile')) {
           setTurnstileToken('');
           setTurnstileReset((prev) => prev + 1);
         }
       }
     } catch (error) {
-      setFormError(error.message || 'An error occurred.');
+      setFormError(error.message || (isEs ? 'Ha ocurrido un error.' : 'An error occurred.'));
     } finally {
       setLoading(false);
     }
@@ -152,7 +129,6 @@ export default function SignInCard() {
 
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
-  // Show account picker if multi-account detected
   if (accountSelection) {
     return (
       <AccountSelector
@@ -165,17 +141,46 @@ export default function SignInCard() {
   }
 
   return (
-    <Card variant="outlined">
-      {/* <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-        <SitemarkIcon />
-      </Box> */}
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', textAlign: 'center', alignSelf: 'center' }}
-      >
-        Login in
-      </Typography>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: 480,
+        mx: 'auto',
+        bgcolor: colors.bg,
+        borderRadius: `${radius.lg}px`,
+        border: `1px solid ${colors.line}`,
+        p: { xs: 3.5, sm: 4.5 },
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2.5,
+      }}
+    >
+      <Box sx={{ textAlign: 'center', mb: 1 }}>
+        <Typography
+          sx={{
+            ...typography.eyebrow,
+            color: colors.brand,
+            textTransform: 'uppercase',
+            mb: 1,
+          }}
+        >
+          BeWorking
+        </Typography>
+        <Box
+          component="h1"
+          sx={{
+            ...typography.h2,
+            color: colors.ink,
+            fontFamily: typography.fontFamily,
+            fontFeatureSettings: typography.fontFeatureSettings,
+            m: 0,
+            fontSize: { xs: '1.85rem', sm: '2.1rem' },
+          }}
+        >
+          {t('nav.signIn')}
+        </Box>
+      </Box>
+
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -183,10 +188,15 @@ export default function SignInCard() {
         sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
       >
         {formError && (
-          <Typography color="error" sx={{ mb: 1, textAlign: 'center' }}>{formError}</Typography>
+          <Typography sx={{ ...typography.body, color: '#b3261e', textAlign: 'center', mb: 0.5 }}>
+            {formError}
+          </Typography>
         )}
+
         <FormControl>
-          <FormLabel htmlFor="email" sx={{ color: 'text.primary', fontWeight: 500 }}>Email</FormLabel>
+          <FormLabel htmlFor="email" sx={{ color: colors.ink, fontWeight: 600, fontSize: '0.85rem', mb: 0.75 }}>
+            Email
+          </FormLabel>
           <TextField
             error={emailError}
             helperText={emailErrorMessage}
@@ -199,24 +209,16 @@ export default function SignInCard() {
             required
             fullWidth
             variant="outlined"
-            color={emailError ? 'error' : 'primary'}
             value={email}
-            onChange={e => setEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
+            sx={fieldSx}
           />
         </FormControl>
+
         <FormControl>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <FormLabel htmlFor="password" sx={{ color: 'text.primary', fontWeight: 500 }}>Password</FormLabel>
-            {/* <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'baseline', textDecoration: 'none', fontWeight: 700 }}
-            >
-              Forgot your password?
-            </Link> */}
-          </Box>
+          <FormLabel htmlFor="password" sx={{ color: colors.ink, fontWeight: 600, fontSize: '0.85rem', mb: 0.75 }}>
+            {isEs ? 'Contraseña' : 'Password'}
+          </FormLabel>
           <TextField
             error={passwordError}
             helperText={passwordErrorMessage}
@@ -228,54 +230,84 @@ export default function SignInCard() {
             required
             fullWidth
             variant="outlined"
-            color={passwordError ? 'error' : 'primary'}
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
+            sx={fieldSx}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    onClick={() => setShowPassword(prev => !prev)}
-                    onMouseDown={e => e.preventDefault()}
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    onMouseDown={(e) => e.preventDefault()}
                     edge="end"
                     size="small"
+                    sx={{ color: colors.ink3 }}
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
           />
-          <Box sx={{ display: 'flex', justifyContent: 'right' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 0.75 }}>
             <Link
-              //component="button"
-              //type="button"
               href="#"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'baseline', textDecoration: 'none', fontWeight: 700 }}
+              onClick={(e) => { e.preventDefault(); handleClickOpen(); }}
+              sx={{
+                fontSize: '0.85rem',
+                color: colors.brand,
+                fontWeight: 600,
+                textDecoration: 'none',
+                '&:hover': { color: colors.brandDeep, textDecoration: 'underline' },
+              }}
             >
-              Forgot your password?
+              {isEs ? '¿Olvidaste tu contraseña?' : 'Forgot your password?'}
             </Link>
           </Box>
-
         </FormControl>
+
         <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
+          control={
+            <Checkbox
+              value="remember"
+              sx={{
+                color: colors.line,
+                '&.Mui-checked': { color: colors.brand },
+              }}
+            />
+          }
+          label={
+            <Typography sx={{ fontSize: '0.9rem', color: colors.ink2 }}>
+              {isEs ? 'Recuérdame' : 'Remember me'}
+            </Typography>
+          }
         />
         <ForgotPassword open={open} handleClose={handleClose} />
+
         <Button
           type="submit"
           fullWidth
           variant="contained"
           disabled={loading || (siteKey && !turnstileToken)}
-          sx={{ borderRadius: '999px', py: 1.25 }}
+          disableElevation
+          sx={{
+            bgcolor: colors.brand,
+            color: colors.bg,
+            borderRadius: `${radius.pill}px`,
+            py: 1.4,
+            fontSize: '0.95rem',
+            fontWeight: 600,
+            textTransform: 'none',
+            transition: `background-color ${motion.duration} ${motion.ease}`,
+            '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+            '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
+          }}
         >
-          {loading ? 'Loading...' : 'Acceder'}
+          {loading ? (isEs ? 'Cargando…' : 'Loading…') : (isEs ? 'Acceder' : 'Sign in')}
         </Button>
+
         {siteKey && (
-          <Box sx={{ my: 1 }}>
+          <Box sx={{ my: 0.5 }}>
             <TurnstileWidget
               siteKey={siteKey}
               onSuccess={(token) => setTurnstileToken(token)}
@@ -285,28 +317,22 @@ export default function SignInCard() {
             />
           </Box>
         )}
-        <Typography sx={{ textAlign: 'center' }}>
-          Don&apos;t have an account?{' '}
+
+        <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', color: colors.ink2 }}>
+          {isEs ? '¿No tienes cuenta?' : "Don't have an account?"}{' '}
           <Link
             href="/register"
-            //variant="body2"
-            sx={{ alignSelf: 'center', textDecoration: 'none', fontWeight: 700 }}
+            sx={{
+              color: colors.brand,
+              fontWeight: 600,
+              textDecoration: 'none',
+              '&:hover': { color: colors.brandDeep, textDecoration: 'underline' },
+            }}
           >
-            Sign up
+            {t('nav.getStarted')}
           </Link>
         </Typography>
       </Box>
-     {/*  <Divider>or</Divider>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => alert('Sign in with Google')}
-          startIcon={<GoogleIcon />}
-        >
-          Sign in with Google
-        </Button>
-      </Box> */}
-    </Card>
+    </Box>
   );
 }

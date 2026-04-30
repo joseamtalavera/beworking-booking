@@ -9,9 +9,8 @@ import {
   Divider,
   Paper,
   Stack,
-  Typography
+  Typography,
 } from '@mui/material';
-import { alpha } from '@mui/material/styles';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
@@ -19,20 +18,53 @@ import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { useTranslation } from 'react-i18next';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
 import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
-import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
 
 const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 const rawPaymentsBase = process.env.NEXT_PUBLIC_PAYMENTS_BASE_URL || '';
 const paymentsBaseUrl = rawPaymentsBase.replace(/\/api\/?$/, '');
 const VAT_RATE = 0.21;
 const PENDING_BOOKING_KEY = 'beworking_pending_booking';
-
 const MONTHLY_BASE = 90;
-const MONTHLY_WITH_VAT = +(MONTHLY_BASE * (1 + VAT_RATE)).toFixed(2); // 108.90
+const MONTHLY_WITH_VAT = +(MONTHLY_BASE * (1 + VAT_RATE)).toFixed(2);
+
+const cardSx = {
+  p: { xs: 2.5, md: 3 },
+  borderRadius: `${radius.lg}px`,
+  border: `1px solid ${colors.line}`,
+  bgcolor: colors.bg,
+};
+
+const primaryButtonSx = {
+  bgcolor: colors.brand,
+  color: colors.bg,
+  borderRadius: `${radius.pill}px`,
+  px: 4,
+  py: 1.4,
+  textTransform: 'none',
+  fontWeight: 600,
+  fontSize: '0.95rem',
+  transition: `background-color ${motion.duration} ${motion.ease}`,
+  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+  '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
+};
+
+const backButtonSx = {
+  borderRadius: `${radius.pill}px`,
+  px: 3,
+  py: 1.4,
+  textTransform: 'none',
+  fontWeight: 600,
+  color: colors.ink2,
+  '&:hover': { bgcolor: colors.bgSoft, color: colors.ink },
+};
 
 const buildBookingPayload = (visitor, schedule, room, isDesk, extraFields = {}) => {
   const contact = visitor.contact || {};
@@ -64,6 +96,15 @@ const buildBookingPayload = (visitor, schedule, room, isDesk, extraFields = {}) 
   };
 };
 
+const SecurePaymentHeader = ({ t }) => (
+  <Stack direction="row" spacing={1} alignItems="center">
+    <LockRoundedIcon sx={{ fontSize: 18, color: colors.ink3 }} />
+    <Typography sx={{ ...typography.body, color: colors.ink2 }}>
+      {t('payment.securePayment')}
+    </Typography>
+  </Stack>
+);
+
 /* ─── One-time payment form with 3DS redirect recovery ─── */
 const PaymentIntentForm = ({ onBack, amount, room }) => {
   const { t } = useTranslation();
@@ -78,7 +119,6 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   const isDesk = room?.priceUnit === '/month';
   const [redirectRecoveryDone, setRedirectRecoveryDone] = useState(false);
 
-  // On mount, check if returning from a 3DS redirect
   useEffect(() => {
     if (!stripe || redirectRecoveryDone) return;
     const params = new URLSearchParams(window.location.search);
@@ -97,7 +137,6 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
           return;
         }
 
-        // Recover saved booking payload from sessionStorage
         let savedPayload;
         try {
           const raw = sessionStorage.getItem(PENDING_BOOKING_KEY);
@@ -126,7 +165,6 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
         }
       } finally {
         setSubmitting(false);
-        // Clean URL params
         const url = new URL(window.location.href);
         url.searchParams.delete('payment_intent');
         url.searchParams.delete('payment_intent_client_secret');
@@ -144,7 +182,6 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
     setSubmitting(true);
     setError('');
 
-    // Re-check availability before charging to catch stale data
     const productName = isDesk
       ? (schedule?.deskProductName || room?.productName || room?.name || '')
       : (room?.productName || room?.name || '');
@@ -158,7 +195,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
           const selStart = timeStringToMinutes(schedule.startTime);
           const selEnd = timeStringToMinutes(schedule.endTime);
           if (selStart != null && selEnd != null) {
-            const conflict = bloqueos.some(b => {
+            const conflict = bloqueos.some((b) => {
               const bStart = timeStringToMinutes(b.fechaIni?.split?.('T')?.[1]?.slice(0, 5));
               const bEnd = timeStringToMinutes(b.fechaFin?.split?.('T')?.[1]?.slice(0, 5));
               return bStart != null && bEnd != null && bStart < selEnd && bEnd > selStart;
@@ -170,12 +207,9 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
             }
           }
         }
-      } catch (_) {
-        // If availability check fails, proceed — backend will catch conflicts
-      }
+      } catch (_) {}
     }
 
-    // Save booking payload to sessionStorage before confirming (in case of 3DS redirect)
     const bookingPayload = buildBookingPayload(visitor, schedule, room, isDesk);
     try {
       sessionStorage.setItem(PENDING_BOOKING_KEY, JSON.stringify(bookingPayload));
@@ -207,7 +241,6 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
         console.error('Failed to create booking after payment:', bookingErr);
         sessionStorage.removeItem(PENDING_BOOKING_KEY);
 
-        // Auto-refund: backend may have refunded already, but if it was unreachable we do it from here
         let refunded = false;
         let errMsg = bookingErr?.message || '';
         try { errMsg = JSON.parse(errMsg)?.message || errMsg; } catch (_) {}
@@ -248,41 +281,20 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
 
   return (
     <Stack spacing={2.5} component="form" onSubmit={handleSubmit}>
-      <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+      <Paper elevation={0} sx={cardSx}>
         <Stack spacing={2}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <LockRoundedIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {t('payment.securePayment')}
-            </Typography>
-          </Stack>
+          <SecurePaymentHeader t={t} />
           <PaymentElement />
         </Stack>
       </Paper>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{error}</Alert>}
 
       <Stack direction="row" spacing={2} justifyContent="space-between">
-        <Button
-          onClick={onBack}
-          disabled={submitting}
-          sx={{
-            borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
-            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
-          }}
-        >
+        <Button onClick={onBack} disabled={submitting} sx={backButtonSx}>
           {t('common.back')}
         </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!stripe || submitting}
-          sx={{
-            borderRadius: 999, px: 4, py: 1.25,
-            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
-          }}
-        >
+        <Button type="submit" variant="contained" disableElevation disabled={!stripe || submitting} sx={primaryButtonSx}>
           {submitting ? t('payment.processing') : t('payment.pay', { amount })}
         </Button>
       </Stack>
@@ -319,9 +331,8 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
     }
 
     try {
-      // Create the subscription
       const cancelAt = Math.floor(
-        new Date(schedule.dateTo + 'T23:59:59').getTime() / 1000
+        new Date(`${schedule.dateTo}T23:59:59`).getTime() / 1000,
       );
 
       const subRes = await fetch(`${paymentsBaseUrl}/api/subscriptions`, {
@@ -346,11 +357,10 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
 
       const subData = await subRes.json();
 
-      // Create the booking in the Java backend
       await createPublicBooking(
         buildBookingPayload(visitor, schedule, room, true, {
           stripeSubscriptionId: subData.subscriptionId,
-        })
+        }),
       );
 
       setSubmitting(false);
@@ -367,55 +377,46 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
 
   return (
     <Stack spacing={2.5} component="form" onSubmit={handleSubmit}>
-      <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+      <Paper elevation={0} sx={cardSx}>
         <Stack spacing={2}>
-          <Stack direction="row" spacing={1} alignItems="center">
-            <LockRoundedIcon sx={{ fontSize: 18, color: 'text.disabled' }} />
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-              {t('payment.securePayment')}
-            </Typography>
-          </Stack>
+          <SecurePaymentHeader t={t} />
           <PaymentElement />
         </Stack>
       </Paper>
 
-      <Paper variant="outlined" sx={{ p: 2.5, borderRadius: 3, bgcolor: (theme) => alpha(theme.palette.info.main, 0.04) }}>
+      <Paper
+        elevation={0}
+        sx={{
+          ...cardSx,
+          p: 2.25,
+          bgcolor: colors.brandSoft,
+          borderColor: colors.brand,
+        }}
+      >
         <Stack spacing={0.5}>
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography sx={{ fontWeight: 600, fontSize: '0.9rem', color: colors.brandDeep }}>
             {t('payment.monthlySubscription')}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography sx={{ ...typography.body, color: colors.ink2 }}>
             {t('payment.chargedToday', { amount: monthlyAmount.toFixed(2) })}
           </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {t('payment.thenMonthly', { amount: monthlyAmount.toFixed(2), remaining: durationMonths - 1, label: durationMonths - 1 === 1 ? t('payment.monthSingular') : t('payment.monthPlural') })}
+          <Typography sx={{ ...typography.body, color: colors.ink2 }}>
+            {t('payment.thenMonthly', {
+              amount: monthlyAmount.toFixed(2),
+              remaining: durationMonths - 1,
+              label: durationMonths - 1 === 1 ? t('payment.monthSingular') : t('payment.monthPlural'),
+            })}
           </Typography>
         </Stack>
       </Paper>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{error}</Alert>}
 
       <Stack direction="row" spacing={2} justifyContent="space-between">
-        <Button
-          onClick={onBack}
-          disabled={submitting}
-          sx={{
-            borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
-            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
-          }}
-        >
+        <Button onClick={onBack} disabled={submitting} sx={backButtonSx}>
           {t('common.back')}
         </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={!stripe || submitting}
-          sx={{
-            borderRadius: 999, px: 4, py: 1.25,
-            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
-          }}
-        >
+        <Button type="submit" variant="contained" disableElevation disabled={!stripe || submitting} sx={primaryButtonSx}>
           {submitting ? t('payment.processing') : t('payment.subscribe', { amount: monthlyAmount.toFixed(2) })}
         </Button>
       </Stack>
@@ -438,7 +439,7 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
     setError('');
     try {
       await createPublicBooking(
-        buildBookingPayload(visitor, schedule, room, isDesk)
+        buildBookingPayload(visitor, schedule, room, isDesk),
       );
       setSuccess(true);
     } catch (err) {
@@ -455,66 +456,57 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
   return (
     <Stack spacing={2.5}>
       <Paper
-        variant="outlined"
+        elevation={0}
         sx={{
-          p: 3,
-          borderRadius: 3,
-          bgcolor: (theme) => alpha(theme.palette.success.main, 0.04),
-          borderColor: 'success.main',
+          ...cardSx,
+          bgcolor: colors.brandSoft,
+          borderColor: colors.brand,
         }}
       >
         <Stack spacing={1.5}>
           <Stack direction="row" spacing={1} alignItems="center">
-            <CheckCircleRoundedIcon sx={{ fontSize: 20, color: 'success.main' }} />
-            <Typography variant="body1" sx={{ fontWeight: 700 }}>
+            <CheckCircleRoundedIcon sx={{ fontSize: 22, color: colors.brand }} />
+            <Typography sx={{ fontWeight: 700, fontSize: '1rem', color: colors.brandDeep }}>
               {t('payment.freeBooking')}
             </Typography>
           </Stack>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography sx={{ ...typography.body, color: colors.ink2 }}>
             {t('payment.freeBookingDesc', { used: usage.used + 1, limit: usage.freeLimit })}
           </Typography>
           {pricing && (
             <Stack direction="row" spacing={1} alignItems="center">
-              <Typography
-                variant="body2"
-                sx={{ textDecoration: 'line-through', color: 'text.disabled' }}
-              >
+              <Typography sx={{ ...typography.body, textDecoration: 'line-through', color: colors.ink3 }}>
                 €{pricing.total}
               </Typography>
               <Chip
                 label={t('payment.free')}
                 size="small"
-                color="success"
-                sx={{ fontWeight: 700, fontSize: '0.8rem' }}
+                sx={{
+                  fontWeight: 700,
+                  fontSize: '0.75rem',
+                  bgcolor: colors.brand,
+                  color: colors.bg,
+                  borderRadius: `${radius.pill}px`,
+                  height: 22,
+                }}
               />
             </Stack>
           )}
         </Stack>
       </Paper>
 
-      {error && <Alert severity="error">{error}</Alert>}
+      {error && <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{error}</Alert>}
 
       <Stack direction="row" spacing={2} justifyContent="space-between">
-        <Button
-          onClick={onBack}
-          disabled={submitting}
-          sx={{
-            borderRadius: 999, px: 3, py: 1.25,
-            textTransform: 'none', fontWeight: 600, color: '#4a7c59',
-            '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
-          }}
-        >
+        <Button onClick={onBack} disabled={submitting} sx={backButtonSx}>
           {t('common.back')}
         </Button>
         <Button
           variant="contained"
-          color="success"
+          disableElevation
           onClick={handleSubmit}
           disabled={submitting}
-          sx={{
-            borderRadius: 999, px: 4, py: 1.25,
-            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
-          }}
+          sx={primaryButtonSx}
         >
           {submitting ? t('payment.processing') : t('payment.confirmFreeBooking')}
         </Button>
@@ -541,13 +533,22 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
   }, [transactionId, valueCents, isSubscription]);
 
   return (
-    <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+    <Paper elevation={0} sx={{ ...cardSx, p: 4, textAlign: 'center' }}>
       <Stack spacing={3} alignItems="center">
-        <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
-        <Typography variant="h5" sx={{ fontWeight: 700 }}>
+        <CheckCircleRoundedIcon sx={{ fontSize: 56, color: colors.brand }} />
+        <Box
+          component="h2"
+          sx={{
+            ...typography.h3,
+            color: colors.ink,
+            fontFamily: typography.fontFamily,
+            fontFeatureSettings: typography.fontFeatureSettings,
+            m: 0,
+          }}
+        >
           {t('payment.bookingConfirmed')}
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+        </Box>
+        <Typography sx={{ ...typography.body, color: colors.ink2 }}>
           {isSubscription
             ? t('payment.subscriptionActivated', { amount })
             : t('payment.paymentProcessed', { amount })}
@@ -555,10 +556,8 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
         <Button
           href="/"
           variant="contained"
-          sx={{
-            borderRadius: 999, px: 4, py: 1.25,
-            textTransform: 'none', fontWeight: 700, fontSize: '0.95rem',
-          }}
+          disableElevation
+          sx={primaryButtonSx}
         >
           {t('payment.browseMore')}
         </Button>
@@ -567,18 +566,147 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
   );
 };
 
+const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => {
+  const { t } = useTranslation();
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        borderRadius: `${radius.lg}px`,
+        overflow: 'hidden',
+        border: `1px solid ${colors.line}`,
+        bgcolor: colors.bg,
+      }}
+    >
+      <Box
+        sx={{
+          position: 'relative',
+          height: 130,
+          backgroundImage: room?.heroImage ? `url(${room.heroImage})` : undefined,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          bgcolor: room?.heroImage ? undefined : colors.brandSoft,
+        }}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 60%)',
+          }}
+        />
+        <Stack
+          sx={{ position: 'absolute', bottom: 12, left: 16, right: 16 }}
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
+          <Box>
+            <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1rem' }}>
+              {room?.name}
+            </Typography>
+            <Stack direction="row" spacing={0.5} alignItems="center">
+              <PlaceRoundedIcon sx={{ color: 'rgba(255,255,255,0.85)', fontSize: 14 }} />
+              <Typography sx={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.78rem' }}>
+                {room?.centro}
+              </Typography>
+            </Stack>
+          </Box>
+          {pricing && (
+            <Chip
+              label={isSubscription ? `€${pricing.monthlyTotal}/mo` : `€${pricing.total}`}
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.95)',
+                color: colors.ink,
+                fontWeight: 700,
+                fontSize: '0.95rem',
+                height: 32,
+                borderRadius: `${radius.pill}px`,
+              }}
+            />
+          )}
+        </Stack>
+      </Box>
+
+      <Stack
+        direction="row"
+        divider={<Divider orientation="vertical" flexItem sx={{ borderColor: colors.line }} />}
+        sx={{ px: 2, py: 1.5 }}
+      >
+        <Stack spacing={0.4} sx={{ flex: 1, alignItems: 'center' }}>
+          <CalendarMonthRoundedIcon sx={{ color: colors.brand, fontSize: 18 }} />
+          <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, color: colors.ink, textAlign: 'center' }}>
+            {isDesk && schedule?.bookingType === 'day' && schedule?.date
+              ? new Date(`${schedule.date}T00:00:00`).toLocaleDateString(undefined, {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })
+              : isDesk && schedule?.date && schedule?.dateTo
+                ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
+                : schedule?.date
+                  ? new Date(schedule.date).toLocaleDateString(undefined, {
+                      day: 'numeric',
+                      month: 'short',
+                    })
+                  : '—'}
+          </Typography>
+        </Stack>
+        <Stack spacing={0.4} sx={{ flex: 1, alignItems: 'center' }}>
+          <AccessTimeRoundedIcon sx={{ color: colors.brand, fontSize: 18 }} />
+          <Typography sx={{ fontSize: '0.78rem', fontWeight: 600, color: colors.ink }}>
+            {isDesk
+              ? (schedule?.deskProductName || '—')
+              : (schedule?.startTime && schedule?.endTime
+                  ? `${schedule.startTime} – ${schedule.endTime}`
+                  : '—')}
+          </Typography>
+        </Stack>
+      </Stack>
+
+      {pricing && (
+        <Stack sx={{ px: 2.5, py: 2, borderTop: `1px solid ${colors.line}`, bgcolor: colors.bgSoft }} spacing={0.6}>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>
+              {isSubscription ? t('pricing.monthlySubtotal') : t('pricing.subtotal')}
+            </Typography>
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>€{pricing.subtotal}</Typography>
+          </Stack>
+          <Stack direction="row" justifyContent="space-between">
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>{t('pricing.vat')}</Typography>
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>€{pricing.vat}</Typography>
+          </Stack>
+          <Divider sx={{ my: 0.5, borderColor: colors.line }} />
+          <Stack direction="row" justifyContent="space-between">
+            <Typography sx={{ ...typography.body, fontWeight: 700, color: colors.ink }}>
+              {isSubscription ? t('pricing.monthlyTotal') : t('pricing.total')}
+            </Typography>
+            <Typography sx={{ ...typography.body, fontWeight: 700, color: colors.ink }}>
+              €{pricing.total}{isSubscription ? t('pricing.perMonth') : ''}
+            </Typography>
+          </Stack>
+          {isSubscription && (
+            <Typography sx={{ fontSize: '0.75rem', color: colors.ink3, mt: 0.25 }}>
+              {t('pricing.subscriptionNote', { months: pricing.months })}
+            </Typography>
+          )}
+        </Stack>
+      )}
+    </Paper>
+  );
+};
+
 /* ─── Main PaymentStep component ─── */
 const PaymentStep = ({ room, onBack }) => {
   const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
-  const visitor = useBookingVisitor();
   const isDesk = room?.priceUnit === '/month';
   const isSubscription = isDesk && schedule?.bookingType === 'month' && (schedule?.durationMonths || 1) > 1;
 
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [freeUsage, setFreeUsage] = useState(null); // { used, freeLimit, isFree }
+  const [freeUsage, setFreeUsage] = useState(null);
 
   const stripePromise = useMemo(() => (publishableKey ? loadStripe(publishableKey) : null), []);
 
@@ -602,11 +730,8 @@ const PaymentStep = ({ room, onBack }) => {
         };
       }
       let subtotal;
-      if (isDayBooking) {
-        subtotal = 10;
-      } else {
-        subtotal = 90;
-      }
+      if (isDayBooking) subtotal = 10;
+      else subtotal = 90;
       const vat = subtotal * VAT_RATE;
       const total = subtotal + vat;
       return {
@@ -624,16 +749,15 @@ const PaymentStep = ({ room, onBack }) => {
     const hours = (endMins - startMins) / 60;
     const perSession = hours * room.priceFrom;
 
-    // Count recurring sessions
     const DAY_MAP = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
     let sessions = 1;
     if (schedule?.recurring && schedule?.weekdays?.length && schedule?.date && schedule?.dateTo) {
       const selectedDays = new Set(schedule.weekdays.map((d) => DAY_MAP[d]));
       let count = 0;
-      const cursor = new Date(schedule.date + 'T00:00:00');
-      const end = new Date(schedule.dateTo + 'T00:00:00');
+      const cursor = new Date(`${schedule.date}T00:00:00`);
+      const end = new Date(`${schedule.dateTo}T00:00:00`);
       while (cursor <= end) {
-        if (selectedDays.has(cursor.getDay())) count++;
+        if (selectedDays.has(cursor.getDay())) count += 1;
         cursor.setDate(cursor.getDate() + 1);
       }
       if (count > 0) sessions = count;
@@ -654,14 +778,11 @@ const PaymentStep = ({ room, onBack }) => {
   const estimatedTotal = pricing?.total ?? null;
 
   const amountCents = useMemo(() => {
-    if (isSubscription) {
-      return Math.round(MONTHLY_WITH_VAT * 100);
-    }
+    if (isSubscription) return Math.round(MONTHLY_WITH_VAT * 100);
     if (!estimatedTotal) return Math.round((room?.priceFrom || 0) * (1 + VAT_RATE) * 100);
     return Math.round(Number(estimatedTotal) * 100);
   }, [estimatedTotal, room?.priceFrom, isSubscription]);
 
-  // Detect 3DS redirect return — use the existing clientSecret from URL
   const redirectClientSecret = useMemo(() => {
     if (typeof window === 'undefined') return null;
     const params = new URLSearchParams(window.location.search);
@@ -669,7 +790,6 @@ const PaymentStep = ({ room, onBack }) => {
   }, []);
 
   useEffect(() => {
-    // If returning from 3DS redirect, use the clientSecret from URL params
     if (redirectClientSecret) {
       setClientSecret(redirectClientSecret);
       setLoading(false);
@@ -677,10 +797,8 @@ const PaymentStep = ({ room, onBack }) => {
     }
 
     const init = async () => {
-      // Read visitor from store directly to avoid stale closure
       const currentVisitor = useBookingVisitor.getState();
 
-      // Check free booking eligibility first
       try {
         const email = currentVisitor.contact?.email;
         const productName = isDesk
@@ -695,9 +813,7 @@ const PaymentStep = ({ room, onBack }) => {
             return;
           }
         }
-      } catch (usageErr) {
-        // If usage check fails, fall through to normal payment flow
-      }
+      } catch (_) {}
 
       if (!paymentsBaseUrl) {
         setError(t('payment.serviceNotConfigured'));
@@ -769,20 +885,20 @@ const PaymentStep = ({ room, onBack }) => {
     return (
       <Stack spacing={3}>
         <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} isSubscription={isSubscription} />
-        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+        <Paper elevation={0} sx={{ ...cardSx, p: 4, textAlign: 'center' }}>
           <Stack spacing={2} alignItems="center">
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Box
-                sx={{
-                  width: 32, height: 32,
-                  border: '3px solid', borderColor: 'divider',
-                  borderTopColor: 'primary.main', borderRadius: '50%',
-                  animation: 'spin 0.8s linear infinite',
-                  '@keyframes spin': { to: { transform: 'rotate(360deg)' } },
-                }}
-              />
-            </Box>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                border: `3px solid ${colors.line}`,
+                borderTopColor: colors.brand,
+                borderRadius: '50%',
+                animation: 'spin 0.8s linear infinite',
+                '@keyframes spin': { to: { transform: 'rotate(360deg)' } },
+              }}
+            />
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>
               {t('payment.preparingPayment')}
             </Typography>
           </Stack>
@@ -795,15 +911,9 @@ const PaymentStep = ({ room, onBack }) => {
     return (
       <Stack spacing={3}>
         <OrderSummary room={room} schedule={schedule} pricing={pricing} isDesk={isDesk} isSubscription={isSubscription} />
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{error}</Alert>
         <Box>
-          <Button
-            onClick={onBack}
-            sx={{
-              borderRadius: 999, px: 3, py: 1.25,
-              textTransform: 'none', fontWeight: 600, color: 'text.secondary',
-            }}
-          >
+          <Button onClick={onBack} sx={backButtonSx}>
             {t('common.back')}
           </Button>
         </Box>
@@ -821,7 +931,7 @@ const PaymentStep = ({ room, onBack }) => {
   }
 
   if (!clientSecret || !stripePromise) {
-    return <Alert severity="warning">{t('payment.notAvailable')}</Alert>;
+    return <Alert severity="warning" sx={{ borderRadius: `${radius.md}px` }}>{t('payment.notAvailable')}</Alert>;
   }
 
   return (
@@ -843,134 +953,6 @@ const PaymentStep = ({ room, onBack }) => {
   );
 };
 
-const OrderSummary = ({ room, schedule, pricing, isDesk, isSubscription }) => {
-  const { t } = useTranslation();
-  return (
-  <Paper
-    elevation={0}
-    sx={{
-      borderRadius: 3,
-      overflow: 'hidden',
-      border: '1px solid',
-      borderColor: 'divider',
-    }}
-  >
-    <Box
-      sx={{
-        position: 'relative',
-        height: 120,
-        backgroundImage: room?.heroImage ? `url(${room.heroImage})` : undefined,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        bgcolor: room?.heroImage ? undefined : (theme) => alpha(theme.palette.primary.main, 0.08),
-      }}
-    >
-      <Box
-        sx={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
-        }}
-      />
-      <Stack
-        sx={{ position: 'absolute', bottom: 12, left: 16, right: 16 }}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-end"
-      >
-        <Box>
-          <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 700 }}>
-            {room?.name}
-          </Typography>
-          <Stack direction="row" spacing={0.5} alignItems="center">
-            <PlaceRoundedIcon sx={{ color: 'grey.300', fontSize: 14 }} />
-            <Typography variant="caption" sx={{ color: 'grey.300' }}>
-              {room?.centro}
-            </Typography>
-          </Stack>
-        </Box>
-        {pricing && (
-          <Chip
-            label={isSubscription ? `€${pricing.monthlyTotal}/mo` : `€${pricing.total}`}
-            sx={{
-              bgcolor: 'rgba(255,255,255,0.9)',
-              fontWeight: 700,
-              fontSize: '0.95rem',
-              height: 32,
-            }}
-          />
-        )}
-      </Stack>
-    </Box>
-
-    <Stack
-      direction="row"
-      divider={<Divider orientation="vertical" flexItem />}
-      sx={{ px: 2, py: 1.5 }}
-    >
-      <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
-        <CalendarMonthRoundedIcon sx={{ color: 'primary.main', fontSize: 18 }} />
-        <Typography variant="caption" sx={{ fontWeight: 600 }}>
-          {isDesk && schedule?.bookingType === 'day' && schedule?.date
-            ? new Date(schedule.date + 'T00:00:00').toLocaleDateString(undefined, {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })
-            : isDesk && schedule?.date && schedule?.dateTo
-              ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
-              : schedule?.date
-                ? new Date(schedule.date).toLocaleDateString(undefined, {
-                    day: 'numeric',
-                    month: 'short',
-                  })
-                : '—'}
-        </Typography>
-      </Stack>
-      <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
-        <AccessTimeRoundedIcon sx={{ color: 'primary.main', fontSize: 18 }} />
-        <Typography variant="caption" sx={{ fontWeight: 600 }}>
-          {isDesk
-            ? (schedule?.deskProductName || '—')
-            : (schedule?.startTime && schedule?.endTime
-                ? `${schedule.startTime} – ${schedule.endTime}`
-                : '—')}
-        </Typography>
-      </Stack>
-    </Stack>
-
-    {pricing && (
-      <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {isSubscription ? t('pricing.monthlySubtotal') : t('pricing.subtotal')}
-          </Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
-        </Stack>
-        <Stack direction="row" justifyContent="space-between">
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('pricing.vat')}</Typography>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
-        </Stack>
-        <Divider sx={{ my: 0.5 }} />
-        <Stack direction="row" justifyContent="space-between">
-          <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            {isSubscription ? t('pricing.monthlyTotal') : t('pricing.total')}
-          </Typography>
-          <Typography variant="body2" sx={{ fontWeight: 700 }}>
-            €{pricing.total}{isSubscription ? t('pricing.perMonth') : ''}
-          </Typography>
-        </Stack>
-        {isSubscription && (
-          <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
-            {t('pricing.subscriptionNote', { months: pricing.months })}
-          </Typography>
-        )}
-      </Stack>
-    )}
-  </Paper>
-  );
-};
-
 class PaymentErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -987,7 +969,6 @@ class PaymentErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // Check if a pending booking was just completed (payment succeeded but render crashed)
       let bookingCompleted = false;
       try {
         bookingCompleted = !sessionStorage.getItem('beworking_pending_booking');
@@ -995,20 +976,25 @@ class PaymentErrorBoundary extends React.Component {
 
       if (bookingCompleted) {
         return (
-          <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+          <Paper elevation={0} sx={{ ...cardSx, p: 4, textAlign: 'center' }}>
             <Stack spacing={2} alignItems="center">
-              <CheckCircleRoundedIcon sx={{ fontSize: 56, color: 'success.main' }} />
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+              <CheckCircleRoundedIcon sx={{ fontSize: 56, color: colors.brand }} />
+              <Box
+                component="h2"
+                sx={{
+                  ...typography.h3,
+                  color: colors.ink,
+                  fontFamily: typography.fontFamily,
+                  fontFeatureSettings: typography.fontFeatureSettings,
+                  m: 0,
+                }}
+              >
                 ¡Reserva confirmada!
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              </Box>
+              <Typography sx={{ ...typography.body, color: colors.ink2 }}>
                 Tu pago se ha procesado correctamente. Recibirás un email de confirmación en breve.
               </Typography>
-              <Button
-                href="/"
-                variant="contained"
-                sx={{ borderRadius: 999, px: 4, py: 1.25, textTransform: 'none', fontWeight: 700 }}
-              >
+              <Button href="/" variant="contained" disableElevation sx={primaryButtonSx}>
                 Volver al inicio
               </Button>
             </Stack>
@@ -1017,18 +1003,28 @@ class PaymentErrorBoundary extends React.Component {
       }
 
       return (
-        <Paper variant="outlined" sx={{ p: 4, borderRadius: 3, textAlign: 'center' }}>
+        <Paper elevation={0} sx={{ ...cardSx, p: 4, textAlign: 'center' }}>
           <Stack spacing={2} alignItems="center">
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            <Box
+              component="h2"
+              sx={{
+                ...typography.h3,
+                color: colors.ink,
+                fontFamily: typography.fontFamily,
+                fontFeatureSettings: typography.fontFeatureSettings,
+                m: 0,
+              }}
+            >
               Algo salió mal
-            </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            </Box>
+            <Typography sx={{ ...typography.body, color: colors.ink2 }}>
               No se pudo cargar el formulario de pago. Intenta recargar la página o usa otro navegador.
             </Typography>
             <Button
               variant="contained"
+              disableElevation
               onClick={() => window.location.reload()}
-              sx={{ borderRadius: 999, px: 4, py: 1.25, textTransform: 'none', fontWeight: 700 }}
+              sx={primaryButtonSx}
             >
               Recargar página
             </Button>

@@ -9,33 +9,69 @@ import {
   Divider,
   Paper,
   Stack,
-  Typography
+  Typography,
 } from '@mui/material';
-import TextField from '../common/ClearableTextField';
-import { alpha } from '@mui/material/styles';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded';
+import { useTranslation } from 'react-i18next';
+import TextField from '../common/ClearableTextField';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
-import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
 
 const fieldSx = (hasValue) => ({
   '& .MuiInputLabel-root': {
-    fontSize: '0.75rem',
+    fontSize: '0.7rem',
     fontWeight: 700,
-    color: hasValue ? 'primary.main' : 'text.primary',
+    color: hasValue ? colors.brand : colors.ink,
     textTransform: 'uppercase',
-    letterSpacing: '0.04em',
-    transition: 'color 0.2s',
+    letterSpacing: '0.06em',
+    transition: `color ${motion.duration} ${motion.ease}`,
   },
   '& .MuiInput-input': {
-    fontSize: '0.875rem',
-    color: hasValue ? 'text.primary' : 'text.secondary',
+    fontSize: '0.9rem',
+    color: hasValue ? colors.ink : colors.ink3,
     py: 0.25,
   },
 });
+
+const pillBarSx = {
+  border: `1px solid ${colors.line}`,
+  bgcolor: colors.bg,
+  display: 'flex',
+  alignItems: 'center',
+  overflow: 'hidden',
+  flexDirection: { xs: 'column', sm: 'row' },
+  borderRadius: { xs: 3, sm: 999 },
+};
+
+const pillCellSx = {
+  flex: 1,
+  px: 3,
+  py: { xs: 1.25, sm: 1.5 },
+  minWidth: 0,
+  width: { xs: '100%', sm: 'auto' },
+};
+
+const cardSx = {
+  p: { xs: 2.5, md: 3 },
+  borderRadius: `${radius.lg}px`,
+  border: `1px solid ${colors.line}`,
+  bgcolor: colors.bg,
+};
+
+const sectionTitleSx = {
+  ...typography.h3,
+  color: colors.ink,
+  fontFamily: typography.fontFamily,
+  fontFeatureSettings: typography.fontFeatureSettings,
+  m: 0,
+  fontSize: { xs: '1.05rem', md: '1.15rem' },
+};
 
 const initialVisitorForm = {
   firstName: '',
@@ -48,7 +84,7 @@ const initialVisitorForm = {
   addressLine2: '',
   city: '',
   postalCode: '',
-  country: 'Spain'
+  country: 'Spain',
 };
 
 const buildErrors = (form) => {
@@ -61,29 +97,31 @@ const buildErrors = (form) => {
   return errors;
 };
 
+const VerticalDivider = () => (
+  <>
+    <Divider orientation="vertical" flexItem sx={{ borderColor: colors.line, display: { xs: 'none', sm: 'block' } }} />
+    <Divider sx={{ borderColor: colors.line, display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+  </>
+);
+
 const ContactBillingStep = ({ room, onBack, onContinue }) => {
   const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
 
   const [formState, setFormState] = useState(initialVisitorForm);
   const [errors, setErrors] = useState({});
-  const [submitError, setSubmitError] = useState('');
+  const [submitError] = useState('');
 
   const isDesk = room?.priceUnit === '/month';
-
   const isSubscription = isDesk && schedule?.bookingType === 'month' && (schedule?.durationMonths || 1) > 1;
 
   const pricing = useMemo(() => {
     if (isDesk) {
       const isDayBooking = schedule?.bookingType === 'day';
       let subtotal;
-      if (isDayBooking) {
-        subtotal = 10; // €10/day
-      } else if (isSubscription) {
-        subtotal = 90; // €90/month (show monthly, not total)
-      } else {
-        subtotal = 90; // €90 single month
-      }
+      if (isDayBooking) subtotal = 10;
+      else if (isSubscription) subtotal = 90;
+      else subtotal = 90;
       const vat = subtotal * 0.21;
       const total = subtotal + vat;
       const months = schedule?.durationMonths || 1;
@@ -105,16 +143,15 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
     const hours = (endMins - startMins) / 60;
     const perSession = hours * room.priceFrom;
 
-    // Count recurring sessions
     const DAY_MAP = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 };
     let sessions = 1;
     if (schedule?.recurring && schedule?.weekdays?.length && schedule?.date && schedule?.dateTo) {
       const selectedDays = new Set(schedule.weekdays.map((d) => DAY_MAP[d]));
       let count = 0;
-      const cursor = new Date(schedule.date + 'T00:00:00');
-      const end = new Date(schedule.dateTo + 'T00:00:00');
+      const cursor = new Date(`${schedule.date}T00:00:00`);
+      const end = new Date(`${schedule.dateTo}T00:00:00`);
       while (cursor <= end) {
-        if (selectedDays.has(cursor.getDay())) count++;
+        if (selectedDays.has(cursor.getDay())) count += 1;
         cursor.setDate(cursor.getDate() + 1);
       }
       if (count > 0) sessions = count;
@@ -130,7 +167,7 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
       sessions,
       perSession: perSession.toFixed(2),
     };
-  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, schedule?.bookingType, isDesk, schedule?.recurring, schedule?.weekdays, schedule?.date, schedule?.dateTo]);
+  }, [room?.priceFrom, schedule?.startTime, schedule?.endTime, schedule?.durationMonths, schedule?.bookingType, isDesk, schedule?.recurring, schedule?.weekdays, schedule?.date, schedule?.dateTo, t, isSubscription]);
 
   const handleChange = (field) => (event) => {
     setFormState((prev) => ({ ...prev, [field]: event.target.value }));
@@ -138,7 +175,6 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setSubmitError('');
     const nextErrors = buildErrors(formState);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
@@ -152,28 +188,27 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
         <Paper
           elevation={0}
           sx={{
-            borderRadius: 3,
+            borderRadius: `${radius.lg}px`,
             overflow: 'hidden',
-            border: '1px solid',
-            borderColor: 'divider',
+            border: `1px solid ${colors.line}`,
+            bgcolor: colors.bg,
           }}
         >
-          {/* Header with room image */}
           <Box
             sx={{
               position: 'relative',
-              height: 140,
+              height: 160,
               backgroundImage: room?.heroImage ? `url(${room.heroImage})` : undefined,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
-              bgcolor: room?.heroImage ? undefined : (theme) => alpha(theme.palette.primary.main, 0.08),
+              bgcolor: room?.heroImage ? undefined : colors.brandSoft,
             }}
           >
             <Box
               sx={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%)',
+                background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0) 60%)',
               }}
             />
             <Stack
@@ -183,12 +218,12 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
               alignItems="flex-end"
             >
               <Box>
-                <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 700 }}>
+                <Typography sx={{ color: '#fff', fontWeight: 700, fontSize: '1.1rem' }}>
                   {room?.name}
                 </Typography>
                 <Stack direction="row" spacing={0.5} alignItems="center">
-                  <PlaceRoundedIcon sx={{ color: 'grey.300', fontSize: 16 }} />
-                  <Typography variant="body2" sx={{ color: 'grey.300' }}>
+                  <PlaceRoundedIcon sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 16 }} />
+                  <Typography sx={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.85rem' }}>
                     {room?.centro}
                   </Typography>
                 </Stack>
@@ -197,30 +232,31 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                 <Chip
                   label={pricing.isSubscription ? `€${pricing.total}/mo` : `€${pricing.total}`}
                   sx={{
-                    bgcolor: 'rgba(255,255,255,0.9)',
+                    bgcolor: 'rgba(255,255,255,0.95)',
+                    color: colors.ink,
                     fontWeight: 700,
                     fontSize: '0.95rem',
                     height: 32,
+                    borderRadius: `${radius.pill}px`,
                   }}
                 />
               )}
             </Stack>
           </Box>
 
-          {/* Details grid */}
           <Stack
             direction="row"
-            divider={<Divider orientation="vertical" flexItem />}
-            sx={{ px: 2.5, py: 2 }}
+            divider={<Divider orientation="vertical" flexItem sx={{ borderColor: colors.line }} />}
+            sx={{ px: 2.5, py: 2.25 }}
           >
-            <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
-              <CalendarMonthRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <Stack spacing={0.4} sx={{ flex: 1, alignItems: 'center' }}>
+              <CalendarMonthRoundedIcon sx={{ color: colors.brand, fontSize: 20 }} />
+              <Typography sx={{ ...typography.body, fontWeight: 600, color: colors.ink, textAlign: 'center' }}>
                 {isDesk && schedule?.bookingType === 'day' && schedule?.date
-                  ? new Date(schedule.date + 'T00:00:00').toLocaleDateString(undefined, {
+                  ? new Date(`${schedule.date}T00:00:00`).toLocaleDateString(undefined, {
                       day: 'numeric',
                       month: 'short',
-                      year: 'numeric'
+                      year: 'numeric',
                     })
                   : isDesk && schedule?.date && schedule?.dateTo
                     ? `${new Date(schedule.date).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })} – ${new Date(schedule.dateTo).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}`
@@ -228,61 +264,63 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
                       ? new Date(schedule.date).toLocaleDateString(undefined, {
                           day: 'numeric',
                           month: 'short',
-                          year: 'numeric'
+                          year: 'numeric',
                         })
                       : '—'}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              <Typography sx={{ fontSize: '0.7rem', color: colors.ink3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {isDesk ? (schedule?.bookingType === 'day' ? t('pricing.day') : t('pricing.period')) : t('pricing.dateLabel')}
               </Typography>
             </Stack>
-            <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
-              <AccessTimeRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
-              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            <Stack spacing={0.4} sx={{ flex: 1, alignItems: 'center' }}>
+              <AccessTimeRoundedIcon sx={{ color: colors.brand, fontSize: 20 }} />
+              <Typography sx={{ ...typography.body, fontWeight: 600, color: colors.ink }}>
                 {isDesk
                   ? (schedule?.deskProductName || '—')
                   : (schedule?.startTime && schedule?.endTime
                       ? `${schedule.startTime} – ${schedule.endTime}`
                       : '—')}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+              <Typography sx={{ fontSize: '0.7rem', color: colors.ink3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                 {isDesk ? t('pricing.deskLabel') : t('pricing.time')}
               </Typography>
             </Stack>
             {schedule?.attendees ? (
-              <Stack spacing={0.25} sx={{ flex: 1, alignItems: 'center' }}>
-                <PeopleAltRoundedIcon sx={{ color: 'primary.main', fontSize: 20 }} />
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              <Stack spacing={0.4} sx={{ flex: 1, alignItems: 'center' }}>
+                <PeopleAltRoundedIcon sx={{ color: colors.brand, fontSize: 20 }} />
+                <Typography sx={{ ...typography.body, fontWeight: 600, color: colors.ink }}>
                   {schedule.attendees}
                 </Typography>
-                <Typography variant="caption" sx={{ color: 'text.secondary' }}>{t('pricing.attendees')}</Typography>
+                <Typography sx={{ fontSize: '0.7rem', color: colors.ink3, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  {t('pricing.attendees')}
+                </Typography>
               </Stack>
             ) : null}
           </Stack>
 
           {pricing && (
-            <Stack sx={{ px: 2.5, py: 1.5, borderTop: '1px solid', borderColor: 'divider' }} spacing={0.5}>
+            <Stack sx={{ px: 2.5, py: 2, borderTop: `1px solid ${colors.line}`, bgcolor: colors.bgSoft }} spacing={0.75}>
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <Typography sx={{ ...typography.body, color: colors.ink2 }}>
                   {pricing.isSubscription ? t('pricing.monthlySubtotal') : t('pricing.subtotal')}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.subtotal}</Typography>
+                <Typography sx={{ ...typography.body, color: colors.ink2 }}>€{pricing.subtotal}</Typography>
               </Stack>
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>{t('pricing.vat')}</Typography>
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>€{pricing.vat}</Typography>
+                <Typography sx={{ ...typography.body, color: colors.ink2 }}>{t('pricing.vat')}</Typography>
+                <Typography sx={{ ...typography.body, color: colors.ink2 }}>€{pricing.vat}</Typography>
               </Stack>
-              <Divider sx={{ my: 0.5 }} />
+              <Divider sx={{ borderColor: colors.line, my: 0.5 }} />
               <Stack direction="row" justifyContent="space-between">
-                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                <Typography sx={{ ...typography.body, fontWeight: 700, color: colors.ink }}>
                   {pricing.isSubscription ? t('pricing.monthlyTotal') : t('pricing.total')}
                 </Typography>
-                <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                <Typography sx={{ ...typography.body, fontWeight: 700, color: colors.ink }}>
                   €{pricing.total}{pricing.isSubscription ? t('pricing.perMonth') : ''}
                 </Typography>
               </Stack>
               {pricing.isSubscription && (
-                <Typography variant="caption" sx={{ color: 'text.secondary', mt: 0.5 }}>
+                <Typography sx={{ fontSize: '0.75rem', color: colors.ink3, mt: 0.25 }}>
                   {t('pricing.subscriptionNote', { months: pricing.months })}
                 </Typography>
               )}
@@ -291,49 +329,41 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
         </Paper>
 
         {/* Contact details */}
-        <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+        <Paper elevation={0} sx={cardSx}>
           <Stack spacing={2}>
             <Stack spacing={0.5}>
-              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                {t('contact.title')}
-              </Typography>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Box component="h3" sx={sectionTitleSx}>{t('contact.title')}</Box>
+              <Typography sx={{ ...typography.body, color: colors.ink2 }}>
                 {t('contact.subtitle')}
               </Typography>
             </Stack>
 
-            {/* Name row */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+            <Paper elevation={0} sx={pillBarSx}>
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.firstName')} placeholder={t('contact.firstNamePlaceholder')} value={formState.firstName} onChange={handleChange('firstName')} required error={Boolean(errors.firstName)} helperText={errors.firstName ? t(errors.firstName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.firstName)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.lastName')} placeholder={t('contact.lastNamePlaceholder')} value={formState.lastName} onChange={handleChange('lastName')} required error={Boolean(errors.lastName)} helperText={errors.lastName ? t(errors.lastName) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.lastName)} />
               </Box>
             </Paper>
 
-            {/* Email & Phone row */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+            <Paper elevation={0} sx={pillBarSx}>
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" type="email" label={t('contact.email')} placeholder={t('contact.emailPlaceholder')} value={formState.email} onChange={handleChange('email')} required error={Boolean(errors.email)} helperText={errors.email ? t(errors.email) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.email)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.phone')} placeholder={t('contact.phonePlaceholder')} value={formState.phone} onChange={handleChange('phone')} required error={Boolean(errors.phone)} helperText={errors.phone ? t(errors.phone) : ''} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.phone)} />
               </Box>
             </Paper>
 
-            {/* Company & Tax ID row */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+            <Paper elevation={0} sx={pillBarSx}>
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.company')} placeholder={t('contact.companyPlaceholder')} value={formState.company} onChange={handleChange('company')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.company)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.vatTaxId')} placeholder={t('contact.vatTaxIdPlaceholder')} value={formState.taxId} onChange={handleChange('taxId')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.taxId)} />
               </Box>
             </Paper>
@@ -341,66 +371,61 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
         </Paper>
 
         {/* Billing address */}
-        <Paper variant="outlined" sx={{ p: 3, borderRadius: 3 }}>
+        <Paper elevation={0} sx={cardSx}>
           <Stack spacing={2}>
             <Stack spacing={0.5}>
               <Stack direction="row" spacing={1} alignItems="baseline">
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                  {t('contact.billingAddress')}
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'text.disabled' }}>
+                <Box component="h3" sx={sectionTitleSx}>{t('contact.billingAddress')}</Box>
+                <Typography sx={{ ...typography.body, color: colors.ink3 }}>
                   — {t('contact.optional')}
                 </Typography>
               </Stack>
-              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+              <Typography sx={{ ...typography.body, color: colors.ink2 }}>
                 {t('contact.billingSubtitle')}
               </Typography>
             </Stack>
 
-            {/* Address row */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+            <Paper elevation={0} sx={pillBarSx}>
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.addressLine1')} placeholder={t('contact.addressLine1Placeholder')} value={formState.addressLine1} onChange={handleChange('addressLine1')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.addressLine1)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.addressLine2')} placeholder={t('contact.addressLine2Placeholder')} value={formState.addressLine2} onChange={handleChange('addressLine2')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.addressLine2)} />
               </Box>
             </Paper>
 
-            {/* City, Postal, Country row */}
-            <Paper elevation={0} sx={{ border: '1px solid', borderColor: 'divider', display: 'flex', alignItems: 'center', overflow: 'hidden', boxShadow: '0 1px 6px rgba(0,0,0,0.08)', flexDirection: { xs: 'column', sm: 'row' }, borderRadius: { xs: 3, sm: 999 } }}>
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+            <Paper elevation={0} sx={pillBarSx}>
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.city')} placeholder={t('contact.cityPlaceholder')} value={formState.city} onChange={handleChange('city')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.city)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.postalCode')} placeholder={t('contact.postalCodePlaceholder')} value={formState.postalCode} onChange={handleChange('postalCode')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.postalCode)} />
               </Box>
-              <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-              <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
-              <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.country')} value={formState.country} onChange={handleChange('country')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.country)} />
               </Box>
             </Paper>
           </Stack>
         </Paper>
 
-        {submitError ? <Alert severity="error">{submitError}</Alert> : null}
+        {submitError ? (
+          <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{submitError}</Alert>
+        ) : null}
 
         <Stack direction="row" spacing={2} justifyContent="space-between">
           <Button
             onClick={onBack}
             sx={{
-              borderRadius: 999,
+              borderRadius: `${radius.pill}px`,
               px: 3,
-              py: 1.25,
+              py: 1.4,
               textTransform: 'none',
               fontWeight: 600,
-              color: '#4a7c59',
-              '&:hover': { backgroundColor: 'rgba(74, 124, 89, 0.08)', color: '#3d6b4a' },
+              color: colors.ink2,
+              '&:hover': { bgcolor: colors.bgSoft, color: colors.ink },
             }}
           >
             {t('common.back')}
@@ -408,13 +433,18 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
           <Button
             type="submit"
             variant="contained"
+            disableElevation
             sx={{
-              borderRadius: 999,
+              bgcolor: colors.brand,
+              color: colors.bg,
+              borderRadius: `${radius.pill}px`,
               px: 4,
-              py: 1.25,
+              py: 1.4,
               textTransform: 'none',
-              fontWeight: 700,
+              fontWeight: 600,
               fontSize: '0.95rem',
+              transition: `background-color ${motion.duration} ${motion.ease}`,
+              '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
             }}
           >
             {t('contact.continueToPayment')}

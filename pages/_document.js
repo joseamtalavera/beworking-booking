@@ -30,7 +30,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-T5BD4L36');`,
             }}
           />
-          <link rel="icon" href="/new_favicon.png" />
+          <link rel="icon" type="image/svg+xml" href="/brand/mark-light.svg" />
+          <link rel="apple-touch-icon" href="/brand/mark-light.svg" />
           <meta name="theme-color" content="#009624" />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

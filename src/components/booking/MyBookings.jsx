@@ -19,11 +19,14 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
+  Typography,
 } from '@mui/material';
 import CancelOutlinedIcon from '@mui/icons-material/CancelOutlined';
 import { useTranslation } from 'react-i18next';
 import { cancelBloqueo, fetchBloqueos } from '../../api/bookings.js';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
 
 const isFreeBooking = (bloqueo) => {
   const tarifa = bloqueo.tarifa;
@@ -55,7 +58,6 @@ const MyBookings = () => {
       const data = await fetchBloqueos({ from: today, to: toDate });
       setBloqueos(Array.isArray(data) ? data : []);
     } catch (err) {
-      // 401/403 = not logged in → silently show nothing
       const msg = err?.message || '';
       if (!msg.includes('401') && !msg.includes('403') && !msg.includes('Unauthorized') && !msg.includes('Forbidden')) {
         setError(t('myBookings.loadError'));
@@ -89,13 +91,13 @@ const MyBookings = () => {
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-        <CircularProgress size={24} />
+        <CircularProgress size={24} sx={{ color: colors.brand }} />
       </Box>
     );
   }
 
   if (error) {
-    return <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>;
+    return <Alert severity="error" sx={{ mb: 2, borderRadius: `${radius.md}px` }}>{error}</Alert>;
   }
 
   if (upcomingFree.length === 0) {
@@ -104,54 +106,96 @@ const MyBookings = () => {
 
   return (
     <Box sx={{ mb: 5 }}>
-      <Typography variant="h6" fontWeight={600} sx={{ mb: 2 }}>
+      <Box
+        component="h2"
+        sx={{
+          ...typography.h3,
+          color: colors.ink,
+          fontFamily: typography.fontFamily,
+          fontFeatureSettings: typography.fontFeatureSettings,
+          m: 0,
+          mb: 2.5,
+          fontSize: { xs: '1.05rem', md: '1.15rem' },
+        }}
+      >
         {t('myBookings.title')}
-      </Typography>
+      </Box>
 
-      <TableContainer sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden' }}>
+      <TableContainer
+        sx={{
+          border: `1px solid ${colors.line}`,
+          borderRadius: `${radius.lg}px`,
+          overflow: 'hidden',
+          bgcolor: colors.bg,
+        }}
+      >
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ bgcolor: 'background.default' }}>
-              <TableCell sx={{ fontWeight: 600 }}>{t('myBookings.space')}</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>{t('myBookings.start')}</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>{t('myBookings.end')}</TableCell>
-              <TableCell sx={{ fontWeight: 600 }}>{t('myBookings.status')}</TableCell>
+            <TableRow sx={{ '& th': { fontWeight: 600, color: colors.ink, bgcolor: colors.bgSoft, borderColor: colors.line, fontSize: '0.8rem' } }}>
+              <TableCell>{t('myBookings.space')}</TableCell>
+              <TableCell>{t('myBookings.start')}</TableCell>
+              <TableCell>{t('myBookings.end')}</TableCell>
+              <TableCell>{t('myBookings.status')}</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
             {upcomingFree.map((b) => (
-              <TableRow key={b.id} hover>
+              <TableRow
+                key={b.id}
+                sx={{
+                  '& td': { borderColor: colors.line },
+                  '&:hover': { bgcolor: colors.bgSoft },
+                  transition: `background-color ${motion.duration} ${motion.ease}`,
+                }}
+              >
                 <TableCell>
                   <Stack>
-                    <Typography variant="body2" fontWeight={500}>
+                    <Typography sx={{ fontSize: '0.9rem', fontWeight: 500, color: colors.ink }}>
                       {b.producto?.nombre || b.producto?.name || '—'}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography sx={{ fontSize: '0.75rem', color: colors.ink3 }}>
                       {b.centro?.nombre || b.centro?.name || ''}
                     </Typography>
                   </Stack>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">{formatDateTime(b.fechaIni)}</Typography>
+                  <Typography sx={{ fontSize: '0.85rem', color: colors.ink2 }}>
+                    {formatDateTime(b.fechaIni)}
+                  </Typography>
                 </TableCell>
                 <TableCell>
-                  <Typography variant="body2">{formatDateTime(b.fechaFin)}</Typography>
+                  <Typography sx={{ fontSize: '0.85rem', color: colors.ink2 }}>
+                    {formatDateTime(b.fechaFin)}
+                  </Typography>
                 </TableCell>
                 <TableCell>
                   <Chip
                     label={t('myBookings.free')}
                     size="small"
-                    sx={{ bgcolor: 'rgba(0,150,36,0.08)', color: 'primary.main', fontWeight: 500 }}
+                    sx={{
+                      bgcolor: colors.brandSoft,
+                      color: colors.brandDeep,
+                      border: `1px solid ${colors.brand}`,
+                      fontWeight: 600,
+                      fontSize: '0.72rem',
+                      borderRadius: `${radius.pill}px`,
+                      height: 22,
+                    }}
                   />
                 </TableCell>
                 <TableCell align="right">
                   <Button
                     size="small"
-                    color="error"
-                    startIcon={<CancelOutlinedIcon />}
+                    startIcon={<CancelOutlinedIcon sx={{ fontSize: 16 }} />}
                     onClick={() => setCancelTarget(b)}
-                    sx={{ textTransform: 'none', fontWeight: 500 }}
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 500,
+                      color: '#b3261e',
+                      fontSize: '0.85rem',
+                      '&:hover': { bgcolor: 'rgba(179, 38, 30, 0.06)' },
+                    }}
                   >
                     {t('myBookings.cancel')}
                   </Button>
@@ -162,28 +206,65 @@ const MyBookings = () => {
         </Table>
       </TableContainer>
 
-      <Dialog open={Boolean(cancelTarget)} onClose={() => !cancelling && setCancelTarget(null)} maxWidth="xs" fullWidth>
-        <DialogTitle>{t('myBookings.confirmTitle')}</DialogTitle>
+      <Dialog
+        open={Boolean(cancelTarget)}
+        onClose={() => !cancelling && setCancelTarget(null)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: `${radius.lg}px`,
+            border: `1px solid ${colors.line}`,
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 700, fontSize: '1.05rem', color: colors.ink, pt: 3 }}>
+          {t('myBookings.confirmTitle')}
+        </DialogTitle>
         <DialogContent>
-          {cancelError && <Alert severity="error" sx={{ mb: 2 }}>{cancelError}</Alert>}
-          <DialogContentText>
+          {cancelError && (
+            <Alert severity="error" sx={{ mb: 2, borderRadius: `${radius.md}px` }}>{cancelError}</Alert>
+          )}
+          <DialogContentText sx={{ color: colors.ink2, fontSize: '0.9rem' }}>
             {t('myBookings.confirmBody', {
               space: cancelTarget?.producto?.nombre || cancelTarget?.producto?.name || '',
-              date: formatDateTime(cancelTarget?.fechaIni)
+              date: formatDateTime(cancelTarget?.fechaIni),
             })}
           </DialogContentText>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button onClick={() => setCancelTarget(null)} disabled={cancelling}>
+        <DialogActions sx={{ px: 3, pb: 2.5 }}>
+          <Button
+            onClick={() => setCancelTarget(null)}
+            disabled={cancelling}
+            sx={{
+              borderRadius: `${radius.pill}px`,
+              px: 2.5,
+              py: 0.85,
+              textTransform: 'none',
+              fontWeight: 600,
+              color: colors.ink2,
+              '&:hover': { bgcolor: colors.bgSoft, color: colors.ink },
+            }}
+          >
             {t('common.back')}
           </Button>
           <Button
             variant="contained"
-            color="error"
+            disableElevation
             onClick={handleConfirmCancel}
             disabled={cancelling}
+            sx={{
+              bgcolor: '#b3261e',
+              color: colors.bg,
+              borderRadius: `${radius.pill}px`,
+              px: 3,
+              py: 0.85,
+              textTransform: 'none',
+              fontWeight: 600,
+              '&:hover': { bgcolor: '#8c1d18', boxShadow: 'none' },
+            }}
           >
-            {cancelling ? <CircularProgress size={16} color="inherit" /> : t('myBookings.confirmCancel')}
+            {cancelling ? <CircularProgress size={16} sx={{ color: colors.bg }} /> : t('myBookings.confirmCancel')}
           </Button>
         </DialogActions>
       </Dialog>

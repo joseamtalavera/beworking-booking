@@ -3,12 +3,21 @@
     "platform": "Platform",
     "spaces": "Spaces",
     "pricing": "Pricing",
+    "faq": "FAQ",
+    "help": "Help",
+    "services": "Services",
     "signIn": "Sign in",
-    "getStarted": "Create free account",
-    "superapp": "SuperApp",
-    "oficina15": "Oficina15",
-    "oficina90": "Oficina90",
-    "meetingRooms": "Meeting Rooms"
+    "getStarted": "Create account",
+    "superapp": "BeWorkingApp",
+    "oficina15": "BeWorkingVirtual",
+    "oficina90": "BeWorkingDesks",
+    "meetingRooms": "BeWorkingRooms",
+    "short": {
+      "virtual": "Virtual",
+      "desks": "Desks",
+      "rooms": "Rooms",
+      "platform": "App"
+    }
   },
   "footer": {
     "product": "Product",
@@ -16,7 +25,10 @@
     "legal": "Legal",
     "connect": "Connect",
     "malaga": "Málaga",
-    "tagline": "BeWorking — A Globaltechno Product.",
+    "ciudades": "Cities",
+    "brandTagline": "The flexible workspace platform. Offices, meeting rooms and digital tools — wherever you need them.",
+    "tagline": "A Globaltechno product · Málaga — Tallinn",
+    "copyright": "© 2026 BeWorking",
     "location": "Málaga · Tallinn",
     "links": {
       "platform": "Platform",
@@ -26,12 +38,16 @@
       "careers": "Careers",
       "press": "Press",
       "contact": "Contact",
+      "blog": "Blog & Interviews",
       "faq": "FAQ",
       "terms": "Terms",
       "privacy": "Privacy",
       "cookies": "Cookies",
       "sitemap": "Sitemap",
       "malaga": "Málaga",
+      "sevillaSoon": "Sevilla · coming soon",
+      "tallinn": "Tallinn",
+      "allCities": "See all",
       "meetingRooms": "Meeting Rooms",
       "coworking": "Coworking",
       "virtualOffice": "Virtual Office"
@@ -70,69 +86,175 @@
       "heroTitle": "Find your",
       "heroTitleAccent": "ideal workspace.",
       "heroSubtitle": "Offices, meeting rooms and business domiciliation — find the right space for your business.",
-      "quickNavOficina15": "Oficina15",
-      "quickNavOficina90": "Oficina90",
-      "quickNavMeetingRooms": "Meeting Rooms",
-      "quickNavSuperapp": "SuperApp",
+      "quickNavOficina15": "BeWorkingVirtual",
+      "quickNavOficina90": "BeWorkingDesks",
+      "quickNavMeetingRooms": "BeWorkingRooms",
+      "quickNavSuperapp": "BeWorkingApp",
       "oficina15": {
-        "eyebrow": "Oficina15",
-        "brand": "Oficina",
-        "brandNumber": "15",
+        "eyebrow": "Virtual office",
+        "brand": "BeWorking",
+        "brandNumber": "Virtual",
         "priceNote": "from €15/month",
-        "headline": "Your professional address in Málaga.",
+        "headline": "Your professional address. Live in 24 h.",
         "subhead": "Legal and fiscal domicile, mail reception and full management platform — all included, no deposit, no commitment.",
         "highlights": [
           "Fiscal address visible on Google Maps",
           "Mail & parcel reception with instant notification",
           "5 days of office per month",
-          "Full access to the SuperApp",
+          "Full access to BeWorkingApp",
           "From €15/month"
         ],
         "cta": "Start from €15/month"
       },
       "oficina90": {
-        "eyebrow": "Oficina90",
-        "brand": "Oficina",
-        "brandNumber": "90",
+        "eyebrow": "Coworking",
+        "brand": "BeWorking",
+        "brandNumber": "Desks",
         "priceNote": "from €90/month",
-        "headline": "Your dedicated desk in central Málaga.",
+        "headline": "Your dedicated desk in the city centre.",
         "subhead": "A fixed spot that's yours, with a community of professionals beside you and 24/7 access.",
         "highlights": [
           "Dedicated desk with lockable cabinet",
           "24/7 access, 365 days a year",
           "Monthly events and networking",
-          "Full access to the SuperApp",
+          "Full access to BeWorkingApp",
           "From €90/month"
         ],
         "cta": "Book a desk"
       },
       "salas": {
-        "eyebrow": "Meeting Rooms",
-        "headline": "Fully equipped rooms,",
-        "headlineAccent": "by the hour.",
+        "eyebrow": "Meeting rooms",
+        "brand": "BeWorking",
+        "brandNumber": "Rooms",
+        "headline": "Fully equipped rooms by the hour.",
         "subhead": "Rooms for training, meetings, events or recording — everything ready to go from the first minute.",
         "highlights": [
           "Capacity up to 50 people",
           "Projector and whiteboard",
           "Optional coffee-break and catering",
-          "Full access to the SuperApp",
+          "Full access to BeWorkingApp",
           "From €5/hour"
         ],
         "cta": "View available rooms"
       },
       "superapp": {
-        "eyebrow": "SuperApp",
-        "headline": "Your digital office,",
-        "headlineAccent": "all in one platform.",
+        "eyebrow": "Platform",
+        "brand": "BeWorking",
+        "brandNumber": "App",
+        "headline": "Your digital office, all in one platform.",
         "subhead": "Contacts, invoicing, accounting, chat, calendar and booking management — all integrated and accessible from any device.",
         "body": "Included in your plan. Connected to Stripe for automatic payments. Designed to let you run your business in minutes, not hours.",
-        "cta": "Discover the SuperApp"
+        "cta": "Discover BeWorkingApp"
       },
       "finalCta": {
         "eyebrow": "Still deciding?",
         "headline": "Browse all our spaces.",
         "subhead": "Book rooms by the hour or subscribe to a fixed space — it's your call.",
         "cta": "View spaces"
+      }
+    },
+    "faq": {
+      "seeAll": "See all questions"
+    },
+    "howItWorks": {
+      "eyebrow": "How it works",
+      "heading": "Three steps. No paperwork.",
+      "steps": [
+        { "number": "01", "title": "Pick", "description": "Coworking, meeting rooms or virtual office. Filter by city and availability." },
+        { "number": "02", "title": "Book", "description": "One-click payment. Instant confirmation and automatic legal invoice." },
+        { "number": "03", "title": "Access", "description": "Access codes via the app. No paperwork, no waits, no commitment." }
+      ]
+    },
+    "evolved": {
+      "meta": {
+        "title": "BeWorking — The flexible offices platform",
+        "description": "BeWorking — the flexible offices platform. Coworking, meeting rooms and registered address in your city, no paperwork.",
+        "faqTitle": "FAQ — BeWorking",
+        "faqDescription": "Frequently asked questions about BeWorking — virtual office, spaces, platform, and billing."
+      },
+      "eyebrow": "BeWorking",
+      "titleMain": "Your office, your room, your day —",
+      "titleAccent": "ready in one click.",
+      "subtitle": "BeWorking — the flexible offices platform. Coworking, meeting rooms and registered address in your city, no paperwork.",
+      "ctaPrimary": "Book now",
+      "ctaSecondary": "Browse virtual offices →",
+      "coworking": {
+        "subtitle": "Flexible desks, no commitment. Dedicated from €90/month or day pass from €10/day."
+      },
+      "salasPage": {
+        "subtitle": "Equipped rooms for meetings, training or events. Book by the hour, from €5/h."
+      },
+      "hero": {
+        "imgSpaces": "Spaces catalog",
+        "imgVirtualOffice": "Virtual office",
+        "imgServices": "Platform services",
+        "mockVirtualOffice": {
+          "title": "Your BeWorking address",
+          "subtitle": "Registered fiscal address",
+          "address1": "In your city centre",
+          "address2": "Visible on Google Maps",
+          "country": "Spain",
+          "ctaDirections": "Directions",
+          "ctaCall": "Call"
+        },
+        "mockServices": {
+          "title": "Services",
+          "subtitle": "Toggle the services you want to see",
+          "items": ["Fiscal Address", "CRM", "Accounting", "Legal"]
+        }
+      },
+      "oficina15": {
+        "imageAlt": "BeWorking Virtual Office",
+        "statusCard": {
+          "title": "Registered address",
+          "subtitle": "In your city · Spain",
+          "rows": [
+            { "label": "Fiscal address", "value": "Active" },
+            { "label": "Mail reception", "value": "Included" },
+            { "label": "Google Maps", "value": "Visible" }
+          ]
+        },
+        "price": { "amount": "15", "period": "€/mo" },
+        "features": [
+          { "title": "Fiscal address", "description": "Visible on Google Maps, DGT, BOE and AEAT. Live in 24 h." },
+          { "title": "Mail reception", "description": "Instant notification with envelope photo." },
+          { "title": "5 days of office", "description": "Use any space in the network, five days per month." },
+          { "title": "BeWorkingApp", "description": "Invoicing, accounting, CRM, calendar — no extras." }
+        ]
+      },
+      "oficina90": {
+        "imageAlt": "BeWorking Coworking — desks",
+        "presence": { "count": "27", "label": "people today" },
+        "schedule": {
+          "title": "Weekly access",
+          "priceLabel": "€90/mo",
+          "days": ["M", "T", "W", "T", "F", "S", "S"]
+        },
+        "features": [
+          { "title": "Unlimited access", "description": "7 days a week, no booking required." },
+          { "title": "Pro Wi-Fi", "description": "Symmetric fibre, printer and coffee included." },
+          { "title": "Meeting rooms", "description": "Unlimited for your meetings, no extras." },
+          { "title": "BeWorkingApp", "description": "Book, invoice and manage from a single app." }
+        ]
+      },
+      "salas": {
+        "imageAlt": "BeWorking Meeting Room",
+        "price": { "amount": "5", "period": "€/h" },
+        "features": [
+          { "title": "Instant booking", "description": "Immediate confirmation, automatic invoice." },
+          { "title": "Rooms for up to 50 people", "description": "Five rooms with flexible configuration." },
+          { "title": "Tech included", "description": "Wi-Fi, whiteboard and video calls ready." },
+          { "title": "Pay by the hour", "description": "No commitment, no monthly fee. Pay only for what you use." }
+        ]
+      },
+      "superapp": {
+        "imageAlt": "BeWorkingApp — Dashboard overview",
+        "features": [
+          { "title": "Bookings & calendar", "description": "Desks, rooms and events in one click." },
+          { "title": "Instant invoicing", "description": "Each booking generates a legal invoice in seconds." },
+          { "title": "Contacts & CRM", "description": "Clients, suppliers and leads in one place." },
+          { "title": "Full overview", "description": "Dashboard with revenue, occupancy and calendar." }
+        ]
       }
     }
   },
@@ -614,7 +736,7 @@
   },
   "platform": {
     "hero": {
-      "label": "SuperApp",
+      "label": "BeWorkingApp",
       "heading": "Your digital office to run your business",
       "headingAccent": "with AI.",
       "subheading": "Clients, communications, tasks and automation — all connected in one place."
@@ -737,7 +859,7 @@
         "items": [
           {
             "q": "What is BeWorking?",
-            "a": "The digital office to manage your business with AI from one single place."
+            "a": "BeWorking is the flexible offices platform. Coworking, meeting rooms and registered address in your city — all managed from a single app, no paperwork."
           },
           {
             "q": "Is BeWorking an online platform?",

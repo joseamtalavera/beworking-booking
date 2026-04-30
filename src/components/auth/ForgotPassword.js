@@ -1,15 +1,49 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
+
+const primaryButtonSx = {
+  bgcolor: colors.brand,
+  color: colors.bg,
+  borderRadius: `${radius.pill}px`,
+  px: 3,
+  py: 1,
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  textTransform: 'none',
+  transition: `background-color ${motion.duration} ${motion.ease}`,
+  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+  '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
+};
+
+const secondaryButtonSx = {
+  borderRadius: `${radius.pill}px`,
+  px: 3,
+  py: 1,
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  textTransform: 'none',
+  color: colors.ink,
+  border: `1px solid ${colors.line}`,
+  bgcolor: colors.bg,
+  '&:hover': { borderColor: colors.ink3, bgcolor: colors.bgSoft },
+};
 
 function ForgotPassword({ open, handleClose }) {
+  const { i18n } = useTranslation();
+  const isEs = i18n.language === 'es';
   const [email, setEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
@@ -25,12 +59,11 @@ function ForgotPassword({ open, handleClose }) {
     setEmailErrorMessage('');
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage(isEs ? 'Introduce un email válido.' : 'Please enter a valid email address.');
       return;
     }
     setLoading(true);
     try {
-      // Call backend endpoint for password reset
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api'}/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,10 +72,10 @@ function ForgotPassword({ open, handleClose }) {
       if (response.ok) {
         setSuccess(true);
       } else {
-        setFormMessage('An error occurred. Please try again.');
+        setFormMessage(isEs ? 'Ha ocurrido un error. Inténtalo de nuevo.' : 'An error occurred. Please try again.');
       }
-    } catch (e) {
-      setFormMessage('An error occurred. Please try again.');
+    } catch {
+      setFormMessage(isEs ? 'Ha ocurrido un error. Inténtalo de nuevo.' : 'An error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -56,53 +89,91 @@ function ForgotPassword({ open, handleClose }) {
         paper: {
           component: success ? undefined : 'form',
           onSubmit: success ? undefined : handleSubmit,
-          sx: { backgroundImage: 'none', borderRadius: 4, p: 3, minWidth: 340 },
+          sx: {
+            backgroundImage: 'none',
+            borderRadius: `${radius.lg}px`,
+            border: `1px solid ${colors.line}`,
+            p: 2.5,
+            minWidth: { xs: 320, sm: 380 },
+          },
         },
       }}
     >
-      <DialogTitle sx={{ fontWeight: 700, textAlign: 'center', fontSize: '1.5rem', mb: 1 }}>Reset password</DialogTitle>
+      <DialogTitle
+        sx={{
+          fontWeight: 700,
+          textAlign: 'center',
+          fontSize: '1.35rem',
+          color: colors.ink,
+          mb: 0.5,
+          pt: 1,
+        }}
+      >
+        {isEs ? 'Restablecer contraseña' : 'Reset password'}
+      </DialogTitle>
       <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
         {success ? (
-          <>
-            <DialogContentText sx={{ textAlign: 'center', mb: 2, color: 'text.secondary' }}>
-              If this email exists, a reset link will be sent.<br />
-              Please check your inbox and follow the instructions.<br /><br />
-              <b>{email}</b>
-            </DialogContentText>
-          </>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography sx={{ ...typography.body, color: colors.ink2, mb: 1 }}>
+              {isEs
+                ? 'Si este email existe, te enviaremos un enlace para restablecer tu contraseña.'
+                : 'If this email exists, a reset link will be sent.'}
+            </Typography>
+            <Typography sx={{ ...typography.body, color: colors.ink2, mb: 1 }}>
+              {isEs
+                ? 'Revisa tu bandeja de entrada y sigue las instrucciones.'
+                : 'Please check your inbox and follow the instructions.'}
+            </Typography>
+            <Typography sx={{ ...typography.body, color: colors.ink, fontWeight: 600, mt: 1 }}>
+              {email}
+            </Typography>
+          </Box>
         ) : (
           <>
-            <DialogContentText sx={{ textAlign: 'center', mb: 1, color: 'text.secondary' }}>
-              Enter your account&apos;s email address, and we&apos;ll send you a link to reset your password.
-            </DialogContentText>
+            <Typography sx={{ ...typography.body, color: colors.ink2, textAlign: 'center', mb: 0.5 }}>
+              {isEs
+                ? 'Introduce el email de tu cuenta y te enviaremos un enlace para restablecer la contraseña.'
+                : "Enter your account's email address, and we'll send you a link to reset your password."}
+            </Typography>
             <OutlinedInput
               autoFocus
               required
               margin="dense"
               id="email"
               name="email"
-              placeholder="Email address"
+              placeholder={isEs ? 'Email' : 'Email address'}
               type="email"
               fullWidth
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               error={emailError}
-              sx={{ mb: 1 }}
+              sx={{
+                borderRadius: `${radius.md}px`,
+                bgcolor: colors.bg,
+                '& fieldset': { borderColor: colors.line },
+                '&:hover fieldset': { borderColor: colors.ink3 },
+                '&.Mui-focused fieldset': { borderColor: colors.brand, borderWidth: 1 },
+              }}
             />
             {emailError && (
-              <DialogContentText sx={{ color: 'error.main', fontSize: '0.95em', textAlign: 'center', mb: 1 }}>{emailErrorMessage}</DialogContentText>
+              <Typography sx={{ color: '#b3261e', fontSize: '0.85rem', textAlign: 'center', mt: -0.5 }}>
+                {emailErrorMessage}
+              </Typography>
             )}
             {formMessage && (
-              <DialogContentText sx={{ color: 'success.main', fontSize: '0.95em', textAlign: 'center', mb: 1 }}>{formMessage}</DialogContentText>
+              <Typography sx={{ color: '#b3261e', fontSize: '0.85rem', textAlign: 'center' }}>
+                {formMessage}
+              </Typography>
             )}
           </>
         )}
       </DialogContent>
-      <DialogActions sx={{ pb: 3, px: 3, justifyContent: 'space-between' }}>
+      <DialogActions sx={{ pb: 1, px: 1, justifyContent: 'space-between' }}>
         {success ? (
           <Button
             variant="contained"
-            sx={{ px: 3 }}
+            disableElevation
+            sx={{ ...primaryButtonSx, mx: 'auto' }}
             onClick={() => {
               setSuccess(false);
               setEmail('');
@@ -110,13 +181,21 @@ function ForgotPassword({ open, handleClose }) {
               router.push('/');
             }}
           >
-            Go to Home
+            {isEs ? 'Ir al inicio' : 'Go to home'}
           </Button>
         ) : (
           <>
-            <Button onClick={handleClose} variant="outlined" sx={{ px: 3 }}>Cancel</Button>
-            <Button variant="contained" type="submit" sx={{ px: 3 }} disabled={loading}>
-              {loading ? 'Sending...' : 'Continue'}
+            <Button onClick={handleClose} sx={secondaryButtonSx}>
+              {isEs ? 'Cancelar' : 'Cancel'}
+            </Button>
+            <Button
+              variant="contained"
+              disableElevation
+              type="submit"
+              disabled={loading}
+              sx={primaryButtonSx}
+            >
+              {loading ? (isEs ? 'Enviando…' : 'Sending…') : (isEs ? 'Continuar' : 'Continue')}
             </Button>
           </>
         )}

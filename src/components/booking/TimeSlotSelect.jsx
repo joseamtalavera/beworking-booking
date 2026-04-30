@@ -3,6 +3,9 @@ import { MenuItem } from '@mui/material';
 import TextField from '../common/ClearableTextField';
 import { useTranslation } from 'react-i18next';
 import { buildTimeSlots, timeStringToMinutes } from '../../utils/calendarUtils';
+import { tokens } from '@/theme/tokens';
+
+const { colors } = tokens;
 
 export default function TimeSlotSelect({
   label,
@@ -40,15 +43,15 @@ export default function TimeSlotSelect({
       slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
       sx={{
         '& .MuiInputLabel-root': {
-          fontSize: '0.75rem',
+          fontSize: '0.7rem',
           fontWeight: 700,
-          color: 'text.primary',
+          color: colors.ink,
           textTransform: 'uppercase',
-          letterSpacing: '0.04em',
+          letterSpacing: '0.06em',
         },
         '& .MuiInput-input': {
-          fontSize: '0.875rem',
-          color: value ? 'text.primary' : 'text.secondary',
+          fontSize: '0.9rem',
+          color: value ? colors.ink : colors.ink3,
           py: 0.25,
         },
       }}
@@ -59,7 +62,7 @@ export default function TimeSlotSelect({
           <MenuItem key={slot.id} value={slot.id} disabled={isBooked}>
             {slot.label}
             {isBooked && (
-              <span style={{ marginLeft: 8, color: '#dc2626', fontSize: '0.75rem' }}>
+              <span style={{ marginLeft: 8, color: '#b3261e', fontSize: '0.75rem' }}>
                 — {t('booking.slotBooked')}
               </span>
             )}

@@ -10,10 +10,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
-import TextField from '../common/ClearableTextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
@@ -22,33 +20,85 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
-import { styled } from '@mui/material/styles';
+import TextField from '../common/ClearableTextField';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography } = tokens;
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
 const DEFAULT_PLANS = {
-  basic: { name: 'Basic', price: 15, priceCents: 1500 },
+  basic: { name: 'BeWorkingVirtual', price: 15, priceCents: 1500 },
 };
 
 const LOCATION_KEYS = ['malaga', 'sevilla'];
 
-const Card = styled(MuiCard)(({ theme }) => ({
+const fieldSx = {
+  '& .MuiOutlinedInput-root': {
+    borderRadius: `${radius.md}px`,
+    bgcolor: colors.bg,
+    '& fieldset': { borderColor: colors.line },
+    '&:hover fieldset': { borderColor: colors.ink3 },
+    '&.Mui-focused fieldset': { borderColor: colors.brand, borderWidth: 1 },
+  },
+  '& .MuiOutlinedInput-input': { fontSize: '0.95rem' },
+};
+
+const labelSx = {
+  color: colors.ink,
+  fontWeight: 600,
+  fontSize: '0.85rem',
+  mb: 0.75,
+};
+
+const cardSx = {
+  width: '100%',
+  maxWidth: 540,
+  mx: 'auto',
+  bgcolor: colors.bg,
+  borderRadius: `${radius.lg}px`,
+  border: `1px solid ${colors.line}`,
+  p: { xs: 3, sm: 4 },
   display: 'flex',
   flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
-  maxWidth: 520,
-  padding: theme.spacing(4),
-  gap: theme.spacing(2),
-  margin: 'auto',
-  boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  borderRadius: 10,
-  [theme.breakpoints.up('sm')]: {
-    maxWidth: 520,
-    padding: theme.spacing(4),
-  },
-}));
+  gap: 2.5,
+  position: 'relative',
+  overflow: 'visible',
+};
+
+const linkSx = {
+  color: colors.brand,
+  fontWeight: 600,
+  textDecoration: 'none',
+  '&:hover': { color: colors.brandDeep, textDecoration: 'underline' },
+};
+
+const primaryButtonSx = {
+  bgcolor: colors.brand,
+  color: colors.bg,
+  borderRadius: `${radius.pill}px`,
+  px: 4,
+  py: 1.3,
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  textTransform: 'none',
+  transition: `background-color ${motion.duration} ${motion.ease}`,
+  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+  '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
+};
+
+const secondaryButtonSx = {
+  borderRadius: `${radius.pill}px`,
+  px: 3,
+  py: 1.3,
+  fontSize: '0.9rem',
+  fontWeight: 600,
+  textTransform: 'none',
+  color: colors.ink,
+  border: `1px solid ${colors.line}`,
+  bgcolor: colors.bg,
+  '&:hover': { borderColor: colors.ink3, bgcolor: colors.bgSoft },
+};
 
 function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
   const stripe = useStripe();
@@ -62,34 +112,39 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
 
   return (
     <Stack spacing={2.5}>
-      <Alert severity="info" sx={{ borderRadius: 2 }}>
-        <Typography sx={{ fontWeight: 600 }}>
-          Plan {plan.name} — {t('register.trialBanner', { price: plan.price })}
+      <Alert
+        severity="info"
+        sx={{
+          borderRadius: `${radius.md}px`,
+          bgcolor: colors.brandSoft,
+          color: colors.brandDeep,
+          border: `1px solid ${colors.brand}`,
+          '& .MuiAlert-icon': { color: colors.brand },
+        }}
+      >
+        <Typography sx={{ fontWeight: 600, fontSize: '0.9rem' }}>
+          {plan.name} — {t('register.trialBanner', { price: plan.price })}
         </Typography>
       </Alert>
 
-      <Box sx={{ border: '1px solid rgba(0,0,0,0.12)', borderRadius: 2, p: 2 }}>
+      <Box sx={{ border: `1px solid ${colors.line}`, borderRadius: `${radius.md}px`, p: 2 }}>
         <PaymentElement onChange={(e) => setPaymentReady(e.complete)} />
       </Box>
 
       {termsSlot}
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 2 }}>
-        <Button
-          variant="outlined"
-          onClick={onBack}
-          disabled={loading}
-          sx={{ borderRadius: '999px', px: 3 }}
-        >
+      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
+        <Button onClick={onBack} disabled={loading} sx={secondaryButtonSx}>
           {t('register.back')}
         </Button>
         <Button
           variant="contained"
+          disableElevation
           onClick={handleSubmit}
           disabled={loading || !stripe || !elements || !paymentReady}
-          sx={{ borderRadius: '999px', px: 4 }}
+          sx={primaryButtonSx}
         >
-          {loading ? <CircularProgress size={22} color="inherit" /> : t('register.submitTrial')}
+          {loading ? <CircularProgress size={22} sx={{ color: colors.bg }} /> : t('register.submitTrial')}
         </Button>
       </Box>
     </Stack>
@@ -119,8 +174,8 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const stepLabels = t('register.steps', { returnObjects: true }) || ['Account', 'Company', 'Address', 'Payment'];
   const stripePromise = useMemo(
-    () => step >= 2 ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null,
-    [step]
+    () => (step >= 2 ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '') : null),
+    [step],
   );
 
   useEffect(() => {
@@ -183,7 +238,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setApiError('');
     setLoading(true);
     try {
-      // Check email availability first
       const checkRes = await fetch(`${API_URL}/auth/check-email?email=${encodeURIComponent(form.email)}`);
       const checkData = await checkRes.json();
       if (!checkData.available) {
@@ -191,7 +245,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         setLoading(false);
         return;
       }
-      // Create SetupIntent to tokenize card (no charge yet)
       const res = await fetch(`${API_URL}/auth/setup-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -220,7 +273,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setLoading(true);
     setApiError('');
     try {
-      // 1. Confirm card (SetupIntent) — tokenizes card on Stripe customer
       const { error: stripeError, setupIntent } = await stripe.confirmSetup({
         elements,
         confirmParams: { return_url: window.location.href },
@@ -228,7 +280,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       });
       if (stripeError) { setApiError(stripeError.message); setLoading(false); return; }
 
-      // 2. Register user + create subscription (charges immediately — card is now on file)
       const res = await fetch(`${API_URL}/auth/register-with-trial`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -264,66 +315,131 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
 
   if (success) {
     return (
-      <Card variant="outlined" translate="no">
-        <Box sx={{ textAlign: 'center', py: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+      <Box sx={cardSx} translate="no">
+        <Box sx={{ textAlign: 'center', py: 3 }}>
+          <CheckCircleIcon sx={{ fontSize: 56, color: colors.brand, mb: 2 }} />
+          <Box
+            component="h2"
+            sx={{
+              ...typography.h3,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+              mb: 1.5,
+            }}
+          >
             {t('register.success')}
-          </Typography>
+          </Box>
         </Box>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography sx={{ textAlign: 'center' }}>
-            {t('register.alreadyHaveAccount')}{' '}
-            <Link href="/login" sx={{ textDecoration: 'none', fontWeight: 700 }}>
-              {t('register.signIn')}
-            </Link>
-          </Typography>
-        </Box>
-      </Card>
+        <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', color: colors.ink2 }}>
+          {t('register.alreadyHaveAccount')}{' '}
+          <Link href="/login" sx={linkSx}>
+            {t('register.signIn')}
+          </Link>
+        </Typography>
+      </Box>
     );
   }
 
+  const stepperSx = {
+    mb: 1,
+    '& .MuiStepIcon-root': { color: colors.line },
+    '& .MuiStepIcon-root.Mui-active': { color: colors.brand },
+    '& .MuiStepIcon-root.Mui-completed': { color: colors.brand },
+    '& .MuiStepLabel-label': { color: colors.ink2, fontSize: '0.8rem' },
+    '& .MuiStepLabel-label.Mui-active': { color: colors.ink, fontWeight: 600 },
+    '& .MuiStepLabel-label.Mui-completed': { color: colors.ink2 },
+    '& .MuiStepConnector-line': { borderColor: colors.line },
+  };
+
+  const optionCardSx = (isSelected) => ({
+    border: isSelected ? `2px solid ${colors.brand}` : `1px solid ${colors.line}`,
+    borderRadius: `${radius.md}px`,
+    p: 2.5,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'flex-start',
+    gap: 2,
+    bgcolor: isSelected ? colors.brandSoft : colors.bg,
+    transition: `border-color ${motion.duration} ${motion.ease}, background-color ${motion.duration} ${motion.ease}`,
+    '&:hover': { borderColor: colors.brand, bgcolor: isSelected ? colors.brandSoft : colors.bgSoft },
+  });
+
   return (
-    <Card variant="outlined" translate="no" sx={{ position: 'relative', overflow: 'visible' }}>
-      <Typography
-        component="h1"
-        variant="h4"
-        sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', textAlign: 'center' }}
-      >
-        {t('register.title')}
-      </Typography>
+    <Box sx={cardSx} translate="no">
+      <Box sx={{ textAlign: 'center', mb: 0.5 }}>
+        <Typography
+          sx={{
+            ...typography.eyebrow,
+            color: colors.brand,
+            textTransform: 'uppercase',
+            mb: 1,
+          }}
+        >
+          BeWorking
+        </Typography>
+        <Box
+          component="h1"
+          sx={{
+            ...typography.h2,
+            color: colors.ink,
+            fontFamily: typography.fontFamily,
+            fontFeatureSettings: typography.fontFeatureSettings,
+            m: 0,
+            fontSize: { xs: '1.85rem', sm: '2.1rem' },
+          }}
+        >
+          {t('register.title')}
+        </Box>
+      </Box>
 
-      <Stepper activeStep={step} alternativeLabel sx={{ mb: 1 }}>
-        {Array.isArray(stepLabels) && stepLabels.map((label) => (
-          <Step key={label}>
-            <StepLabel sx={{ '& .MuiStepLabel-label': { fontSize: '0.8125rem' } }}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Box sx={stepperSx}>
+        <Stepper activeStep={step} alternativeLabel>
+          {Array.isArray(stepLabels) && stepLabels.map((label) => (
+            <Step key={label}>
+              <StepLabel>{label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
 
-      {apiError && <Alert severity="error" sx={{ borderRadius: 2 }}>{apiError}</Alert>}
+      {apiError && (
+        <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>{apiError}</Alert>
+      )}
 
       {/* Step 0: Account */}
       {step === 0 && (
         <form onSubmit={(e) => { e.preventDefault(); goToStep1(); }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.name')}</FormLabel>
-              <TextField required fullWidth placeholder="Jon Snow" value={form.name} onChange={handleChange('name')} error={!!errors.name} helperText={errors.name || ''} />
+              <FormLabel sx={labelSx}>{t('register.fields.name')}</FormLabel>
+              <TextField required fullWidth placeholder="Jon Snow" value={form.name} onChange={handleChange('name')} error={!!errors.name} helperText={errors.name || ''} sx={fieldSx} />
             </FormControl>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.email')}</FormLabel>
-              <TextField required fullWidth type="email" placeholder="your@email.com" value={form.email} onChange={handleChange('email')} error={!!errors.email || emailTaken} helperText={errors.email || ''} />
+              <FormLabel sx={labelSx}>{t('register.fields.email')}</FormLabel>
+              <TextField required fullWidth type="email" placeholder="your@email.com" value={form.email} onChange={handleChange('email')} error={!!errors.email || emailTaken} helperText={errors.email || ''} sx={fieldSx} />
             </FormControl>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.password')}</FormLabel>
-              <TextField required fullWidth type="password" placeholder="••••••••" value={form.password} onChange={handleChange('password')} error={!!errors.password} helperText={errors.password || (i18n.language === 'es' ? 'Mín. 8 caracteres: mayúscula, minúscula, número y especial (!@#...)' : 'Min. 8 chars: uppercase, lowercase, number & special (!@#...)')} />
+              <FormLabel sx={labelSx}>{t('register.fields.password')}</FormLabel>
+              <TextField
+                required
+                fullWidth
+                type="password"
+                placeholder="••••••••"
+                value={form.password}
+                onChange={handleChange('password')}
+                error={!!errors.password}
+                helperText={errors.password || (i18n.language === 'es' ? 'Mín. 8 caracteres: mayúscula, minúscula, número y especial (!@#...)' : 'Min. 8 chars: uppercase, lowercase, number & special (!@#...)')}
+                sx={fieldSx}
+              />
             </FormControl>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.confirmPassword')}</FormLabel>
-              <TextField required fullWidth type="password" placeholder="••••••••" value={form.confirmPassword} onChange={handleChange('confirmPassword')} error={!!errors.confirmPassword} helperText={errors.confirmPassword || ''} />
+              <FormLabel sx={labelSx}>{t('register.fields.confirmPassword')}</FormLabel>
+              <TextField required fullWidth type="password" placeholder="••••••••" value={form.confirmPassword} onChange={handleChange('confirmPassword')} error={!!errors.confirmPassword} helperText={errors.confirmPassword || ''} sx={fieldSx} />
             </FormControl>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
-              <Button type="submit" variant="contained" sx={{ borderRadius: '999px', px: 4 }}>
+              <Button type="submit" variant="contained" disableElevation sx={primaryButtonSx}>
                 {t('register.next')}
               </Button>
             </Box>
@@ -336,22 +452,22 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         <form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.company')}</FormLabel>
-              <TextField fullWidth placeholder="Acme Inc. / Jon Snow" value={form.company} onChange={handleChange('company')} />
+              <FormLabel sx={labelSx}>{t('register.fields.company')}</FormLabel>
+              <TextField fullWidth placeholder="Acme Inc. / Jon Snow" value={form.company} onChange={handleChange('company')} sx={fieldSx} />
             </FormControl>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.taxId')}</FormLabel>
-              <TextField fullWidth placeholder="B12345678 / 12345678A" value={form.taxId} onChange={handleChange('taxId')} />
+              <FormLabel sx={labelSx}>{t('register.fields.taxId')}</FormLabel>
+              <TextField fullWidth placeholder="B12345678 / 12345678A" value={form.taxId} onChange={handleChange('taxId')} sx={fieldSx} />
             </FormControl>
             <FormControl>
-              <FormLabel sx={{ color: 'text.primary', fontWeight: 500 }}>{t('register.fields.phone')}</FormLabel>
-              <TextField fullWidth placeholder="+34 600 000 000" value={form.phone} onChange={handleChange('phone')} />
+              <FormLabel sx={labelSx}>{t('register.fields.phone')}</FormLabel>
+              <TextField fullWidth placeholder="+34 600 000 000" value={form.phone} onChange={handleChange('phone')} sx={fieldSx} />
             </FormControl>
             <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
-              <Button variant="outlined" onClick={() => setStep(0)} sx={{ borderRadius: '999px', px: 3 }}>
+              <Button onClick={() => setStep(0)} sx={secondaryButtonSx}>
                 {t('register.back')}
               </Button>
-              <Button type="submit" variant="contained" sx={{ borderRadius: '999px', px: 4 }}>
+              <Button type="submit" variant="contained" disableElevation sx={primaryButtonSx}>
                 {t('register.next')}
               </Button>
             </Box>
@@ -362,74 +478,65 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       {/* Step 2: City */}
       {step === 2 && (
         <form onSubmit={(e) => { e.preventDefault(); goToStep3(); }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-          <Typography sx={{ fontWeight: 600, fontSize: '1.0625rem', textAlign: 'center' }}>
-            {t('register.locationStep.heading')}
-          </Typography>
-          <Typography sx={{ fontSize: '0.875rem', color: 'text.secondary', textAlign: 'center', mb: 1 }}>
-            {t('register.locationStep.subheading')}
-          </Typography>
-          {defaultLocation ? (
-            (() => {
-              const loc = t(`register.locations.${selectedLocation}`, { returnObjects: true });
-              return (
-                <Box sx={{ border: '2px solid', borderColor: 'primary.main', borderRadius: '12px', p: 2.5, display: 'flex', alignItems: 'flex-start', gap: 2, bgcolor: 'rgba(0,150,36,0.04)' }}>
-                  <CheckCircleIcon sx={{ color: 'primary.main', mt: 0.25 }} />
-                  <Box>
-                    <Typography sx={{ fontWeight: 600, fontSize: '0.9375rem' }}>{loc.city}</Typography>
-                    <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mt: 0.25 }}>{loc.address}</Typography>
-                    <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>{loc.zip}</Typography>
-                  </Box>
-                </Box>
-              );
-            })()
-          ) : (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-              {LOCATION_KEYS.map((key) => {
-                const loc = t(`register.locations.${key}`, { returnObjects: true });
-                const isSelected = selectedLocation === key;
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Typography sx={{ ...typography.body, fontWeight: 600, color: colors.ink, textAlign: 'center', fontSize: '1.05rem' }}>
+              {t('register.locationStep.heading')}
+            </Typography>
+            <Typography sx={{ ...typography.body, color: colors.ink2, textAlign: 'center', mb: 0.5 }}>
+              {t('register.locationStep.subheading')}
+            </Typography>
+
+            {defaultLocation ? (
+              (() => {
+                const loc = t(`register.locations.${selectedLocation}`, { returnObjects: true });
                 return (
-                  <Box
-                    key={key}
-                    onClick={() => { setSelectedLocation(key); setErrors((prev) => ({ ...prev, location: '' })); }}
-                    sx={{
-                      border: isSelected ? '2px solid' : '1px solid rgba(0,0,0,0.12)',
-                      borderColor: isSelected ? 'primary.main' : undefined,
-                      borderRadius: '12px',
-                      p: 2.5,
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 2,
-                      bgcolor: isSelected ? 'rgba(0,150,36,0.04)' : 'transparent',
-                      transition: 'all 0.15s ease',
-                      '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.02)' },
-                    }}
-                  >
-                    <LocationOnIcon sx={{ color: isSelected ? 'primary.main' : 'text.secondary', mt: 0.25 }} />
+                  <Box sx={optionCardSx(true)}>
+                    <CheckCircleIcon sx={{ color: colors.brand, mt: 0.25 }} />
                     <Box>
-                      <Typography sx={{ fontWeight: 600, fontSize: '0.9375rem' }}>{loc.city}</Typography>
-                      <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary', mt: 0.25 }}>{loc.address}</Typography>
-                      <Typography sx={{ fontSize: '0.8125rem', color: 'text.secondary' }}>{loc.zip}</Typography>
+                      <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', color: colors.ink }}>{loc.city}</Typography>
+                      <Typography sx={{ fontSize: '0.85rem', color: colors.ink2, mt: 0.25 }}>{loc.address}</Typography>
+                      <Typography sx={{ fontSize: '0.85rem', color: colors.ink2 }}>{loc.zip}</Typography>
                     </Box>
                   </Box>
                 );
-              })}
-            </Box>
-          )}
-          {errors.location && (
-            <Typography color="error" sx={{ fontSize: '0.875rem', textAlign: 'center' }}>{errors.location}</Typography>
-          )}
+              })()
+            ) : (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                {LOCATION_KEYS.map((key) => {
+                  const loc = t(`register.locations.${key}`, { returnObjects: true });
+                  const isSelected = selectedLocation === key;
+                  return (
+                    <Box
+                      key={key}
+                      onClick={() => { setSelectedLocation(key); setErrors((prev) => ({ ...prev, location: '' })); }}
+                      sx={optionCardSx(isSelected)}
+                    >
+                      <LocationOnIcon sx={{ color: isSelected ? colors.brand : colors.ink3, mt: 0.25 }} />
+                      <Box>
+                        <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', color: colors.ink }}>{loc.city}</Typography>
+                        <Typography sx={{ fontSize: '0.85rem', color: colors.ink2, mt: 0.25 }}>{loc.address}</Typography>
+                        <Typography sx={{ fontSize: '0.85rem', color: colors.ink2 }}>{loc.zip}</Typography>
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </Box>
+            )}
+            {errors.location && (
+              <Typography sx={{ color: '#b3261e', fontSize: '0.875rem', textAlign: 'center' }}>
+                {errors.location}
+              </Typography>
+            )}
 
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
-            <Button variant="outlined" onClick={() => setStep(1)} sx={{ borderRadius: '999px', px: 3 }}>
-              {t('register.back')}
-            </Button>
-            <Button type="submit" variant="contained" disabled={loading} sx={{ borderRadius: '999px', px: 4 }}>
-              {loading ? <CircularProgress size={22} color="inherit" /> : t('register.next')}
-            </Button>
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
+              <Button onClick={() => setStep(1)} sx={secondaryButtonSx}>
+                {t('register.back')}
+              </Button>
+              <Button type="submit" variant="contained" disableElevation disabled={loading} sx={primaryButtonSx}>
+                {loading ? <CircularProgress size={22} sx={{ color: colors.bg }} /> : t('register.next')}
+              </Button>
+            </Box>
           </Box>
-        </Box>
         </form>
       )}
 
@@ -438,7 +545,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {Object.keys(PLANS).length > 1 && (
             <>
-              <Typography sx={{ fontWeight: 600, fontSize: '0.9375rem', textAlign: 'center' }}>
+              <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', color: colors.ink, textAlign: 'center' }}>
                 {t('register.planStep.heading')}
               </Typography>
               <Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -450,26 +557,43 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
                       onClick={() => { setSelectedPlan(key); setErrors((prev) => ({ ...prev, plan: '' })); }}
                       sx={{
                         flex: 1,
-                        border: isSelected ? '2px solid' : '1px solid rgba(0,0,0,0.12)',
-                        borderColor: isSelected ? 'primary.main' : undefined,
-                        borderRadius: '12px',
+                        border: isSelected ? `2px solid ${colors.brand}` : `1px solid ${colors.line}`,
+                        borderRadius: `${radius.md}px`,
                         p: 1.5,
                         cursor: 'pointer',
                         textAlign: 'center',
-                        bgcolor: isSelected ? 'rgba(0,150,36,0.04)' : 'transparent',
-                        transition: 'all 0.15s ease',
+                        bgcolor: isSelected ? colors.brandSoft : colors.bg,
+                        transition: `border-color ${motion.duration} ${motion.ease}, background-color ${motion.duration} ${motion.ease}`,
                         position: 'relative',
-                        '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.02)' },
+                        '&:hover': { borderColor: colors.brand },
                       }}
                     >
                       {key === 'basic' && (
-                        <Box sx={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%)', display: 'flex', alignItems: 'center', gap: 0.3, bgcolor: 'primary.main', color: '#fff', px: 1, py: 0.2, borderRadius: '6px', fontSize: '0.6875rem', fontWeight: 700 }}>
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: -10,
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 0.3,
+                            bgcolor: colors.brand,
+                            color: colors.bg,
+                            px: 1.25,
+                            py: 0.25,
+                            borderRadius: `${radius.sm}px`,
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.02em',
+                          }}
+                        >
                           <StarIcon sx={{ fontSize: '0.75rem' }} /> Popular
                         </Box>
                       )}
-                      <Typography sx={{ fontWeight: 700, fontSize: '0.9375rem' }}>{plan.name}</Typography>
-                      <Typography sx={{ fontWeight: 700, fontSize: '1.25rem', color: 'primary.main' }}>{plan.price}€</Typography>
-                      <Typography sx={{ fontSize: '0.75rem', color: 'text.secondary' }}>/mes</Typography>
+                      <Typography sx={{ fontWeight: 700, fontSize: '0.9rem', color: colors.ink }}>{plan.name}</Typography>
+                      <Typography sx={{ fontWeight: 700, fontSize: '1.25rem', color: colors.brand, mt: 0.5 }}>{plan.price}€</Typography>
+                      <Typography sx={{ fontSize: '0.75rem', color: colors.ink3 }}>/mes</Typography>
                     </Box>
                   );
                 })}
@@ -491,36 +615,39 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
                       <Checkbox
                         checked={termsAccepted}
                         onChange={(e) => { setTermsAccepted(e.target.checked); setErrors((prev) => ({ ...prev, terms: '' })); }}
-                        color="primary"
+                        sx={{
+                          color: colors.line,
+                          '&.Mui-checked': { color: colors.brand },
+                        }}
                       />
                     }
                     label={
-                      <span>
-                        <Trans i18nKey="register.termsLabel" components={{
-                          terms: <Link href="/aviso-legal" target="_blank" rel="noopener" sx={{ fontWeight: 700, textDecoration: 'none', color: 'primary.main' }} />,
-                        }} />
-                      </span>
+                      <Typography sx={{ fontSize: '0.85rem', color: colors.ink2 }}>
+                        <Trans
+                          i18nKey="register.termsLabel"
+                          components={{
+                            terms: <Link href="/aviso-legal" target="_blank" rel="noopener" sx={linkSx} />,
+                          }}
+                        />
+                      </Typography>
                     }
                   />
                   {errors.terms && (
-                    <Typography color="error" sx={{ fontSize: '0.9rem', mt: -1 }}>{errors.terms}</Typography>
+                    <Typography sx={{ color: '#b3261e', fontSize: '0.85rem', mt: -1 }}>{errors.terms}</Typography>
                   )}
                 </>
               }
             />
           </Elements>
-
         </Box>
       )}
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography sx={{ textAlign: 'center' }}>
-          {t('register.alreadyHaveAccount')}{' '}
-          <Link href="/login" sx={{ textDecoration: 'none', fontWeight: 700 }}>
-            {t('register.signIn')}
-          </Link>
-        </Typography>
-      </Box>
-    </Card>
+      <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', color: colors.ink2 }}>
+        {t('register.alreadyHaveAccount')}{' '}
+        <Link href="/login" sx={linkSx}>
+          {t('register.signIn')}
+        </Link>
+      </Typography>
+    </Box>
   );
 }

@@ -3,12 +3,21 @@
     "platform": "Plataforma",
     "spaces": "Spaces",
     "pricing": "Precios",
+    "faq": "Preguntas",
+    "help": "Ayuda",
+    "services": "Servicios",
     "signIn": "Iniciar sesión",
-    "getStarted": "Crear cuenta gratis",
-    "superapp": "SuperApp",
-    "oficina15": "Oficina15",
-    "oficina90": "Oficina90",
-    "meetingRooms": "Salas de reuniones"
+    "getStarted": "Crear cuenta",
+    "superapp": "BeWorkingApp",
+    "oficina15": "BeWorkingVirtual",
+    "oficina90": "BeWorkingDesks",
+    "meetingRooms": "BeWorkingRooms",
+    "short": {
+      "virtual": "Virtual",
+      "desks": "Escritorios",
+      "rooms": "Salas",
+      "platform": "App"
+    }
   },
   "footer": {
     "product": "Producto",
@@ -16,7 +25,10 @@
     "legal": "Legal",
     "connect": "Contacto",
     "malaga": "Málaga",
-    "tagline": "BeWorking — Un Producto de Globaltechno.",
+    "ciudades": "Ciudades",
+    "brandTagline": "La plataforma de espacios de trabajo flexibles. Oficinas, salas y herramientas digitales — donde lo necesites.",
+    "tagline": "Un producto de Globaltechno · Málaga — Tallinn",
+    "copyright": "© 2026 BeWorking",
     "location": "Málaga · Tallinn",
     "links": {
       "platform": "Plataforma",
@@ -26,12 +38,16 @@
       "careers": "Empleo",
       "press": "Prensa",
       "contact": "Contacto",
+      "blog": "Blog & Entrevistas",
       "faq": "Preguntas frecuentes",
       "terms": "Términos",
       "privacy": "Privacidad",
       "cookies": "Cookies",
       "sitemap": "Mapa del sitio",
       "malaga": "Málaga",
+      "sevillaSoon": "Sevilla · próximamente",
+      "tallinn": "Tallinn",
+      "allCities": "Ver todas",
       "meetingRooms": "Salas de reunión",
       "coworking": "Coworking",
       "virtualOffice": "Oficina Virtual"
@@ -70,69 +86,175 @@
       "heroTitle": "Encuentra tu espacio de trabajo",
       "heroTitleAccent": "ideal.",
       "heroSubtitle": "Oficinas, salas de reuniones y domiciliación de empresas — encuentra el espacio ideal para tu negocio.",
-      "quickNavOficina15": "Oficina15",
-      "quickNavOficina90": "Oficina90",
-      "quickNavMeetingRooms": "Salas de reuniones",
-      "quickNavSuperapp": "SuperApp",
+      "quickNavOficina15": "BeWorkingVirtual",
+      "quickNavOficina90": "BeWorkingDesks",
+      "quickNavMeetingRooms": "BeWorkingRooms",
+      "quickNavSuperapp": "BeWorkingApp",
       "oficina15": {
-        "eyebrow": "Oficina15",
-        "brand": "Oficina",
-        "brandNumber": "15",
+        "eyebrow": "Oficina virtual",
+        "brand": "BeWorking",
+        "brandNumber": "Virtual",
         "priceNote": "desde 15€/mes",
-        "headline": "Tu dirección profesional en Málaga.",
+        "headline": "Tu dirección profesional. Lista en 24 h.",
         "subhead": "Domicilio legal y fiscal, recepción de correo y plataforma de gestión — todo incluido, sin depósito ni permanencia.",
         "highlights": [
           "Domicilio fiscal visible en Google Maps",
           "Recepción de correo y paquetería con aviso al instante",
           "5 días de oficina al mes",
-          "Acceso completo a la SuperApp",
+          "Acceso completo a BeWorkingApp",
           "Desde 15€/mes"
         ],
         "cta": "Empezar por 15€/mes"
       },
       "oficina90": {
-        "eyebrow": "Oficina90",
-        "brand": "Oficina",
-        "brandNumber": "90",
+        "eyebrow": "Coworking",
+        "brand": "BeWorking",
+        "brandNumber": "Desks",
         "priceNote": "desde 90€/mes",
-        "headline": "Tu escritorio dedicado en el centro de Málaga.",
+        "headline": "Tu escritorio dedicado en el centro.",
         "subhead": "Un sitio fijo que es tuyo, con una comunidad de profesionales al lado y acceso 24/7.",
         "highlights": [
           "Escritorio dedicado con cajonera y llave",
           "Acceso 24/7 los 365 días del año",
           "Eventos mensuales y networking",
-          "Acceso completo a la SuperApp",
+          "Acceso completo a BeWorkingApp",
           "Desde 90€/mes"
         ],
         "cta": "Reservar escritorio"
       },
       "salas": {
-        "eyebrow": "Salas de reuniones",
-        "headline": "Salas equipadas,",
-        "headlineAccent": "por horas.",
+        "eyebrow": "Salas de reunión",
+        "brand": "BeWorking",
+        "brandNumber": "Rooms",
+        "headline": "Salas equipadas por horas.",
         "subhead": "Aulas y salas para formación, reuniones, eventos o grabación — con todo listo para empezar.",
         "highlights": [
           "Capacidad hasta 50 personas",
           "Proyector y pizarra",
           "Coffee-break y catering opcionales",
-          "Acceso completo a la SuperApp",
+          "Acceso completo a BeWorkingApp",
           "Desde 5€/hora"
         ],
         "cta": "Ver salas disponibles"
       },
       "superapp": {
-        "eyebrow": "SuperApp",
-        "headline": "Tu oficina digital,",
-        "headlineAccent": "en una sola plataforma.",
+        "eyebrow": "Plataforma",
+        "brand": "BeWorking",
+        "brandNumber": "App",
+        "headline": "Tu oficina digital, en una sola plataforma.",
         "subhead": "Contactos, facturación, contabilidad, chat, agenda y gestión de reservas — todo integrado y accesible desde cualquier dispositivo.",
         "body": "Incluida en tu plan. Conectada con Stripe para cobros automáticos. Diseñada para que gestiones tu negocio en minutos, no en horas.",
-        "cta": "Descubrir la SuperApp"
+        "cta": "Descubrir BeWorkingApp"
       },
       "finalCta": {
         "eyebrow": "¿Aún con dudas?",
         "headline": "Explora todos nuestros espacios.",
         "subhead": "Reserva salas por horas o suscríbete a un espacio fijo — tú eliges.",
         "cta": "Ver espacios"
+      }
+    },
+    "faq": {
+      "seeAll": "Ver todas las preguntas"
+    },
+    "howItWorks": {
+      "eyebrow": "Cómo funciona",
+      "heading": "Tres pasos. Sin papeleo.",
+      "steps": [
+        { "number": "01", "title": "Elige", "description": "Coworking, salas de reunión u oficina virtual. Filtra por ciudad y disponibilidad." },
+        { "number": "02", "title": "Reserva", "description": "Pago en un clic. Confirmación instantánea y factura legal automática." },
+        { "number": "03", "title": "Accede", "description": "Códigos de acceso por la app. Sin papeleo, sin esperas, sin permanencia." }
+      ]
+    },
+    "evolved": {
+      "meta": {
+        "title": "BeWorking — La plataforma de oficinas flexibles",
+        "description": "BeWorking — la plataforma de oficinas flexibles. Coworking, salas de reunión y dirección fiscal en tu ciudad, sin papeleo.",
+        "faqTitle": "Preguntas frecuentes — BeWorking",
+        "faqDescription": "Resuelve tus dudas sobre BeWorking — oficina virtual, espacios, plataforma y facturación."
+      },
+      "eyebrow": "BeWorking",
+      "titleMain": "Tu oficina, tu sala, tu día —",
+      "titleAccent": "listos en un clic.",
+      "subtitle": "BeWorking — la plataforma de oficinas flexibles. Coworking, salas y dirección fiscal en tu ciudad, sin papeleo.",
+      "ctaPrimary": "Reservar ahora",
+      "ctaSecondary": "Ver oficinas virtuales →",
+      "coworking": {
+        "subtitle": "Escritorios flexibles, sin permanencia. Fijo desde 90€/mes o día suelto desde 10€/día."
+      },
+      "salasPage": {
+        "subtitle": "Salas equipadas para reuniones, formación o eventos. Reserva por horas, desde 5€/h."
+      },
+      "hero": {
+        "imgSpaces": "Catálogo de espacios",
+        "imgVirtualOffice": "Oficina virtual",
+        "imgServices": "Servicios de la plataforma",
+        "mockVirtualOffice": {
+          "title": "Tu sede BeWorking",
+          "subtitle": "Dirección fiscal registrada",
+          "address1": "En el centro de tu ciudad",
+          "address2": "Visible en Google Maps",
+          "country": "España",
+          "ctaDirections": "Cómo llegar",
+          "ctaCall": "Llamar"
+        },
+        "mockServices": {
+          "title": "Servicios",
+          "subtitle": "Activa los servicios que quieres ver",
+          "items": ["Domicilio Fiscal", "CRM", "Contabilidad", "Legal"]
+        }
+      },
+      "oficina15": {
+        "imageAlt": "Oficina Virtual BeWorking",
+        "statusCard": {
+          "title": "Dirección registrada",
+          "subtitle": "En tu ciudad · España",
+          "rows": [
+            { "label": "Domicilio fiscal", "value": "Activo" },
+            { "label": "Recepción de correo", "value": "Incluida" },
+            { "label": "Google Maps", "value": "Visible" }
+          ]
+        },
+        "price": { "amount": "15", "period": "€/mes" },
+        "features": [
+          { "title": "Domicilio fiscal", "description": "Visible en Google Maps, DGT, BOE y AEAT. Listo en 24 h." },
+          { "title": "Recepción de correo", "description": "Aviso instantáneo con foto del sobre." },
+          { "title": "5 días de oficina", "description": "Usa cualquier espacio de la red, cinco días al mes." },
+          { "title": "BeWorkingApp", "description": "Facturación, contabilidad, CRM, agenda — sin extras." }
+        ]
+      },
+      "oficina90": {
+        "imageAlt": "Coworking BeWorking — escritorios",
+        "presence": { "count": "27", "label": "personas hoy" },
+        "schedule": {
+          "title": "Acceso semanal",
+          "priceLabel": "90 €/mes",
+          "days": ["L", "M", "X", "J", "V", "S", "D"]
+        },
+        "features": [
+          { "title": "Acceso ilimitado", "description": "7 días a la semana, sin reservar." },
+          { "title": "Wi-Fi profesional", "description": "Fibra simétrica, impresora y café incluidos." },
+          { "title": "Salas de reunión", "description": "Ilimitadas para tus reuniones, sin extras." },
+          { "title": "BeWorkingApp", "description": "Reserva, factura y gestiona desde una sola app." }
+        ]
+      },
+      "salas": {
+        "imageAlt": "Sala de reuniones BeWorking",
+        "price": { "amount": "5", "period": "€/h" },
+        "features": [
+          { "title": "Reserva al instante", "description": "Confirmación inmediata, factura automática." },
+          { "title": "Salas hasta 50 personas", "description": "Cinco salas con configuración flexible." },
+          { "title": "Tecnología incluida", "description": "Wi-Fi, pizarra y videollamada lista." },
+          { "title": "Pago por hora", "description": "Sin compromiso ni mensualidad. Solo pagas lo que usas." }
+        ]
+      },
+      "superapp": {
+        "imageAlt": "BeWorkingApp — vista general del dashboard",
+        "features": [
+          { "title": "Reservas y agenda", "description": "Escritorios, salas y eventos en un click." },
+          { "title": "Facturación al instante", "description": "Cada reserva genera factura legal en segundos." },
+          { "title": "Contactos y CRM", "description": "Clientes, proveedores y leads en un solo sitio." },
+          { "title": "Visión global", "description": "Dashboard con ingresos, ocupación y agenda." }
+        ]
       }
     }
   },
@@ -628,7 +750,7 @@
   },
   "platform": {
     "hero": {
-      "label": "SuperApp",
+      "label": "BeWorkingApp",
       "heading": "Tu oficina digital para operar tu negocio",
       "headingAccent": "con IA.",
       "subheading": "Clientes, comunicaciones, tareas y automatización — todo conectado en un solo lugar."
@@ -751,7 +873,7 @@
         "items": [
           {
             "q": "¿Qué es BeWorking?",
-            "a": "La oficina digital para gestionar tu negocio con IA desde un solo lugar."
+            "a": "BeWorking es la plataforma de oficinas flexibles. Coworking, salas de reunión y dirección fiscal en tu ciudad — todo gestionado desde una sola app, sin papeleo."
           },
           {
             "q": "¿Es BeWorking una plataforma online?",

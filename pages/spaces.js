@@ -1,22 +1,11 @@
 'use client';
 
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
-  Button,
-  Divider,
-  IconButton,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-  Tabs,
-  Tab,
-  Box,
-  Autocomplete
+  Autocomplete, Box, Divider, IconButton, Paper, Stack, TextField, Typography,
 } from '@mui/material';
-
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
 import BusinessRoundedIcon from '@mui/icons-material/BusinessRounded';
@@ -25,15 +14,19 @@ import {
   useCatalogRooms,
   buildRoomFromProducto,
   isCanonicalDeskProducto,
-  isDeskProducto
+  isDeskProducto,
 } from '@/store/useCatalogRooms';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
 import { useTranslation } from 'react-i18next';
+import { tokens } from '@/theme/tokens';
+
+const { colors, radius, motion, typography, layout } = tokens;
 
 const HomePage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEs = i18n.language === 'es';
   const { rooms, setRooms } = useCatalogRooms();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
@@ -47,8 +40,25 @@ const HomePage = () => {
   const [productos, setProductos] = useState([]);
   const [productosLoading, setProductosLoading] = useState(false);
 
+  const heroRef = useRef(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
-// Load centros and cities
+  // Load centros and cities
   useEffect(() => {
     let active = true;
     setCentrosLoading(true);
@@ -56,52 +66,43 @@ const HomePage = () => {
     const loadCentros = async () => {
       try {
         const data = await fetchBookingCentros();
-
         if (!active) return;
 
         const options = Array.isArray(data) ? data.map((c) => {
           const code = (c.codigo ?? c.code ?? '').toUpperCase();
           const city = (c.localidad ?? c.city ?? '').trim();
-
           return {
             ...c,
             id: c.id ?? c.codigo ?? c.code ?? c.nombre ?? c.name ?? code,
             label: c.nombre ?? c.name ?? '',
             code,
-            city
+            city,
           };
         }) : [];
 
         setCentros(options);
 
         const uniqueCities = Array.from(new Set(options
-          .map(option => option.city)
-          .filter(city => typeof city === 'string' && city.trim() !== '')
-          .map(city => city.trim())));
-        setCityOptions(uniqueCities.map(city => ({ id: city.toLowerCase(), label: city })));
-      } catch (error) {
+          .map((option) => option.city)
+          .filter((city) => typeof city === 'string' && city.trim() !== '')
+          .map((city) => city.trim())));
+        setCityOptions(uniqueCities.map((city) => ({ id: city.toLowerCase(), label: city })));
+      } catch {
         if (active) {
           setCentros([]);
           setCityOptions([]);
         }
       } finally {
-        if (active) {
-          setCentrosLoading(false);
-        }
+        if (active) setCentrosLoading(false);
       }
     };
     loadCentros();
+    return () => { active = false; };
+  }, []);
 
-    return () => {
-      active = false;
-    };
-  },[]);
-
-  // Populate the catalog store with room objects built from API data (one-time).
-  // This feeds the detail page and booking page with real data from the dashboard.
+  // Populate the catalog store with room objects built from API data
   useEffect(() => {
     let active = true;
-
     const populateStore = async () => {
       try {
         const allProductos = await fetchBookingProductos({ centerCode: 'MA1' });
@@ -116,11 +117,7 @@ const HomePage = () => {
         });
 
         const mesas = allProductos.filter(isDeskProducto);
-
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p, centroLabel));
-
-        // Build desk room: prefer the MA1-DESKS room from API (seeded in rooms table),
-        // fall back to aggregating from mesa productos
         const deskProducto = allProductos.find(isCanonicalDeskProducto);
 
         if (deskProducto) {
@@ -134,7 +131,7 @@ const HomePage = () => {
           const sample = mesas[0];
           const deskRoom = buildRoomFromProducto(
             { ...sample, name: 'MA1 Desks', capacity: mesas.length },
-            centroLabel
+            centroLabel,
           );
           deskRoom.id = 'ma1-desks';
           deskRoom.slug = 'ma1-desks';
@@ -145,7 +142,7 @@ const HomePage = () => {
 
         setRooms(aulaRooms);
       } catch {
-        // keep store empty on error; detail page will show "Room not found"
+        // keep store empty on error
       }
     };
 
@@ -153,65 +150,46 @@ const HomePage = () => {
     return () => { active = false; };
   }, [centros, setRooms]);
 
-  // Load productos
+  // Load productos for active tab
   useEffect(() => {
     let active = true;
     setProductosLoading(true);
 
     const loadProductos = async () => {
       try {
-
-        // Build params: always filter by MA1 centro.
-        // For desk tab, do not force type=Mesa because some tenants expose desks
-        // as canonical desk rooms (e.g. MA1_DESK) with type=Aula.
         const params = { centerCode: 'MA1' };
-        if(activeTab === 0) {
-          // Meeting Rooms tab -> Aulas
+        if (activeTab === 0) {
           params.type = 'Aula';
         }
-
         const data = await fetchBookingProductos(params);
-
         if (!active) return;
         setProductos(Array.isArray(data) ? data : []);
-
-      } catch (error) {
-        if (active) {
-          setProductos([]);
-        }
+      } catch {
+        if (active) setProductos([]);
       } finally {
-        if (active) {
-          setProductosLoading(false);
-        }
+        if (active) setProductosLoading(false);
       }
     };
 
     loadProductos();
-
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [activeTab]);
 
   const spaceTypes = [
-    { value: 'meeting_room', labelKey: 'home.meetingRooms', icon: <MeetingRoomRoundedIcon /> },
-    { value: 'desk', labelKey: 'home.coworking', icon: <DeskRoundedIcon /> },
-    { value: 'virtual_office', labelKey: 'home.businessAddress', icon: <BusinessRoundedIcon /> }
+    { value: 'meeting_room', labelKey: 'home.meetingRooms', Icon: MeetingRoomRoundedIcon },
+    { value: 'desk', labelKey: 'home.coworking', Icon: DeskRoundedIcon },
+    { value: 'virtual_office', labelKey: 'home.businessAddress', Icon: BusinessRoundedIcon },
   ];
 
   const filteredSpaces = useMemo(() => {
-    if (!productos || !Array.isArray(productos)) {
-      return [];
-    }
+    if (!productos || !Array.isArray(productos)) return [];
 
     const filteredProductos = productos.filter((producto) => {
       const type = (producto.type ?? producto.tipo ?? '').trim().toLowerCase();
       const name = (producto.name ?? producto.nombre ?? '').trim();
       const centerCode = (producto.centerCode ?? producto.centroCodigo ?? '').trim().toUpperCase();
 
-      if (!name || centerCode !== 'MA1') {
-        return false;
-      }
+      if (!name || centerCode !== 'MA1') return false;
 
       const upperName = name.toUpperCase();
 
@@ -220,14 +198,9 @@ const HomePage = () => {
       }
 
       if (isDeskProducto(producto)) {
-        if (isCanonicalDeskProducto(producto)) {
-          return true;
-        }
+        if (isCanonicalDeskProducto(producto)) return true;
         const deskMatch = upperName.match(/^MA1[-_]?O1[-_ ]?(\d{1,2})$/);
-        if (!deskMatch) {
-          return false;
-        }
-
+        if (!deskMatch) return false;
         const numero = parseInt(deskMatch[1], 10);
         return numero >= 1 && numero <= 16;
       }
@@ -247,9 +220,7 @@ const HomePage = () => {
       const name = (producto.name ?? producto.nombre ?? '').trim();
       const productCenter = (producto.centerCode ?? producto.centroCodigo ?? '').trim();
       const productCenterUpper = productCenter.toUpperCase();
-      const matchingCentro = centros.find(
-        (c) => (c.code ?? '').toUpperCase() === productCenterUpper
-      );
+      const matchingCentro = centros.find((c) => (c.code ?? '').toUpperCase() === productCenterUpper);
       const centerName = matchingCentro?.label ?? productCenter;
       const city = matchingCentro?.city ?? '';
       const roomSlug = name.toLowerCase();
@@ -278,21 +249,17 @@ const HomePage = () => {
         instantBooking: producto.instantBooking !== false,
         centroCode: productCenter || undefined,
         centerName: centerName || undefined,
-        isBookable: true
+        isBookable: true,
       };
     });
 
     const deskCard = (() => {
-      if (mesas.length === 0) {
-        return null;
-      }
+      if (mesas.length === 0) return null;
 
       const sample = mesas[0];
       const productCenter = (sample.centerCode ?? sample.centroCodigo ?? '').trim();
       const productCenterUpper = productCenter.toUpperCase();
-      const matchingCentro = centros.find(
-        (c) => (c.code ?? '').toUpperCase() === productCenterUpper
-      );
+      const matchingCentro = centros.find((c) => (c.code ?? '').toUpperCase() === productCenterUpper);
       const centerName = matchingCentro?.label ?? productCenter;
       const city = matchingCentro?.city ?? '';
       const deskCount = mesas.length;
@@ -317,43 +284,35 @@ const HomePage = () => {
         centroCode: productCenter || undefined,
         availableCount: deskCount,
         centerName: centerName || undefined,
-        isBookable: true
+        isBookable: true,
       };
     })();
 
     const mappedSpaces = deskCard ? [...aulaSpaces, deskCard] : aulaSpaces;
 
     let filtered = mappedSpaces.filter((space) => {
-      if (activeTab === 0) {
-        return space.type === 'meeting_room';
-      }
-      if (activeTab === 1) {
-        return space.type === 'desk';
-      }
+      if (activeTab === 0) return space.type === 'meeting_room';
+      if (activeTab === 1) return space.type === 'desk';
       return true;
     });
 
-    // Filter by city/location if specified
     if (cityFilter && cityFilter.trim() !== '') {
       const cityFilterLower = cityFilter.trim().toLowerCase();
-      filtered = filtered.filter(space => (space.location ?? '').toLowerCase() === cityFilterLower);
+      filtered = filtered.filter((space) => (space.location ?? '').toLowerCase() === cityFilterLower);
     }
 
-    // Filter by number of users
     if (people && people.trim() !== '') {
       const userCount = parseInt(people);
       if (!isNaN(userCount)) {
-        filtered = filtered.filter(space => {
+        filtered = filtered.filter((space) => {
           if (!space.capacity) return false;
           const capacityParts = space.capacity.split('-');
           if (capacityParts.length === 1) {
             const singleCapacity = parseInt(capacityParts[0]);
             return !isNaN(singleCapacity) && userCount <= singleCapacity;
-          } else {
-            const [minCapacity, maxCapacity] = capacityParts.map(num => parseInt(num));
-            return !isNaN(minCapacity) && !isNaN(maxCapacity) &&
-                   userCount >= minCapacity && userCount <= maxCapacity;
           }
+          const [minCapacity, maxCapacity] = capacityParts.map((num) => parseInt(num));
+          return !isNaN(minCapacity) && !isNaN(maxCapacity) && userCount >= minCapacity && userCount <= maxCapacity;
         });
       }
     }
@@ -362,35 +321,23 @@ const HomePage = () => {
   }, [productos, centros, cityFilter, people, rooms, activeTab]);
 
   const resolveRoomSlug = useCallback(
-    (space) => {
-      if (!space) {
-        return '';
-      }
-      return (space.slug ?? '').toLowerCase();
-    },
-    []
+    (space) => (space ? (space.slug ?? '').toLowerCase() : ''),
+    [],
   );
 
   const handleBookNow = useCallback(
     (space) => {
       const targetSlug = resolveRoomSlug(space);
-      if (!targetSlug) {
-        return;
-      }
-
+      if (!targetSlug) return;
       const query = {};
       if (checkIn) query.date = checkIn;
       if (timeFilter) query.time = timeFilter;
-
-      router.push({
-        pathname: `/rooms/${targetSlug}`,
-        query,
-      });
+      router.push({ pathname: `/rooms/${targetSlug}`, query });
     },
-    [router, resolveRoomSlug, checkIn, timeFilter]
+    [router, resolveRoomSlug, checkIn, timeFilter],
   );
 
-  const handleTabChange = (event, newValue) => {
+  const handleTabChange = (newValue) => {
     if (newValue === 2) {
       router.push('/malaga/oficina-virtual');
       return;
@@ -398,101 +345,152 @@ const HomePage = () => {
     setActiveTab(newValue);
   };
 
+  const filterFieldSx = {
+    '& .MuiInputLabel-root': {
+      fontSize: '0.7rem',
+      fontWeight: 700,
+      color: colors.ink,
+      textTransform: 'uppercase',
+      letterSpacing: '0.06em',
+    },
+    '& .MuiInput-input': { fontSize: '0.9rem', color: colors.ink, py: 0.25 },
+  };
+
   return (
     <>
       <Head>
         <title>Spaces | BeWorking — Meeting Rooms, Coworking & Virtual Office</title>
-        <meta name="description" content="Salas de reuniones, coworking y oficinas virtuales en Málaga. Reserva tu espacio ideal en BeWorking." />
+        <meta
+          name="description"
+          content={isEs
+            ? 'Salas de reuniones, coworking y oficinas virtuales en Málaga. Reserva tu espacio ideal en BeWorking.'
+            : 'Meeting rooms, coworking and virtual offices in Málaga. Find and book the ideal space at BeWorking.'}
+        />
         <link rel="canonical" href="https://be-working.com/spaces" />
       </Head>
-      <Box sx={{ minHeight: '100vh', backgroundColor: 'background.default' }}>
-        {/* ─── HERO ─── */}
+
+      {/* Hero */}
+      <Box
+        component="section"
+        ref={heroRef}
+        sx={{
+          bgcolor: colors.bg,
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+          textAlign: 'center',
+          borderBottom: `1px solid ${colors.line}`,
+        }}
+      >
         <Box
           sx={{
-            bgcolor: '#ffffff',
-            pt: { xs: 6, md: 10 },
-            pb: { xs: 5, md: 8 },
-            px: 3,
-            borderBottom: '1px solid rgba(0,0,0,0.06)',
-            textAlign: 'center',
+            maxWidth: 720,
+            mx: 'auto',
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+            transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
           }}
         >
-          <Box sx={{ maxWidth: 700, mx: 'auto' }}>
-            <Typography
-              sx={{
-                fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-                letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
-              }}
-            >
-              BeWorking
-            </Typography>
-            <Typography
-              component="h1"
-              sx={{
-                fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
-                fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em',
-                color: 'text.primary', mb: 2,
-              }}
-            >
-              {t('home.heroTitle', 'Encuentra tu espacio de trabajo')}
-              <Box component="span" sx={{ color: 'primary.main' }}>{t('home.heroAccent', ' ideal.')}</Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.65,
-                color: 'text.secondary', maxWidth: 520, mx: 'auto',
-              }}
-            >
-              {t('home.subtitle')}
-            </Typography>
+          <Typography
+            sx={{
+              ...typography.eyebrow,
+              color: colors.brand,
+              textTransform: 'uppercase',
+              mb: 2,
+            }}
+          >
+            BeWorking · Spaces
+          </Typography>
+          <Box
+            component="h1"
+            sx={{
+              ...typography.h1,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            {isEs ? 'Encuentra tu espacio' : 'Find your space'}
+            <Box component="span" sx={{ color: colors.brand, display: 'block' }}>
+              {isEs ? 'ideal.' : 'ideal.'}
+            </Box>
           </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 540, mx: 'auto' }}>
+            {t('home.subtitle')}
+          </Typography>
         </Box>
+      </Box>
 
-        <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, pt: 4 }}>
-
-          {/* Space Type Tabs */}
-          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 4 }}>
-            {spaceTypes.map((type, index) => (
-              <Button
-                key={type.value}
-                startIcon={type.icon}
-                onClick={() => handleTabChange(null, index)}
-                variant={activeTab === index ? 'contained' : 'outlined'}
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  borderRadius: '999px',
-                  px: 3,
-                  py: 1,
-                  ...(activeTab === index
-                    ? { bgcolor: 'primary.main', color: '#fff', '&:hover': { bgcolor: 'primary.dark' } }
-                    : { borderColor: 'divider', color: 'text.primary', '&:hover': { borderColor: 'primary.main', bgcolor: 'rgba(0,150,36,0.04)' } }
-                  ),
-                }}
-              >
-                {t(type.labelKey)}
-              </Button>
-            ))}
+      {/* Filters + Grid */}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bgSoft,
+          py: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
+          {/* Type tabs */}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.25}
+            sx={{ mb: 4, justifyContent: 'center' }}
+          >
+            {spaceTypes.map((type, index) => {
+              const active = activeTab === index;
+              const { Icon } = type;
+              return (
+                <Box
+                  key={type.value}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => handleTabChange(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') handleTabChange(index);
+                  }}
+                  sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 0.85,
+                    px: 2.25,
+                    py: 0.85,
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    letterSpacing: '-0.005em',
+                    cursor: 'pointer',
+                    userSelect: 'none',
+                    whiteSpace: 'nowrap',
+                    borderRadius: `${radius.pill}px`,
+                    bgcolor: active ? colors.brand : colors.bg,
+                    color: active ? colors.bg : colors.ink2,
+                    border: `1px solid ${active ? colors.brand : colors.line}`,
+                    transition: 'background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease',
+                    '&:hover': active ? {} : { borderColor: colors.brand, color: colors.brand },
+                  }}
+                >
+                  <Icon sx={{ fontSize: 16 }} />
+                  {t(type.labelKey)}
+                </Box>
+              );
+            })}
           </Stack>
-        </Box>
 
-        {activeTab === 2 ? (
-          <VirtualOfficeSection />
-        ) : (
-          <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3 }}>
+          {activeTab === 2 ? (
+            <VirtualOfficeSection />
+          ) : (
             <>
-              {/* Search Bar */}
+              {/* Search bar */}
               <Paper
                 elevation={0}
                 sx={{
                   mb: 3,
-                  border: '1px solid',
-                  borderColor: 'divider',
-                  backgroundColor: 'background.paper',
+                  border: `1px solid ${colors.line}`,
+                  bgcolor: colors.bg,
                   display: 'flex',
                   alignItems: 'center',
                   overflow: 'hidden',
-                  boxShadow: '0 1px 6px rgba(0,0,0,0.08)',
                   flexDirection: { xs: 'column', sm: 'row' },
                   borderRadius: { xs: 3, sm: 999 },
                 }}
@@ -502,8 +500,8 @@ const HomePage = () => {
                   <Autocomplete
                     size="small"
                     freeSolo
-                    options={cityOptions.filter(o => !o.isAllOption)}
-                    getOptionLabel={(option) => typeof option === 'string' ? option : (option?.label ?? '')}
+                    options={cityOptions.filter((o) => !o.isAllOption)}
+                    getOptionLabel={(option) => (typeof option === 'string' ? option : (option?.label ?? ''))}
                     value={cityFilter || null}
                     onChange={(_, value) => setCityFilter(typeof value === 'string' ? value : (value && value.id !== 'all' ? value.label : ''))}
                     onInputChange={(_, value, reason) => { if (reason === 'input') setCityFilter(value); }}
@@ -514,16 +512,13 @@ const HomePage = () => {
                         placeholder={t('home.wherePlaceholder')}
                         label={t('home.where')}
                         slotProps={{ input: { ...params.InputProps, disableUnderline: true }, inputLabel: { shrink: true } }}
-                        sx={{
-                          '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                          '& .MuiInput-input': { fontSize: '0.875rem', color: 'text.secondary', py: 0.25 },
-                        }}
+                        sx={filterFieldSx}
                       />
                     )}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
 
                 {/* When */}
                 <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
@@ -536,14 +531,11 @@ const HomePage = () => {
                     placeholder={t('home.whenPlaceholder')}
                     fullWidth
                     slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                    sx={{
-                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                      '& .MuiInput-input': { fontSize: '0.875rem', color: checkIn ? 'text.primary' : 'text.secondary', py: 0.25 },
-                    }}
+                    sx={filterFieldSx}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
 
                 {/* Time */}
                 <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
@@ -556,14 +548,11 @@ const HomePage = () => {
                     placeholder={t('home.timePlaceholder')}
                     fullWidth
                     slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                    sx={{
-                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                      '& .MuiInput-input': { fontSize: '0.875rem', color: timeFilter ? 'text.primary' : 'text.secondary', py: 0.25 },
-                    }}
+                    sx={filterFieldSx}
                   />
                 </Box>
-                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' } }} />
-                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto' }} />
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
 
                 {/* Who */}
                 <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
@@ -577,8 +566,7 @@ const HomePage = () => {
                     fullWidth
                     slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                     sx={{
-                      '& .MuiInputLabel-root': { fontSize: '0.75rem', fontWeight: 700, color: 'text.primary', textTransform: 'uppercase', letterSpacing: '0.04em' },
-                      '& .MuiInput-input': { fontSize: '0.875rem', color: people ? 'text.primary' : 'text.secondary', py: 0.25 },
+                      ...filterFieldSx,
                       '& input[type=number]::-webkit-inner-spin-button, & input[type=number]::-webkit-outer-spin-button': { display: 'none' },
                       '& input[type=number]': { MozAppearance: 'textfield' },
                     }}
@@ -590,11 +578,11 @@ const HomePage = () => {
                   <IconButton
                     aria-label={t('home.searchSpaces')}
                     sx={{
-                      bgcolor: 'primary.main',
-                      color: 'common.white',
+                      bgcolor: colors.brand,
+                      color: colors.bg,
                       width: 44,
                       height: 44,
-                      '&:hover': { bgcolor: 'primary.dark' },
+                      '&:hover': { bgcolor: colors.brandDeep },
                     }}
                   >
                     <SearchRoundedIcon />
@@ -602,26 +590,27 @@ const HomePage = () => {
                 </Box>
               </Paper>
 
-              {/* Results Count */}
+              {/* Result count */}
               <Stack direction="row" justifyContent="flex-end" sx={{ mb: 2 }}>
-                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                <Typography sx={{ fontSize: '0.8rem', color: colors.ink3 }}>
                   {t(filteredSpaces.length === 1 ? 'home.showingSpace' : 'home.showingSpaces', { count: filteredSpaces.length })}
                 </Typography>
               </Stack>
 
-              {/* Space Listings */}
+              {/* Card grid */}
               <Box
                 sx={{
                   width: '100%',
                   display: 'grid',
-                  gap: (theme) => theme.spacing(3),
+                  gap: 3,
                   gridTemplateColumns: {
                     xs: 'repeat(1, minmax(0, 1fr))',
                     sm: 'repeat(2, minmax(0, 1fr))',
                     md: 'repeat(3, minmax(0, 1fr))',
-                    lg: 'repeat(4, minmax(0, 1fr))'
+                    lg: 'repeat(4, minmax(0, 1fr))',
                   },
-                  alignItems: 'stretch'
+                  alignItems: 'stretch',
+                  pb: 6,
                 }}
               >
                 {filteredSpaces.map((space) => (
@@ -629,9 +618,8 @@ const HomePage = () => {
                 ))}
               </Box>
             </>
-          </Box>
-        )}
-
+          )}
+        </Box>
       </Box>
     </>
   );

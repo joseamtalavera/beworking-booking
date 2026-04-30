@@ -39,37 +39,46 @@ const AppLayout = ({ children }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
-    { href: '/malaga/oficina-virtual',  labelKey: 'nav.oficina15',    fallback: 'Oficina15' },
-    { href: '/malaga/coworking',        labelKey: 'nav.oficina90',    fallback: 'Oficina90' },
-    { href: '/malaga/salas-de-reunion', labelKey: 'nav.meetingRooms', fallback: 'Meeting Rooms' },
-    { href: '/platform',                labelKey: 'nav.superapp',     fallback: 'SuperApp' },
+    { href: '/malaga/oficina-virtual',  labelKey: 'nav.short.virtual',  fallback: 'Virtual' },
+    { href: '/malaga/coworking',        labelKey: 'nav.short.desks',    fallback: 'Desks' },
+    { href: '/malaga/salas-de-reunion', labelKey: 'nav.short.rooms',    fallback: 'Rooms' },
+    { href: '/platform',                labelKey: 'nav.short.platform', fallback: 'App' },
+    { labelKey: 'nav.services',         fallback: 'Services',           placeholder: true },
+    {
+      href: 'https://wa.me/34640369759?text=Hola,%20me%20interesa%20información%20sobre%20BeWorking',
+      labelKey: 'nav.help',
+      fallback: 'Ayuda',
+      external: true,
+    },
   ];
 
   const footerColumns = [
     {
       titleKey: 'footer.product',
       links: [
-        { labelKey: 'nav.oficina15',      href: '/malaga/oficina-virtual' },
-        { labelKey: 'nav.oficina90',      href: '/malaga/coworking' },
-        { labelKey: 'nav.meetingRooms',   href: '/malaga/salas-de-reunion' },
-        { labelKey: 'footer.links.platform', href: '/platform' },
+        { labelKey: 'nav.short.virtual',  href: '/malaga/oficina-virtual' },
+        { labelKey: 'nav.short.desks',    href: '/malaga/coworking' },
+        { labelKey: 'nav.short.rooms',    href: '/malaga/salas-de-reunion' },
+        { labelKey: 'nav.short.platform', href: '/platform' },
+        { labelKey: 'footer.links.pricing', soon: true },
       ],
     },
     {
-      titleKey: 'footer.malaga',
+      titleKey: 'footer.ciudades',
       links: [
-        { labelKey: 'footer.links.malaga', href: '/malaga' },
-        { labelKey: 'nav.oficina15',       href: '/malaga/oficina-virtual' },
-        { labelKey: 'nav.oficina90',       href: '/malaga/coworking' },
-        { labelKey: 'nav.meetingRooms',    href: '/malaga/salas-de-reunion' },
+        { labelKey: 'footer.links.malaga',      href: '/malaga' },
+        { labelKey: 'footer.links.sevillaSoon', soon: true },
+        { labelKey: 'footer.links.tallinn',     soon: true },
+        { labelKey: 'footer.links.allCities',   href: '/spaces' },
       ],
     },
     {
       titleKey: 'footer.company',
       links: [
         { labelKey: 'footer.links.about',    soon: true },
+        { labelKey: 'footer.links.blog',     soon: true },
+        { labelKey: 'footer.links.press',    soon: true },
         { labelKey: 'footer.links.contact',  href: '/contact' },
-        { labelKey: 'footer.links.faq',      href: '/faq' },
         { label: 'info@be-working.com',      href: 'mailto:info@be-working.com' },
         { label: '+34 951 905 967',          href: 'tel:+34951905967' },
       ],
@@ -85,33 +94,58 @@ const AppLayout = ({ children }) => {
     },
   ];
 
-  const toggleLang = () => {
-    const next = i18n.language === 'es' ? 'en' : 'es';
-    i18n.changeLanguage(next);
-    if (typeof window !== 'undefined') localStorage.setItem('beworking_lang', next);
+  const setLang = (lang) => {
+    if (i18n.language === lang) return;
+    i18n.changeLanguage(lang);
+    if (typeof window !== 'undefined') localStorage.setItem('beworking_lang', lang);
   };
 
   const LangToggle = ({ sx }) => (
-    <Button
-      onClick={toggleLang}
-      size="small"
+    <Box
+      role="group"
+      aria-label="Language"
       sx={{
-        minWidth: 0,
-        px: 1.25,
-        py: 0.5,
-        fontSize: '0.8125rem',
-        fontWeight: 500,
-        color: 'text.secondary',
-        textTransform: 'uppercase',
-        letterSpacing: '0.04em',
-        border: '1px solid rgba(0,0,0,0.1)',
-        borderRadius: '6px',
-        '&:hover': { bgcolor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.18)' },
+        display: 'inline-flex',
+        bgcolor: 'rgba(0,0,0,0.04)',
+        border: '1px solid rgba(0,0,0,0.06)',
+        borderRadius: '999px',
+        p: '3px',
         ...sx,
       }}
     >
-      {i18n.language === 'es' ? 'EN' : 'ES'}
-    </Button>
+      {['es', 'en'].map((lang) => {
+        const active = i18n.language === lang;
+        return (
+          <Box
+            key={lang}
+            role="button"
+            tabIndex={0}
+            onClick={() => setLang(lang)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') setLang(lang);
+            }}
+            sx={{
+              minWidth: 32,
+              px: 1.25,
+              py: 0.35,
+              fontSize: '0.7rem',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              textAlign: 'center',
+              borderRadius: '999px',
+              cursor: active ? 'default' : 'pointer',
+              userSelect: 'none',
+              color: active ? '#ffffff' : 'rgba(0,0,0,0.5)',
+              bgcolor: active ? '#1d1d1f' : 'transparent',
+              transition: 'background-color 0.15s ease, color 0.15s ease',
+              '&:hover': active ? {} : { color: 'rgba(0,0,0,0.75)' },
+            }}
+          >
+            {lang.toUpperCase()}
+          </Box>
+        );
+      })}
+    </Box>
   );
 
   const linkProps = (href) =>
@@ -127,14 +161,16 @@ const AppLayout = ({ children }) => {
         color="default"
         elevation={0}
         sx={{
-          bgcolor: 'rgba(250, 250, 250, 0.8)',
+          bgcolor: 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+          borderBottom: 'none',
           boxShadow: 'none',
         }}
       >
         <Toolbar
+          disableGutters
           sx={{
+            minHeight: 64,
             height: 64,
             maxWidth: 1200,
             width: '100%',
@@ -148,34 +184,66 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <span style={{ fontFamily: '"Poppins", sans-serif', fontWeight: 600, fontSize: '1.8rem', color: '#007a1d', letterSpacing: '-0.01em', cursor: 'pointer', lineHeight: 1 }}>
-              beworking<span style={{ display: 'inline-block', width: '0.26em', height: '0.26em', borderRadius: '50%', backgroundColor: '#d4a843', marginLeft: '0.08em', verticalAlign: 'baseline', position: 'relative', top: '0.05em' }} />
+            <span style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#0e0e0c', letterSpacing: '-0.03em', cursor: 'pointer', lineHeight: 1, display: 'inline-flex', alignItems: 'baseline' }}>
+              beworking<span style={{ display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#009624', marginLeft: '4px' }} />
             </span>
           </Box>
 
-          {/* Center: nav links (desktop only) — absolutely centered */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 3, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
-            {navLinks.map((link) => (
-              <NextLink key={link.href} href={link.href} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none' }}>
-                {t(link.labelKey, { defaultValue: link.fallback })}
-              </NextLink>
-            ))}
+          {/* Center: nav links (desktop only) */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2.75, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+            {navLinks.map((link) => {
+              const label = t(link.labelKey, { defaultValue: link.fallback });
+              if (link.placeholder) {
+                return (
+                  <span
+                    key={link.labelKey}
+                    style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', letterSpacing: '-0.005em', cursor: 'default' }}
+                  >
+                    {label}
+                  </span>
+                );
+              }
+              if (link.external) {
+                return (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none', letterSpacing: '-0.005em' }}
+                  >
+                    {label}
+                  </a>
+                );
+              }
+              return (
+                <NextLink
+                  key={link.href}
+                  href={link.href}
+                  style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none', letterSpacing: '-0.005em' }}
+                >
+                  {label}
+                </NextLink>
+              );
+            })}
           </Box>
 
-
           {/* Right desktop: lang toggle + login + register */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25 }}>
             <LangToggle />
             <Button
               component={NextLink}
               href="/login"
               sx={{
-                fontSize: '0.8125rem',
+                fontSize: '0.9rem',
                 fontWeight: 500,
-                color: 'text.primary',
+                color: '#1d1d1f',
                 textTransform: 'none',
-                px: 1.5,
-                '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)' },
+                px: 1.75,
+                py: 0.5,
+                border: '1px solid rgba(0,0,0,0.12)',
+                borderRadius: '999px',
+                '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.2)' },
               }}
             >
               {t('nav.signIn')}
@@ -188,13 +256,13 @@ const AppLayout = ({ children }) => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 0.5,
-                  fontSize: '0.875rem',
+                  fontSize: '0.9rem',
                   fontWeight: 700,
                   color: 'primary.main',
                   '&:hover': { opacity: 0.7 },
                 }}
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#009624">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
                   <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                 </svg>
                 +34 951 905 967
@@ -204,14 +272,17 @@ const AppLayout = ({ children }) => {
                 component="a"
                 href="/register"
                 variant="contained"
+                disableElevation
                 sx={{
-                  fontSize: '0.8125rem',
+                  fontSize: '0.9rem',
                   fontWeight: 600,
                   textTransform: 'none',
                   borderRadius: '999px',
-                  px: 2.5,
-                  py: 0.875,
+                  px: 2,
+                  py: 0.5,
                   whiteSpace: 'nowrap',
+                  bgcolor: '#009624',
+                  '&:hover': { bgcolor: '#007a1e', boxShadow: 'none' },
                 }}
               >
                 {t('nav.getStarted')}
@@ -254,20 +325,39 @@ const AppLayout = ({ children }) => {
           </IconButton>
         </Box>
         <List>
-          {navLinks.map((link) => (
-            <ListItemButton
-              key={link.href}
-              component={NextLink}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              sx={{ borderRadius: '8px', mx: 1, '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}
-            >
-              <ListItemText
-                primary={t(link.labelKey, { defaultValue: link.fallback })}
-                primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
-              />
-            </ListItemButton>
-          ))}
+          {navLinks.map((link) => {
+            const label = t(link.labelKey, { defaultValue: link.fallback });
+            if (link.placeholder) {
+              return (
+                <ListItemButton
+                  key={link.labelKey}
+                  disabled
+                  sx={{ borderRadius: '8px', mx: 1, opacity: 1 }}
+                >
+                  <ListItemText
+                    primary={label}
+                    primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
+                  />
+                </ListItemButton>
+              );
+            }
+            const linkComponentProps = link.external
+              ? { component: 'a', href: link.href, target: '_blank', rel: 'noopener noreferrer' }
+              : { component: NextLink, href: link.href };
+            return (
+              <ListItemButton
+                key={link.href}
+                {...linkComponentProps}
+                onClick={() => setMobileOpen(false)}
+                sx={{ borderRadius: '8px', mx: 1, '&:hover': { bgcolor: 'rgba(0,0,0,0.04)' } }}
+              >
+                <ListItemText
+                  primary={label}
+                  primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400, color: 'text.primary' }}
+                />
+              </ListItemButton>
+            );
+          })}
         </List>
         <Divider sx={{ my: 1.5, mx: 2, borderColor: 'rgba(0,0,0,0.06)' }} />
         <List>
@@ -301,7 +391,7 @@ const AppLayout = ({ children }) => {
       <Box sx={{ height: 64 }} />
 
       {/* Main content */}
-      <Box sx={{ flex: 1, pb: { xs: '64px', md: '80px' } }}>
+      <Box sx={{ flex: 1 }}>
         {children}
       </Box>
 
@@ -309,11 +399,12 @@ const AppLayout = ({ children }) => {
       <Box
         component="footer"
         sx={{
-          bgcolor: '#1a1a1a',
-          color: 'common.white',
-          pt: { xs: '64px', md: '80px' },
-          pb: { xs: '32px', md: '40px' },
-          px: 3,
+          bgcolor: '#faf9f6',
+          color: '#1d1d1f',
+          pt: { xs: '56px', md: '72px' },
+          pb: { xs: '24px', md: '32px' },
+          px: { xs: 3, md: 5 },
+          borderTop: '1px solid rgba(0,0,0,0.06)',
         }}
       >
         <Box
@@ -321,19 +412,55 @@ const AppLayout = ({ children }) => {
             maxWidth: 1200,
             mx: 'auto',
             display: 'grid',
-            gridTemplateColumns: { xs: 'repeat(2, 1fr)', md: 'repeat(4, 1fr)' },
-            gap: { xs: 4, md: 6 },
+            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: '2fr repeat(4, 1fr)' },
+            gap: { xs: 4, md: 5 },
           }}
         >
+          {/* Brand block */}
+          <Box sx={{ gridColumn: { xs: '1 / -1', md: 'auto' }, maxWidth: 320 }}>
+            <Box component="a" href="/" sx={{ display: 'inline-flex', alignItems: 'baseline', textDecoration: 'none', mb: 2 }}>
+              <Box
+                component="span"
+                sx={{
+                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  fontWeight: 700,
+                  fontSize: '1.25rem',
+                  color: '#0e0e0c',
+                  letterSpacing: '-0.03em',
+                  lineHeight: 1,
+                  display: 'inline-flex',
+                  alignItems: 'baseline',
+                }}
+              >
+                beworking
+                <Box
+                  component="span"
+                  sx={{
+                    display: 'inline-block',
+                    width: 7,
+                    height: 7,
+                    borderRadius: '50%',
+                    bgcolor: '#009624',
+                    ml: '4px',
+                  }}
+                />
+              </Box>
+            </Box>
+            <Typography sx={{ fontSize: '0.875rem', lineHeight: 1.55, color: 'rgba(0,0,0,0.6)' }}>
+              {t('footer.brandTagline')}
+            </Typography>
+          </Box>
+
+          {/* Link columns */}
           {footerColumns.map((col) => (
             <Box key={col.titleKey}>
               <Typography
                 sx={{
-                  fontSize: '0.8125rem',
-                  fontWeight: 500,
-                  color: 'rgba(255,255,255,0.5)',
-                  mb: 2.5,
-                  letterSpacing: '0.02em',
+                  fontSize: '0.9rem',
+                  fontWeight: 600,
+                  color: '#1d1d1f',
+                  mb: 2,
+                  letterSpacing: '-0.005em',
                 }}
               >
                 {t(col.titleKey)}
@@ -346,8 +473,8 @@ const AppLayout = ({ children }) => {
                       display: 'block',
                       fontSize: '0.875rem',
                       fontWeight: 400,
-                      color: 'rgba(255,255,255,0.35)',
-                      mb: 1.5,
+                      color: 'rgba(0,0,0,0.35)',
+                      mb: 1.25,
                       cursor: 'default',
                     }}
                   >
@@ -362,10 +489,10 @@ const AppLayout = ({ children }) => {
                       display: 'block',
                       fontSize: '0.875rem',
                       fontWeight: 400,
-                      color: 'rgba(255,255,255,0.8)',
-                      mb: 1.5,
+                      color: 'rgba(0,0,0,0.7)',
+                      mb: 1.25,
                       transition: 'color 0.15s ease',
-                      '&:hover': { color: 'common.white' },
+                      '&:hover': { color: '#007a1e' },
                     }}
                   >
                     {link.label || t(link.labelKey)}
@@ -374,10 +501,9 @@ const AppLayout = ({ children }) => {
               )}
             </Box>
           ))}
-
         </Box>
 
-        <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: 'rgba(255,255,255,0.1)' }} />
+        <Divider sx={{ my: { xs: 4, md: 5 }, borderColor: 'rgba(0,0,0,0.08)' }} />
 
         <Box
           sx={{
@@ -390,25 +516,11 @@ const AppLayout = ({ children }) => {
             gap: 1.5,
           }}
         >
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.tagline')}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {socialLinks.map((social) => (
-              <Link
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                sx={{ color: 'rgba(255,255,255,0.5)', '&:hover': { color: 'common.white' } }}
-              >
-                <social.Icon sx={{ fontSize: 18 }} />
-              </Link>
-            ))}
-          </Box>
-          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.4)' }}>
-            {t('footer.location')}
+          <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
+            {t('footer.copyright')}
           </Typography>
         </Box>
       </Box>

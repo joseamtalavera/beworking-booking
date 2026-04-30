@@ -1,13 +1,9 @@
 'use client';
 
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import NextLink from 'next/link';
-import {
-  Box, Paper, Stack, Typography, Breadcrumbs, Link,
-} from '@mui/material';
-import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { Box, Typography } from '@mui/material';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
@@ -18,8 +14,9 @@ import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
-import ScrollReveal from '@/components/common/ScrollReveal';
+import { tokens } from '@/theme/tokens';
 
+const { colors, motion, typography, layout } = tokens;
 const location = getLocation('malaga');
 
 export default function Coworking() {
@@ -29,6 +26,24 @@ export default function Coworking() {
   const [centros, setCentros] = useState([]);
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const heroRef = useRef(null);
+  const [heroVisible, setHeroVisible] = useState(false);
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHeroVisible(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -49,7 +64,6 @@ export default function Coworking() {
         setCentros(mapped);
         setProductos(Array.isArray(productosData) ? productosData : []);
 
-        // Populate catalog store with desk room
         const centroLabel = mapped.find((c) => c.code === location.centerCode)?.label ?? 'Malaga Workspace';
         const mesas = (productosData || []).filter(isDeskProducto);
         const deskProducto = (productosData || []).find(isCanonicalDeskProducto);
@@ -66,7 +80,7 @@ export default function Coworking() {
           const sample = mesas[0];
           const deskRoom = buildRoomFromProducto(
             { ...sample, name: 'MA1 Desks', capacity: mesas.length },
-            centroLabel
+            centroLabel,
           );
           deskRoom.id = 'ma1-desks';
           deskRoom.slug = 'ma1-desks';
@@ -123,7 +137,7 @@ export default function Coworking() {
       if (!slug) return;
       router.push({ pathname: `/rooms/${slug}` });
     },
-    [router]
+    [router],
   );
 
   return (
@@ -134,63 +148,73 @@ export default function Coworking() {
         <link rel="canonical" href="https://be-working.com/malaga/coworking" />
       </Head>
 
-      <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
-        {/* Hero */}
+      <Box
+        component="section"
+        ref={heroRef}
+        sx={{
+          bgcolor: colors.bg,
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+          textAlign: 'center',
+          borderBottom: `1px solid ${colors.line}`,
+        }}
+      >
         <Box
           sx={{
-            bgcolor: '#ffffff',
-            pt: { xs: 6, md: 10 },
-            pb: { xs: 5, md: 8 },
-            px: 3,
-            borderBottom: '1px solid rgba(0,0,0,0.06)',
-            textAlign: 'center',
+            maxWidth: 720,
+            mx: 'auto',
+            opacity: heroVisible ? 1 : 0,
+            transform: heroVisible ? 'translateY(0)' : `translateY(${motion.revealOffset}px)`,
+            transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
           }}
         >
-          <Box sx={{ maxWidth: 700, mx: 'auto' }}>
-            <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} sx={{ justifyContent: 'center', display: 'flex', mb: 3 }}>
-              <Link component={NextLink} href="/malaga" underline="hover" color="text.secondary" sx={{ fontSize: '0.875rem' }}>
-                Malaga
-              </Link>
-              <Typography color="text.primary" sx={{ fontSize: '0.875rem' }}>
-                {t('locations.services.coworking', 'Coworking')}
-              </Typography>
-            </Breadcrumbs>
-            <Typography
-              sx={{
-                fontSize: '0.75rem', fontWeight: 500, color: 'primary.main',
-                letterSpacing: '0.06em', textTransform: 'uppercase', mb: 2,
-              }}
-            >
-              BeWorking
-            </Typography>
-            <Typography
-              component="h1"
-              sx={{
-                fontSize: 'clamp(2.5rem, 4.5vw, 3.75rem)',
-                fontWeight: 500, lineHeight: 1.08, letterSpacing: '-0.035em',
-                color: 'text.primary', mb: 2,
-              }}
-            >
-              {t('locations.malaga.coworkingTitle', 'Coworking en')}
-              <Box component="span" sx={{ color: 'primary.main' }}> Malaga.</Box>
-            </Typography>
-            <Typography
-              sx={{
-                fontSize: { xs: '1rem', md: '1.125rem' }, lineHeight: 1.65,
-                color: 'text.secondary', maxWidth: 520, mx: 'auto',
-              }}
-            >
-              {t('locations.malaga.coworkingSubtitle', 'Escritorios flexibles en un entorno profesional. Sin permanencia.')}
-            </Typography>
+          <Typography
+            sx={{
+              ...typography.eyebrow,
+              color: colors.brand,
+              textTransform: 'uppercase',
+              mb: 2,
+            }}
+          >
+            {t('locations.services.coworking', 'Coworking')} · Málaga
+          </Typography>
+          <Box
+            component="h1"
+            sx={{
+              ...typography.h1,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            BeWorking<Box component="span" sx={{ color: colors.brand }}>Desks</Box>
           </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 560, mx: 'auto' }}>
+            {t(
+              'home.evolved.coworking.subtitle',
+              'Escritorios flexibles, sin permanencia. Fijo desde 90€/mes o día suelto desde 10€/día.',
+            )}
+          </Typography>
         </Box>
+      </Box>
 
-        <Box sx={{ maxWidth: '1400px', mx: 'auto', px: 3, py: { xs: 4, md: 6 } }}>
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.bgSoft,
+          py: { xs: 6, md: 9 },
+          px: { xs: 3, md: 5 },
+        }}
+      >
+        <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
           {deskCard ? (
             <Box
               sx={{
-                width: '100%', display: 'grid',
-                gap: (theme) => theme.spacing(3),
+                width: '100%',
+                display: 'grid',
+                gap: 3,
                 gridTemplateColumns: {
                   xs: 'repeat(1, minmax(0, 1fr))',
                   sm: 'repeat(2, minmax(0, 1fr))',
@@ -203,7 +227,7 @@ export default function Coworking() {
             </Box>
           ) : !loading ? (
             <Box sx={{ textAlign: 'center', py: 8 }}>
-              <Typography variant="h6" color="text.secondary">
+              <Typography sx={{ ...typography.bodyLg, color: colors.ink3 }}>
                 {t('locations.noSpacesAvailable', 'No hay espacios disponibles en este momento.')}
               </Typography>
             </Box>
