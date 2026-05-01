@@ -17,6 +17,8 @@ import Step from '@mui/material/Step';
 import StepLabel from '@mui/material/StepLabel';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
@@ -357,8 +359,19 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
 
   if (success) {
     return (
-      <Box sx={cardSx} translate="no">
-        <Box sx={{ textAlign: 'center', py: 3 }}>
+      <Dialog
+        open
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{
+          translate: 'no',
+          sx: {
+            borderRadius: `${tokens.radius.lg}px`,
+            p: 4,
+          },
+        }}
+      >
+        <DialogContent sx={{ textAlign: 'center', p: 0 }}>
           <CheckCircleIcon sx={{ fontSize: 56, color: colors.brand, mb: 2 }} />
           <Box
             component="h2"
@@ -368,19 +381,19 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
               fontFamily: typography.fontFamily,
               fontFeatureSettings: typography.fontFeatureSettings,
               m: 0,
-              mb: 1.5,
+              mb: 2,
             }}
           >
             {t('register.success')}
           </Box>
-        </Box>
-        <Typography sx={{ textAlign: 'center', fontSize: '0.9rem', color: colors.ink2 }}>
-          {t('register.alreadyHaveAccount')}{' '}
-          <Link href="/login" sx={linkSx}>
-            {t('register.signIn')}
-          </Link>
-        </Typography>
-      </Box>
+          <Typography sx={{ fontSize: '0.9rem', color: colors.ink2 }}>
+            {t('register.alreadyHaveAccount')}{' '}
+            <Link href="/login" sx={linkSx}>
+              {t('register.signIn')}
+            </Link>
+          </Typography>
+        </DialogContent>
+      </Dialog>
     );
   }
 
