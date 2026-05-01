@@ -184,8 +184,8 @@ const AppLayout = ({ children }) => {
         >
           {/* Logo */}
           <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-            <span style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#0e0e0c', letterSpacing: '-0.03em', cursor: 'pointer', lineHeight: 1, display: 'inline-flex', alignItems: 'baseline' }}>
-              beworking<span style={{ display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#009624', marginLeft: '4px' }} />
+            <span style={{ fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#0e0e0c', letterSpacing: '-0.034em', cursor: 'pointer', lineHeight: 1, display: 'inline-flex', alignItems: 'baseline', gap: '0.04em' }}>
+              beworking<span aria-hidden="true" style={{ display: 'inline-block', width: '0.14em', height: '0.14em', borderRadius: '50%', backgroundColor: '#2e8b3d', alignSelf: 'flex-end', marginBottom: '0.04em' }} />
             </span>
           </Box>
 
@@ -422,26 +422,29 @@ const AppLayout = ({ children }) => {
               <Box
                 component="span"
                 sx={{
-                  fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                  fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                   fontWeight: 700,
                   fontSize: '1.25rem',
                   color: '#0e0e0c',
-                  letterSpacing: '-0.03em',
+                  letterSpacing: '-0.034em',
                   lineHeight: 1,
                   display: 'inline-flex',
                   alignItems: 'baseline',
+                  gap: '0.04em',
                 }}
               >
                 beworking
                 <Box
                   component="span"
+                  aria-hidden="true"
                   sx={{
                     display: 'inline-block',
-                    width: 7,
-                    height: 7,
+                    width: '0.14em',
+                    height: '0.14em',
                     borderRadius: '50%',
-                    bgcolor: '#009624',
-                    ml: '4px',
+                    bgcolor: '#2e8b3d',
+                    alignSelf: 'flex-end',
+                    marginBottom: '0.04em',
                   }}
                 />
               </Box>
