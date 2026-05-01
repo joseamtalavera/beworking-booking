@@ -19,6 +19,10 @@ import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
@@ -184,6 +188,8 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     company: '', taxId: '', phone: '',
   });
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(defaultPlan);
   const [selectedLocation, setSelectedLocation] = useState(defaultLocation);
   const [clientSecret, setClientSecret] = useState('');
@@ -480,18 +486,56 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
               <TextField
                 required
                 fullWidth
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="••••••••"
                 value={form.password}
                 onChange={handleChange('password')}
                 error={!!errors.password}
                 helperText={errors.password || (i18n.language === 'es' ? 'Mín. 8 caracteres: mayúscula, minúscula, número y especial (!@#...)' : 'Min. 8 chars: uppercase, lowercase, number & special (!@#...)')}
                 sx={fieldSx}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={i18n.language === 'es' ? 'Mostrar/ocultar contraseña' : 'Toggle password visibility'}
+                        onClick={() => setShowPassword((s) => !s)}
+                        edge="end"
+                        size="small"
+                      >
+                        {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormControl>
             <FormControl>
               <FormLabel sx={labelSx}>{t('register.fields.confirmPassword')}</FormLabel>
-              <TextField required fullWidth type="password" placeholder="••••••••" value={form.confirmPassword} onChange={handleChange('confirmPassword')} error={!!errors.confirmPassword} helperText={errors.confirmPassword || ''} sx={fieldSx} />
+              <TextField
+                required
+                fullWidth
+                type={showConfirmPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                value={form.confirmPassword}
+                onChange={handleChange('confirmPassword')}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword || ''}
+                sx={fieldSx}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label={i18n.language === 'es' ? 'Mostrar/ocultar contraseña' : 'Toggle password visibility'}
+                        onClick={() => setShowConfirmPassword((s) => !s)}
+                        edge="end"
+                        size="small"
+                      >
+                        {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
             </FormControl>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 1 }}>
               <Button type="submit" variant="contained" disableElevation sx={primaryButtonSx}>
