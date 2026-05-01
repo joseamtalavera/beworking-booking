@@ -5,7 +5,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Typography from '@mui/material/Typography';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 import TextField from '../common/ClearableTextField';
 import { tokens } from '@/theme/tokens';
@@ -32,6 +36,8 @@ export default function ResetPassword() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [confirmError, setConfirmError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -160,7 +166,7 @@ export default function ResetPassword() {
           </FormLabel>
           <TextField
             placeholder="••••••"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -168,6 +174,20 @@ export default function ResetPassword() {
             helperText={passwordError}
             fullWidth
             sx={fieldSx}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={isEs ? 'Mostrar/ocultar contraseña' : 'Toggle password visibility'}
+                    onClick={() => setShowPassword((s) => !s)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <FormControl>
@@ -176,7 +196,7 @@ export default function ResetPassword() {
           </FormLabel>
           <TextField
             placeholder="••••••"
-            type="password"
+            type={showConfirmPassword ? 'text' : 'password'}
             id="confirm-password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -184,6 +204,20 @@ export default function ResetPassword() {
             helperText={confirmError}
             fullWidth
             sx={fieldSx}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label={isEs ? 'Mostrar/ocultar contraseña' : 'Toggle password visibility'}
+                    onClick={() => setShowConfirmPassword((s) => !s)}
+                    edge="end"
+                    size="small"
+                  >
+                    {showConfirmPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
 
