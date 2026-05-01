@@ -5,9 +5,15 @@ import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
+import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -47,6 +53,7 @@ export default function SignInCard() {
   const [turnstileReset, setTurnstileReset] = React.useState(0);
   const [showPassword, setShowPassword] = React.useState(false);
   const [accountSelection, setAccountSelection] = React.useState(null);
+  const [unconfirmedEmailOpen, setUnconfirmedEmailOpen] = React.useState(false);
   const router = require('next/router').useRouter ? require('next/router').useRouter() : null;
 
   const handleClickOpen = () => setOpen(true);
@@ -113,6 +120,10 @@ export default function SignInCard() {
         } else if (router) {
           router.push(destination);
         }
+      } else if (response.status === 403 && (data?.message || '').toLowerCase().includes('confirm')) {
+        // Email-not-confirmed flow: surface a dialog instead of an inline error
+        // so the user can take action (resend, switch account, etc.)
+        setUnconfirmedEmailOpen(true);
       } else {
         setFormError(data?.message || (isEs ? 'No se pudo iniciar sesión.' : 'Login failed.'));
         if ((data?.message || '').toLowerCase().includes('turnstile')) {
@@ -333,6 +344,34 @@ export default function SignInCard() {
           </Link>
         </Typography>
       </Box>
+
+      <Dialog
+        open={unconfirmedEmailOpen}
+        onClose={() => setUnconfirmedEmailOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: `${radius.lg}px`, p: 1 } }}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, fontWeight: 600, letterSpacing: '-0.015em' }}>
+          <MarkEmailReadIcon sx={{ color: colors.brand }} />
+          {isEs ? 'Confirma tu correo' : 'Confirm your email'}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: colors.ink2, fontSize: '0.95rem', lineHeight: 1.55 }}>
+            {isEs
+              ? 'Tu cuenta existe pero todavía no has confirmado tu correo electrónico. Revisa tu bandeja de entrada (y la carpeta de spam) para abrir el enlace de confirmación que te enviamos.'
+              : "Your account exists but your email isn't confirmed yet. Check your inbox (and spam folder) for the confirmation link we sent."}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button
+            onClick={() => setUnconfirmedEmailOpen(false)}
+            sx={{ borderRadius: 999, px: 3, py: 1, textTransform: 'none', fontWeight: 600, color: colors.ink2 }}
+          >
+            {isEs ? 'Cerrar' : 'Close'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }
