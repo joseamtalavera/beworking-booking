@@ -26,8 +26,6 @@ const DURATION_OPTIONS = [
   { months: 12 },
 ];
 
-const DESK_COUNT = 16;
-
 const GRID_DESKS = [
   [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
   [9, 1, 2], [11, 2, 2], [13, 3, 2], [15, 4, 2],
@@ -100,6 +98,15 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
+  // Real desk count comes from the catalog (room.capacity). Fall back to the
+  // floor-plan size if the room has no capacity set, and clamp to the layout
+  // to avoid rendering desks the floor plan can't position.
+  const deskCount = Math.min(room?.capacity ?? GRID_DESKS.length, GRID_DESKS.length);
+  const visibleDesks = useMemo(
+    () => GRID_DESKS.filter(([deskNum]) => deskNum <= deskCount),
+    [deskCount],
+  );
+
   const today = new Date();
   const defaultMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   const defaultDate = today.toISOString().split('T')[0];
@@ -146,11 +153,11 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const availableDesks = useMemo(() => {
     const desks = [];
-    for (let i = 1; i <= DESK_COUNT; i += 1) {
+    for (let i = 1; i <= deskCount; i += 1) {
       if (!bookedDesks.has(i)) desks.push(i);
     }
     return desks;
-  }, [bookedDesks]);
+  }, [bookedDesks, deskCount]);
 
   useEffect(() => {
     setSelectedDesk(null);
@@ -332,8 +339,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             <Typography sx={{ ...typography.body, color: colors.ink2 }}>
               {availableDesks.length > 0
                 ? (isEs
-                    ? `${availableDesks.length} de ${DESK_COUNT} escritorios disponibles para este periodo.`
-                    : `${availableDesks.length} of ${DESK_COUNT} desks available for this period.`)
+                    ? `${availableDesks.length} de ${deskCount} escritorios disponibles para este periodo.`
+                    : `${availableDesks.length} of ${deskCount} desks available for this period.`)
                 : (isEs
                     ? 'No hay escritorios disponibles para este periodo. Prueba otra fecha.'
                     : 'No desks available for this period. Try a different date.')}
@@ -380,7 +387,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 gap: 1.25,
               }}
             >
-              {GRID_DESKS.map(([deskNum, col, row]) => {
+              {visibleDesks.map(([deskNum, col, row]) => {
                 const isBooked = bookedDesks.has(deskNum);
                 const isSelected = selectedDesk === deskNum;
 
