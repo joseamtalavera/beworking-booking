@@ -77,13 +77,20 @@ export const fetchBookingUsage = (email, productName, options = {}) =>
   requestJson(`/public/booking-usage?email=${encodeURIComponent(email)}&productName=${encodeURIComponent(productName)}`, options);
 
 /**
- * Fetch desk availability for a given month range.
- * Returns bloqueos for all 16 desk products (MA1O1-1 through MA1O1-16)
- * for the specified date range so the UI can mark desks as booked.
+ * Fetch desk availability for a given date range.
+ * Returns bloqueos for desk products (MA1O1-1 through MA1O1-N)
+ * for the specified range so the UI can mark desks as booked.
+ *
+ * @param {string} startDate
+ * @param {string} endDate
+ * @param {object} [params]
+ * @param {number} [params.deskCount=16] — number of desks to query (from room.capacity).
+ * @param {object} [params.requestOptions] — passed through to requestJson.
  */
-export const fetchDeskAvailability = async (startDate, endDate, options = {}) => {
+export const fetchDeskAvailability = async (startDate, endDate, params = {}) => {
+  const { deskCount = 16, requestOptions = {} } = params;
   const products = [];
-  for (let i = 1; i <= 16; i++) {
+  for (let i = 1; i <= deskCount; i += 1) {
     products.push(`MA1O1-${i}`);
   }
 
@@ -96,5 +103,5 @@ export const fetchDeskAvailability = async (startDate, endDate, options = {}) =>
   search.append('centers', 'MA1');
 
   const query = search.toString();
-  return requestJson(`/public/availability${query ? `?${query}` : ''}`, options);
+  return requestJson(`/public/availability${query ? `?${query}` : ''}`, requestOptions);
 };

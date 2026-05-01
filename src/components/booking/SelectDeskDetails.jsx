@@ -122,7 +122,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const { data: bloqueos, isLoading, isError, error } = useQuery({
     queryKey: ['desk-availability', startDate, endDate],
-    queryFn: () => fetchDeskAvailability(startDate, endDate),
+    queryFn: () => fetchDeskAvailability(startDate, endDate, { deskCount }),
     enabled: bookingType === 'day' ? Boolean(selectedDate) : Boolean(selectedMonth),
   });
 

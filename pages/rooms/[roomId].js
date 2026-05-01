@@ -183,7 +183,10 @@ const RoomDetailPage = () => {
   }, []);
 
   const isDesk = room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
-  const DESK_COUNT = 16;
+  // Desk count comes from the catalog (room.capacity); fall back to 16 only if
+  // capacity is missing so we still render something sensible while the room
+  // record is loading.
+  const DESK_COUNT = room?.capacity ?? 16;
 
   const { data: availabilityData, isLoading: availLoading, isError: availError, error: availErrorMsg } = useQuery({
     queryKey: ['public-availability', selectedDate, room?.productName],
@@ -197,7 +200,7 @@ const RoomDetailPage = () => {
 
   const { data: deskAvailabilityData } = useQuery({
     queryKey: ['desk-availability', selectedDate],
-    queryFn: () => fetchDeskAvailability(selectedDate, selectedDate),
+    queryFn: () => fetchDeskAvailability(selectedDate, selectedDate, { deskCount: DESK_COUNT }),
     enabled: isDesk,
   });
 
