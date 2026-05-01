@@ -185,7 +185,7 @@ const AppLayout = ({ children }) => {
           {/* Logo */}
           <Box component="a" href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
             <span style={{ fontFamily: 'Geist, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif', fontWeight: 700, fontSize: '1.3rem', color: '#0e0e0c', letterSpacing: '-0.034em', cursor: 'pointer', lineHeight: 1, display: 'inline-flex', alignItems: 'baseline', gap: '0.04em' }}>
-              beworking<span aria-hidden="true" style={{ display: 'inline-block', width: '0.14em', height: '0.14em', borderRadius: '50%', backgroundColor: '#2e8b3d', alignSelf: 'flex-end', marginBottom: '0.04em' }} />
+              beworking<span aria-hidden="true" style={{ display: 'inline-block', width: '0.18em', height: '0.18em', borderRadius: '50%', backgroundColor: '#2e8b3d', alignSelf: 'flex-end', marginBottom: '0.04em' }} />
             </span>
           </Box>
 
@@ -439,8 +439,8 @@ const AppLayout = ({ children }) => {
                   aria-hidden="true"
                   sx={{
                     display: 'inline-block',
-                    width: '0.14em',
-                    height: '0.14em',
+                    width: '0.18em',
+                    height: '0.18em',
                     borderRadius: '50%',
                     bgcolor: '#2e8b3d',
                     alignSelf: 'flex-end',
