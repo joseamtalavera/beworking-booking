@@ -410,6 +410,8 @@
   },
   "payment": {
     "securePayment": "Secure payment powered by Stripe",
+    "verificationNoteTitle": "Why you may see a €0.01 charge",
+    "verificationNote": "If you choose iDEAL or another bank-transfer method, your bank will show a €0.01 charge to verify your account. It's refunded automatically within 1-2 days. It's not a real charge — it just confirms the account is yours.",
     "slotUnavailable": "This time slot is no longer available. Please go back and select a different time.",
     "slotUnavailableRefunded": "This time slot was already booked. Your payment has been automatically refunded. Please go back and select a different time.",
     "paymentFailed": "Payment failed",

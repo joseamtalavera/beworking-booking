@@ -131,6 +131,25 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
         <PaymentElement onChange={(e) => setPaymentReady(e.complete)} />
       </Box>
 
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+          p: 1.75,
+          borderRadius: `${radius.md}px`,
+          bgcolor: colors.bgSoft,
+          border: `1px solid ${colors.line}`,
+        }}
+      >
+        <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: colors.ink, letterSpacing: '-0.005em' }}>
+          {t('payment.verificationNoteTitle')}
+        </Typography>
+        <Typography sx={{ fontSize: '0.78rem', color: colors.ink2, lineHeight: 1.55 }}>
+          {t('payment.verificationNote')}
+        </Typography>
+      </Box>
+
       {termsSlot}
 
       <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
@@ -238,13 +257,36 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     setApiError('');
     setLoading(true);
     try {
-      const checkRes = await fetch(`${API_URL}/auth/check-email?email=${encodeURIComponent(form.email)}`);
-      const checkData = await checkRes.json();
-      if (!checkData.available) {
-        setApiError(t('register.errors.emailTaken'));
+      // STEP 1 — persist a pending user in our DB BEFORE any Stripe interaction.
+      // This way an abandoned signup leaves a recoverable trail instead of an
+      // orphaned Stripe customer with no DB row.
+      const pendingRes = await fetch(`${API_URL}/auth/register-pending`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          password: form.password,
+          phone: form.phone,
+          company: form.company,
+          taxId: form.taxId,
+          location: selectedLocation,
+          plan: selectedPlan,
+        }),
+      });
+      if (!pendingRes.ok) {
+        const err = await pendingRes.json().catch(() => ({}));
+        if (pendingRes.status === 409) {
+          setApiError(t('register.errors.emailTaken'));
+        } else {
+          setApiError(err.error || 'Failed to register');
+        }
         setLoading(false);
         return;
       }
+
+      // STEP 2 — now create Stripe customer + SetupIntent. The backend will link
+      // the new Stripe customer to the pending user we just created.
       const res = await fetch(`${API_URL}/auth/setup-intent`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

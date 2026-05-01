@@ -384,6 +384,25 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
         </Stack>
       </Paper>
 
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 0.5,
+          p: 1.75,
+          borderRadius: `${radius.md}px`,
+          bgcolor: colors.bgSoft,
+          border: `1px solid ${colors.line}`,
+        }}
+      >
+        <Typography sx={{ fontSize: '0.78rem', fontWeight: 700, color: colors.ink, letterSpacing: '-0.005em' }}>
+          {t('payment.verificationNoteTitle')}
+        </Typography>
+        <Typography sx={{ fontSize: '0.78rem', color: colors.ink2, lineHeight: 1.55 }}>
+          {t('payment.verificationNote')}
+        </Typography>
+      </Box>
+
       <Paper
         elevation={0}
         sx={{

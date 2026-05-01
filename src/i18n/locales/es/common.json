@@ -423,6 +423,8 @@
   },
   "payment": {
     "securePayment": "Pago seguro con Stripe",
+    "verificationNoteTitle": "¿Por qué verás un cargo de 0,01 €?",
+    "verificationNote": "Si eliges iDEAL u otro método bancario, tu banco mostrará un cargo de 0,01 € para verificar tu cuenta. Se reembolsa automáticamente en 1-2 días. No es un cargo real — solo confirma que la cuenta es tuya.",
     "slotUnavailable": "Este horario ya no está disponible. Vuelve atrás y selecciona otro horario.",
     "slotUnavailableRefunded": "Este horario ya estaba reservado. Tu pago ha sido reembolsado automáticamente. Vuelve atrás y selecciona otro horario.",
     "paymentFailed": "El pago ha fallado",
