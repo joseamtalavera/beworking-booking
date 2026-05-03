@@ -30,28 +30,23 @@ import TextField from '../common/ClearableTextField';
 import MuiTextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { tokens } from '@/theme/tokens';
-import { TAX_ID_TYPES, taxIdTypeOption } from '@/data/taxIdTypes';
+import { TAX_ID_TYPES, taxIdTypeOption, flagUrl } from '@/data/taxIdTypes';
 
-// Flat-square country badges. Used instead of flag emoji so they render
-// identically across every OS (Windows / Linux often miss flag glyphs).
-const FlagBadge = ({ code, color }) => (
-  <span
-    style={{
-      display: 'inline-block',
-      minWidth: 22,
-      height: 14,
-      lineHeight: '14px',
-      fontSize: 9,
-      fontWeight: 700,
-      color: '#fff',
-      background: color,
-      borderRadius: 2,
-      textAlign: 'center',
-      letterSpacing: '0.04em',
-      marginRight: 8,
-    }}
-  >{code}</span>
-);
+// Real country flag from flagcdn.com (free CDN).
+const FlagImg = ({ country }) => {
+  const url = flagUrl(country);
+  if (!url) return <span style={{ display: 'inline-block', width: 20, marginRight: 8 }} />;
+  return (
+    <img
+      src={url}
+      alt={country}
+      width={20}
+      height={15}
+      style={{ marginRight: 8, borderRadius: 2, verticalAlign: 'middle', flexShrink: 0 }}
+      onError={(e) => { e.currentTarget.style.visibility = 'hidden'; }}
+    />
+  );
+};
 
 const { colors, radius, motion, typography } = tokens;
 
@@ -599,8 +594,8 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
                     o.name.toLowerCase().includes(q));
                 }}
                 renderOption={(props, opt) => (
-                  <li {...props} key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-                    <FlagBadge code={opt.country} color={opt.color} />
+                  <li {...props} key={`${opt.value}-${opt.country}`} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                    <FlagImg country={opt.country} />
                     <span style={{ fontWeight: 600, marginRight: 8, fontSize: 13 }}>{opt.label}</span>
                     <span style={{ fontSize: 12, color: '#667085' }}>{opt.name}</span>
                   </li>
