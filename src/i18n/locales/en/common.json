@@ -582,6 +582,12 @@
       "password": "Password",
       "confirmPassword": "Confirm password",
       "company": "Company or full name",
+      "taxIdType": "Tax category",
+      "taxIdTypeSelect": "— Select —",
+      "taxIdTypeEsCif": "ES CIF (company)",
+      "taxIdTypeEsNif": "ES NIF (self-employed / individual)",
+      "taxIdTypeEuVat": "EU VAT (intra-community)",
+      "taxIdTypeNoVat": "Individual without VAT",
       "taxId": "VAT or Passport",
       "phone": "Phone"
     },

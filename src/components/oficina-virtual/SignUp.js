@@ -27,15 +27,31 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
 import TextField from '../common/ClearableTextField';
-import MenuItem from '@mui/material/MenuItem';
+import MuiTextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import { tokens } from '@/theme/tokens';
+import { TAX_ID_TYPES, taxIdTypeOption } from '@/data/taxIdTypes';
 
-const TAX_ID_TYPE_OPTIONS = [
-  { value: 'es_cif', label: 'ES CIF (empresa)' },
-  { value: 'es_nif', label: 'ES NIF (autónomo / persona)' },
-  { value: 'eu_vat', label: 'EU VAT (intracomunitario)' },
-  { value: 'no_vat', label: 'Particular sin NIF' },
-];
+// Flat-square country badges. Used instead of flag emoji so they render
+// identically across every OS (Windows / Linux often miss flag glyphs).
+const FlagBadge = ({ code, color }) => (
+  <span
+    style={{
+      display: 'inline-block',
+      minWidth: 22,
+      height: 14,
+      lineHeight: '14px',
+      fontSize: 9,
+      fontWeight: 700,
+      color: '#fff',
+      background: color,
+      borderRadius: 2,
+      textAlign: 'center',
+      letterSpacing: '0.04em',
+      marginRight: 8,
+    }}
+  >{code}</span>
+);
 
 const { colors, radius, motion, typography } = tokens;
 
@@ -565,21 +581,34 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
               <TextField fullWidth placeholder="Acme Inc. / Jon Snow" value={form.company} onChange={handleChange('company')} sx={fieldSx} />
             </FormControl>
             <FormControl>
-              <FormLabel sx={labelSx}>Categoría fiscal</FormLabel>
-              <TextField
-                select
+              <FormLabel sx={labelSx}>{t('register.fields.taxIdType')}</FormLabel>
+              <Autocomplete
                 fullWidth
-                value={form.taxIdType}
-                onChange={handleChange('taxIdType')}
-                sx={fieldSx}
-                displayEmpty
-                SelectProps={{ displayEmpty: true }}
-              >
-                <MenuItem value=""><em>— Selecciona —</em></MenuItem>
-                {TAX_ID_TYPE_OPTIONS.map(opt => (
-                  <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
-                ))}
-              </TextField>
+                options={TAX_ID_TYPES}
+                value={taxIdTypeOption(form.taxIdType) || null}
+                onChange={(_e, opt) => setForm((prev) => ({ ...prev, taxIdType: opt ? opt.value : '' }))}
+                getOptionLabel={(o) => `${o.country} ${o.label.replace(/^[A-Z]{2,3}\s*/, '')}`}
+                isOptionEqualToValue={(o, v) => o.value === v.value}
+                filterOptions={(opts, state) => {
+                  const q = state.inputValue.trim().toLowerCase();
+                  if (!q) return opts;
+                  return opts.filter(o =>
+                    o.value.toLowerCase().includes(q) ||
+                    o.country.toLowerCase().includes(q) ||
+                    o.label.toLowerCase().includes(q) ||
+                    o.name.toLowerCase().includes(q));
+                }}
+                renderOption={(props, opt) => (
+                  <li {...props} key={opt.value} style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+                    <FlagBadge code={opt.country} color={opt.color} />
+                    <span style={{ fontWeight: 600, marginRight: 8, fontSize: 13 }}>{opt.label}</span>
+                    <span style={{ fontSize: 12, color: '#667085' }}>{opt.name}</span>
+                  </li>
+                )}
+                renderInput={(params) => (
+                  <MuiTextField {...params} placeholder={t('register.fields.taxIdTypeSelect')} sx={fieldSx} />
+                )}
+              />
             </FormControl>
             <FormControl>
               <FormLabel sx={labelSx}>{t('register.fields.taxId')}</FormLabel>

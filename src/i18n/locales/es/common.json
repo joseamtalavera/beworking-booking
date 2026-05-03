@@ -595,6 +595,12 @@
       "password": "Contraseña",
       "confirmPassword": "Confirmar contraseña",
       "company": "Empresa o nombre completo",
+      "taxIdType": "Categoría fiscal",
+      "taxIdTypeSelect": "— Selecciona —",
+      "taxIdTypeEsCif": "ES CIF (empresa)",
+      "taxIdTypeEsNif": "ES NIF (autónomo / persona)",
+      "taxIdTypeEuVat": "EU VAT (intracomunitario)",
+      "taxIdTypeNoVat": "Particular sin NIF",
       "taxId": "NIF / DNI / Pasaporte",
       "phone": "Teléfono"
     },
