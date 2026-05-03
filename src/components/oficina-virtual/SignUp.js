@@ -27,7 +27,15 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StarIcon from '@mui/icons-material/Star';
 import TextField from '../common/ClearableTextField';
+import MenuItem from '@mui/material/MenuItem';
 import { tokens } from '@/theme/tokens';
+
+const TAX_ID_TYPE_OPTIONS = [
+  { value: 'es_cif', flag: '🇪🇸', label: 'ES CIF (empresa)' },
+  { value: 'es_nif', flag: '🇪🇸', label: 'ES NIF (autónomo / persona)' },
+  { value: 'eu_vat', flag: '🇪🇺', label: 'EU VAT (intracomunitario)' },
+  { value: 'no_vat', flag: '∅',   label: 'Particular sin NIF' },
+];
 
 const { colors, radius, motion, typography } = tokens;
 
@@ -185,7 +193,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
     name: '', email: '', password: '', confirmPassword: '',
-    company: '', taxId: '', phone: '',
+    company: '', taxId: '', taxIdType: '', phone: '',
   });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -278,6 +286,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
           phone: form.phone,
           company: form.company,
           taxId: form.taxId,
+          taxIdType: form.taxIdType || null,
           location: selectedLocation,
           plan: selectedPlan,
         }),
@@ -336,6 +345,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
         body: JSON.stringify({
           name: form.name, email: form.email, password: form.password,
           phone: form.phone, company: form.company, taxId: form.taxId,
+          taxIdType: form.taxIdType || null,
           plan: selectedPlan, location: selectedLocation,
           stripeCustomerId,
         }),
@@ -553,6 +563,25 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
             <FormControl>
               <FormLabel sx={labelSx}>{t('register.fields.company')}</FormLabel>
               <TextField fullWidth placeholder="Acme Inc. / Jon Snow" value={form.company} onChange={handleChange('company')} sx={fieldSx} />
+            </FormControl>
+            <FormControl>
+              <FormLabel sx={labelSx}>Categoría fiscal</FormLabel>
+              <TextField
+                select
+                fullWidth
+                value={form.taxIdType}
+                onChange={handleChange('taxIdType')}
+                sx={fieldSx}
+                displayEmpty
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=""><em>— Selecciona —</em></MenuItem>
+                {TAX_ID_TYPE_OPTIONS.map(opt => (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    <span style={{ marginRight: 8 }}>{opt.flag}</span>{opt.label}
+                  </MenuItem>
+                ))}
+              </TextField>
             </FormControl>
             <FormControl>
               <FormLabel sx={labelSx}>{t('register.fields.taxId')}</FormLabel>
