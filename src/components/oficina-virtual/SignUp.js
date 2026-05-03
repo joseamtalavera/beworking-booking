@@ -31,10 +31,10 @@ import MenuItem from '@mui/material/MenuItem';
 import { tokens } from '@/theme/tokens';
 
 const TAX_ID_TYPE_OPTIONS = [
-  { value: 'es_cif', flag: '🇪🇸', label: 'ES CIF (empresa)' },
-  { value: 'es_nif', flag: '🇪🇸', label: 'ES NIF (autónomo / persona)' },
-  { value: 'eu_vat', flag: '🇪🇺', label: 'EU VAT (intracomunitario)' },
-  { value: 'no_vat', flag: '∅',   label: 'Particular sin NIF' },
+  { value: 'es_cif', label: 'ES CIF (empresa)' },
+  { value: 'es_nif', label: 'ES NIF (autónomo / persona)' },
+  { value: 'eu_vat', label: 'EU VAT (intracomunitario)' },
+  { value: 'no_vat', label: 'Particular sin NIF' },
 ];
 
 const { colors, radius, motion, typography } = tokens;
@@ -577,9 +577,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
               >
                 <MenuItem value=""><em>— Selecciona —</em></MenuItem>
                 {TAX_ID_TYPE_OPTIONS.map(opt => (
-                  <MenuItem key={opt.value} value={opt.value}>
-                    <span style={{ marginRight: 8 }}>{opt.flag}</span>{opt.label}
-                  </MenuItem>
+                  <MenuItem key={opt.value} value={opt.value}>{opt.label}</MenuItem>
                 ))}
               </TextField>
             </FormControl>
