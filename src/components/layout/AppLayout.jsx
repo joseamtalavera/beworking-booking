@@ -203,9 +203,15 @@ const AppLayout = ({ children }) => {
                 py: 0.6,
                 borderRadius: '999px',
                 border: '1px solid',
-                borderColor: active ? 'rgba(0,0,0,0.55)' : 'transparent',
-                transition: 'border-color 0.18s ease, background-color 0.18s ease',
-                '&:hover': { borderColor: active ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.12)' },
+                // Active pill matches the ES/EN toggle container: subtle
+                // light-grey outline + faint fill, font kept readable but soft.
+                borderColor: active ? 'rgba(0,0,0,0.06)' : 'transparent',
+                bgcolor: active ? 'rgba(0,0,0,0.04)' : 'transparent',
+                color: active ? 'rgba(0,0,0,0.5)' : '#1a1a1a',
+                transition: 'border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease',
+                '&:hover': active
+                  ? {}
+                  : { borderColor: 'rgba(0,0,0,0.12)' },
               };
               if (link.placeholder) {
                 return (

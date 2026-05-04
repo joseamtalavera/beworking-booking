@@ -259,11 +259,11 @@
     }
   },
   "card": {
-    "instantBooking": "Instant booking",
+    "instantBooking": "Quick confirmation",
     "meetingRoom": "Meeting room",
     "desk": "Desk",
     "from": "From",
-    "bookNow": "Book now",
+    "bookNow": "Request booking",
     "available": "available"
   },
   "room": {
@@ -853,7 +853,7 @@
     },
     "cta": {
       "heading": "Ready to run your business from one place?",
-      "button": "Create account"
+      "button": "Create a free account"
     }
   },
   "faq": {

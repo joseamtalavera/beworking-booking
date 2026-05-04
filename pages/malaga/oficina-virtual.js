@@ -7,7 +7,12 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Seo from '@/components/oficina-virtual/Seo';
 import StructuredData from '@/components/oficina-virtual/StructuredData';
 import orgData from '@/components/oficina-virtual/structuredData/orgData';
-import SignUp from '@/components/oficina-virtual/SignUp';
+// Inline self-serve SignUp removed 2026-05-04 — strategic shift to human-touch
+// lead capture. The component is preserved at
+// src/components/oficina-virtual/SignUp.js for future reuse (e.g. /register
+// page or a dedicated "decided users" path). Re-import when needed.
+// import SignUp from '@/components/oficina-virtual/SignUp';
+import ContactDialog from '@/components/contact/ContactDialog';
 import { tokens } from '@/theme/tokens';
 
 const { colors, radius, shadow, motion, typography, layout } = tokens;
@@ -168,13 +173,19 @@ const SectionHeading = ({ children }) => (
 
 export default function OficinaVirtualPage() {
   const city = 'Málaga';
-  const locationKey = 'malaga';
   const { t, i18n } = useTranslation();
-  const formRef = useRef(null);
-  const [chosenPlan, setChosenPlan] = useState('basic');
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [modalImageIndex, setModalImageIndex] = useState(null);
   const [galleryDialogOpen, setGalleryDialogOpen] = useState(false);
+  // Contact dialog state — opened by every CTA on the page (hero, pricing,
+  // final strip). Subject defaults vary per CTA so the team email knows the
+  // origin (Oficina Digital vs Visita).
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState('Oficina Digital');
+  const openContact = (subject) => {
+    setContactSubject(subject);
+    setContactOpen(true);
+  };
   const imagesPerPage = 4;
 
   const heroRef = useRef(null);
@@ -212,10 +223,6 @@ export default function OficinaVirtualPage() {
       : ['Legal & fiscal address', 'Mail & parcel reception', 'Logo at reception', '5 days of office per month', 'Full access to BeWorkingApp'],
   };
 
-  const scrollToForm = (planKey) => {
-    if (planKey) setChosenPlan(planKey);
-    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
 
   const visibleGalleryImages = [
     ...GALLERY_IMAGES.slice(galleryIndex, galleryIndex + imagesPerPage),
@@ -306,8 +313,85 @@ export default function OficinaVirtualPage() {
             </Stack>
           </Box>
 
-          <Box ref={formRef}>
-            <SignUp defaultPlan={chosenPlan} defaultLocation={locationKey} />
+          <Box
+            sx={{
+              bgcolor: colors.bg,
+              borderRadius: `${radius.lg}px`,
+              border: `1px solid ${colors.line}`,
+              p: { xs: 4, md: 5 },
+              boxShadow: shadow.tile,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 3,
+            }}
+          >
+            <Box>
+              <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 1 }}>
+                BeWorking
+              </Typography>
+              <Box
+                component="h2"
+                sx={{
+                  ...typography.h2,
+                  color: colors.ink,
+                  fontFamily: typography.fontFamily,
+                  fontFeatureSettings: typography.fontFeatureSettings,
+                  m: 0,
+                  fontSize: { xs: '1.85rem', sm: '2.1rem' },
+                }}
+              >
+                {isEs ? 'Habla con nosotros' : 'Talk to us'}
+              </Box>
+              <Typography sx={{ ...typography.body, color: colors.ink2, mt: 1.5 }}>
+                {isEs
+                  ? 'Te explicamos cómo funciona, te enseñamos las oficinas y te ayudamos a empezar.'
+                  : 'We walk you through how it works, show you the offices, and help you get started.'}
+              </Typography>
+            </Box>
+
+            <Stack spacing={1.5}>
+              <Button
+                onClick={() => openContact('Oficina Digital')}
+                variant="contained"
+                size="large"
+                disableElevation
+                sx={{
+                  bgcolor: colors.brand,
+                  color: colors.bg,
+                  borderRadius: `${radius.pill}px`,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  py: 1.4,
+                  fontSize: '0.95rem',
+                  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+                }}
+              >
+                {isEs ? 'Solicitar información' : 'Request information'}
+              </Button>
+              <Button
+                onClick={() => openContact('Visita')}
+                variant="outlined"
+                size="large"
+                sx={{
+                  color: colors.ink,
+                  borderColor: colors.ink,
+                  borderRadius: `${radius.pill}px`,
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  py: 1.4,
+                  fontSize: '0.95rem',
+                  '&:hover': { borderColor: colors.ink, bgcolor: colors.bgSoft },
+                }}
+              >
+                {isEs ? 'Reservar visita →' : 'Book a tour →'}
+              </Button>
+            </Stack>
+
+            <Typography sx={{ fontSize: '0.8rem', color: colors.ink3, textAlign: 'center', lineHeight: 1.5 }}>
+              {isEs
+                ? 'Te respondemos en menos de un día hábil. Sin compromiso.'
+                : 'We reply within one business day. No commitment.'}
+            </Typography>
           </Box>
         </Box>
       </Box>
@@ -400,6 +484,51 @@ export default function OficinaVirtualPage() {
               </Box>
             );
           })}
+
+          {/* CTAs after the last pillar — soft prompt before the gallery. */}
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            spacing={1.5}
+            justifyContent="center"
+            sx={{ mt: { xs: 6, md: 8 } }}
+          >
+            <Button
+              onClick={() => openContact('Oficina Digital')}
+              variant="contained"
+              size="large"
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                px: 3.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: 'none',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
+            >
+              {isEs ? 'Solicitar información' : 'Request information'}
+            </Button>
+            <Button
+              onClick={() => openContact('Visita')}
+              variant="outlined"
+              size="large"
+              sx={{
+                color: colors.ink,
+                borderColor: colors.ink,
+                px: 2.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                '&:hover': { borderColor: colors.ink, bgcolor: colors.bgSoft },
+              }}
+            >
+              {isEs ? 'Reservar visita →' : 'Book a tour →'}
+            </Button>
+          </Stack>
         </Box>
       </Box>
 
@@ -639,7 +768,7 @@ export default function OficinaVirtualPage() {
             <Button
               variant="contained"
               fullWidth
-              onClick={() => scrollToForm(plan.key)}
+              onClick={() => openContact('Oficina Digital')}
               disableElevation
               sx={{
                 bgcolor: colors.brand,
@@ -652,7 +781,7 @@ export default function OficinaVirtualPage() {
                 '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
               }}
             >
-              {isEs ? 'Empezar por 15€/mes' : 'Start from €15/month'}
+              {isEs ? 'Solicitar información' : 'Request information'}
             </Button>
           </Box>
 
@@ -739,6 +868,84 @@ export default function OficinaVirtualPage() {
           </Box>
         </Box>
       </Box>
+
+      {/* ─── FINAL CTA STRIP ─── */}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.brandSoft,
+          py: { xs: 10, md: 14 },
+          px: { xs: 3, md: 5 },
+          textAlign: 'center',
+        }}
+      >
+        <Box sx={{ maxWidth: 720, mx: 'auto' }}>
+          <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
+            {isEs ? '¿Aún con dudas?' : 'Still deciding?'}
+          </Typography>
+          <Box
+            component="h2"
+            sx={{
+              ...typography.h2,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            {isEs ? 'Habla con nosotros antes de empezar.' : 'Talk to us before you start.'}
+          </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 2.5, maxWidth: 540, mx: 'auto' }}>
+            {isEs
+              ? 'Te explicamos los pasos, te enseñamos las oficinas y resolvemos tus dudas — sin compromiso.'
+              : 'We walk you through the steps, show you the offices and answer your questions — no commitment.'}
+          </Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center" sx={{ mt: 4 }}>
+            <Button
+              onClick={() => openContact('Oficina Digital')}
+              variant="contained"
+              size="large"
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                px: 3.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: 'none',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
+            >
+              {isEs ? 'Solicitar información' : 'Request information'}
+            </Button>
+            <Button
+              onClick={() => openContact('Visita')}
+              variant="outlined"
+              size="large"
+              sx={{
+                color: colors.ink,
+                borderColor: colors.ink,
+                px: 2.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                '&:hover': { borderColor: colors.ink, bgcolor: colors.bg },
+              }}
+            >
+              {isEs ? 'Reservar visita →' : 'Book a tour →'}
+            </Button>
+          </Stack>
+        </Box>
+      </Box>
+
+      <ContactDialog
+        open={contactOpen}
+        onClose={() => setContactOpen(false)}
+        defaultSubject={contactSubject}
+      />
     </>
   );
 }

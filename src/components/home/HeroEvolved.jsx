@@ -159,6 +159,11 @@ const HeroEvolved = () => {
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [contactOpen, setContactOpen] = useState(false);
+  const [contactSubject, setContactSubject] = useState('Consulta general');
+  const openContact = (subject) => {
+    setContactSubject(subject);
+    setContactOpen(true);
+  };
   const ref = useRef(null);
 
   useEffect(() => {
@@ -227,7 +232,26 @@ const HeroEvolved = () => {
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ pt: 1 }}>
             <Button
-              onClick={() => setContactOpen(true)}
+              onClick={() => openContact('Consulta general')}
+              variant="contained"
+              size="large"
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                px: 3.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: 'none',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
+            >
+              {t('home.evolved.ctaPrimary', 'Solicitar información')}
+            </Button>
+            <Button
+              onClick={() => openContact('Visita')}
               variant="outlined"
               size="large"
               sx={{
@@ -248,7 +272,7 @@ const HeroEvolved = () => {
           <ContactDialog
             open={contactOpen}
             onClose={() => setContactOpen(false)}
-            defaultSubject="Visita"
+            defaultSubject={contactSubject}
           />
         </Stack>
 

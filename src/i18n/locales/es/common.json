@@ -259,11 +259,11 @@
     }
   },
   "card": {
-    "instantBooking": "Reserva instantánea",
+    "instantBooking": "Confirmación rápida",
     "meetingRoom": "Sala de reuniones",
     "desk": "Escritorio",
     "from": "Desde",
-    "bookNow": "Reservar",
+    "bookNow": "Solicitar booking",
     "available": "disponibles"
   },
   "room": {
@@ -867,7 +867,7 @@
     },
     "cta": {
       "heading": "¿Listo para gestionar tu negocio desde un solo lugar?",
-      "button": "Crear cuenta"
+      "button": "Crear cuenta gratis"
     }
   },
   "faq": {

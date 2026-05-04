@@ -9,6 +9,7 @@ import AutoFixHighOutlinedIcon from '@mui/icons-material/AutoFixHighOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
+import ContactDialog from '@/components/contact/ContactDialog';
 
 const { colors, radius, shadow, motion, typography, layout } = tokens;
 
@@ -62,6 +63,7 @@ export default function Platform() {
   const sectionRefs = useRef([]);
   const heroRef = useRef(null);
   const [heroVisible, setHeroVisible] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     const el = heroRef.current;
@@ -163,8 +165,7 @@ export default function Platform() {
               m: 0,
             }}
           >
-            BeWorking
-            <Box component="span" sx={{ color: colors.brand, display: 'block' }}>App</Box>
+            BeWorking<Box component="span" sx={{ color: colors.brand }}>App</Box>
           </Box>
           <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 3, maxWidth: 560, mx: 'auto' }}>
             {t('platform.hero.subheading')}
@@ -187,7 +188,7 @@ export default function Platform() {
                 '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
               }}
             >
-              {t('platform.cta.button', isEs ? 'Empezar gratis' : 'Get started')}
+              {t('platform.cta.button', isEs ? 'Crear cuenta gratis' : 'Create a free account')}
             </Button>
           </Box>
         </Box>
@@ -359,6 +360,67 @@ export default function Platform() {
           </Box>
         );
       })}
+
+      {/* Final CTA strip */}
+      <Box
+        component="section"
+        sx={{
+          bgcolor: colors.brandSoft,
+          py: { xs: 10, md: 14 },
+          px: { xs: 3, md: 5 },
+          textAlign: 'center',
+        }}
+      >
+        <Box sx={{ maxWidth: 720, mx: 'auto' }}>
+          <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
+            {isEs ? 'Listo para verla en acción' : 'Ready to see it live'}
+          </Typography>
+          <Box
+            component="h2"
+            sx={{
+              ...typography.h2,
+              color: colors.ink,
+              fontFamily: typography.fontFamily,
+              fontFeatureSettings: typography.fontFeatureSettings,
+              m: 0,
+            }}
+          >
+            {isEs ? 'Demos personalizadas en 15 minutos.' : 'Personalised demos in 15 minutes.'}
+          </Box>
+          <Typography sx={{ ...typography.bodyLg, color: colors.ink2, mt: 2.5, maxWidth: 540, mx: 'auto' }}>
+            {isEs
+              ? 'Te guiamos por la app con tu caso real, sin compromiso.'
+              : 'We walk you through the app with your real use case — no commitment.'}
+          </Typography>
+          <Box sx={{ mt: 4 }}>
+            <Button
+              onClick={() => setContactOpen(true)}
+              variant="contained"
+              size="large"
+              disableElevation
+              sx={{
+                bgcolor: colors.brand,
+                color: colors.bg,
+                px: 3.5,
+                py: 1.4,
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                boxShadow: 'none',
+                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+              }}
+            >
+              {isEs ? 'Solicitar demo' : 'Request a demo'}
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+
+      <ContactDialog
+        open={contactOpen}
+        onClose={() => setContactOpen(false)}
+        defaultSubject="Plataforma y cuenta"
+      />
     </>
   );
 }
