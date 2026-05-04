@@ -249,25 +249,30 @@ const AppLayout = ({ children }) => {
           {/* Right desktop: lang toggle + phone + login (green) */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
-            <Link
+            <Button
+              component="a"
               href="tel:+34951905967"
-              underline="none"
+              variant="outlined"
+              disableElevation
               sx={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 0.5,
                 fontSize: '0.9rem',
                 fontWeight: 700,
-                color: 'primary.main',
+                textTransform: 'none',
+                borderRadius: '999px',
+                px: 1.75,
+                py: 0.5,
                 whiteSpace: 'nowrap',
-                '&:hover': { opacity: 0.7 },
+                color: '#1d1d1f',
+                borderColor: '#1d1d1f',
+                gap: 0.6,
+                '&:hover': { borderColor: '#1d1d1f', backgroundColor: 'rgba(0,0,0,0.04)' },
               }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#1d1d1f" style={{ flexShrink: 0 }}>
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
               </svg>
               +34 951 905 967
-            </Link>
+            </Button>
             <Button
               component={NextLink}
               href="/login"
