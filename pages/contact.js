@@ -135,39 +135,59 @@ export default function Contact() {
               {t('contact.info.heading')}
             </Box>
 
-            {officesArr.map((office) => (
-              <Box key={office.city} sx={{ mb: 4 }}>
-                <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', color: colors.ink, mb: 2 }}>
-                  {office.city}
-                </Typography>
-                {[
-                  { Icon: LocationOnIcon, text: `${office.address}\n${office.zip}` },
-                  { Icon: PhoneIcon, text: office.phone },
-                ].map(({ Icon, text }) => (
-                  <Box key={text} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 2 }}>
+            {officesArr.map((office) => {
+              const mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${office.address || ''} ${office.zip || ''} ${office.city || ''}`.trim())}`;
+              const telHref = office.phone ? `tel:${office.phone.replace(/[^+\d]/g, '')}` : null;
+              return (
+                <Box key={office.city} sx={{ mb: 4 }}>
+                  <Typography sx={{ fontWeight: 600, fontSize: '0.95rem', color: colors.ink, mb: 2 }}>
+                    {office.city}
+                  </Typography>
+                  {[
+                    { Icon: LocationOnIcon, text: `${office.address}\n${office.zip}`, href: mapUrl, external: true },
+                    { Icon: PhoneIcon, text: office.phone, href: telHref, external: false },
+                  ].filter(item => item.text && item.href).map(({ Icon, text, href, external }) => (
                     <Box
+                      key={text}
+                      component="a"
+                      href={href}
+                      {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       sx={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: '50%',
-                        bgcolor: colors.brandSoft,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0,
+                        display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 2,
+                        textDecoration: 'none', color: 'inherit',
+                        transition: 'opacity 0.15s ease',
+                        '&:hover': { opacity: 0.7 },
                       }}
                     >
-                      <Icon sx={{ fontSize: 17, color: colors.brand }} />
+                      <Box
+                        sx={{
+                          width: 36, height: 36, borderRadius: '50%',
+                          bgcolor: colors.brandSoft,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <Icon sx={{ fontSize: 17, color: colors.brand }} />
+                      </Box>
+                      <Typography sx={{ ...typography.body, color: colors.ink2, whiteSpace: 'pre-line', lineHeight: 1.55 }}>
+                        {text}
+                      </Typography>
                     </Box>
-                    <Typography sx={{ ...typography.body, color: colors.ink2, whiteSpace: 'pre-line', lineHeight: 1.55 }}>
-                      {text}
-                    </Typography>
-                  </Box>
-                ))}
-              </Box>
-            ))}
+                  ))}
+                </Box>
+              );
+            })}
 
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1.5 }}>
+            <Box
+              component="a"
+              href={`mailto:${t('contact.info.email')}`}
+              sx={{
+                display: 'flex', alignItems: 'flex-start', gap: 1.5,
+                textDecoration: 'none', color: 'inherit',
+                transition: 'opacity 0.15s ease',
+                '&:hover': { opacity: 0.7 },
+              }}
+            >
               <Box
                 sx={{
                   width: 36,
