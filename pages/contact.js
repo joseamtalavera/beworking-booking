@@ -8,15 +8,19 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
+import TurnstileWidget from '@/components/oficina-virtual/TurnstileWidget';
 
 const { colors, radius, motion, typography, layout } = tokens;
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
 
 export default function Contact() {
   const { t } = useTranslation();
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
 
   const heroRef = useRef(null);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -48,11 +52,13 @@ export default function Contact() {
       const res = await fetch(`${API_BASE_URL}/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source: 'contact-page' }),
+        body: JSON.stringify({ ...form, source: 'contact-page', turnstileToken }),
       });
       setStatus(res.ok ? 'success' : 'error');
+      if (!res.ok) setTurnstileResetSignal((s) => s + 1);
     } catch {
       setStatus('error');
+      setTurnstileResetSignal((s) => s + 1);
     } finally {
       setLoading(false);
     }
@@ -221,10 +227,21 @@ export default function Contact() {
                   {t('contact.form.error')}
                 </Alert>
               )}
+              {TURNSTILE_SITE_KEY && (
+                <Box sx={{ mt: 1 }}>
+                  <TurnstileWidget
+                    siteKey={TURNSTILE_SITE_KEY}
+                    onSuccess={(token) => setTurnstileToken(token)}
+                    onError={() => setTurnstileToken('')}
+                    onExpire={() => setTurnstileToken('')}
+                    resetSignal={turnstileResetSignal}
+                  />
+                </Box>
+              )}
               <Button
                 type="submit"
                 variant="contained"
-                disabled={loading}
+                disabled={loading || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
                 disableElevation
                 sx={{
                   bgcolor: colors.brand,
