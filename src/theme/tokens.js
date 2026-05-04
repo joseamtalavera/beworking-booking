@@ -52,7 +52,7 @@ export const typography = {
   fontFeatureSettings: '"ss01", "cv11"',
   h1: {
     fontSize: { xs: '2.75rem', sm: '3.5rem', md: '4.5rem', lg: '5.5rem' },
-    fontWeight: 600,
+    fontWeight: 500,
     letterSpacing: '-0.035em',
     lineHeight: 1.05,
   },

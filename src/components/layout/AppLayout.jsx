@@ -154,32 +154,40 @@ const AppLayout = ({ children }) => {
       : { component: NextLink, href };
 
   return (
-    <Box sx={{ bgcolor: '#fafafa', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Navigation Bar */}
+    <Box sx={{ bgcolor: '#ffffff', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Navigation Bar — floating pill */}
       <AppBar
         position="fixed"
         color="default"
         elevation={0}
         sx={{
-          bgcolor: 'rgba(255, 255, 255, 0.85)',
-          backdropFilter: 'blur(12px)',
+          bgcolor: 'transparent',
+          backdropFilter: 'none',
           borderBottom: 'none',
           boxShadow: 'none',
+          pt: { xs: 1, md: 1.5 },
+          px: { xs: 1.5, md: 2.5 },
         }}
       >
         <Toolbar
           disableGutters
           sx={{
-            minHeight: 64,
-            height: 64,
-            maxWidth: 1200,
-            width: '100%',
+            minHeight: 58,
+            height: 58,
+            width: 'fit-content',
+            maxWidth: '100%',
             mx: 'auto',
-            px: { xs: 2, sm: 3 },
+            px: { xs: 2, sm: 2.5 },
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
+            gap: 1.5,
             position: 'relative',
+            bgcolor: 'rgba(255, 255, 255, 0.78)',
+            backdropFilter: 'blur(14px)',
+            WebkitBackdropFilter: 'blur(14px)',
+            border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: '999px',
+            boxShadow: '0 1px 2px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.04)',
           }}
         >
           {/* Logo */}
@@ -189,47 +197,65 @@ const AppLayout = ({ children }) => {
             </span>
           </Box>
 
-          {/* Center: nav links (desktop only) */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 2.75, position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
+          {/* Nav links — uniform gap matching the Toolbar's outer gap */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
             {navLinks.map((link) => {
               const label = t(link.labelKey, { defaultValue: link.fallback });
+              const active = !link.placeholder && !link.external && link.href === router.pathname;
+              const pillSx = {
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                color: '#1a1a1a',
+                textDecoration: 'none',
+                letterSpacing: '-0.005em',
+                px: 1,
+                py: 0.6,
+                borderRadius: '999px',
+                border: '1px solid',
+                borderColor: active ? 'rgba(0,0,0,0.55)' : 'transparent',
+                transition: 'border-color 0.18s ease, background-color 0.18s ease',
+                '&:hover': { borderColor: active ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.12)' },
+              };
               if (link.placeholder) {
                 return (
-                  <span
+                  <Box
                     key={link.labelKey}
-                    style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', letterSpacing: '-0.005em', cursor: 'default' }}
+                    component="span"
+                    sx={{ ...pillSx, cursor: 'default', color: 'rgba(0,0,0,0.45)', '&:hover': { borderColor: 'transparent' } }}
                   >
                     {label}
-                  </span>
+                  </Box>
                 );
               }
               if (link.external) {
                 return (
-                  <a
+                  <Box
                     key={link.href}
+                    component="a"
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none', letterSpacing: '-0.005em' }}
+                    sx={pillSx}
                   >
                     {label}
-                  </a>
+                  </Box>
                 );
               }
               return (
-                <NextLink
+                <Box
                   key={link.href}
+                  component={NextLink}
                   href={link.href}
-                  style={{ fontSize: '0.9rem', fontWeight: 500, color: '#1a1a1a', textDecoration: 'none', letterSpacing: '-0.005em' }}
+                  sx={pillSx}
                 >
                   {label}
-                </NextLink>
+                </Box>
               );
             })}
           </Box>
 
           {/* Right desktop: lang toggle + login + register */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.25 }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
             <Button
               component={NextLink}
@@ -387,8 +413,8 @@ const AppLayout = ({ children }) => {
         </Box>
       </Drawer>
 
-      {/* Spacer for fixed AppBar */}
-      <Box sx={{ height: 64 }} />
+      {/* Spacer for fixed AppBar (pt + pill toolbar height + breathing room) */}
+      <Box sx={{ height: { xs: 72, md: 80 } }} />
 
       {/* Main content */}
       <Box sx={{ flex: 1 }}>
