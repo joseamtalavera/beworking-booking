@@ -260,10 +260,12 @@
   },
   "card": {
     "instantBooking": "Quick confirmation",
+    "instantBookingDesk": "Instant booking",
     "meetingRoom": "Meeting room",
     "desk": "Desk",
     "from": "From",
     "bookNow": "Request booking",
+    "bookNowDesk": "Book now",
     "available": "available"
   },
   "room": {

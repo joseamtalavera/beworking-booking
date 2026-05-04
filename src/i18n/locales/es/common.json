@@ -260,10 +260,12 @@
   },
   "card": {
     "instantBooking": "Confirmación rápida",
+    "instantBookingDesk": "Reserva instantánea",
     "meetingRoom": "Sala de reuniones",
     "desk": "Escritorio",
     "from": "Desde",
     "bookNow": "Solicitar booking",
+    "bookNowDesk": "Reservar",
     "available": "disponibles"
   },
   "room": {

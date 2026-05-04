@@ -23,6 +23,12 @@ const SpaceCard = ({ space, onBookNow }) => {
 
   if (!space) return null;
 
+  // Desks are still self-serve / instant; only meeting rooms (aulas) shifted
+  // to the request-and-confirm phrasing. Switch labels by space.type.
+  const isDesk = space.type === 'desk';
+  const badgeLabel = isDesk ? t('card.instantBookingDesk') : t('card.instantBooking');
+  const buttonLabel = isDesk ? t('card.bookNowDesk') : t('card.bookNow');
+
   const images = space.gallery && space.gallery.length > 0
     ? space.gallery
     : space.image ? [space.image] : [];
@@ -154,7 +160,7 @@ const SpaceCard = ({ space, onBookNow }) => {
           {space.instantBooking && (
             <Stack direction="row" spacing={1} sx={{ position: 'absolute', top: 10, left: 10 }}>
               <Chip
-                label={t('card.instantBooking')}
+                label={badgeLabel}
                 size="small"
                 sx={{
                   bgcolor: '#ffffff',
@@ -291,7 +297,7 @@ const SpaceCard = ({ space, onBookNow }) => {
                 '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
               }}
             >
-              {t('card.bookNow')}
+              {buttonLabel}
             </Button>
           </Stack>
         </Box>
