@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import NextLink from 'next/link';
 import { tokens } from '@/theme/tokens';
+import ContactDialog from '@/components/contact/ContactDialog';
 
 const { colors, radius, shadow, motion, typography, layout } = tokens;
 
@@ -157,6 +158,7 @@ const ServicesMockup = ({ t }) => {
 const HeroEvolved = () => {
   const { t } = useTranslation();
   const [mounted, setMounted] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -225,42 +227,29 @@ const HeroEvolved = () => {
 
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ pt: 1 }}>
             <Button
-              component={NextLink}
-              href="/spaces"
-              variant="contained"
-              size="large"
-              sx={{
-                bgcolor: colors.brand,
-                color: colors.bg,
-                px: 3.5,
-                py: 1.4,
-                borderRadius: `${radius.pill}px`,
-                fontWeight: 600,
-                textTransform: 'none',
-                boxShadow: 'none',
-                '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
-              }}
-            >
-              {t('home.evolved.ctaPrimary', 'Reservar ahora')}
-            </Button>
-            <Button
-              component={NextLink}
-              href="/malaga/oficina-virtual"
-              variant="text"
+              onClick={() => setContactOpen(true)}
+              variant="outlined"
               size="large"
               sx={{
                 color: colors.ink,
+                borderColor: colors.ink,
                 px: 2.5,
                 py: 1.4,
                 borderRadius: `${radius.pill}px`,
                 fontWeight: 600,
                 textTransform: 'none',
-                '&:hover': { bgcolor: colors.bgSoft },
+                '&:hover': { bgcolor: colors.bgSoft, borderColor: colors.ink },
               }}
             >
-              {t('home.evolved.ctaSecondary', 'Ver oficinas virtuales →')}
+              {t('home.evolved.ctaSecondary', 'Reservar visita →')}
             </Button>
           </Stack>
+
+          <ContactDialog
+            open={contactOpen}
+            onClose={() => setContactOpen(false)}
+            defaultSubject="Visita"
+          />
         </Stack>
 
         {/* Right column: overlapping product collage (md+ only) */}

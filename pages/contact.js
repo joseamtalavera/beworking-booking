@@ -1,26 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
 import Head from 'next/head';
-import {
-  Box, Typography, TextField, Button, MenuItem, Stack, Alert,
-} from '@mui/material';
+import { useRouter } from 'next/router';
+import { Box, Typography } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
-import TurnstileWidget from '@/components/oficina-virtual/TurnstileWidget';
+import ContactCard from '@/components/contact/ContactCard';
 
-const { colors, radius, motion, typography, layout } = tokens;
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '';
+const { colors, motion, typography } = tokens;
 
 export default function Contact() {
   const { t } = useTranslation();
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
-  const [status, setStatus] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [turnstileToken, setTurnstileToken] = useState('');
-  const [turnstileResetSignal, setTurnstileResetSignal] = useState(0);
+  const router = useRouter();
+  const [defaultSubject, setDefaultSubject] = useState('');
+
+  // Pre-fill subject from ?subject= so deep-links from CTAs land on the
+  // right option (same behavior as the popup's deep-link handling).
+  useEffect(() => {
+    if (!router.isReady) return;
+    const raw = router.query.subject;
+    if (typeof raw === 'string' && raw) setDefaultSubject(raw);
+  }, [router.isReady, router.query.subject]);
 
   const heroRef = useRef(null);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -39,41 +41,6 @@ export default function Contact() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
-
-  const subjectsRaw = t('contact.form.subjects', { returnObjects: true });
-  const subjects = Array.isArray(subjectsRaw) ? subjectsRaw : [];
-
-  const handleChange = (field) => (e) => setForm((p) => ({ ...p, [field]: e.target.value }));
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await fetch(`${API_BASE_URL}/leads`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, source: 'contact-page', turnstileToken }),
-      });
-      setStatus(res.ok ? 'success' : 'error');
-      if (!res.ok) setTurnstileResetSignal((s) => s + 1);
-    } catch {
-      setStatus('error');
-      setTurnstileResetSignal((s) => s + 1);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fieldSx = {
-    '& .MuiOutlinedInput-root': {
-      borderRadius: `${radius.md}px`,
-      bgcolor: colors.bg,
-      '& fieldset': { borderColor: colors.line },
-      '&:hover fieldset': { borderColor: colors.ink3 },
-      '&.Mui-focused fieldset': { borderColor: colors.brand, borderWidth: 1 },
-    },
-    '& .MuiInputLabel-root.Mui-focused': { color: colors.brand },
-  };
 
   const offices = t('contact.info.offices', { returnObjects: true });
   const officesArr = Array.isArray(offices) ? offices : [];
@@ -108,14 +75,7 @@ export default function Contact() {
             transition: `opacity ${motion.durationSlow} ${motion.ease}, transform ${motion.durationSlow} ${motion.ease}`,
           }}
         >
-          <Typography
-            sx={{
-              ...typography.eyebrow,
-              color: colors.brand,
-              textTransform: 'uppercase',
-              mb: 2,
-            }}
-          >
+          <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
             {t('contact.hero.label')}
           </Typography>
           <Box
@@ -156,111 +116,8 @@ export default function Contact() {
             alignItems: 'flex-start',
           }}
         >
-          {/* Form card */}
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-              bgcolor: colors.bg,
-              borderRadius: `${radius.lg}px`,
-              border: `1px solid ${colors.line}`,
-              p: { xs: 3, md: 4.5 },
-            }}
-          >
-            <Stack spacing={2.5}>
-              <TextField
-                fullWidth
-                label={t('contact.form.name')}
-                value={form.name}
-                onChange={handleChange('name')}
-                required
-                sx={fieldSx}
-              />
-              <TextField
-                fullWidth
-                label={t('contact.form.email')}
-                type="email"
-                value={form.email}
-                onChange={handleChange('email')}
-                required
-                sx={fieldSx}
-              />
-              <TextField
-                fullWidth
-                select
-                label={t('contact.form.subject')}
-                value={form.subject}
-                onChange={handleChange('subject')}
-                required
-                sx={fieldSx}
-              >
-                {subjects.map((s) => (
-                  <MenuItem key={s} value={s}>{s}</MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                fullWidth
-                multiline
-                rows={5}
-                label={t('contact.form.message')}
-                value={form.message}
-                onChange={handleChange('message')}
-                required
-                sx={fieldSx}
-              />
-              {status === 'success' && (
-                <Alert
-                  severity="success"
-                  sx={{
-                    borderRadius: `${radius.md}px`,
-                    bgcolor: colors.brandSoft,
-                    color: colors.brandDeep,
-                    border: `1px solid ${colors.brand}`,
-                    '& .MuiAlert-icon': { color: colors.brand },
-                  }}
-                >
-                  {t('contact.form.success')}
-                </Alert>
-              )}
-              {status === 'error' && (
-                <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>
-                  {t('contact.form.error')}
-                </Alert>
-              )}
-              {TURNSTILE_SITE_KEY && (
-                <Box sx={{ mt: 1 }}>
-                  <TurnstileWidget
-                    siteKey={TURNSTILE_SITE_KEY}
-                    onSuccess={(token) => setTurnstileToken(token)}
-                    onError={() => setTurnstileToken('')}
-                    onExpire={() => setTurnstileToken('')}
-                    resetSignal={turnstileResetSignal}
-                  />
-                </Box>
-              )}
-              <Button
-                type="submit"
-                variant="contained"
-                disabled={loading || (!!TURNSTILE_SITE_KEY && !turnstileToken)}
-                disableElevation
-                sx={{
-                  bgcolor: colors.brand,
-                  color: colors.bg,
-                  borderRadius: `${radius.pill}px`,
-                  px: 4,
-                  py: 1.4,
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  alignSelf: 'flex-start',
-                  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
-                  '&.Mui-disabled': { bgcolor: colors.line, color: colors.ink3 },
-                }}
-              >
-                {t('contact.form.button')}
-              </Button>
-            </Stack>
-          </Box>
+          {/* Form card — shared component, no internal header (the page hero already covers it) */}
+          <ContactCard defaultSubject={defaultSubject} hideHeader />
 
           {/* Info column */}
           <Box>

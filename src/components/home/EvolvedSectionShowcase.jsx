@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import NextLink from 'next/link';
 import { tokens } from '@/theme/tokens';
+import ContactDialog from '@/components/contact/ContactDialog';
 
 const { colors, radius, shadow, motion, typography, layout } = tokens;
 
@@ -249,6 +250,7 @@ const EvolvedSectionShowcase = ({
   body,
   cta,
   href,
+  contactSubject,
   image,
   imageAlt,
   imageAspect = '4 / 3',
@@ -263,6 +265,7 @@ const EvolvedSectionShowcase = ({
 }) => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -341,8 +344,9 @@ const EvolvedSectionShowcase = ({
         )}
         <Box sx={{ mt: 4 }}>
           <Button
-            component={NextLink}
-            href={href}
+            {...(contactSubject
+              ? { onClick: () => setContactOpen(true) }
+              : { component: NextLink, href })}
             variant="contained"
             size="large"
             sx={{
@@ -360,6 +364,13 @@ const EvolvedSectionShowcase = ({
             {cta}
           </Button>
         </Box>
+        {contactSubject && (
+          <ContactDialog
+            open={contactOpen}
+            onClose={() => setContactOpen(false)}
+            defaultSubject={contactSubject}
+          />
+        )}
       </Box>
     </Box>
   );

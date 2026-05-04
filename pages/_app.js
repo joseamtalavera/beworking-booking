@@ -18,10 +18,19 @@ export default function MyApp(props) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
 
   React.useEffect(() => {
+    // Priority order:
+    //  1. The user's previous explicit choice (localStorage) — never override.
+    //  2. Auto-detect from browser locale: ES for any 'es-*' (Spain, LatAm),
+    //     EN for everything else. Default i18n.js lng is 'es' so SSR renders
+    //     Spanish; this only changes the language for non-Spanish browsers.
     const saved = localStorage.getItem('beworking_lang');
-    if (saved && saved !== i18n.language) {
-      i18n.changeLanguage(saved);
+    if (saved) {
+      if (saved !== i18n.language) i18n.changeLanguage(saved);
+      return;
     }
+    const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+    const detected = browserLang.startsWith('es') ? 'es' : 'en';
+    if (detected !== i18n.language) i18n.changeLanguage(detected);
   }, []);
 
   const getLayout = Component.getLayout || ((page) => <AppLayout>{page}</AppLayout>);

@@ -54,7 +54,6 @@ const AppLayout = ({ children }) => {
         { labelKey: 'nav.short.desks',    href: '/malaga/coworking' },
         { labelKey: 'nav.short.rooms',    href: '/malaga/salas-de-reunion' },
         { labelKey: 'nav.short.platform', href: '/platform' },
-        { labelKey: 'footer.links.pricing', soon: true },
       ],
     },
     {

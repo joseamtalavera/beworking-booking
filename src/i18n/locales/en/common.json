@@ -161,7 +161,7 @@
       "heading": "Three steps. No paperwork.",
       "steps": [
         { "number": "01", "title": "Pick", "description": "Coworking, meeting rooms or virtual office. Filter by city and availability." },
-        { "number": "02", "title": "Book", "description": "One-click payment. Instant confirmation and automatic legal invoice." },
+        { "number": "02", "title": "Book", "description": "Request your booking and receive your confirmation and payment instructions." },
         { "number": "03", "title": "Access", "description": "Access codes via the app. No paperwork, no waits, no commitment." }
       ]
     },
@@ -176,8 +176,8 @@
       "titleMain": "Your office, your room, your day —",
       "titleAccent": "ready in one click.",
       "subtitle": "BeWorking — the flexible offices platform. Coworking, meeting rooms and registered address in your city, no paperwork.",
-      "ctaPrimary": "Book now",
-      "ctaSecondary": "Browse virtual offices →",
+      "ctaPrimary": "Request information",
+      "ctaSecondary": "Book a tour →",
       "coworking": {
         "subtitle": "Flexible desks, no commitment. Dedicated from €90/month or day pass from €10/day."
       },
@@ -335,6 +335,7 @@
       "button": "Send message",
       "subjects": [
         "General enquiry",
+        "Tour",
         "Digital Office",
         "Spaces & booking",
         "Platform & account",

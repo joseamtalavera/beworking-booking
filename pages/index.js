@@ -11,6 +11,7 @@ import EvolvedHowItWorks from '@/components/home/EvolvedHowItWorks';
 import EvolvedSection from '@/components/home/EvolvedSection';
 import EvolvedSectionShowcase from '@/components/home/EvolvedSectionShowcase';
 import EvolvedFaqTeaser from '@/components/home/EvolvedFaqTeaser';
+import ContactDialog from '@/components/contact/ContactDialog';
 
 function FinalCtaStrip({ eyebrow, headline, subhead, cta }) {
   const { colors, radius, motion, typography, layout } = tokens;

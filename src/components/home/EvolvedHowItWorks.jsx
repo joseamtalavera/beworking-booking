@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
+import ContactDialog from '@/components/contact/ContactDialog';
 
-const { colors, motion, typography, layout } = tokens;
+const { colors, motion, typography, layout, radius } = tokens;
 
 const FALLBACK_STEPS = [
   {
@@ -15,7 +17,7 @@ const FALLBACK_STEPS = [
   {
     number: '02',
     title: 'Reserva',
-    description: 'Pago en un clic. Confirmación instantánea y factura legal automática.',
+    description: 'Solicita tu reserva y recibe la confirmación e instrucciones de pago.',
   },
   {
     number: '03',
@@ -30,6 +32,7 @@ const EvolvedHowItWorks = () => {
   const STEPS = Array.isArray(stepsRaw) ? stepsRaw : FALLBACK_STEPS;
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -130,7 +133,37 @@ const EvolvedHowItWorks = () => {
             </Box>
           ))}
         </Box>
+
+        {/* Inline CTA — moved here from the hero so the section is the
+            human-touch entry point after explaining the 3 steps. Opens
+            the contact dialog inline (no page navigation). */}
+        <Box sx={{ textAlign: 'center', mt: { xs: 6, md: 8 } }}>
+          <Button
+            onClick={() => setContactOpen(true)}
+            variant="contained"
+            size="large"
+            sx={{
+              bgcolor: colors.brand,
+              color: colors.bg,
+              px: 3.5,
+              py: 1.4,
+              borderRadius: `${radius.pill}px`,
+              fontWeight: 600,
+              textTransform: 'none',
+              boxShadow: 'none',
+              '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+            }}
+          >
+            {t('home.evolved.ctaPrimary', 'Solicitar información')}
+          </Button>
+        </Box>
       </Box>
+
+      <ContactDialog
+        open={contactOpen}
+        onClose={() => setContactOpen(false)}
+        defaultSubject="Consulta general"
+      />
     </Box>
   );
 };

@@ -161,7 +161,7 @@
       "heading": "Tres pasos. Sin papeleo.",
       "steps": [
         { "number": "01", "title": "Elige", "description": "Coworking, salas de reunión u oficina virtual. Filtra por ciudad y disponibilidad." },
-        { "number": "02", "title": "Reserva", "description": "Pago en un clic. Confirmación instantánea y factura legal automática." },
+        { "number": "02", "title": "Reserva", "description": "Solicita tu reserva y recibe la confirmación e instrucciones de pago." },
         { "number": "03", "title": "Accede", "description": "Códigos de acceso por la app. Sin papeleo, sin esperas, sin permanencia." }
       ]
     },
@@ -176,8 +176,8 @@
       "titleMain": "Tu oficina, tu sala, tu día —",
       "titleAccent": "listos en un clic.",
       "subtitle": "BeWorking — la plataforma de oficinas flexibles. Coworking, salas y dirección fiscal en tu ciudad, sin papeleo.",
-      "ctaPrimary": "Reservar ahora",
-      "ctaSecondary": "Ver oficinas virtuales →",
+      "ctaPrimary": "Solicitar información",
+      "ctaSecondary": "Reservar visita →",
       "coworking": {
         "subtitle": "Escritorios flexibles, sin permanencia. Fijo desde 90€/mes o día suelto desde 10€/día."
       },
@@ -348,6 +348,7 @@
       "button": "Enviar mensaje",
       "subjects": [
         "Consulta general",
+        "Visita",
         "Oficina Digital",
         "Espacios y reservas",
         "Plataforma y cuenta",
