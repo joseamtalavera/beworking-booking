@@ -73,7 +73,8 @@ export default function ContactCard({ defaultSubject = '', onSuccess, compact = 
         setStatus('success');
         setForm({ name: '', email: '', phone: '', subject: '', message: '' });
         setTurnstileReset((s) => s + 1);
-        if (typeof onSuccess === 'function') onSuccess();
+        // Don't auto-close — the success card stays until the user clicks
+        // Cerrar / Close, which is when onSuccess fires (see button below).
       } else {
         setStatus('error');
         setTurnstileReset((s) => s + 1);
