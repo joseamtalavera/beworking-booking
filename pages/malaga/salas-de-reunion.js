@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
-  Box, IconButton, Paper, Stack, TextField, Typography,
+  Box, IconButton, MenuItem, Paper, Stack, TextField, Typography,
 } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
@@ -28,9 +28,15 @@ export default function SalasDeReunion() {
   const [centros, setCentros] = useState([]);
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [city, setCity] = useState('malaga');
   const [checkIn, setCheckIn] = useState('');
-  const [timeFilter, setTimeFilter] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
   const [people, setPeople] = useState('');
+  // Legacy compat: keep timeFilter mirroring startTime so handleBookNow's
+  // existing query-string passing keeps working until /rooms/[roomId]
+  // accepts ?from= & ?to= explicitly.
+  const timeFilter = startTime;
 
   const heroRef = useRef(null);
   const [heroVisible, setHeroVisible] = useState(false);
@@ -243,30 +249,63 @@ export default function SalasDeReunion() {
               borderRadius: { xs: 3, sm: 999 },
             }}
           >
+            {/* WHERE — only Málaga today; designed to scale (Sevilla, Tallinn, …) */}
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                select
+                variant="standard"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                label={t('home.where', 'Dónde')}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={filterFieldSx}
+              >
+                <MenuItem value="malaga">Málaga</MenuItem>
+                <MenuItem value="sevilla" disabled>Sevilla — pronto</MenuItem>
+                <MenuItem value="tallinn" disabled>Tallinn — pronto</MenuItem>
+              </TextField>
+            </Box>
+            {/* DATE */}
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
               <TextField
                 variant="standard"
                 type="date"
                 value={checkIn}
                 onChange={(e) => setCheckIn(e.target.value)}
-                label={t('home.when', 'Cuándo')}
+                label={t('home.when', 'Fecha')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                 sx={filterFieldSx}
               />
             </Box>
+            {/* STARTING */}
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
               <TextField
                 variant="standard"
                 type="time"
-                value={timeFilter}
-                onChange={(e) => setTimeFilter(e.target.value)}
-                label={t('home.time', 'Hora')}
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                label={t('home.startTime', 'Inicio')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                 sx={filterFieldSx}
               />
             </Box>
+            {/* ENDING */}
+            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+              <TextField
+                variant="standard"
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                label={t('home.endTime', 'Fin')}
+                fullWidth
+                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                sx={filterFieldSx}
+              />
+            </Box>
+            {/* PEOPLE */}
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
               <TextField
                 variant="standard"
