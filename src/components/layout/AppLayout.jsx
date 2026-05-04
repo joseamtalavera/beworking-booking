@@ -44,12 +44,6 @@ const AppLayout = ({ children }) => {
     { href: '/malaga/salas-de-reunion', labelKey: 'nav.short.rooms',    fallback: 'Rooms' },
     { href: '/platform',                labelKey: 'nav.short.platform', fallback: 'App' },
     { labelKey: 'nav.services',         fallback: 'Services',           placeholder: true },
-    {
-      href: 'https://wa.me/34640369759?text=Hola,%20me%20interesa%20información%20sobre%20BeWorking',
-      labelKey: 'nav.help',
-      fallback: 'Ayuda',
-      external: true,
-    },
   ];
 
   const footerColumns = [
@@ -79,8 +73,6 @@ const AppLayout = ({ children }) => {
         { labelKey: 'footer.links.blog',     soon: true },
         { labelKey: 'footer.links.press',    soon: true },
         { labelKey: 'footer.links.contact',  href: '/contact' },
-        { label: 'info@be-working.com',      href: 'mailto:info@be-working.com' },
-        { label: '+34 951 905 967',          href: 'tel:+34951905967' },
       ],
     },
     {
@@ -254,83 +246,62 @@ const AppLayout = ({ children }) => {
             })}
           </Box>
 
-          {/* Right desktop: lang toggle + login + register */}
+          {/* Right desktop: lang toggle + phone + login (green) */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
             <LangToggle />
+            <Link
+              href="tel:+34951905967"
+              underline="none"
+              sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 0.5,
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                color: 'primary.main',
+                whiteSpace: 'nowrap',
+                '&:hover': { opacity: 0.7 },
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+              +34 951 905 967
+            </Link>
             <Button
               component={NextLink}
               href="/login"
+              variant="contained"
+              disableElevation
               sx={{
                 fontSize: '0.9rem',
-                fontWeight: 500,
-                color: '#1d1d1f',
+                fontWeight: 600,
                 textTransform: 'none',
-                px: 1.75,
-                py: 0.5,
-                border: '1px solid rgba(0,0,0,0.12)',
                 borderRadius: '999px',
-                '&:hover': { backgroundColor: 'rgba(0,0,0,0.04)', borderColor: 'rgba(0,0,0,0.2)' },
+                px: 2,
+                py: 0.5,
+                whiteSpace: 'nowrap',
+                bgcolor: '#009624',
+                '&:hover': { bgcolor: '#007a1e', boxShadow: 'none' },
               }}
             >
               {t('nav.signIn')}
             </Button>
-            {isOV ? (
-              <Link
-                href="tel:+34951905967"
-                underline="none"
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 0.5,
-                  fontSize: '0.9rem',
-                  fontWeight: 700,
-                  color: 'primary.main',
-                  '&:hover': { opacity: 0.7 },
-                }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                </svg>
-                +34 951 905 967
-              </Link>
-            ) : (
-              <Button
-                component="a"
-                href="/register"
-                variant="contained"
-                disableElevation
-                sx={{
-                  fontSize: '0.9rem',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  borderRadius: '999px',
-                  px: 2,
-                  py: 0.5,
-                  whiteSpace: 'nowrap',
-                  bgcolor: '#009624',
-                  '&:hover': { bgcolor: '#007a1e', boxShadow: 'none' },
-                }}
-              >
-                {t('nav.getStarted')}
-              </Button>
-            )}
           </Box>
 
-          {/* Right mobile: lang toggle + phone (OV) or hamburger */}
+          {/* Right mobile: lang toggle + phone + hamburger */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1 }}>
             <LangToggle />
-            {isOV && (
-              <Link
-                href="tel:+34951905967"
-                underline="none"
-                sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
-              >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
-                </svg>
-                <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>+34 951 905 967</Box>
-              </Link>
-            )}
+            <Link
+              href="tel:+34951905967"
+              underline="none"
+              sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#009624">
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+              </svg>
+              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>+34 951 905 967</Box>
+            </Link>
             <IconButton onClick={() => setMobileOpen(true)} sx={{ color: 'text.primary' }} aria-label="Open menu">
               <MenuIcon />
             </IconButton>
@@ -386,29 +357,25 @@ const AppLayout = ({ children }) => {
           })}
         </List>
         <Divider sx={{ my: 1.5, mx: 2, borderColor: 'rgba(0,0,0,0.06)' }} />
-        <List>
-          <ListItemButton
-            component={NextLink}
-            href="/login"
-            onClick={() => setMobileOpen(false)}
-            sx={{ borderRadius: '8px', mx: 1 }}
-          >
-            <ListItemText
-              primary={t('nav.signIn')}
-              primaryTypographyProps={{ fontSize: '0.9375rem', fontWeight: 400 }}
-            />
-          </ListItemButton>
-        </List>
         <Box sx={{ px: 2, pb: 2, mt: 1 }}>
           <Button
             variant="contained"
             fullWidth
-            component="a"
-            href="/register"
+            component={NextLink}
+            href="/login"
             onClick={() => setMobileOpen(false)}
-            sx={{ borderRadius: '999px', py: 1.25, fontSize: '0.875rem' }}
+            disableElevation
+            sx={{
+              borderRadius: '999px',
+              py: 1.25,
+              fontSize: '0.875rem',
+              fontWeight: 600,
+              textTransform: 'none',
+              bgcolor: '#009624',
+              '&:hover': { bgcolor: '#007a1e', boxShadow: 'none' },
+            }}
           >
-            {t('nav.getStarted')}
+            {t('nav.signIn')}
           </Button>
         </Box>
       </Drawer>
