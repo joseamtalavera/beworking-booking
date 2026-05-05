@@ -21,6 +21,17 @@ import { tokens } from '@/theme/tokens';
 const { colors, motion, typography, layout } = tokens;
 const location = getLocation('malaga');
 
+// Half-hour booking slots from 06:00 to 22:00. Same shape used on room detail
+// pages so users see a consistent time-picker across catalog and detail.
+const TIME_SLOTS = (() => {
+  const slots = [];
+  for (let h = 6; h <= 22; h += 1) {
+    slots.push(`${String(h).padStart(2, '0')}:00`);
+    if (h < 22) slots.push(`${String(h).padStart(2, '0')}:30`);
+  }
+  return slots;
+})();
+
 export default function SalasDeReunion() {
   const { t } = useTranslation();
   const { setRooms } = useCatalogRooms();
@@ -283,27 +294,39 @@ export default function SalasDeReunion() {
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
               <TextField
                 variant="standard"
-                type="time"
+                select
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 label={t('home.startTime', 'Inicio')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                 sx={filterFieldSx}
-              />
+              >
+                <MenuItem value=""><em>—</em></MenuItem>
+                {TIME_SLOTS.map((slot) => (
+                  <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                ))}
+              </TextField>
             </Box>
             {/* ENDING */}
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
               <TextField
                 variant="standard"
-                type="time"
+                select
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 label={t('home.endTime', 'Fin')}
                 fullWidth
                 slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                 sx={filterFieldSx}
-              />
+              >
+                <MenuItem value=""><em>—</em></MenuItem>
+                {TIME_SLOTS
+                  .filter((slot) => !startTime || slot > startTime)
+                  .map((slot) => (
+                    <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                  ))}
+              </TextField>
             </Box>
             {/* PEOPLE */}
             <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
