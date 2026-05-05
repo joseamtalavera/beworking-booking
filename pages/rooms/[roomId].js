@@ -437,26 +437,29 @@ const RoomDetailPage = () => {
                 >
                   {t('room.save')}
                 </Button>
-                <Button
-                  size="small"
-                  component="a"
-                  href={`https://wa.me/34640369759?text=${encodeURIComponent(`Hola, necesito ayuda con la sala ${room.name || ''}`)}`}
-                  target="_blank"
-                  rel="noopener"
-                  variant="outlined"
-                  sx={{
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    color: colors.brand,
-                    borderColor: colors.brand,
-                    bgcolor: colors.bg,
-                    borderRadius: `${radius.pill}px`,
-                    '&:hover': { bgcolor: colors.bgSoft, borderColor: colors.brand },
-                  }}
-                >
-                  {t('room.needHelp', '¿Necesitas ayuda?')}
-                </Button>
               </Stack>
+            </Stack>
+            <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
+              <Button
+                component="a"
+                href={`https://wa.me/34640369759?text=${encodeURIComponent(`Hola, necesito ayuda con la sala ${room.name || ''}`)}`}
+                target="_blank"
+                rel="noopener"
+                variant="outlined"
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  color: colors.brand,
+                  borderColor: colors.brand,
+                  bgcolor: colors.bg,
+                  borderRadius: `${radius.pill}px`,
+                  px: 2.5,
+                  py: 0.9,
+                  '&:hover': { bgcolor: colors.bgSoft, borderColor: colors.brand },
+                }}
+              >
+                {t('room.needHelp', '¿Necesitas ayuda?')}
+              </Button>
             </Stack>
 
             {/* Gallery grid */}

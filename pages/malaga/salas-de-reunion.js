@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
 import { tokens } from '@/theme/tokens';
 
-const { colors, motion, typography, layout } = tokens;
+const { colors, motion, typography, layout, radius } = tokens;
 const location = getLocation('malaga');
 
 // Half-hour booking slots from 06:00 to 22:00. Same shape used on room detail
@@ -279,21 +279,21 @@ export default function SalasDeReunion() {
             target="_blank"
             rel="noopener"
             sx={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 0.75,
+              display: 'inline-block',
               mt: 3,
-              fontSize: '0.95rem',
+              px: 2.5,
+              py: 0.9,
+              bgcolor: colors.brand,
+              color: colors.bg,
               fontWeight: 600,
-              color: colors.brand,
+              fontSize: '0.95rem',
+              borderRadius: `${radius.pill}px`,
               textDecoration: 'none',
-              cursor: 'pointer',
-              transition: `opacity ${motion.duration} ${motion.ease}`,
-              '&:hover': { opacity: 0.75 },
+              transition: `background-color ${motion.duration} ${motion.ease}`,
+              '&:hover': { bgcolor: colors.brandDeep },
             }}
           >
-            <Box component="span" aria-hidden sx={{ fontSize: '1.05rem' }}>💬</Box>
-            {t('home.evolved.salasPage.needHelp', '¿Necesitas ayuda? Escríbenos por WhatsApp →')}
+            {t('room.needHelp', '¿Necesitas ayuda?')}
           </Box>
         </Box>
       </Box>
