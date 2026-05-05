@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
 import { tokens } from '@/theme/tokens';
 
-const { colors, motion, typography, layout } = tokens;
+const { colors, motion, typography, layout, radius } = tokens;
 const location = getLocation('malaga');
 
 export default function Coworking() {
@@ -197,6 +197,29 @@ export default function Coworking() {
               'Escritorios flexibles, sin permanencia. Fijo desde 90€/mes o día suelto desde 10€/día.',
             )}
           </Typography>
+
+          <Box
+            component="a"
+            href="https://wa.me/34640369759?text=Hola,%20necesito%20ayuda%20con%20un%20escritorio%20de%20coworking"
+            target="_blank"
+            rel="noopener"
+            sx={{
+              display: 'inline-block',
+              mt: 3,
+              px: 2.5,
+              py: 0.9,
+              bgcolor: colors.brand,
+              color: colors.bg,
+              fontWeight: 600,
+              fontSize: '0.95rem',
+              borderRadius: `${radius.pill}px`,
+              textDecoration: 'none',
+              transition: `background-color ${motion.duration} ${motion.ease}`,
+              '&:hover': { bgcolor: colors.brandDeep },
+            }}
+          >
+            {t('room.needHelp', '¿Necesitas ayuda?')}
+          </Box>
         </Box>
       </Box>
 

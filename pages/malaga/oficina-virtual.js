@@ -180,7 +180,7 @@ export default function OficinaVirtualPage() {
   // final strip). Subject defaults vary per CTA so the team email knows the
   // origin (Oficina Digital vs Visita).
   const [contactOpen, setContactOpen] = useState(false);
-  const [contactSubject, setContactSubject] = useState('Oficina Digital');
+  const [contactSubject, setContactSubject] = useState('Oficina Virtual');
   const openContact = (subject) => {
     setContactSubject(subject);
     setContactOpen(true);
@@ -314,7 +314,7 @@ export default function OficinaVirtualPage() {
 
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ mt: 4 }}>
               <Button
-                onClick={() => openContact('Oficina Digital')}
+                onClick={() => openContact('Oficina Virtual')}
                 variant="contained"
                 size="large"
                 disableElevation
@@ -477,7 +477,7 @@ export default function OficinaVirtualPage() {
             sx={{ mt: { xs: 6, md: 8 } }}
           >
             <Button
-              onClick={() => openContact('Oficina Digital')}
+              onClick={() => openContact('Oficina Virtual')}
               variant="contained"
               size="large"
               disableElevation
@@ -886,7 +886,7 @@ export default function OficinaVirtualPage() {
           </Typography>
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} justifyContent="center" sx={{ mt: 4 }}>
             <Button
-              onClick={() => openContact('Oficina Digital')}
+              onClick={() => openContact('Oficina Virtual')}
               variant="contained"
               size="large"
               disableElevation

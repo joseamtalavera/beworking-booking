@@ -419,7 +419,7 @@ export default function Platform() {
       <ContactDialog
         open={contactOpen}
         onClose={() => setContactOpen(false)}
-        defaultSubject="Plataforma y cuenta"
+        defaultSubject="Demo"
       />
     </>
   );

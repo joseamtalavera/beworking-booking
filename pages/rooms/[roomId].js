@@ -617,7 +617,7 @@ const RoomDetailPage = () => {
                   layer 3 is where the user commits/edits. Layer 2 stays
                   purely informational. */}
               <Grid item xs={12} md={5}>
-                <Box sx={{ position: { md: 'sticky' }, top: { md: 88 }, display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ position: { md: 'sticky' }, top: { md: 88 }, textAlign: 'center' }}>
                   <Button
                     onClick={() => setBookingModalOpen(true)}
                     variant="contained"
@@ -632,6 +632,7 @@ const RoomDetailPage = () => {
                       borderRadius: `${radius.pill}px`,
                       px: 5,
                       py: 1.6,
+                      mx: 'auto',
                       '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
                     }}
                   >
