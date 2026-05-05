@@ -613,98 +613,31 @@ const RoomDetailPage = () => {
                 </Stack>
               </Grid>
 
-              {/* Booking summary + CTA */}
+              {/* CTA — layer 1 is the source of truth for date/time/people;
+                  layer 3 is where the user commits/edits. Layer 2 stays
+                  purely informational. */}
               <Grid item xs={12} md={5}>
-                {(() => {
-                  // Pull values from query (set by the catalog filter); default
-                  // anything missing so a direct landing still has a sensible
-                  // "Tu reserva" line. Defaults are also passed to /book so the
-                  // step-1 pill is pre-filled and the user can adjust there.
-                  const queryDate = router.query?.date || '';
-                  const queryStart = router.query?.startTime || router.query?.time || '';
-                  const queryEnd = router.query?.endTime || '';
-                  const queryPeople = router.query?.attendees || router.query?.people || '';
-                  const today = new Date().toISOString().split('T')[0];
-                  const addMinutes = (hhmm, mins) => {
-                    if (!hhmm) return '';
-                    const [h, m] = hhmm.split(':').map(Number);
-                    const total = h * 60 + m + mins;
-                    const newH = Math.floor(total / 60) % 24;
-                    const newM = total % 60;
-                    return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
-                  };
-                  const effDate = queryDate || today;
-                  const effStart = queryStart || '09:00';
-                  const effEnd = queryEnd || addMinutes(effStart, 60);
-                  const effPeople = queryPeople || '1';
-                  const usingDefaults = !queryDate || !queryStart;
-                  const localeDate = (() => {
-                    try {
-                      return new Date(`${effDate}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
-                    } catch { return effDate; }
-                  })();
-                  return (
-                    <Stack
-                      spacing={2.5}
-                      sx={{
-                        border: `1px solid ${colors.line}`,
-                        borderRadius: `${radius.lg}px`,
-                        p: 3,
-                        bgcolor: colors.bg,
-                        boxShadow: shadow.tile,
-                        position: { md: 'sticky' },
-                        top: { md: 88 },
-                      }}
-                    >
-                      <Stack spacing={0.5}>
-                        <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase' }}>
-                          {t('room.yourBooking', 'Tu reserva')}
-                        </Typography>
-                        <Box
-                          component="h3"
-                          sx={{
-                            ...typography.h3,
-                            color: colors.ink,
-                            fontFamily: typography.fontFamily,
-                            fontFeatureSettings: typography.fontFeatureSettings,
-                            m: 0,
-                            fontSize: { xs: '1.25rem', md: '1.4rem' },
-                          }}
-                        >
-                          {`${localeDate} · ${effStart}–${effEnd}`}
-                        </Box>
-                        <Typography sx={{ ...typography.body, color: colors.ink2, mt: 0.5 }}>
-                          {t('room.peopleCount', { count: Number(effPeople) || 1 })} · {`${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
-                        </Typography>
-                      </Stack>
-
-                      {usingDefaults ? (
-                        <Typography sx={{ fontSize: '0.8rem', color: colors.ink3, lineHeight: 1.5 }}>
-                          {t('room.adjustNextStep', 'Puedes ajustar fecha y hora en el siguiente paso.')}
-                        </Typography>
-                      ) : null}
-
-                      <Button
-                        onClick={() => setBookingModalOpen(true)}
-                        variant="contained"
-                        size="large"
-                        disableElevation
-                        sx={{
-                          textTransform: 'none',
-                          fontWeight: 600,
-                          fontSize: '0.95rem',
-                          bgcolor: colors.brand,
-                          color: colors.bg,
-                          borderRadius: `${radius.pill}px`,
-                          py: 1.4,
-                          '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
-                        }}
-                      >
-                        {t('room.startBooking', 'Empezar reserva →')}
-                      </Button>
-                    </Stack>
-                  );
-                })()}
+                <Box sx={{ position: { md: 'sticky' }, top: { md: 88 } }}>
+                  <Button
+                    onClick={() => setBookingModalOpen(true)}
+                    variant="contained"
+                    size="large"
+                    disableElevation
+                    fullWidth
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      fontSize: '1rem',
+                      bgcolor: colors.brand,
+                      color: colors.bg,
+                      borderRadius: `${radius.pill}px`,
+                      py: 1.6,
+                      '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+                    }}
+                  >
+                    {t('room.startBooking', 'Empezar reserva →')}
+                  </Button>
+                </Box>
               </Grid>
             </Grid>
 
