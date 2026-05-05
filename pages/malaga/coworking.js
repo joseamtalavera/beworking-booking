@@ -119,8 +119,10 @@ export default function Coworking() {
       capacity: matchingRoom?.capacity != null ? String(matchingRoom.capacity) : String(mesas.length),
       rating: 4.8,
       reviewCount: 0,
-      price: matchingRoom?.priceFrom != null ? `€ ${matchingRoom.priceFrom}` : '€ 90',
-      priceUnit: '/month',
+      // Catalog card shows the day-pass entry price; monthly fixed-desk
+      // pricing surfaces in the booking flow itself.
+      price: '€ 10',
+      priceUnit: '/day',
       location: matchingCentro?.city || 'Malaga',
       tags: matchingRoom?.tags || [],
       instantBooking: true,
