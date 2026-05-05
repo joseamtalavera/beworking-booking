@@ -393,73 +393,73 @@ const RoomDetailPage = () => {
                   {`${t('room.capacity', { count: room.capacity })} · ${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
                 </Typography>
               </Stack>
-              <Stack direction="row" spacing={0.5} alignItems="center" sx={{ flexShrink: 0 }}>
+              <Stack direction="column" spacing={1} alignItems="flex-end" sx={{ flexShrink: 0 }}>
+                <Stack direction="row" spacing={0.5} alignItems="center">
+                  <Button
+                    size="small"
+                    startIcon={<IosShareOutlinedIcon />}
+                    variant="text"
+                    onClick={() => {
+                      if (typeof navigator !== 'undefined' && navigator.share) {
+                        navigator.share({ title: room.name, url: window.location.href }).catch(() => {});
+                      } else if (typeof navigator !== 'undefined') {
+                        navigator.clipboard?.writeText(window.location.href).catch(() => {});
+                      }
+                    }}
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      color: colors.ink,
+                      '&:hover': { bgcolor: colors.bgSoft },
+                    }}
+                  >
+                    {t('room.share')}
+                  </Button>
+                  <Button
+                    size="small"
+                    startIcon={<DownloadOutlinedIcon />}
+                    variant="text"
+                    onClick={() => {
+                      if (featureImage && typeof document !== 'undefined') {
+                        const link = document.createElement('a');
+                        link.href = featureImage;
+                        link.download = `${room.name || 'room'}.jpg`;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                    sx={{
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      color: colors.ink,
+                      '&:hover': { bgcolor: colors.bgSoft },
+                    }}
+                  >
+                    {t('room.save')}
+                  </Button>
+                </Stack>
                 <Button
-                  size="small"
-                  startIcon={<IosShareOutlinedIcon />}
-                  variant="text"
-                  onClick={() => {
-                    if (typeof navigator !== 'undefined' && navigator.share) {
-                      navigator.share({ title: room.name, url: window.location.href }).catch(() => {});
-                    } else if (typeof navigator !== 'undefined') {
-                      navigator.clipboard?.writeText(window.location.href).catch(() => {});
-                    }
-                  }}
+                  component="a"
+                  href={`https://wa.me/34640369759?text=${encodeURIComponent(`Hola, necesito ayuda con la sala ${room.name || ''}`)}`}
+                  target="_blank"
+                  rel="noopener"
+                  variant="outlined"
                   sx={{
                     textTransform: 'none',
                     fontWeight: 600,
-                    color: colors.ink,
-                    '&:hover': { bgcolor: colors.bgSoft },
+                    color: colors.brand,
+                    borderColor: colors.brand,
+                    bgcolor: colors.bg,
+                    borderRadius: `${radius.pill}px`,
+                    px: 2.5,
+                    py: 0.9,
+                    '&:hover': { bgcolor: colors.bgSoft, borderColor: colors.brand },
                   }}
                 >
-                  {t('room.share')}
-                </Button>
-                <Button
-                  size="small"
-                  startIcon={<DownloadOutlinedIcon />}
-                  variant="text"
-                  onClick={() => {
-                    if (featureImage && typeof document !== 'undefined') {
-                      const link = document.createElement('a');
-                      link.href = featureImage;
-                      link.download = `${room.name || 'room'}.jpg`;
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    }
-                  }}
-                  sx={{
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    color: colors.ink,
-                    '&:hover': { bgcolor: colors.bgSoft },
-                  }}
-                >
-                  {t('room.save')}
+                  {t('room.needHelp', '¿Necesitas ayuda?')}
                 </Button>
               </Stack>
-            </Stack>
-            <Stack direction="row" justifyContent="flex-end" sx={{ mt: 1 }}>
-              <Button
-                component="a"
-                href={`https://wa.me/34640369759?text=${encodeURIComponent(`Hola, necesito ayuda con la sala ${room.name || ''}`)}`}
-                target="_blank"
-                rel="noopener"
-                variant="outlined"
-                sx={{
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  color: colors.brand,
-                  borderColor: colors.brand,
-                  bgcolor: colors.bg,
-                  borderRadius: `${radius.pill}px`,
-                  px: 2.5,
-                  py: 0.9,
-                  '&:hover': { bgcolor: colors.bgSoft, borderColor: colors.brand },
-                }}
-              >
-                {t('room.needHelp', '¿Necesitas ayuda?')}
-              </Button>
             </Stack>
 
             {/* Gallery grid */}
