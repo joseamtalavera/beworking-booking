@@ -539,7 +539,7 @@ const RoomDetailPage = () => {
             ) : null}
 
             <Grid container spacing={5}>
-              <Grid item xs={12} md={7}>
+              <Grid size={{ xs: 12, md: 7 }}>
                 <Stack spacing={5}>
                   <Box component="section">
                     <SectionHeading>{t('room.description')}</SectionHeading>
@@ -616,7 +616,7 @@ const RoomDetailPage = () => {
               {/* CTA — layer 1 is the source of truth for date/time/people;
                   layer 3 is where the user commits/edits. Layer 2 stays
                   purely informational. */}
-              <Grid item xs={12} md={5}>
+              <Grid size={{ xs: 12, md: 5 }}>
                 <Box sx={{ position: { md: 'sticky' }, top: { md: 88 }, textAlign: 'center' }}>
                   <Button
                     onClick={() => setBookingModalOpen(true)}
