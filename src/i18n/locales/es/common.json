@@ -74,7 +74,7 @@
     "whenPlaceholder": "Añadir fechas",
     "time": "Hora",
     "timePlaceholder": "Añadir hora",
-    "who": "Quién",
+    "who": "Personas",
     "whoPlaceholder": "Añadir invitados",
     "searchSpaces": "Buscar espacios",
     "showingSpaces": "Mostrando {{count}} espacios",
@@ -182,7 +182,8 @@
         "subtitle": "Escritorios flexibles, sin permanencia. Fijo desde 90€/mes o día suelto desde 10€/día."
       },
       "salasPage": {
-        "subtitle": "Salas equipadas para reuniones, formación o eventos. Reserva por horas, desde 5€/h."
+        "subtitle": "Salas equipadas para reuniones, formación o eventos. Reserva por horas, desde 5€/h.",
+        "needHelp": "¿Necesitas ayuda? Escríbenos por WhatsApp →"
       },
       "hero": {
         "imgSpaces": "Catálogo de espacios",
@@ -259,12 +260,12 @@
     }
   },
   "card": {
-    "instantBooking": "Confirmación rápida",
+    "instantBooking": "Reserva inmediata",
     "instantBookingDesk": "Reserva instantánea",
     "meetingRoom": "Sala de reuniones",
     "desk": "Escritorio",
     "from": "Desde",
-    "bookNow": "Solicitar booking",
+    "bookNow": "Reservar",
     "bookNowDesk": "Reservar",
     "available": "disponibles"
   },
@@ -273,6 +274,7 @@
     "from": "desde",
     "share": "Compartir",
     "save": "Guardar",
+    "needHelp": "¿Necesitas ayuda?",
     "photos": "{{count}} fotos",
     "description": "Descripción",
     "amenities": "Servicios incluidos",

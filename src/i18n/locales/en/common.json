@@ -74,7 +74,7 @@
     "whenPlaceholder": "Add dates",
     "time": "Time",
     "timePlaceholder": "Add time",
-    "who": "Who",
+    "who": "People",
     "whoPlaceholder": "Add guests",
     "searchSpaces": "Search spaces",
     "showingSpaces": "Showing {{count}} spaces",
@@ -182,7 +182,8 @@
         "subtitle": "Flexible desks, no commitment. Dedicated from €90/month or day pass from €10/day."
       },
       "salasPage": {
-        "subtitle": "Equipped rooms for meetings, training or events. Book by the hour, from €5/h."
+        "subtitle": "Equipped rooms for meetings, training or events. Book by the hour, from €5/h.",
+        "needHelp": "Need help? Message us on WhatsApp →"
       },
       "hero": {
         "imgSpaces": "Spaces catalog",
@@ -259,12 +260,12 @@
     }
   },
   "card": {
-    "instantBooking": "Quick confirmation",
+    "instantBooking": "Instant booking",
     "instantBookingDesk": "Instant booking",
     "meetingRoom": "Meeting room",
     "desk": "Desk",
     "from": "From",
-    "bookNow": "Request booking",
+    "bookNow": "Book now",
     "bookNowDesk": "Book now",
     "available": "available"
   },
@@ -273,6 +274,7 @@
     "from": "from",
     "share": "Share",
     "save": "Save",
+    "needHelp": "Need help?",
     "photos": "{{count}} photos",
     "description": "Description",
     "amenities": "Included services",
