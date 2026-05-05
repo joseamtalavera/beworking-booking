@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
-  Autocomplete, Box, Divider, IconButton, Paper, Stack, TextField, Typography,
+  Autocomplete, Box, Divider, IconButton, MenuItem, Paper, Stack, TextField, Typography,
 } from '@mui/material';
 import MeetingRoomRoundedIcon from '@mui/icons-material/MeetingRoomRounded';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
@@ -24,6 +24,17 @@ import { tokens } from '@/theme/tokens';
 
 const { colors, radius, motion, typography, layout } = tokens;
 
+// Half-hour booking slots from 06:00 to 22:00. Same set used in
+// /malaga/salas-de-reunion so the catalog feels consistent.
+const TIME_SLOTS = (() => {
+  const slots = [];
+  for (let h = 6; h <= 22; h += 1) {
+    slots.push(`${String(h).padStart(2, '0')}:00`);
+    if (h < 22) slots.push(`${String(h).padStart(2, '0')}:30`);
+  }
+  return slots;
+})();
+
 const HomePage = () => {
   const { t, i18n } = useTranslation();
   const isEs = i18n.language === 'es';
@@ -33,8 +44,12 @@ const HomePage = () => {
   const [cityFilter, setCityFilter] = useState('');
   const [cityOptions, setCityOptions] = useState([]);
   const [checkIn, setCheckIn] = useState('');
-  const [timeFilter, setTimeFilter] = useState('');
-  const [people, setPeople] = useState('');
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [people, setPeople] = useState('1');
+  // Legacy compat: keep timeFilter mirroring startTime so handleBookNow's
+  // existing query-string still passes /rooms/[roomId] a `time` value.
+  const timeFilter = startTime;
   const [centros, setCentros] = useState([]);
   const [centrosLoading, setCentrosLoading] = useState(false);
   const [productos, setProductos] = useState([]);
@@ -539,19 +554,46 @@ const HomePage = () => {
                 <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
                 <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
 
-                {/* Time */}
+                {/* Inicio */}
                 <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
                   <TextField
                     variant="standard"
-                    type="time"
-                    value={timeFilter}
-                    onChange={(e) => setTimeFilter(e.target.value)}
-                    label={t('home.time')}
-                    placeholder={t('home.timePlaceholder')}
+                    select
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    label={t('home.startTime', 'Inicio')}
                     fullWidth
                     slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
                     sx={filterFieldSx}
-                  />
+                  >
+                    <MenuItem value=""><em>—</em></MenuItem>
+                    {TIME_SLOTS.map((slot) => (
+                      <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
+                <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
+                <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
+
+                {/* Fin */}
+                <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
+                  <TextField
+                    variant="standard"
+                    select
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    label={t('home.endTime', 'Fin')}
+                    fullWidth
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                    sx={filterFieldSx}
+                  >
+                    <MenuItem value=""><em>—</em></MenuItem>
+                    {TIME_SLOTS
+                      .filter((slot) => !startTime || slot > startTime)
+                      .map((slot) => (
+                        <MenuItem key={slot} value={slot}>{slot}</MenuItem>
+                      ))}
+                  </TextField>
                 </Box>
                 <Divider orientation="vertical" flexItem sx={{ display: { xs: 'none', sm: 'block' }, borderColor: colors.line }} />
                 <Divider sx={{ display: { xs: 'block', sm: 'none' }, width: '90%', mx: 'auto', borderColor: colors.line }} />
