@@ -12,7 +12,7 @@ import {
   buildRoomFromProducto,
   isCanonicalDeskProducto,
 } from '@/store/useCatalogRooms';
-import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
+import { fetchBookingCentros, fetchBookingProductos, fetchPublicAvailability } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
@@ -43,7 +43,8 @@ export default function SalasDeReunion() {
   const [checkIn, setCheckIn] = useState('');
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
-  const [people, setPeople] = useState('');
+  const [people, setPeople] = useState('1');
+  const [bloqueos, setBloqueos] = useState([]);
   // Legacy compat: keep timeFilter mirroring startTime so handleBookNow's
   // existing query-string passing keeps working until /rooms/[roomId]
   // accepts ?from= & ?to= explicitly.
@@ -103,6 +104,22 @@ export default function SalasDeReunion() {
     return () => { active = false; };
   }, [setRooms]);
 
+  // Fetch availability (bloqueos for the date) so we can hide rooms that have
+  // an overlapping booking in the requested [startTime, endTime] window.
+  useEffect(() => {
+    if (!checkIn) { setBloqueos([]); return; }
+    let active = true;
+    (async () => {
+      try {
+        const data = await fetchPublicAvailability({ date: checkIn });
+        if (active) setBloqueos(Array.isArray(data) ? data : []);
+      } catch {
+        if (active) setBloqueos([]);
+      }
+    })();
+    return () => { active = false; };
+  }, [checkIn]);
+
   const filteredSpaces = useMemo(() => {
     const aulas = productos.filter((p) => {
       const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
@@ -152,8 +169,28 @@ export default function SalasDeReunion() {
       }
     }
 
+    // Availability filter: when date + start + end all set, drop rooms that
+    // have a bloqueo overlapping the requested window.
+    if (checkIn && startTime && endTime) {
+      const reqStart = new Date(`${checkIn}T${startTime}:00`).getTime();
+      const reqEnd = new Date(`${checkIn}T${endTime}:00`).getTime();
+      if (!Number.isNaN(reqStart) && !Number.isNaN(reqEnd) && reqEnd > reqStart) {
+        const conflictingRoomNames = new Set();
+        bloqueos.forEach((b) => {
+          const productName = (b?.producto?.nombre || '').trim();
+          if (!productName) return;
+          const bStart = new Date(b.fechaIni).getTime();
+          const bEnd = new Date(b.fechaFin).getTime();
+          if (Number.isNaN(bStart) || Number.isNaN(bEnd)) return;
+          const overlaps = bStart < reqEnd && bEnd > reqStart;
+          if (overlaps) conflictingRoomNames.add(productName);
+        });
+        spaces = spaces.filter((s) => !conflictingRoomNames.has(s.name));
+      }
+    }
+
     return spaces;
-  }, [productos, centros, people]);
+  }, [productos, centros, people, checkIn, startTime, endTime, bloqueos]);
 
   const handleBookNow = useCallback(
     (space) => {
@@ -235,6 +272,29 @@ export default function SalasDeReunion() {
               'Salas equipadas para reuniones, formación o eventos. Reserva por horas, desde 5€/h.',
             )}
           </Typography>
+
+          <Box
+            component="a"
+            href="https://wa.me/34640369759?text=Hola,%20necesito%20ayuda%20con%20una%20sala%20de%20reuni%C3%B3n"
+            target="_blank"
+            rel="noopener"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 0.75,
+              mt: 3,
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              color: colors.brand,
+              textDecoration: 'none',
+              cursor: 'pointer',
+              transition: `opacity ${motion.duration} ${motion.ease}`,
+              '&:hover': { opacity: 0.75 },
+            }}
+          >
+            <Box component="span" aria-hidden sx={{ fontSize: '1.05rem' }}>💬</Box>
+            {t('home.evolved.salasPage.needHelp', '¿Necesitas ayuda? Escríbenos por WhatsApp →')}
+          </Box>
         </Box>
       </Box>
 
