@@ -283,7 +283,11 @@
     "availability": "Disponibilidad",
     "availabilityDesc": "Consulta los bloques reservados y solicita tu horario ideal. La disponibilidad se sincroniza con el panel de Agenda del dashboard.",
     "selectDate": "Seleccionar fecha",
-    "startBooking": "Comenzar reserva",
+    "startBooking": "Empezar reserva →",
+    "yourBooking": "Tu reserva",
+    "peopleCount": "{{count}} persona",
+    "peopleCount_other": "{{count}} personas",
+    "adjustNextStep": "Puedes ajustar fecha y hora en el siguiente paso.",
     "location": "Ubicación"
   },
   "calendar": {

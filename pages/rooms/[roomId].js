@@ -384,11 +384,24 @@ const RoomDetailPage = () => {
                 >
                   {room.name}
                 </Box>
-                {room.subtitle && (
-                  <Typography sx={{ ...typography.bodyLg, color: colors.ink2, fontWeight: 500, mt: 0.5 }}>
-                    {room.subtitle}
-                  </Typography>
-                )}
+                {(() => {
+                  if (!room.subtitle) return null;
+                  // Strip leading "<room-name> – " from the subtitle so it
+                  // doesn't repeat the H1 above. Handles both en/em-dash and
+                  // hyphen, with surrounding whitespace.
+                  const cleanedSubtitle = room.name
+                    ? room.subtitle.replace(
+                        new RegExp(`^${room.name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\s*[–—-]\\s*`, 'i'),
+                        '',
+                      ).trim()
+                    : room.subtitle;
+                  if (!cleanedSubtitle) return null;
+                  return (
+                    <Typography sx={{ ...typography.bodyLg, color: colors.ink2, fontWeight: 500, mt: 0.5 }}>
+                      {cleanedSubtitle}
+                    </Typography>
+                  );
+                })()}
                 <Typography sx={{ ...typography.body, color: colors.ink2, mt: 0.5 }}>
                   {`${t('room.capacity', { count: room.capacity })} · ${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
                 </Typography>
@@ -600,105 +613,98 @@ const RoomDetailPage = () => {
                 </Stack>
               </Grid>
 
-              {/* Calendar + CTA */}
+              {/* Booking summary + CTA */}
               <Grid item xs={12} md={5}>
-                <Stack
-                  spacing={3}
-                  sx={{
-                    border: `1px solid ${colors.line}`,
-                    borderRadius: `${radius.lg}px`,
-                    p: 3,
-                    bgcolor: colors.bg,
-                    boxShadow: shadow.tile,
-                    position: { md: 'sticky' },
-                    top: { md: 88 },
-                  }}
-                >
-                  <Box
-                    component="h3"
-                    sx={{
-                      ...typography.h3,
-                      color: colors.ink,
-                      fontFamily: typography.fontFamily,
-                      fontFeatureSettings: typography.fontFeatureSettings,
-                      m: 0,
-                      fontSize: { xs: '1.25rem', md: '1.4rem' },
-                    }}
-                  >
-                    {t('room.availability')}
-                  </Box>
-                  <Paper
-                    elevation={0}
-                    sx={{
-                      border: `1px solid ${colors.line}`,
-                      bgcolor: colors.bg,
-                      display: 'flex',
-                      alignItems: 'center',
-                      overflow: 'hidden',
-                      flexDirection: { xs: 'column', sm: 'row' },
-                      borderRadius: { xs: 3, sm: 999 },
-                    }}
-                  >
-                    <Box sx={{ flex: 1, px: 2.5, py: { xs: 1.25, sm: 1.5 }, minWidth: 0, width: { xs: '100%', sm: 'auto' } }}>
-                      <TextField
-                        variant="standard"
-                        type="date"
-                        label={t('room.selectDate')}
-                        value={selectedDate}
-                        onChange={handleDateChange}
-                        fullWidth
-                        slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
+                {(() => {
+                  // Pull values from query (set by the catalog filter); default
+                  // anything missing so a direct landing still has a sensible
+                  // "Tu reserva" line. Defaults are also passed to /book so the
+                  // step-1 pill is pre-filled and the user can adjust there.
+                  const queryDate = router.query?.date || '';
+                  const queryStart = router.query?.startTime || router.query?.time || '';
+                  const queryEnd = router.query?.endTime || '';
+                  const queryPeople = router.query?.attendees || router.query?.people || '';
+                  const today = new Date().toISOString().split('T')[0];
+                  const addMinutes = (hhmm, mins) => {
+                    if (!hhmm) return '';
+                    const [h, m] = hhmm.split(':').map(Number);
+                    const total = h * 60 + m + mins;
+                    const newH = Math.floor(total / 60) % 24;
+                    const newM = total % 60;
+                    return `${String(newH).padStart(2, '0')}:${String(newM).padStart(2, '0')}`;
+                  };
+                  const effDate = queryDate || today;
+                  const effStart = queryStart || '09:00';
+                  const effEnd = queryEnd || addMinutes(effStart, 60);
+                  const effPeople = queryPeople || '1';
+                  const usingDefaults = !queryDate || !queryStart;
+                  const localeDate = (() => {
+                    try {
+                      return new Date(`${effDate}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
+                    } catch { return effDate; }
+                  })();
+                  return (
+                    <Stack
+                      spacing={2.5}
+                      sx={{
+                        border: `1px solid ${colors.line}`,
+                        borderRadius: `${radius.lg}px`,
+                        p: 3,
+                        bgcolor: colors.bg,
+                        boxShadow: shadow.tile,
+                        position: { md: 'sticky' },
+                        top: { md: 88 },
+                      }}
+                    >
+                      <Stack spacing={0.5}>
+                        <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase' }}>
+                          {t('room.yourBooking', 'Tu reserva')}
+                        </Typography>
+                        <Box
+                          component="h3"
+                          sx={{
+                            ...typography.h3,
+                            color: colors.ink,
+                            fontFamily: typography.fontFamily,
+                            fontFeatureSettings: typography.fontFeatureSettings,
+                            m: 0,
+                            fontSize: { xs: '1.25rem', md: '1.4rem' },
+                          }}
+                        >
+                          {`${localeDate} · ${effStart}–${effEnd}`}
+                        </Box>
+                        <Typography sx={{ ...typography.body, color: colors.ink2, mt: 0.5 }}>
+                          {t('room.peopleCount', { count: Number(effPeople) || 1 })} · {`${t('room.from')} ${room.priceFrom ?? room.price ?? '—'} ${room.priceUnit ?? room.currency ?? ''}`}
+                        </Typography>
+                      </Stack>
+
+                      {usingDefaults ? (
+                        <Typography sx={{ fontSize: '0.8rem', color: colors.ink3, lineHeight: 1.5 }}>
+                          {t('room.adjustNextStep', 'Puedes ajustar fecha y hora en el siguiente paso.')}
+                        </Typography>
+                      ) : null}
+
+                      <Button
+                        onClick={() => setBookingModalOpen(true)}
+                        variant="contained"
+                        size="large"
+                        disableElevation
                         sx={{
-                          '& .MuiInputLabel-root': { fontSize: '0.7rem', fontWeight: 700, color: colors.ink, textTransform: 'uppercase', letterSpacing: '0.06em' },
-                          '& .MuiInput-input': { fontSize: '0.875rem', color: colors.ink, py: 0.25 },
+                          textTransform: 'none',
+                          fontWeight: 600,
+                          fontSize: '0.95rem',
+                          bgcolor: colors.brand,
+                          color: colors.bg,
+                          borderRadius: `${radius.pill}px`,
+                          py: 1.4,
+                          '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
                         }}
-                      />
-                    </Box>
-                    <Divider orientation="vertical" flexItem sx={{ borderColor: colors.line, display: { xs: 'none', sm: 'block' } }} />
-                    <Box sx={{ display: 'flex', justifyContent: 'center', px: 2.5, py: { xs: 1.25, sm: 1.5 } }}>
-                      <CalendarLegend />
-                    </Box>
-                  </Paper>
-                  {availError ? (
-                    <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>
-                      {availErrorMsg?.message || t('booking.fetchError')}
-                    </Alert>
-                  ) : null}
-                  {availLoading ? (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                      <CircularProgress size={28} sx={{ color: colors.brand }} />
-                    </Box>
-                  ) : (
-                    <RoomCalendarGrid
-                      room={room}
-                      dateLabel={calendarLabel}
-                      bloqueos={calendarEntries}
-                      isDesk={isDesk}
-                      deskSlotInfo={deskSlotInfo}
-                      deskCount={DESK_COUNT}
-                    />
-                  )}
-                  <Button
-                    onClick={() => setBookingModalOpen(true)}
-                    variant="contained"
-                    size="large"
-                    disableElevation
-                    sx={{
-                      alignSelf: 'center',
-                      textTransform: 'none',
-                      fontWeight: 600,
-                      fontSize: '0.95rem',
-                      bgcolor: colors.brand,
-                      color: colors.bg,
-                      borderRadius: `${radius.pill}px`,
-                      px: 5,
-                      py: 1.4,
-                      '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
-                    }}
-                  >
-                    {t('room.startBooking')}
-                  </Button>
-                </Stack>
+                      >
+                        {t('room.startBooking', 'Empezar reserva →')}
+                      </Button>
+                    </Stack>
+                  );
+                })()}
               </Grid>
             </Grid>
 
@@ -838,10 +844,15 @@ const RoomDetailPage = () => {
         onClose={() => setBookingModalOpen(false)}
         onContinue={() => {
           setBookingModalOpen(false);
+          // Forward every booking field we have so /book pre-fills the pill
+          // and the user only adjusts what they want to change.
           const query = {};
-          if (selectedDate) query.date = selectedDate;
-          else if (router.query.date) query.date = router.query.date;
-          if (router.query.time) query.time = router.query.time;
+          if (router.query.date) query.date = router.query.date;
+          if (router.query.startTime) query.startTime = router.query.startTime;
+          else if (router.query.time) query.startTime = router.query.time;
+          if (router.query.endTime) query.endTime = router.query.endTime;
+          if (router.query.attendees) query.attendees = router.query.attendees;
+          else if (router.query.people) query.attendees = router.query.people;
           router.push({ pathname: `/rooms/${room.slug ?? room.id}/book`, query });
         }}
       />

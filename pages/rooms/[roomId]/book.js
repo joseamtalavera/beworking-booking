@@ -25,7 +25,7 @@ import { tokens } from '@/theme/tokens';
 
 const { colors, radius, typography } = tokens;
 
-export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 'page' }) => {
+export const BookingFlowContent = ({ roomId, initialDate, initialTime, initialEndTime, initialAttendees, layout = 'page' }) => {
   const { t } = useTranslation();
   const { rooms, setRooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
@@ -40,17 +40,19 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
   useEffect(() => {
     resetFlow();
     resetVisitor();
-    if (initialDate || initialTime) {
+    if (initialDate || initialTime || initialEndTime || initialAttendees) {
       const patch = {};
       if (initialDate) { patch.date = initialDate; patch.dateTo = initialDate; }
       if (initialTime) { patch.startTime = initialTime; }
+      if (initialEndTime) { patch.endTime = initialEndTime; }
+      if (initialAttendees) { patch.attendees = initialAttendees; }
       setSchedule(patch);
     }
     return () => {
       resetFlow();
       resetVisitor();
     };
-  }, [resetFlow, resetVisitor, initialDate, initialTime, setSchedule]);
+  }, [resetFlow, resetVisitor, initialDate, initialTime, initialEndTime, initialAttendees, setSchedule]);
 
   // Populate store on direct entry
   useEffect(() => {
@@ -194,7 +196,9 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, layout = 
 const BookingFlowPage = () => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { roomId, date, time } = router.query;
+  const { roomId, date, time, startTime, endTime, attendees, people } = router.query;
+  const effectiveStart = startTime || time;
+  const effectiveAttendees = attendees || people;
   const { rooms } = useCatalogRooms();
   const room = useMemo(() => rooms.find((entry) => entry.slug === roomId || entry.id === roomId), [rooms, roomId]);
 
@@ -223,7 +227,14 @@ const BookingFlowPage = () => {
           >
             {t('common.back')}
           </Button>
-          <BookingFlowContent roomId={roomId} initialDate={date} initialTime={time} layout="page" />
+          <BookingFlowContent
+            roomId={roomId}
+            initialDate={date}
+            initialTime={effectiveStart}
+            initialEndTime={endTime}
+            initialAttendees={effectiveAttendees}
+            layout="page"
+          />
         </Box>
       </Box>
     </>

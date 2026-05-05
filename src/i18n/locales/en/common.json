@@ -283,7 +283,11 @@
     "availability": "Availability",
     "availabilityDesc": "Check the reserved blocks and request your ideal schedule. Availability syncs with the Agenda panel in the dashboard.",
     "selectDate": "Select date",
-    "startBooking": "Start booking",
+    "startBooking": "Start booking →",
+    "yourBooking": "Your booking",
+    "peopleCount": "{{count}} person",
+    "peopleCount_other": "{{count}} people",
+    "adjustNextStep": "You can adjust the date and time in the next step.",
     "location": "Location"
   },
   "calendar": {

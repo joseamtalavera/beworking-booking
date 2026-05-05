@@ -198,10 +198,12 @@ export default function SalasDeReunion() {
       if (!slug) return;
       const query = {};
       if (checkIn) query.date = checkIn;
-      if (timeFilter) query.time = timeFilter;
+      if (startTime) query.startTime = startTime;
+      if (endTime) query.endTime = endTime;
+      if (people) query.attendees = people;
       router.push({ pathname: `/rooms/${slug}`, query });
     },
-    [router, checkIn, timeFilter],
+    [router, checkIn, startTime, endTime, people],
   );
 
   const filterFieldSx = {

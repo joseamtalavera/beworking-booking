@@ -383,39 +383,15 @@ const SelectBookingDetails = ({ room, onContinue }) => {
             </>
           )}
 
-          <Divider sx={{ borderColor: colors.line }} />
-
+          {/* Availability calendar removed — the time-slot dropdowns above
+              already mark booked slots, so the user can't pick conflicts.
+              The catalog filter at /malaga/salas-de-reunion guarantees the
+              room is free for the selected window when they reach this step. */}
           {isError ? (
             <Alert severity="error" sx={{ borderRadius: `${radius.md}px` }}>
               {error?.message || t('booking.fetchError')}
             </Alert>
           ) : null}
-
-          {isLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-              <CircularProgress size={28} sx={{ color: colors.brand }} />
-            </Box>
-          ) : (
-            <Stack spacing={1.5}>
-              <CalendarLegend />
-              <RoomCalendarGrid
-                room={room}
-                dateLabel={
-                  schedule.date
-                    ? new Date(schedule.date).toLocaleDateString(undefined, {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })
-                    : ''
-                }
-                bloqueos={roomBloqueos}
-                selectedSlotKey={selectedSlotKey}
-                onSelectSlot={handleSlotSelect}
-              />
-            </Stack>
-          )}
         </Stack>
       </Paper>
 
