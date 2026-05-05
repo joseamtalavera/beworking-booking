@@ -539,7 +539,7 @@ const RoomDetailPage = () => {
             ) : null}
 
             <Grid container spacing={5}>
-              <Grid size={{ xs: 12, md: 7 }}>
+              <Grid size={{ xs: 12 }}>
                 <Stack spacing={5}>
                   <Box component="section">
                     <SectionHeading>{t('room.description')}</SectionHeading>
@@ -613,34 +613,32 @@ const RoomDetailPage = () => {
                 </Stack>
               </Grid>
 
-              {/* CTA — layer 1 is the source of truth for date/time/people;
-                  layer 3 is where the user commits/edits. Layer 2 stays
-                  purely informational. */}
-              <Grid size={{ xs: 12, md: 5 }}>
-                <Box sx={{ position: { md: 'sticky' }, top: { md: 88 }, textAlign: 'center' }}>
-                  <Button
-                    onClick={() => setBookingModalOpen(true)}
-                    variant="contained"
-                    size="large"
-                    disableElevation
-                    sx={{
-                      textTransform: 'none',
-                      fontWeight: 600,
-                      fontSize: '1rem',
-                      bgcolor: colors.brand,
-                      color: colors.bg,
-                      borderRadius: `${radius.pill}px`,
-                      px: 5,
-                      py: 1.6,
-                      mx: 'auto',
-                      '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
-                    }}
-                  >
-                    {t('room.startBooking', 'Empezar reserva →')}
-                  </Button>
-                </Box>
-              </Grid>
             </Grid>
+
+            {/* CTA — placed between content and map so it catches users who've
+                read the room details and are ready to commit. Layer 1 is the
+                source of truth for date/time, layer 3 is where they commit. */}
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: { xs: 2, md: 3 } }}>
+              <Button
+                onClick={() => setBookingModalOpen(true)}
+                variant="contained"
+                size="large"
+                disableElevation
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: 600,
+                  fontSize: '1rem',
+                  bgcolor: colors.brand,
+                  color: colors.bg,
+                  borderRadius: `${radius.pill}px`,
+                  px: 5,
+                  py: 1.6,
+                  '&:hover': { bgcolor: colors.brandDeep, boxShadow: 'none' },
+                }}
+              >
+                {t('room.startBooking', 'Empezar reserva →')}
+              </Button>
+            </Box>
 
             {/* Map */}
             <Box component="section">
