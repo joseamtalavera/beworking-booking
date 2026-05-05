@@ -268,9 +268,9 @@ const AppLayout = ({ children }) => {
                 py: 0.5,
                 whiteSpace: 'nowrap',
                 color: '#1d1d1f',
-                borderColor: '#1d1d1f',
+                borderColor: 'rgba(0,0,0,0.18)',
                 gap: 0.6,
-                '&:hover': { borderColor: '#1d1d1f', backgroundColor: 'rgba(0,0,0,0.04)' },
+                '&:hover': { borderColor: 'rgba(0,0,0,0.32)', backgroundColor: 'rgba(0,0,0,0.04)' },
               }}
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="#1d1d1f" style={{ flexShrink: 0 }}>
