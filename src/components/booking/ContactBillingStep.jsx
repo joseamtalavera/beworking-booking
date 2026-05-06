@@ -3,14 +3,17 @@
 import { useMemo, useState } from 'react';
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   Chip,
   Divider,
   Paper,
   Stack,
+  TextField as MuiTextField,
   Typography,
 } from '@mui/material';
+import { TAX_ID_TYPES, taxIdTypeOption } from '@/data/taxIdTypes';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
@@ -79,6 +82,7 @@ const initialVisitorForm = {
   email: '',
   phone: '',
   company: '',
+  taxIdType: 'es_nif',
   taxId: '',
   addressLine1: '',
   addressLine2: '',
@@ -361,6 +365,37 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
             <Paper elevation={0} sx={pillBarSx}>
               <Box sx={pillCellSx}>
                 <TextField variant="standard" label={t('contact.company')} placeholder={t('contact.companyPlaceholder')} value={formState.company} onChange={handleChange('company')} fullWidth slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }} sx={fieldSx(formState.company)} />
+              </Box>
+              <VerticalDivider />
+              <Box sx={pillCellSx}>
+                <Autocomplete
+                  fullWidth
+                  options={TAX_ID_TYPES}
+                  value={taxIdTypeOption(formState.taxIdType) || null}
+                  onChange={(_e, opt) => setFormState((prev) => ({ ...prev, taxIdType: opt ? opt.value : '' }))}
+                  getOptionLabel={(o) => `${o.country} ${o.label.replace(/^[A-Z]{2,3}\s*/, '')}`}
+                  isOptionEqualToValue={(o, v) => o.value === v.value}
+                  filterOptions={(opts, state) => {
+                    const q = state.inputValue.trim().toLowerCase();
+                    if (!q) return opts;
+                    return opts.filter((o) =>
+                      o.value.toLowerCase().includes(q)
+                      || o.country.toLowerCase().includes(q)
+                      || o.label.toLowerCase().includes(q)
+                      || o.name.toLowerCase().includes(q)
+                    );
+                  }}
+                  renderInput={(params) => (
+                    <MuiTextField
+                      {...params}
+                      variant="standard"
+                      label={t('contact.taxIdType', 'Categoría fiscal')}
+                      placeholder={t('contact.taxIdTypePlaceholder', 'NIF, NIE, VAT…')}
+                      slotProps={{ input: { ...params.InputProps, disableUnderline: true }, inputLabel: { shrink: true } }}
+                      sx={fieldSx(formState.taxIdType)}
+                    />
+                  )}
+                />
               </Box>
               <VerticalDivider />
               <Box sx={pillCellSx}>
