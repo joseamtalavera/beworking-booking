@@ -937,24 +937,45 @@ export default function OficinaVirtualPage() {
         maxWidth={false}
         PaperProps={{
           sx: {
+            position: 'relative',
             borderRadius: `${radius.lg}px`,
-            overflow: 'hidden',
-            // Lock dimensions so the modal doesn't shift between wizard
-            // steps (which have different field counts and heights).
+            // Lock outer dimensions so the modal doesn't shift between
+            // wizard steps. Inner content scrolls when it exceeds Paper.
             width: { xs: '100%', sm: 560 },
             maxWidth: 640,
-            minHeight: { xs: '90vh', sm: 640 },
+            maxHeight: { xs: '95vh', sm: '90vh' },
+            display: 'flex',
+            flexDirection: 'column',
           },
         }}
       >
-        <Box sx={{ position: 'relative' }}>
-          <IconButton
-            aria-label="close"
-            onClick={() => setSignUpOpen(false)}
-            sx={{ position: 'absolute', top: 8, right: 8, zIndex: 2, color: colors.ink2 }}
-          >
-            <span style={{ fontSize: 22, lineHeight: 1 }}>×</span>
-          </IconButton>
+        {/* Close button anchored to Paper (absolute on relative Paper),
+            stays in place when inner content scrolls. */}
+        <IconButton
+          aria-label="close"
+          onClick={() => setSignUpOpen(false)}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            zIndex: 10,
+            color: colors.ink2,
+            bgcolor: 'rgba(255,255,255,0.85)',
+            '&:hover': { bgcolor: 'rgba(255,255,255,1)' },
+          }}
+        >
+          <span style={{ fontSize: 22, lineHeight: 1 }}>×</span>
+        </IconButton>
+        {/* Scrollable content area: flex:1 fills remaining Paper height,
+            overflowY:auto enables internal scroll on tall steps (Pago).
+            minHeight floors it so short steps don't shrink the modal. */}
+        <Box
+          sx={{
+            flex: 1,
+            overflowY: 'auto',
+            minHeight: { xs: 'auto', sm: 640 },
+          }}
+        >
           <SignUp />
         </Box>
       </Dialog>
