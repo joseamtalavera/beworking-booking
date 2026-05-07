@@ -939,8 +939,11 @@ export default function OficinaVirtualPage() {
           sx: {
             borderRadius: `${radius.lg}px`,
             overflow: 'hidden',
-            width: 'auto',
-            maxWidth: '640px',
+            // Lock dimensions so the modal doesn't shift between wizard
+            // steps (which have different field counts and heights).
+            width: { xs: '100%', sm: 560 },
+            maxWidth: 640,
+            minHeight: { xs: '90vh', sm: 640 },
           },
         }}
       >

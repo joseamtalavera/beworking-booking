@@ -274,7 +274,19 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const goToStep1 = async () => {
     setApiError('');
     const valid = await validateStep0();
-    if (valid) setStep(1);
+    if (!valid) return;
+
+    // Lead conversion — user committed an email + password and clicked
+    // "Registrarse". Fire-and-forget (don't await) so the step transition
+    // is instant — the SHA-256 hash + dataLayer push complete in the
+    // background. Plan/location not yet selected at this step.
+    trackRegisterInitiated({
+      plan: selectedPlan,
+      email: form.email,
+      location: selectedLocation,
+    });
+
+    setStep(1);
   };
 
   const goToStep3 = async () => {
