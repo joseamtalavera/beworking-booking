@@ -372,13 +372,6 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     }
     setLoading(true);
     setApiError('');
-    // Capture as Lead BEFORE Stripe — even if card or backend fails, we
-    // have the email + intent. purchase_completed below is the Purchase.                                                                          
-    await trackRegisterInitiated({                                       
-      plan: selectedPlan,                                                                                                                          
-      email: form.email,                                  
-      location: selectedLocation,                                                                                                                  
-    }); 
     try {
       const { error: stripeError, setupIntent } = await stripe.confirmSetup({
         elements,
