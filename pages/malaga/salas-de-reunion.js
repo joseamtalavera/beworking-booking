@@ -17,6 +17,7 @@ import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
 import { tokens } from '@/theme/tokens';
+import { trackWhatsappClicked } from '@/utils/analytics';
 
 const { colors, motion, typography, layout, radius } = tokens;
 const location = getLocation('malaga');
@@ -280,6 +281,7 @@ export default function SalasDeReunion() {
             href="https://wa.me/34640369759?text=Hola,%20necesito%20ayuda%20con%20una%20sala%20de%20reuni%C3%B3n"
             target="_blank"
             rel="noopener"
+            onClick={() => trackWhatsappClicked({ source: 'malaga-rooms' })}
             sx={{
               display: 'inline-block',
               mt: 3,

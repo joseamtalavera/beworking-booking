@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import TextField from '../common/ClearableTextField';
 import TurnstileWidget from '../oficina-virtual/TurnstileWidget';
 import { tokens } from '@/theme/tokens';
+import { trackInquirySubmitted } from '@/utils/analytics';
 
 const { colors, radius, motion, typography } = tokens;
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
@@ -71,6 +72,7 @@ export default function ContactCard({ defaultSubject = '', onSuccess, compact = 
       });
       if (res.ok) {
         setStatus('success');
+        trackInquirySubmitted({ subject: form.subject, source: 'contact-page' });
         setForm({ name: '', email: '', phone: '', subject: '', message: '' });
         setTurnstileReset((s) => s + 1);
         // Don't auto-close — the success card stays until the user clicks

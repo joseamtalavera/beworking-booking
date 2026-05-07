@@ -15,6 +15,7 @@ import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
 import { tokens } from '@/theme/tokens';
+import { trackWhatsappClicked } from '@/utils/analytics';
 
 const { colors, motion, typography, layout, radius } = tokens;
 const location = getLocation('malaga');
@@ -205,6 +206,7 @@ export default function Coworking() {
             href="https://wa.me/34640369759?text=Hola,%20necesito%20ayuda%20con%20un%20escritorio%20de%20coworking"
             target="_blank"
             rel="noopener"
+            onClick={() => trackWhatsappClicked({ source: 'malaga-coworking' })}
             sx={{
               display: 'inline-block',
               mt: 3,

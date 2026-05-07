@@ -31,6 +31,7 @@ import MuiTextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { tokens } from '@/theme/tokens';
 import { TAX_ID_TYPES, taxIdTypeOption, flagUrl } from '@/data/taxIdTypes';
+import { trackRegisterInitiated, trackPurchaseCompleted } from '@/utils/analytics';
 
 // Real country flag from flagcdn.com (free CDN).
 const FlagImg = ({ country }) => {
@@ -342,6 +343,13 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     }
     setLoading(true);
     setApiError('');
+    // Capture as Lead BEFORE Stripe — even if card or backend fails, we
+    // have the email + intent. purchase_completed below is the Purchase.                                                                          
+    await trackRegisterInitiated({                                       
+      plan: selectedPlan,                                                                                                                          
+      email: form.email,                                  
+      location: selectedLocation,                                                                                                                  
+    }); 
     try {
       const { error: stripeError, setupIntent } = await stripe.confirmSetup({
         elements,
@@ -365,9 +373,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       if (res.ok) {
         setSuccess(true);
         if (selectedPlan === 'basic') {
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({
-            event: 'purchase_completed',
+          trackPurchaseCompleted({
             transactionId: result?.subscriptionId || setupIntent?.id,
             value: PLANS.basic.price,
             currency: 'EUR',

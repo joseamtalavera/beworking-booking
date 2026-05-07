@@ -22,6 +22,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import { useTranslation } from 'react-i18next';
+import { trackWhatsappClicked, trackCallClicked } from '@/utils/analytics';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
@@ -257,6 +258,7 @@ const AppLayout = ({ children }) => {
             <Button
               component="a"
               href="tel:+34951905967"
+              onClick={() => trackCallClicked({ source: 'topbar-desktop' })}
               variant="outlined"
               disableElevation
               sx={{
@@ -304,6 +306,7 @@ const AppLayout = ({ children }) => {
             <LangToggle />
             <Link
               href="tel:+34951905967"
+              onClick={() => trackCallClicked({ source: 'topbar-mobile' })}
               underline="none"
               sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5, fontSize: '0.8rem', fontWeight: 700, color: 'primary.main' }}
             >
@@ -538,6 +541,7 @@ const AppLayout = ({ children }) => {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp"
+        onClick={() => trackWhatsappClicked({ source: 'floating-button' })}   
         sx={{
           position: 'fixed',
           bottom: { xs: 20, md: 28 },

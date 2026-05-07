@@ -7,6 +7,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useTranslation } from 'react-i18next';
 import { getLocation } from '@/data/locations';
 import { tokens } from '@/theme/tokens';
+import { trackWhatsappClicked } from '@/utils/analytics';
 
 const { colors, radius, motion, typography, layout } = tokens;
 const location = getLocation('malaga');
@@ -265,6 +266,7 @@ export default function MalagaHub() {
               href="https://wa.me/34640369759?text=Hola,%20me%20interesa%20información%20sobre%20BeWorking%20Málaga"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackWhatsappClicked({ source: 'malaga-home' })}
               disableElevation
               sx={{
                 bgcolor: colors.brand,

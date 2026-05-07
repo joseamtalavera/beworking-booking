@@ -24,6 +24,7 @@ import { useBookingVisitor } from '../../store/useBookingVisitor';
 import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 import { tokens } from '@/theme/tokens';
+import { trackBookingCompleted } from '@/utils/analytics';
 
 const { colors, radius, motion, typography } = tokens;
 
@@ -541,14 +542,7 @@ const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) =
 
   useEffect(() => {
     if (transactionId) {
-      window.dataLayer = window.dataLayer || [];
-      window.dataLayer.push({
-        event: 'booking_completed',
-        transactionId,
-        value: valueCents ? valueCents / 100 : 0,
-        currency: 'EUR',
-        isSubscription: !!isSubscription,
-      });
+      trackBookingCompleted({ transactionId, valueCents, isSubscription });
     }
   }, [transactionId, valueCents, isSubscription]);
 

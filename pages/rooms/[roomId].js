@@ -53,6 +53,7 @@ import { fetchPublicAvailability, fetchDeskAvailability, fetchBookingProductos }
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
+import { trackWhatsappClicked, trackBookingInitiated } from '@/utils/analytics';
 
 const { colors, radius, shadow, motion, typography } = tokens;
 
@@ -458,6 +459,7 @@ const RoomDetailPage = () => {
                   target="_blank"
                   rel="noopener"
                   variant="outlined"
+                  onClick={() => trackWhatsappClicked({ source: 'room-detail', roomId: room.id })} 
                   sx={{
                     textTransform: 'none',
                     fontWeight: 600,
@@ -620,7 +622,10 @@ const RoomDetailPage = () => {
                 source of truth for date/time, layer 3 is where they commit. */}
             <Box sx={{ display: 'flex', justifyContent: 'center', py: { xs: 2, md: 3 } }}>
               <Button
-                onClick={() => setBookingModalOpen(true)}
+                onClick={() => {                          
+                  trackBookingInitiated({ roomId: room.id, isDesk });
+                  setBookingModalOpen(true);                         
+                }}
                 variant="contained"
                 size="large"
                 disableElevation
