@@ -178,7 +178,24 @@ function PaymentForm({ onBack, onSubmit, loading, plan, t, termsSlot }) {
 
       {termsSlot}
 
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'space-between', mt: 1 }}>
+      {/* Sticky action bar — stays visible at the bottom of the modal so
+          the user can always reach Atrás / Registrarse, even when the
+          Stripe PaymentElement iframe captures wheel events above. */}
+      <Box
+        sx={{
+          position: 'sticky',
+          bottom: 0,
+          display: 'flex',
+          gap: 2,
+          justifyContent: 'space-between',
+          py: 2,
+          mx: -3,
+          px: 3,
+          bgcolor: 'background.paper',
+          borderTop: `1px solid ${colors.line}`,
+          zIndex: 5,
+        }}
+      >
         <Button onClick={onBack} disabled={loading} sx={secondaryButtonSx}>
           {t('register.back')}
         </Button>
