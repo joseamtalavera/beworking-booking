@@ -57,5 +57,9 @@ export default function TurnstileWidget({ siteKey, onSuccess, onError, onExpire,
     }
   }, [resetSignal]);
 
-  return <div ref={containerRef} />;
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <div ref={containerRef} />
+    </div>
+  );
 }
