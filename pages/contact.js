@@ -8,6 +8,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
 import ContactCard from '@/components/contact/ContactCard';
+import { trackEmailClicked, trackCallClicked } from '@/utils/analytics';
 
 const { colors, motion, typography } = tokens;
 
@@ -145,12 +146,13 @@ export default function Contact() {
                   </Typography>
                   {[
                     { Icon: LocationOnIcon, text: `${office.address}\n${office.zip}`, href: mapUrl, external: true },
-                    { Icon: PhoneIcon, text: office.phone, href: telHref, external: false },
-                  ].filter(item => item.text && item.href).map(({ Icon, text, href, external }) => (
+                    { Icon: PhoneIcon, text: office.phone, href: telHref, external: false, onClick: () => trackCallClicked({ source: 'contact-page' }) },
+                  ].filter(item => item.text && item.href).map(({ Icon, text, href, external, onClick }) => (
                     <Box
                       key={text}
                       component="a"
                       href={href}
+                      onClick={onClick}
                       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                       sx={{
                         display: 'flex', alignItems: 'flex-start', gap: 1.5, mb: 2,
@@ -181,6 +183,7 @@ export default function Contact() {
             <Box
               component="a"
               href={`mailto:${t('contact.info.email')}`}
+              onClick={() => trackEmailClicked({ source: 'contact-page' })}
               sx={{
                 display: 'flex', alignItems: 'flex-start', gap: 1.5,
                 textDecoration: 'none', color: 'inherit',
