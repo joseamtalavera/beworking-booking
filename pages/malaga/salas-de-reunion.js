@@ -49,6 +49,7 @@ export default function SalasDeReunion() {
   const [people, setPeople] = useState('1');
   const [bloqueos, setBloqueos] = useState([]);
   const [noResultsOpen, setNoResultsOpen] = useState(false);
+  const lastShownCriteriaRef = useRef('');
   // Legacy compat: keep timeFilter mirroring startTime so handleBookNow's
   // existing query-string passing keeps working until /rooms/[roomId]
   // accepts ?from= & ?to= explicitly.
@@ -195,6 +196,20 @@ export default function SalasDeReunion() {
 
     return spaces;
   }, [productos, centros, people, checkIn, startTime, endTime, bloqueos]);
+
+  // Auto-open the no-availability modal once productos have loaded, the user
+  // has set date+start+end, and the filter returns 0. Track the last shown
+  // criteria so it doesn't reopen on every keystroke if the user dismisses it.
+  useEffect(() => {
+    if (loading) return;
+    if (!productos.length) return;
+    if (!checkIn || !startTime || !endTime) return;
+    if (filteredSpaces.length > 0) return;
+    const criteriaKey = `${checkIn}|${startTime}|${endTime}|${people}`;
+    if (lastShownCriteriaRef.current === criteriaKey) return;
+    lastShownCriteriaRef.current = criteriaKey;
+    setNoResultsOpen(true);
+  }, [loading, productos.length, filteredSpaces.length, checkIn, startTime, endTime, people]);
 
   const handleBookNow = useCallback(
     (space) => {

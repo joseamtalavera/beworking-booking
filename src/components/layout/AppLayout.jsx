@@ -21,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import FacebookIcon from '@mui/icons-material/Facebook';
 import { useTranslation } from 'react-i18next';
 import { trackWhatsappClicked, trackCallClicked } from '@/utils/analytics';
 
@@ -31,6 +32,7 @@ const isExternal = (href) => /^https?:\/\//.test(href);
 const socialLinks = [
   { Icon: LinkedInIcon, href: 'https://www.linkedin.com/company/beworking', label: 'LinkedIn' },
   { Icon: InstagramIcon, href: 'https://www.instagram.com/beworkingmalaga', label: 'Instagram' },
+  { Icon: FacebookIcon, href: 'https://www.facebook.com/beworkingmalaga/', label: 'Facebook' },
 ];
 
 const AppLayout = ({ children }) => {
@@ -521,13 +523,41 @@ const AppLayout = ({ children }) => {
             display: 'flex',
             flexDirection: { xs: 'column', sm: 'row' },
             justifyContent: 'space-between',
-            alignItems: { xs: 'center', sm: 'center' },
+            alignItems: 'center',
             gap: 1.5,
           }}
         >
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.tagline')}
           </Typography>
+
+          <Box sx={{ display: 'flex', gap: 1, order: { xs: -1, sm: 0 } }}>
+            {socialLinks.map(({ Icon, href, label }) => (
+              <Box
+                key={label}
+                component="a"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'rgba(0,0,0,0.55)',
+                  textDecoration: 'none',
+                  transition: 'background 0.18s ease, color 0.18s ease',
+                  '&:hover': { bgcolor: 'rgba(0,0,0,0.05)', color: 'rgba(0,0,0,0.85)' },
+                }}
+              >
+                <Icon sx={{ fontSize: 18 }} />
+              </Box>
+            ))}
+          </Box>
+
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.copyright')}
           </Typography>
