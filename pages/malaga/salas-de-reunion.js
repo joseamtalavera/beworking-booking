@@ -4,9 +4,11 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import {
-  Box, IconButton, MenuItem, Paper, Stack, TextField, Typography,
+  Box, Button, Dialog, DialogContent, DialogTitle, IconButton, MenuItem, Paper, Stack, TextField, Typography,
 } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import EventBusyRoundedIcon from '@mui/icons-material/EventBusyRounded';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
@@ -46,6 +48,7 @@ export default function SalasDeReunion() {
   const [endTime, setEndTime] = useState('');
   const [people, setPeople] = useState('1');
   const [bloqueos, setBloqueos] = useState([]);
+  const [noResultsOpen, setNoResultsOpen] = useState(false);
   // Legacy compat: keep timeFilter mirroring startTime so handleBookNow's
   // existing query-string passing keeps working until /rooms/[roomId]
   // accepts ?from= & ?to= explicitly.
@@ -412,6 +415,12 @@ export default function SalasDeReunion() {
             <Box sx={{ px: { xs: 2, sm: 1.5 }, py: { xs: 1.5, sm: 0 }, width: { xs: '100%', sm: 'auto' }, display: 'flex', justifyContent: 'center' }}>
               <IconButton
                 aria-label={t('home.searchSpaces', 'Buscar')}
+                onClick={() => {
+                  const hasCriteria = checkIn && startTime && endTime;
+                  if (hasCriteria && filteredSpaces.length === 0) {
+                    setNoResultsOpen(true);
+                  }
+                }}
                 sx={{
                   bgcolor: colors.brand,
                   color: colors.bg,
@@ -452,6 +461,63 @@ export default function SalasDeReunion() {
           </Box>
         </Box>
       </Box>
+
+      <Dialog
+        open={noResultsOpen}
+        onClose={() => setNoResultsOpen(false)}
+        maxWidth="xs"
+        fullWidth
+        PaperProps={{ sx: { borderRadius: `${radius.lg}px`, p: 1 } }}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1.5, pb: 1 }}>
+          <Box sx={{ width: 40, height: 40, borderRadius: '50%', bgcolor: colors.brandSoft, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <EventBusyRoundedIcon sx={{ color: colors.brand, fontSize: 22 }} />
+          </Box>
+          <Typography sx={{ fontSize: '1.1rem', fontWeight: 700 }}>
+            {t('home.noAvailability.title', 'Sin disponibilidad')}
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Typography sx={{ color: colors.ink2, mb: 2, lineHeight: 1.55 }}>
+            {t(
+              'home.noAvailability.body',
+              'Lo sentimos, no hay salas disponibles para esa franja. Prueba a ajustar la fecha, la hora o el número de personas — o escríbenos por WhatsApp y miramos opciones contigo.'
+            )}
+          </Typography>
+          <Stack spacing={1}>
+            <Button
+              variant="contained"
+              startIcon={<WhatsAppIcon />}
+              onClick={() => {
+                trackWhatsappClicked({ source: 'catalog-no-availability' });
+                window.open(
+                  'https://wa.me/34640369759?text=Hola,%20busco%20una%20sala%20pero%20no%20vi%20disponibilidad.%20%C2%BFPod%C3%A9is%20ayudarme%3F',
+                  '_blank',
+                  'noopener,noreferrer'
+                );
+              }}
+              sx={{
+                bgcolor: '#25D366',
+                color: '#fff',
+                borderRadius: `${radius.pill}px`,
+                fontWeight: 600,
+                textTransform: 'none',
+                py: 1.2,
+                '&:hover': { bgcolor: '#1da851' },
+              }}
+            >
+              {t('home.noAvailability.whatsapp', 'Hablar por WhatsApp')}
+            </Button>
+            <Button
+              variant="text"
+              onClick={() => setNoResultsOpen(false)}
+              sx={{ textTransform: 'none', color: colors.ink2, fontWeight: 600 }}
+            >
+              {t('home.noAvailability.adjust', 'Ajustar mi búsqueda')}
+            </Button>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
