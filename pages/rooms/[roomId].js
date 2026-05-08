@@ -336,6 +336,9 @@ const RoomDetailPage = () => {
       <Head>
         <title>{room.name} | BeWorking Booking</title>
         <meta name="description" content={description.slice(0, 160)} />
+        {featureImage ? (
+          <link rel="preload" as="image" href={featureImage} fetchpriority="high" />
+        ) : null}
       </Head>
       <Box sx={{ minHeight: '100vh', bgcolor: colors.bg }}>
         <Box sx={{ maxWidth: 1200, mx: 'auto', px: { xs: 2, md: 3 }, py: { xs: 4, md: 6 } }}>
@@ -499,6 +502,9 @@ const RoomDetailPage = () => {
                     src={featureImage}
                     alt={`${room.name} principal`}
                     className="gallery-hero"
+                    loading="eager"
+                    fetchpriority="high"
+                    decoding="async"
                     onClick={() => { setCarouselIndex(0); setGalleryOpen(true); }}
                     sx={{ width: '100%', objectFit: 'cover', borderRadius: `${radius.lg}px`, cursor: 'pointer' }}
                   />
@@ -509,6 +515,8 @@ const RoomDetailPage = () => {
                       src={image}
                       alt={`${room.name} ${index + 2}`}
                       className="gallery-thumb"
+                      loading="lazy"
+                      decoding="async"
                       onClick={() => { setCarouselIndex(index + 1); setGalleryOpen(true); }}
                       sx={{ width: '100%', objectFit: 'cover', borderRadius: `${radius.lg}px`, gridArea: `thumb${index + 1}`, cursor: 'pointer' }}
                     />
@@ -721,6 +729,8 @@ const RoomDetailPage = () => {
                   component="img"
                   src={galleryImages[carouselIndex]}
                   alt={`${room.name} ${carouselIndex + 1}`}
+                  loading="eager"
+                  decoding="async"
                   sx={{
                     maxHeight: 'calc(100vh - 140px)',
                     maxWidth: '100%',
@@ -755,6 +765,8 @@ const RoomDetailPage = () => {
                       component="img"
                       src={image}
                       alt={`thumbnail ${index + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       onClick={() => setCarouselIndex(index)}
                       sx={{
                         width: 56,
