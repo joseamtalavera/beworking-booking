@@ -68,7 +68,7 @@ const primaryButtonSx = {
 export default function SimpleSignUp() {
   const { t } = useTranslation();
 
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '' });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -87,6 +87,7 @@ export default function SimpleSignUp() {
     const errs = {};
     if (!form.name.trim()) errs.name = t('register.errors.nameRequired', 'Name is required.');
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) errs.email = t('register.errors.emailRequired', 'Enter a valid email.');
+    if (!form.phone || form.phone.replace(/\D/g, '').length < 6) errs.phone = t('register.errors.phoneRequired', 'Enter a valid phone number.');
     if (!form.password || form.password.length < 8) errs.password = t('register.errors.passwordMin', 'Password must be at least 8 characters.');
     if (form.password !== form.confirmPassword) errs.confirmPassword = t('register.errors.passwordMatch', 'Passwords do not match.');
     setErrors(errs);
@@ -107,6 +108,7 @@ export default function SimpleSignUp() {
         body: JSON.stringify({
           name: form.name,
           email: form.email,
+          phone: form.phone.trim(),
           password: form.password,
           turnstileToken,
         }),
@@ -226,6 +228,23 @@ export default function SimpleSignUp() {
             onChange={handleChange('email')}
             error={!!errors.email}
             helperText={errors.email || ''}
+            sx={fieldSx}
+          />
+        </FormControl>
+
+        <FormControl>
+          <FormLabel sx={{ color: colors.ink, fontWeight: 600, fontSize: '0.85rem', mb: 0.75 }}>
+            {t('register.fields.phone', 'Phone')}
+          </FormLabel>
+          <TextField
+            required
+            fullWidth
+            type="tel"
+            placeholder="+34 600 000 000"
+            value={form.phone}
+            onChange={handleChange('phone')}
+            error={!!errors.phone}
+            helperText={errors.phone || ''}
             sx={fieldSx}
           />
         </FormControl>
