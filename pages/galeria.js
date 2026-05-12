@@ -11,7 +11,7 @@ import { tokens } from '@/theme/tokens';
 const { colors, radius, motion, typography } = tokens;
 
 const SPACES_TOTAL = 38;
-const EVENTS_TOTAL = 54;
+const EVENTS_TOTAL = 65;
 
 const spacesPhotos = Array.from({ length: SPACES_TOTAL }, (_, i) => {
   const n = String(i + 1).padStart(2, '0');
@@ -19,7 +19,7 @@ const spacesPhotos = Array.from({ length: SPACES_TOTAL }, (_, i) => {
 });
 
 const eventsPhotos = Array.from({ length: EVENTS_TOTAL }, (_, i) => {
-  const n = String(i + 1).padStart(2, '0');
+  const n = String(i + 1).padStart(3, '0');
   return { full: `/gallery/events/full/${n}.webp`, thumb: `/gallery/events/thumb/${n}.webp` };
 });
 
