@@ -29,56 +29,6 @@ const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3
 
 const isExternal = (href) => /^https?:\/\//.test(href);
 
-const EVENT_THUMBS = Array.from({ length: 54 }, (_, i) => `/gallery/events/thumb/${String(i + 1).padStart(2, '0')}.webp`);
-
-const EventsCarousel = ({ heading, sub, cta }) => {
-  const loop = [...EVENT_THUMBS, ...EVENT_THUMBS];
-  return (
-    <Box
-      component="section"
-      sx={{
-        bgcolor: '#0f1216',
-        color: '#fff',
-        py: { xs: 6, md: 8 },
-        position: 'relative',
-        overflow: 'hidden',
-        '@keyframes bwScroll': {
-          from: { transform: 'translateX(0)' },
-          to:   { transform: 'translateX(-50%)' },
-        },
-      }}
-    >
-      <Box sx={{ maxWidth: 1280, mx: 'auto', px: { xs: 3, md: 5 }, mb: { xs: 3, md: 4 }, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 3, flexWrap: 'wrap' }}>
-        <Box>
-          <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', mb: 1 }}>
-            {heading}
-          </Typography>
-          <Box component="h2" sx={{ m: 0, fontSize: { xs: '1.6rem', md: '2.1rem' }, lineHeight: 1.1, fontWeight: 600, letterSpacing: '-0.01em' }}>
-            {sub}
-          </Box>
-        </Box>
-        <NextLink href="/galeria#events" passHref legacyBehavior>
-          <Link sx={{ color: 'rgba(255,255,255,0.85)', fontSize: '0.92rem', fontWeight: 600, textDecoration: 'none', borderBottom: '1px solid rgba(255,255,255,0.35)', pb: 0.25, '&:hover': { color: '#fff', borderBottomColor: '#fff' } }}>
-            {cta} →
-          </Link>
-        </NextLink>
-      </Box>
-
-      <Box sx={{ position: 'relative', '&:hover .bw-track': { animationPlayState: 'paused' }, '&::before, &::after': { content: '""', position: 'absolute', top: 0, bottom: 0, width: { xs: 48, md: 96 }, zIndex: 2, pointerEvents: 'none' }, '&::before': { left: 0, background: 'linear-gradient(90deg, #0f1216, transparent)' }, '&::after': { right: 0, background: 'linear-gradient(270deg, #0f1216, transparent)' } }}>
-        <Box className="bw-track" sx={{ display: 'flex', gap: { xs: 1.25, md: 1.75 }, width: 'max-content', animation: 'bwScroll 90s linear infinite', willChange: 'transform' }}>
-          {loop.map((src, i) => (
-            <NextLink key={`${i}-${src}`} href="/galeria#events" passHref legacyBehavior>
-              <Box component="a" sx={{ display: 'block', flex: '0 0 auto', width: { xs: 220, sm: 260, md: 300 }, aspectRatio: '3 / 2', borderRadius: 2, overflow: 'hidden', position: 'relative', bgcolor: 'rgba(255,255,255,0.06)', textDecoration: 'none', transition: 'transform 240ms ease', '&:hover': { transform: 'scale(1.02)' }, '& img': { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } }}>
-                <img src={src} alt="" loading="lazy" decoding="async" />
-              </Box>
-            </NextLink>
-          ))}
-        </Box>
-      </Box>
-    </Box>
-  );
-};
-
 const socialLinks = [
   { Icon: LinkedInIcon, href: 'https://www.linkedin.com/company/beworking', label: 'LinkedIn' },
   { Icon: InstagramIcon, href: 'https://www.instagram.com/beworkingmalaga', label: 'Instagram' },
@@ -452,12 +402,6 @@ const AppLayout = ({ children }) => {
       <Box sx={{ flex: 1 }}>
         {children}
       </Box>
-
-      <EventsCarousel
-        heading={t('events.eyebrow', i18n.language === 'es' ? 'Eventos · BeWorking' : 'Events · BeWorking')}
-        sub={t('events.heading', i18n.language === 'es' ? 'La comunidad se reúne aquí' : 'Where our community gathers')}
-        cta={t('events.cta', i18n.language === 'es' ? 'Ver galería de eventos' : 'See events gallery')}
-      />
 
       {/* Footer */}
       <Box
