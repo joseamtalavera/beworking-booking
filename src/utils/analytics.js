@@ -124,34 +124,40 @@
     track(EVENTS.BOOKING_INITIATED, { roomId: roomId || 'unknown', isDesk: !!isDesk });                                                              
   }                                                                                                                                                  
                                                                                                                                                      
-  /** Booking payment succeeded (PaymentStep). */                                                                                                    
-  export function trackBookingCompleted({                   
-    transactionId,                                                                                                                                   
+  /** Booking payment succeeded (PaymentStep). Hashes email for Enhanced Conversions. */
+  export async function trackBookingCompleted({
+    transactionId,
     valueCents,
-    isSubscription = false,                                                                                                                          
-  } = {}) {                                                 
+    isSubscription = false,
+    email,
+  } = {}) {
+    const emailHash = email ? await sha256Hex(email) : '';
     track(EVENTS.BOOKING_COMPLETED, {
-      transactionId: transactionId || '',                                                                                                            
+      transactionId: transactionId || '',
       value: valueCents ? valueCents / 100 : 0,
-      currency: 'EUR',                                                                                                                               
-      isSubscription: !!isSubscription,                     
-    });                                                                                                                                              
-  }                                                         
+      currency: 'EUR',
+      isSubscription: !!isSubscription,
+      email_hash: emailHash,
+    });
+  }
 
-  /** OV signup payment succeeded (SignUp). */                                                                                                       
-  export function trackPurchaseCompleted({
-    transactionId,                                                                                                                                   
-    value,                                                  
+  /** OV signup payment succeeded (SignUp). Hashes email for Enhanced Conversions. */
+  export async function trackPurchaseCompleted({
+    transactionId,
+    value,
     currency = 'EUR',
     plan,
-  } = {}) {                                                                                                                                          
+    email,
+  } = {}) {
+    const emailHash = email ? await sha256Hex(email) : '';
     track(EVENTS.PURCHASE_COMPLETED, {
-      transactionId: transactionId || '',                                                                                                            
-      value: value || 0,                                    
+      transactionId: transactionId || '',
+      value: value || 0,
       currency,
-      plan: plan || 'unspecified',                                                                                                                   
+      plan: plan || 'unspecified',
+      email_hash: emailHash,
     });
-  }                                                                                                                                                  
+  }                                                                                                                                               
                                                             
   /** Generic raw push (escape hatch). Prefer typed helpers above. */                                                                                
   export function trackEvent(eventName, params = {}) {

@@ -400,6 +400,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
             value: PLANS.basic.price,
             currency: 'EUR',
             plan: 'oficina15',
+            email: form.email,
           });
         }
       } else {

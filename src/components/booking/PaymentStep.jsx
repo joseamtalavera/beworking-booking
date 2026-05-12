@@ -278,7 +278,7 @@ const PaymentIntentForm = ({ onBack, amount, room }) => {
   };
 
   if (success) {
-    return <SuccessMessage amount={`€${amount}`} valueCents={Math.round((parseFloat(amount) || 0) * 100)} transactionId={paymentIntentId} />;
+    return <SuccessMessage amount={`€${amount}`} valueCents={Math.round((parseFloat(amount) || 0) * 100)} transactionId={paymentIntentId} email={visitor?.contact?.email} />;
   }
 
   return (
@@ -374,7 +374,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
   };
 
   if (success) {
-    return <SuccessMessage amount={`€${monthlyAmount.toFixed(2)}/month`} isSubscription valueCents={Math.round(monthlyAmount * 100)} />;
+    return <SuccessMessage amount={`€${monthlyAmount.toFixed(2)}/month`} isSubscription valueCents={Math.round(monthlyAmount * 100)} email={visitor?.contact?.email} />;
   }
 
   return (
@@ -537,14 +537,14 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
 };
 
 /* ─── Success message ─── */
-const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId }) => {
+const SuccessMessage = ({ amount, isSubscription, valueCents, transactionId, email }) => {
   const { t } = useTranslation();
 
   useEffect(() => {
     if (transactionId) {
-      trackBookingCompleted({ transactionId, valueCents, isSubscription });
+      trackBookingCompleted({ transactionId, valueCents, isSubscription, email });
     }
-  }, [transactionId, valueCents, isSubscription]);
+  }, [transactionId, valueCents, isSubscription, email]);
 
   return (
     <Paper elevation={0} sx={{ ...cardSx, p: 4, textAlign: 'center' }}>
