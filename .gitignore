@@ -26,3 +26,9 @@ pnpm-debug.log*
 
 # Local rebrand working files (drafts, source logos, installers)
 rebrand/
+
+# Heavy 2025 gallery videos — host via CDN, not git
+public/gallery/videos/coworking-tour-*.mp4
+public/gallery/videos/oficina-virtual-*.mp4
+public/gallery/videos/posters/coworking-tour-*.jpg
+public/gallery/videos/posters/oficina-virtual-*.jpg
