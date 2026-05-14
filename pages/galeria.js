@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Head from 'next/head';
 import { Box, Typography, IconButton, ButtonBase } from '@mui/material';
@@ -13,15 +14,20 @@ const { colors, radius, motion, typography } = tokens;
 const SPACES_TOTAL = 38;
 const EVENTS_TOTAL = 65;
 
+// Events tab is people-only; these numbers are catering/kitchen shots without attendees.
+const EVENTS_DROPPED = new Set([26, 31, 50, 58]);
+
 const spacesPhotos = Array.from({ length: SPACES_TOTAL }, (_, i) => {
   const n = String(i + 1).padStart(2, '0');
   return { full: `/gallery/full/${n}.webp`, thumb: `/gallery/thumb/${n}.webp` };
 });
 
-const eventsPhotos = Array.from({ length: EVENTS_TOTAL }, (_, i) => {
-  const n = String(i + 1).padStart(3, '0');
-  return { full: `/gallery/events/full/${n}.webp`, thumb: `/gallery/events/thumb/${n}.webp` };
-});
+const eventsPhotos = Array.from({ length: EVENTS_TOTAL }, (_, i) => i + 1)
+  .filter((n) => !EVENTS_DROPPED.has(n))
+  .map((n) => {
+    const s = String(n).padStart(3, '0');
+    return { full: `/gallery/events/full/${s}.webp`, thumb: `/gallery/events/thumb/${s}.webp` };
+  });
 
 const videos = [
   { src: '/gallery/videos/ad-square-2026.mp4',   poster: '/gallery/videos/posters/ad-square-2026.jpg',   shape: 'square',   titleEs: 'BeWorking · 1:1', titleEn: 'BeWorking · 1:1' },
