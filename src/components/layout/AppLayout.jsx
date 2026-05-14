@@ -460,6 +460,33 @@ const AppLayout = ({ children }) => {
             <Typography sx={{ fontSize: '0.875rem', lineHeight: 1.55, color: 'rgba(0,0,0,0.6)' }}>
               {t('footer.brandTagline')}
             </Typography>
+
+            <Box sx={{ display: 'flex', gap: 1, mt: 2.5 }}>
+              {socialLinks.map(({ Icon, href, label }) => (
+                <Box
+                  key={label}
+                  component="a"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'rgba(0,0,0,0.55)',
+                    textDecoration: 'none',
+                    transition: 'background 0.18s ease, color 0.18s ease',
+                    '&:hover': { bgcolor: 'rgba(0,0,0,0.05)', color: 'rgba(0,0,0,0.85)' },
+                  }}
+                >
+                  <Icon sx={{ fontSize: 18 }} />
+                </Box>
+              ))}
+            </Box>
           </Box>
 
           {/* Link columns */}
@@ -530,33 +557,6 @@ const AppLayout = ({ children }) => {
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.tagline')}
           </Typography>
-
-          <Box sx={{ display: 'flex', gap: 1, order: { xs: -1, sm: 0 } }}>
-            {socialLinks.map(({ Icon, href, label }) => (
-              <Box
-                key={label}
-                component="a"
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'rgba(0,0,0,0.55)',
-                  textDecoration: 'none',
-                  transition: 'background 0.18s ease, color 0.18s ease',
-                  '&:hover': { bgcolor: 'rgba(0,0,0,0.05)', color: 'rgba(0,0,0,0.85)' },
-                }}
-              >
-                <Icon sx={{ fontSize: 18 }} />
-              </Box>
-            ))}
-          </Box>
 
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.copyright')}
