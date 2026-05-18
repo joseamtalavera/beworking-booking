@@ -1,5 +1,5 @@
 export const DEFAULT_START_HOUR = 6;
-export const DEFAULT_END_HOUR = 22;
+export const DEFAULT_END_HOUR = 23.5; // last selectable slot 23:30; 24:00 is rejected by the backend (LocalTime) and a midnight rollover breaks duration calc
 
 import { alpha } from '@mui/material/styles';
 
