@@ -4,6 +4,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev -p 4173",
+    "gallery:manifest": "node scripts/gen-gallery-manifest.mjs",
+    "prebuild": "node scripts/gen-gallery-manifest.mjs",
     "build": "next build",
     "start": "next start -p 4173",
     "lint": "next lint"

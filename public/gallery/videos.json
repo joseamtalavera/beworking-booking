@@ -1,0 +1,16 @@
+[
+  {
+    "src": "/gallery/videos/ad-square-2026.mp4",
+    "poster": "/gallery/videos/posters/ad-square-2026.jpg",
+    "shape": "square",
+    "titleEs": "BeWorking · 1:1",
+    "titleEn": "BeWorking · 1:1"
+  },
+  {
+    "src": "/gallery/videos/ad-vertical-2026.mp4",
+    "poster": "/gallery/videos/posters/ad-vertical-2026.jpg",
+    "shape": "vertical",
+    "titleEs": "BeWorking · 4:5",
+    "titleEn": "BeWorking · 4:5"
+  }
+]

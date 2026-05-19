@@ -11,28 +11,10 @@ import { tokens } from '@/theme/tokens';
 
 const { colors, radius, motion, typography } = tokens;
 
-const SPACES_TOTAL = 38;
-const EVENTS_TOTAL = 65;
-
-// Events tab is people-only; these numbers are catering/kitchen shots without attendees.
-const EVENTS_DROPPED = new Set([26, 31, 50, 58]);
-
-const spacesPhotos = Array.from({ length: SPACES_TOTAL }, (_, i) => {
-  const n = String(i + 1).padStart(2, '0');
-  return { full: `/gallery/full/${n}.webp`, thumb: `/gallery/thumb/${n}.webp` };
-});
-
-const eventsPhotos = Array.from({ length: EVENTS_TOTAL }, (_, i) => i + 1)
-  .filter((n) => !EVENTS_DROPPED.has(n))
-  .map((n) => {
-    const s = String(n).padStart(3, '0');
-    return { full: `/gallery/events/full/${s}.webp`, thumb: `/gallery/events/thumb/${s}.webp` };
-  });
-
-const videos = [
-  { src: '/gallery/videos/ad-square-2026.mp4',   poster: '/gallery/videos/posters/ad-square-2026.jpg',   shape: 'square',   titleEs: 'BeWorking · 1:1', titleEn: 'BeWorking · 1:1' },
-  { src: '/gallery/videos/ad-vertical-2026.mp4', poster: '/gallery/videos/posters/ad-vertical-2026.jpg', shape: 'vertical', titleEs: 'BeWorking · 4:5', titleEn: 'BeWorking · 4:5' },
-];
+// Gallery content is driven by /gallery/manifest.json, generated at build time
+// by scripts/gen-gallery-manifest.mjs from the files in public/gallery/. To
+// add or remove a photo, change the .webp files and rebuild — no edit here.
+const EMPTY_MANIFEST = { spaces: [], events: [], videos: [] };
 
 const Tile = ({ src, alt, onClick, delay, aspect = '3 / 2' }) => {
   const ref = useRef(null);
@@ -416,6 +398,7 @@ export default function GaleriaPage() {
   const [section, setSection] = useState('spaces');
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
+  const [manifest, setManifest] = useState(EMPTY_MANIFEST);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -425,7 +408,25 @@ export default function GaleriaPage() {
     }
   }, []);
 
-  const currentPhotos = section === 'events' ? eventsPhotos : spacesPhotos;
+  useEffect(() => {
+    let alive = true;
+    fetch('/gallery/manifest.json')
+      .then((r) => (r.ok ? r.json() : EMPTY_MANIFEST))
+      .then((m) => {
+        if (alive) {
+          setManifest({
+            spaces: m.spaces || [],
+            events: m.events || [],
+            videos: m.videos || [],
+          });
+        }
+      })
+      .catch(() => {});
+    return () => { alive = false; };
+  }, []);
+
+  const videos = manifest.videos;
+  const currentPhotos = section === 'events' ? manifest.events : manifest.spaces;
 
   const open = useCallback((i) => setLightboxIndex(i), []);
   const close = useCallback(() => setLightboxIndex(null), []);
