@@ -46,12 +46,10 @@ const videos = existsSync(videosPath)
   ? JSON.parse(readFileSync(videosPath, 'utf8'))
   : [];
 
-const manifest = {
-  generatedAt: new Date().toISOString(),
-  spaces,
-  events,
-  videos,
-};
+// No timestamp/volatile fields: the manifest is committed, so it must be
+// deterministic — a rebuild with unchanged media produces an identical file
+// (no spurious git diffs).
+const manifest = { spaces, events, videos };
 
 writeFileSync(
   join(GALLERY, 'manifest.json'),

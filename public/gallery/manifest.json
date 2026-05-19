@@ -1,5 +1,4 @@
 {
-  "generatedAt": "2026-05-19T11:13:21.841Z",
   "spaces": [
     {
       "full": "/gallery/full/spaces-001.webp",
@@ -185,6 +184,26 @@
     }
   ],
   "videos": [
+    {
+      "youtube": "39SCa5ErxXU",
+      "titleEs": "BeWorking · Espacio de trabajo compartido",
+      "titleEn": "BeWorking · Shared Workspace"
+    },
+    {
+      "youtube": "0TotBk3jpW0",
+      "titleEs": "Salas de Reuniones y Formación en Málaga",
+      "titleEn": "Meeting & Training Rooms in Málaga"
+    },
+    {
+      "youtube": "KA9LMqGKhnI",
+      "titleEs": "Oficina Virtual desde 15€/mes en Málaga",
+      "titleEn": "Virtual Office from €15/mo in Málaga"
+    },
+    {
+      "youtube": "JHEXjHY3zho",
+      "titleEs": "Evolución Oficinas y Salas · Avenida Andalucía 36",
+      "titleEn": "Offices & Rooms Evolution · Avenida Andalucía 36"
+    },
     {
       "src": "/gallery/videos/ad-square-2026.mp4",
       "poster": "/gallery/videos/posters/ad-square-2026.jpg",
