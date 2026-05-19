@@ -16,6 +16,11 @@ const { colors, radius, motion, typography } = tokens;
 // add or remove a photo, change the .webp files and rebuild — no edit here.
 const EMPTY_MANIFEST = { spaces: [], events: [], videos: [] };
 
+// A video entry is either a local mp4 ({ src, poster }) or a YouTube embed
+// ({ youtube: "<id>" }). Poster falls back to the YouTube thumbnail.
+const ytThumb = (id) => `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+const posterOf = (v) => v.poster || (v.youtube ? ytThumb(v.youtube) : undefined);
+
 const Tile = ({ src, alt, onClick, delay, aspect = '3 / 2' }) => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
@@ -129,7 +134,7 @@ const VideoTile = ({ video, onClick, delay }) => {
         },
       }}
     >
-      <img src={video.poster} alt={video.titleEs} loading="lazy" decoding="async" />
+      <img src={posterOf(video)} alt={video.titleEs} loading="lazy" decoding="async" />
       <Box
         sx={{
           position: 'absolute',
@@ -302,8 +307,10 @@ const VideoModal = ({ video, onClose }) => {
 
   if (!video) return null;
 
-  const aspect = video.shape === 'square' ? '1 / 1' : video.shape === 'vertical' ? '4 / 5' : '16 / 9';
-  const maxW = video.shape === 'vertical' ? { xs: '88vw', md: '480px' } : video.shape === 'square' ? { xs: '92vw', md: '640px' } : { xs: '94vw', md: '1100px' };
+  const isYouTube = Boolean(video.youtube);
+  const shape = isYouTube ? 'wide' : video.shape;
+  const aspect = shape === 'square' ? '1 / 1' : shape === 'vertical' ? '4 / 5' : '16 / 9';
+  const maxW = shape === 'vertical' ? { xs: '88vw', md: '480px' } : shape === 'square' ? { xs: '92vw', md: '640px' } : { xs: '94vw', md: '1100px' };
 
   return (
     <Box
@@ -351,17 +358,28 @@ const VideoModal = ({ video, onClose }) => {
           boxShadow: '0 24px 80px rgba(0,0,0,0.5)',
         }}
       >
-        <Box
-          component="video"
-          src={video.src}
-          poster={video.poster}
-          controls
-          autoPlay
-          muted
-          playsInline
-          preload="auto"
-          sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain', bgcolor: '#000' }}
-        />
+        {isYouTube ? (
+          <Box
+            component="iframe"
+            src={`https://www.youtube-nocookie.com/embed/${video.youtube}?autoplay=1&rel=0&modestbranding=1`}
+            title={video.titleEs}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            sx={{ width: '100%', height: '100%', display: 'block', border: 0, bgcolor: '#000' }}
+          />
+        ) : (
+          <Box
+            component="video"
+            src={video.src}
+            poster={video.poster}
+            controls
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            sx={{ width: '100%', height: '100%', display: 'block', objectFit: 'contain', bgcolor: '#000' }}
+          />
+        )}
       </Box>
     </Box>
   );
