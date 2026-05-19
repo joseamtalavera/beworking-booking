@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T10:42:58.028Z",
+  "generatedAt": "2026-05-19T11:13:21.841Z",
   "spaces": [
     {
       "full": "/gallery/full/spaces-001.webp",
@@ -182,18 +182,6 @@
     {
       "full": "/gallery/events/full/events-019.webp",
       "thumb": "/gallery/events/thumb/events-019.webp"
-    },
-    {
-      "full": "/gallery/events/full/events-020.webp",
-      "thumb": "/gallery/events/thumb/events-020.webp"
-    },
-    {
-      "full": "/gallery/events/full/events-021.webp",
-      "thumb": "/gallery/events/thumb/events-021.webp"
-    },
-    {
-      "full": "/gallery/events/full/events-022.webp",
-      "thumb": "/gallery/events/thumb/events-022.webp"
     }
   ],
   "videos": [
