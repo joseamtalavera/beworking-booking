@@ -2,35 +2,47 @@
   {
     "youtube": "39SCa5ErxXU",
     "titleEs": "BeWorking · Espacio de trabajo compartido",
-    "titleEn": "BeWorking · Shared Workspace"
+    "titleEn": "BeWorking · Shared Workspace",
+    "descriptionEs": "Un recorrido por nuestro espacio de coworking: zonas de trabajo, ambiente y comunidad.",
+    "descriptionEn": "A walkthrough of our coworking space: work zones, atmosphere and community."
   },
   {
     "youtube": "0TotBk3jpW0",
     "titleEs": "Salas de Reuniones y Formación en Málaga",
-    "titleEn": "Meeting & Training Rooms in Málaga"
+    "titleEn": "Meeting & Training Rooms in Málaga",
+    "descriptionEs": "Salas equipadas para reuniones, clases y formaciones, con capacidad para hasta 50 personas.",
+    "descriptionEn": "Rooms equipped for meetings, classes and training sessions, with capacity for up to 50 people."
   },
   {
     "youtube": "KA9LMqGKhnI",
     "titleEs": "Oficina Virtual desde 15€/mes en Málaga",
-    "titleEn": "Virtual Office from €15/mo in Málaga"
+    "titleEn": "Virtual Office from €15/mo in Málaga",
+    "descriptionEs": "Domicilio fiscal, recepción de correo y atención telefónica para tu empresa desde 15 € al mes.",
+    "descriptionEn": "Registered address, mail handling and call answering for your business from €15/month."
   },
   {
     "youtube": "JHEXjHY3zho",
     "titleEs": "Evolución Oficinas y Salas · Avenida Andalucía 36",
-    "titleEn": "Offices & Rooms Evolution · Avenida Andalucía 36"
+    "titleEn": "Offices & Rooms Evolution · Avenida Andalucía 36",
+    "descriptionEs": "La transformación del edificio: del local original al espacio actual de oficinas y salas.",
+    "descriptionEn": "The transformation of the building: from the original space to today's offices and rooms."
   },
   {
     "src": "/gallery/videos/ad-square-2026.mp4",
     "poster": "/gallery/videos/posters/ad-square-2026.jpg",
     "shape": "square",
     "titleEs": "BeWorking · 1:1",
-    "titleEn": "BeWorking · 1:1"
+    "titleEn": "BeWorking · 1:1",
+    "descriptionEs": "Spot breve en formato cuadrado, pensado para feeds sociales.",
+    "descriptionEn": "Short square-format spot, designed for social feeds."
   },
   {
     "src": "/gallery/videos/ad-vertical-2026.mp4",
     "poster": "/gallery/videos/posters/ad-vertical-2026.jpg",
     "shape": "vertical",
     "titleEs": "BeWorking · 4:5",
-    "titleEn": "BeWorking · 4:5"
+    "titleEn": "BeWorking · 4:5",
+    "descriptionEs": "Spot vertical, optimizado para Stories y Reels.",
+    "descriptionEn": "Vertical spot, optimized for Stories and Reels."
   }
 ]

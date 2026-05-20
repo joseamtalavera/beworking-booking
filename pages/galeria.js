@@ -1,11 +1,14 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import Head from 'next/head';
-import { Box, Typography, IconButton, ButtonBase } from '@mui/material';
+import { Box, Typography, IconButton, ButtonBase, Button } from '@mui/material';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ChevronLeftRoundedIcon from '@mui/icons-material/ChevronLeftRounded';
 import ChevronRightRoundedIcon from '@mui/icons-material/ChevronRightRounded';
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
+import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
+import FileDownloadRoundedIcon from '@mui/icons-material/FileDownloadRounded';
+import OpenInNewRoundedIcon from '@mui/icons-material/OpenInNewRounded';
 import { useTranslation } from 'react-i18next';
 import { tokens } from '@/theme/tokens';
 
@@ -78,9 +81,10 @@ const Tile = ({ src, alt, onClick, delay, aspect = '3 / 2' }) => {
   );
 };
 
-const VideoTile = ({ video, onClick, delay }) => {
+const VideoTile = ({ video, onClick, delay, isEs }) => {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
+  const [shareNote, setShareNote] = useState('');
 
   useEffect(() => {
     const el = ref.current;
@@ -98,73 +102,189 @@ const VideoTile = ({ video, onClick, delay }) => {
     return () => io.disconnect();
   }, []);
 
+  const isYouTube = Boolean(video.youtube);
+  const title = isEs ? video.titleEs : video.titleEn;
+  const description = isEs ? video.descriptionEs : video.descriptionEn;
+
+  const shareUrl = isYouTube
+    ? `https://youtu.be/${video.youtube}`
+    : (typeof window !== 'undefined'
+        ? `${window.location.origin}${window.location.pathname}#videos`
+        : '');
+
+  const handleShare = async (e) => {
+    e.stopPropagation();
+    try {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({ title, text: description || title, url: shareUrl });
+        return;
+      }
+      await navigator.clipboard.writeText(shareUrl);
+      setShareNote(isEs ? 'Enlace copiado' : 'Link copied');
+      setTimeout(() => setShareNote(''), 1800);
+    } catch (_) {
+      // user cancelled share — silent
+    }
+  };
+
+  const openYouTube = (e) => {
+    e.stopPropagation();
+    window.open(
+      `https://www.youtube.com/watch?v=${video.youtube}`,
+      '_blank',
+      'noopener,noreferrer',
+    );
+  };
+
   return (
-    <ButtonBase
+    <Box
       ref={ref}
-      onClick={onClick}
-      focusRipple
       sx={{
-        position: 'relative',
-        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
         borderRadius: `${radius.md}px`,
-        bgcolor: colors.bgSoft,
-        aspectRatio: '16 / 9',
-        display: 'block',
-        textAlign: 'left',
-        width: '100%',
+        bgcolor: '#fff',
+        overflow: 'hidden',
         opacity: visible ? 1 : 0,
         transform: visible ? 'translateY(0)' : 'translateY(16px)',
-        transition: `opacity ${motion.durationSlow} ${motion.ease} ${delay}s, transform ${motion.durationSlow} ${motion.ease} ${delay}s`,
-        '& img': {
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover',
-          display: 'block',
-          transition: `transform 600ms ${motion.ease}`,
-        },
-        '&:hover img': { transform: 'scale(1.04)' },
-        '&:hover .play-badge': { transform: 'translate(-50%, -50%) scale(1.05)' },
-        '&::after': {
-          content: '""',
-          position: 'absolute',
-          inset: 0,
-          borderRadius: 'inherit',
-          boxShadow: `inset 0 0 0 1px ${colors.line}`,
-          pointerEvents: 'none',
-        },
+        transition: `opacity ${motion.durationSlow} ${motion.ease} ${delay}s, transform ${motion.durationSlow} ${motion.ease} ${delay}s, box-shadow 240ms ${motion.ease}`,
+        boxShadow: `inset 0 0 0 1px ${colors.line}`,
+        '&:hover': { boxShadow: `inset 0 0 0 1px ${colors.line}, 0 10px 30px rgba(15,18,22,0.08)` },
       }}
     >
-      <img src={posterOf(video)} alt={video.titleEs} loading="lazy" decoding="async" />
-      <Box
+      <ButtonBase
+        onClick={onClick}
+        focusRipple
         sx={{
-          position: 'absolute',
-          inset: 0,
-          background: 'linear-gradient(180deg, rgba(15,18,22,0) 55%, rgba(15,18,22,0.45) 100%)',
-          pointerEvents: 'none',
-        }}
-      />
-      <Box
-        className="play-badge"
-        sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 64,
-          height: 64,
-          borderRadius: '50%',
-          bgcolor: 'rgba(255,255,255,0.92)',
-          color: colors.ink,
-          display: 'grid',
-          placeItems: 'center',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
-          transition: `transform 240ms ${motion.ease}`,
-          pointerEvents: 'none',
+          position: 'relative',
+          overflow: 'hidden',
+          bgcolor: colors.bgSoft,
+          aspectRatio: '16 / 9',
+          display: 'block',
+          textAlign: 'left',
+          width: '100%',
+          '& img': {
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            display: 'block',
+            transition: `transform 600ms ${motion.ease}`,
+          },
+          '&:hover img': { transform: 'scale(1.04)' },
+          '&:hover .play-badge': { transform: 'translate(-50%, -50%) scale(1.05)' },
         }}
       >
-        <PlayArrowRoundedIcon sx={{ fontSize: 36, ml: '4px' }} />
+        <img src={posterOf(video)} alt={title} loading="lazy" decoding="async" />
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(180deg, rgba(15,18,22,0) 55%, rgba(15,18,22,0.45) 100%)',
+            pointerEvents: 'none',
+          }}
+        />
+        <Box
+          className="play-badge"
+          sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 64,
+            height: 64,
+            borderRadius: '50%',
+            bgcolor: 'rgba(255,255,255,0.92)',
+            color: colors.ink,
+            display: 'grid',
+            placeItems: 'center',
+            boxShadow: '0 10px 30px rgba(0,0,0,0.35)',
+            transition: `transform 240ms ${motion.ease}`,
+            pointerEvents: 'none',
+          }}
+        >
+          <PlayArrowRoundedIcon sx={{ fontSize: 36, ml: '4px' }} />
+        </Box>
+      </ButtonBase>
+
+      <Box sx={{ p: { xs: 2, md: 2.5 }, display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
+        <Typography
+          sx={{
+            fontFamily: typography.fontFamily,
+            fontWeight: 600,
+            fontSize: { xs: 16, md: 17 },
+            lineHeight: 1.3,
+            color: colors.ink,
+          }}
+        >
+          {title}
+        </Typography>
+        {description && (
+          <Typography
+            sx={{
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: colors.ink2,
+              flex: 1,
+            }}
+          >
+            {description}
+          </Typography>
+        )}
+        <Box sx={{ display: 'flex', gap: 1, mt: 0.5, flexWrap: 'wrap' }}>
+          <Button
+            onClick={handleShare}
+            startIcon={<ShareRoundedIcon sx={{ fontSize: 18 }} />}
+            size="small"
+            variant="outlined"
+            sx={{
+              textTransform: 'none',
+              borderRadius: `${radius.sm}px`,
+              borderColor: colors.line,
+              color: colors.ink,
+              '&:hover': { borderColor: colors.ink, bgcolor: 'transparent' },
+            }}
+          >
+            {shareNote || (isEs ? 'Compartir' : 'Share')}
+          </Button>
+          {isYouTube ? (
+            <Button
+              onClick={openYouTube}
+              startIcon={<OpenInNewRoundedIcon sx={{ fontSize: 18 }} />}
+              size="small"
+              variant="outlined"
+              sx={{
+                textTransform: 'none',
+                borderRadius: `${radius.sm}px`,
+                borderColor: colors.line,
+                color: colors.ink,
+                '&:hover': { borderColor: colors.ink, bgcolor: 'transparent' },
+              }}
+            >
+              {isEs ? 'Ver en YouTube' : 'Open in YouTube'}
+            </Button>
+          ) : (
+            <Button
+              component="a"
+              href={video.src}
+              download
+              onClick={(e) => e.stopPropagation()}
+              startIcon={<FileDownloadRoundedIcon sx={{ fontSize: 18 }} />}
+              size="small"
+              variant="outlined"
+              sx={{
+                textTransform: 'none',
+                borderRadius: `${radius.sm}px`,
+                borderColor: colors.line,
+                color: colors.ink,
+                '&:hover': { borderColor: colors.ink, bgcolor: 'transparent' },
+              }}
+            >
+              {isEs ? 'Descargar' : 'Download'}
+            </Button>
+          )}
+        </Box>
       </Box>
-    </ButtonBase>
+    </Box>
   );
 };
 
@@ -596,10 +716,11 @@ export default function GaleriaPage() {
           >
             {videos.map((v, i) => (
               <VideoTile
-                key={v.src}
+                key={v.src || v.youtube}
                 video={v}
                 onClick={() => setActiveVideo(v)}
                 delay={Math.min(0.04 * i, 0.3)}
+                isEs={isEs}
               />
             ))}
           </Box>
