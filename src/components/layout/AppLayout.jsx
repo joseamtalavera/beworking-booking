@@ -22,6 +22,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
+import YouTubeIcon from '@mui/icons-material/YouTube';
 import { useTranslation } from 'react-i18next';
 import { trackWhatsappClicked, trackCallClicked } from '@/utils/analytics';
 
@@ -33,6 +34,7 @@ const socialLinks = [
   { Icon: LinkedInIcon, href: 'https://www.linkedin.com/company/beworking', label: 'LinkedIn' },
   { Icon: InstagramIcon, href: 'https://www.instagram.com/beworkingmalaga', label: 'Instagram' },
   { Icon: FacebookIcon, href: 'https://www.facebook.com/beworkingmalaga/', label: 'Facebook' },
+  { Icon: YouTubeIcon, href: 'https://www.youtube.com/@beworking6740', label: 'YouTube' },
 ];
 
 const AppLayout = ({ children }) => {
