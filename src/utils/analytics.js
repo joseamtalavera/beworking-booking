@@ -113,7 +113,7 @@
     const emailHash = await sha256Hex(email);
     track(EVENTS.REGISTER_INITIATED, {                                                                                                               
       plan: plan || 'unspecified',                                                                                                                   
-      email_hash: emailHash,
+      user_data: { sha256_email_address: emailHash },
       location: location || '',                                                                                                                      
       source,                                               
     });
@@ -137,7 +137,7 @@
       value: valueCents ? valueCents / 100 : 0,
       currency: 'EUR',
       isSubscription: !!isSubscription,
-      email_hash: emailHash,
+      user_data: { sha256_email_address: emailHash },
     });
   }
 
@@ -155,7 +155,7 @@
       value: value || 0,
       currency,
       plan: plan || 'unspecified',
-      email_hash: emailHash,
+      user_data: { sha256_email_address: emailHash },
     });
   }                                                                                                                                               
                                                             
