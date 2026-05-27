@@ -48,7 +48,6 @@ const AppLayout = ({ children }) => {
     { href: '/malaga/coworking',        labelKey: 'nav.short.desks',    fallback: 'Desks' },
     { href: '/malaga/salas-de-reunion', labelKey: 'nav.short.rooms',    fallback: 'Rooms' },
     { href: '/platform',                labelKey: 'nav.short.platform', fallback: 'App' },
-    { labelKey: 'nav.services',         fallback: 'Services',           placeholder: true },
   ];
 
   const footerColumns = [
