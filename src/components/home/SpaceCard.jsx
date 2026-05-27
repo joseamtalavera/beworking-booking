@@ -250,7 +250,9 @@ const SpaceCard = ({ space, onBookNow }) => {
               <Stack direction="row" alignItems="center" spacing={0.4}>
                 <BusinessRoundedIcon sx={{ fontSize: 15, color: colors.ink3 }} />
                 <Typography sx={{ fontSize: '0.82rem', color: colors.ink2, whiteSpace: 'nowrap' }}>
-                  {space.typeLabel || (isMeetingRoom ? t('card.meetingRoom') : `${t('card.desk')}${deskLabel}`)}
+                  {space.typeLabel
+                    ? t(`card.typeMap.${space.typeLabel}`, { defaultValue: space.typeLabel })
+                    : (isMeetingRoom ? t('card.meetingRoom') : `${t('card.desk')}${deskLabel}`)}
                 </Typography>
               </Stack>
             </Stack>

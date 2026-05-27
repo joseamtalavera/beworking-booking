@@ -268,7 +268,14 @@
     "from": "From",
     "bookNow": "Book now",
     "bookNowDesk": "Book now",
-    "available": "available"
+    "available": "available",
+    "typeMap": {
+      "Aula": "Meeting room",
+      "Mesa": "Desk",
+      "Despacho": "Office",
+      "Coworking": "Coworking",
+      "Sala": "Room"
+    }
   },
   "room": {
     "capacity": "Capacity {{count}} people",

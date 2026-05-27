@@ -268,7 +268,14 @@
     "from": "Desde",
     "bookNow": "Reservar",
     "bookNowDesk": "Reservar",
-    "available": "disponibles"
+    "available": "disponibles",
+    "typeMap": {
+      "Aula": "Sala de reuniones",
+      "Mesa": "Escritorio",
+      "Despacho": "Despacho",
+      "Coworking": "Coworking",
+      "Sala": "Sala"
+    }
   },
   "room": {
     "capacity": "Capacidad {{count}} personas",
