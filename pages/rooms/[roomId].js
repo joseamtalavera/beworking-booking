@@ -309,18 +309,10 @@ const RoomDetailPage = () => {
   const featureImage = spotlightImages[0];
   const secondaryImages = spotlightImages.slice(1, 5);
   const xsGalleryAreas = ['"hero"', ...secondaryImages.map((_, index) => `"thumb${index + 1}"`)].join(' ') || '"hero"';
-  const description =
-    room.description ?? 'Nuestra Aula está equipada para reuniones, eventos y formaciones. Espacio luminoso con conexión de alta velocidad, pizarra y un ambiente profesional listo para tus clientes.';
+  const description = room.description ?? t('room.defaultDescription');
   const amenities = room.amenities ?? room.tags ?? [];
-  const cancellationPolicy = room.cancellationPolicy ?? [
-    'La modificación debe confirmarse por email.',
-    'No se realizará devolución en caso de no asistencia.',
-  ];
-  const bookingInstructions = room.bookingInstructions ?? [
-    'Solicita el día de tu reserva.',
-    'Te confirmaremos disponibilidad y enviaremos la factura.',
-    'Tras el pago recibirás instrucciones de acceso.',
-  ];
+  const cancellationPolicy = room.cancellationPolicy ?? t('room.defaultCancellationPolicy', { returnObjects: true });
+  const bookingInstructions = room.bookingInstructions ?? t('room.defaultBookingInstructions', { returnObjects: true });
   const calendarLabel = new Date(`${selectedDate}T00:00:00`).toLocaleDateString(undefined, {
     weekday: 'long',
     year: 'numeric',
@@ -581,7 +573,7 @@ const RoomDetailPage = () => {
                             >
                               <AmenityIcon sx={{ fontSize: 17, color: colors.brand }} />
                               <Typography sx={{ fontSize: '0.85rem', color: colors.ink, fontWeight: 500 }}>
-                                {amenity}
+                                {t(`room.amenities_map.${amenity}`, { defaultValue: amenity })}
                               </Typography>
                             </Box>
                           );

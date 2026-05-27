@@ -19,6 +19,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n/i18n';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
 import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
@@ -1003,13 +1004,13 @@ class PaymentErrorBoundary extends React.Component {
                   m: 0,
                 }}
               >
-                ¡Reserva confirmada!
+                {i18n.t('payment.bookingConfirmed')}
               </Box>
               <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-                Tu pago se ha procesado correctamente. Recibirás un email de confirmación en breve.
+                {i18n.t('payment.errorFallback.paymentProcessedShort')}
               </Typography>
               <Button href="/" variant="contained" disableElevation sx={primaryButtonSx}>
-                Volver al inicio
+                {i18n.t('payment.errorFallback.backToHome')}
               </Button>
             </Stack>
           </Paper>
@@ -1029,10 +1030,10 @@ class PaymentErrorBoundary extends React.Component {
                 m: 0,
               }}
             >
-              Algo salió mal
+              {i18n.t('payment.errorFallback.somethingWentWrong')}
             </Box>
             <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-              No se pudo cargar el formulario de pago. Intenta recargar la página o usa otro navegador.
+              {i18n.t('payment.errorFallback.paymentFormFailed')}
             </Typography>
             <Button
               variant="contained"
@@ -1040,7 +1041,7 @@ class PaymentErrorBoundary extends React.Component {
               onClick={() => window.location.reload()}
               sx={primaryButtonSx}
             >
-              Recargar página
+              {i18n.t('payment.errorFallback.reloadPage')}
             </Button>
           </Stack>
         </Paper>

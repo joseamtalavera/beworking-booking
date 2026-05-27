@@ -289,7 +289,29 @@
     "peopleCount": "{{count}} persona",
     "peopleCount_other": "{{count}} personas",
     "adjustNextStep": "Puedes ajustar fecha y hora en el siguiente paso.",
-    "location": "Ubicación"
+    "location": "Ubicación",
+    "defaultDescription": "Nuestra Aula está equipada para reuniones, eventos y formaciones. Espacio luminoso con conexión de alta velocidad, pizarra y un ambiente profesional listo para tus clientes.",
+    "defaultCancellationPolicy": [
+      "Modificaciones vía correo electrónico.",
+      "No hay reembolso en caso de no asistencia."
+    ],
+    "defaultBookingInstructions": [
+      "Solicita tu horario y espera confirmación.",
+      "Recibirás la factura y enlace de pago.",
+      "Tras el pago te enviaremos instrucciones y acceso."
+    ],
+    "amenities_map": {
+      "Pizarra": "Pizarra",
+      "Acceso 24h": "Acceso 24h",
+      "Internet 600Mb": "Internet 600Mb",
+      "Proyector": "Proyector",
+      "Aire acondicionado": "Aire acondicionado",
+      "Llave digital": "Llave digital",
+      "Soporte 24h": "Soporte 24h",
+      "Sin permanencia": "Sin permanencia",
+      "Alarma": "Alarma",
+      "Escaner e impresora": "Escáner e impresora"
+    }
   },
   "calendar": {
     "room": "Sala",
@@ -462,7 +484,15 @@
     "serviceNotConfigured": "La URL del servicio de pago no está configurada",
     "stripeNotConfigured": "La clave pública de Stripe no está configurada",
     "failedToInitialize": "Error al inicializar el pago",
-    "notAvailable": "El pago no está disponible en este momento."
+    "notAvailable": "El pago no está disponible en este momento.",
+    "bookingFailedRefunded": "No se ha podido crear la reserva. Tu pago ha sido reembolsado automáticamente.",
+    "errorFallback": {
+      "paymentProcessedShort": "Tu pago se ha procesado correctamente. Recibirás un email de confirmación en breve.",
+      "backToHome": "Volver al inicio",
+      "somethingWentWrong": "Algo salió mal",
+      "paymentFormFailed": "No se pudo cargar el formulario de pago. Intenta recargar la página o usa otro navegador.",
+      "reloadPage": "Recargar página"
+    }
   },
   "virtualOffice": {
     "hero": {

@@ -289,7 +289,29 @@
     "peopleCount": "{{count}} person",
     "peopleCount_other": "{{count}} people",
     "adjustNextStep": "You can adjust the date and time in the next step.",
-    "location": "Location"
+    "location": "Location",
+    "defaultDescription": "Our room is equipped for meetings, events and training sessions. A bright space with high-speed internet, whiteboard and a professional environment ready for your clients.",
+    "defaultCancellationPolicy": [
+      "Modifications by email.",
+      "No refund in case of no-show."
+    ],
+    "defaultBookingInstructions": [
+      "Request your time slot and wait for confirmation.",
+      "You will receive the invoice and payment link.",
+      "Once paid, we will send access instructions."
+    ],
+    "amenities_map": {
+      "Pizarra": "Whiteboard",
+      "Acceso 24h": "24h access",
+      "Internet 600Mb": "Internet 600Mb",
+      "Proyector": "Projector",
+      "Aire acondicionado": "Air conditioning",
+      "Llave digital": "Digital key",
+      "Soporte 24h": "24h support",
+      "Sin permanencia": "No commitment",
+      "Alarma": "Alarm",
+      "Escaner e impresora": "Scanner & printer"
+    }
   },
   "calendar": {
     "room": "Room",
@@ -449,7 +471,15 @@
     "serviceNotConfigured": "Payment service URL is not configured",
     "stripeNotConfigured": "Stripe publishable key is not configured",
     "failedToInitialize": "Failed to initialize payment",
-    "notAvailable": "Payment is not available right now."
+    "notAvailable": "Payment is not available right now.",
+    "bookingFailedRefunded": "The booking could not be created. Your payment has been refunded automatically.",
+    "errorFallback": {
+      "paymentProcessedShort": "Your payment has been processed successfully. You will receive a confirmation email shortly.",
+      "backToHome": "Back to home",
+      "somethingWentWrong": "Something went wrong",
+      "paymentFormFailed": "Could not load the payment form. Try reloading the page or use another browser.",
+      "reloadPage": "Reload page"
+    }
   },
   "virtualOffice": {
     "hero": {

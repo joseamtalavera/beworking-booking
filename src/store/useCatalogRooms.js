@@ -9,16 +9,9 @@ const STATIC_DEFAULTS = {
   },
 };
 
-const DEFAULT_CANCELLATION_POLICY = [
-  'Modificaciones vía correo electrónico.',
-  'No hay reembolso en caso de no asistencia.'
-];
-
-const DEFAULT_BOOKING_INSTRUCTIONS = [
-  'Solicita tu horario y espera confirmación.',
-  'Recibirás la factura y enlace de pago.',
-  'Tras el pago te enviaremos instrucciones y acceso.'
-];
+// Cancellation policy and booking instructions defaults live in i18n now
+// (room.defaultCancellationPolicy / room.defaultBookingInstructions). The store
+// leaves these fields undefined so consumers resolve via t() in their own locale.
 
 /**
  * Build a room object from an API producto response, merging with static defaults.
@@ -47,8 +40,8 @@ export function buildRoomFromProducto(producto, centroName) {
     subtitle: producto.subtitle || '',
     amenities: Array.isArray(producto.amenities) ? producto.amenities : [],
     tags: Array.isArray(producto.tags) ? producto.tags : [],
-    cancellationPolicy: DEFAULT_CANCELLATION_POLICY,
-    bookingInstructions: DEFAULT_BOOKING_INSTRUCTIONS,
+    cancellationPolicy: undefined,
+    bookingInstructions: undefined,
     mapEmbedUrl: staticDefaults.mapEmbedUrl,
     instantBooking: producto.instantBooking !== false,
     ratingAverage: producto.ratingAverage != null ? Number(producto.ratingAverage) : undefined,
