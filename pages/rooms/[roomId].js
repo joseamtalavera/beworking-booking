@@ -118,7 +118,8 @@ const SectionHeading = ({ children, sx }) => (
 );
 
 const RoomDetailPage = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isEn = (i18n.language || '').toLowerCase().startsWith('en');
   const router = useRouter();
   const { roomId } = router.query;
   const { rooms, setRooms } = useCatalogRooms();
@@ -309,7 +310,9 @@ const RoomDetailPage = () => {
   const featureImage = spotlightImages[0];
   const secondaryImages = spotlightImages.slice(1, 5);
   const xsGalleryAreas = ['"hero"', ...secondaryImages.map((_, index) => `"thumb${index + 1}"`)].join(' ') || '"hero"';
-  const description = room.description ?? t('room.defaultDescription');
+  const description =
+    (isEn && room.descriptionEn) ? room.descriptionEn
+    : (room.description || t('room.defaultDescription'));
   const amenities = room.amenities ?? room.tags ?? [];
   const cancellationPolicy = room.cancellationPolicy ?? t('room.defaultCancellationPolicy', { returnObjects: true });
   const bookingInstructions = room.bookingInstructions ?? t('room.defaultBookingInstructions', { returnObjects: true });
@@ -380,16 +383,17 @@ const RoomDetailPage = () => {
                   {room.name}
                 </Box>
                 {(() => {
-                  if (!room.subtitle) return null;
+                  const subtitleSource = (isEn && room.subtitleEn) ? room.subtitleEn : room.subtitle;
+                  if (!subtitleSource) return null;
                   // Strip leading "<room-name> – " from the subtitle so it
                   // doesn't repeat the H1 above. Handles both en/em-dash and
                   // hyphen, with surrounding whitespace.
                   const cleanedSubtitle = room.name
-                    ? room.subtitle.replace(
+                    ? subtitleSource.replace(
                         new RegExp(`^${room.name.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\\\$&')}\\s*[–—-]\\s*`, 'i'),
                         '',
                       ).trim()
-                    : room.subtitle;
+                    : subtitleSource;
                   if (!cleanedSubtitle) return null;
                   return (
                     <Typography sx={{ ...typography.bodyLg, color: colors.ink2, fontWeight: 500, mt: 0.5 }}>
