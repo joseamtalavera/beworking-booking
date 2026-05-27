@@ -10,7 +10,6 @@ const STATIC_DEFAULTS = {
 };
 
 const DEFAULT_CANCELLATION_POLICY = [
-  'Cambios admitidos hasta 24 h antes del inicio.',
   'Modificaciones vía correo electrónico.',
   'No hay reembolso en caso de no asistencia.'
 ];

@@ -313,7 +313,6 @@ const RoomDetailPage = () => {
     room.description ?? 'Nuestra Aula está equipada para reuniones, eventos y formaciones. Espacio luminoso con conexión de alta velocidad, pizarra y un ambiente profesional listo para tus clientes.';
   const amenities = room.amenities ?? room.tags ?? [];
   const cancellationPolicy = room.cancellationPolicy ?? [
-    'La fecha de la reserva podrá modificarse hasta 24 h antes del inicio.',
     'La modificación debe confirmarse por email.',
     'No se realizará devolución en caso de no asistencia.',
   ];

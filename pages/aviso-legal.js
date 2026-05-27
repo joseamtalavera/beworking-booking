@@ -88,7 +88,6 @@ export default function AvisoLegal() {
 
           <SubHeading>{t('aviso.s8HourlyTitle')}</SubHeading>
           <LegalList>
-            <li><strong>{t('aviso.s8HourlyB1Strong')}</strong> {t('aviso.s8HourlyB1')}</li>
             <li>{t('aviso.s8HourlyB2')}</li>
             <li>{t('aviso.s8HourlyB3')}</li>
           </LegalList>
