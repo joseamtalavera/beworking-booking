@@ -19,13 +19,6 @@ import { tokens } from '@/theme/tokens';
 
 const { colors, radius, motion, typography } = tokens;
 
-const DURATION_OPTIONS = [
-  { months: 1 },
-  { months: 3 },
-  { months: 6 },
-  { months: 12 },
-];
-
 const GRID_DESKS = [
   [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
   [9, 1, 2], [11, 2, 2], [13, 3, 2], [15, 4, 2],
@@ -35,11 +28,13 @@ const GRID_DESKS = [
   [5, 1, 6], [1, 4, 6],
 ];
 
-const getMonthEnd = (startDate, months) => {
-  const d = new Date(`${startDate}T00:00:00`);
-  d.setMonth(d.getMonth() + months);
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().split('T')[0];
+// End of the chosen calendar month — used only to bound the bloqueo range for
+// the starting month. The subscription itself is open-ended and renews monthly
+// via Stripe; subsequent months' bloqueos aren't pre-created here.
+const getMonthEndForStart = (yearMonth) => {
+  const [year, month] = yearMonth.split('-').map(Number);
+  const lastDay = new Date(year, month, 0).getDate();
+  return `${yearMonth}-${String(lastDay).padStart(2, '0')}`;
 };
 
 const getMonthStart = (yearMonth) => `${yearMonth}-01`;
@@ -111,14 +106,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const defaultMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   const defaultDate = today.toISOString().split('T')[0];
 
-  const [bookingType, setBookingType] = useState('month');
+  const [bookingType, setBookingType] = useState('subscription');
   const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
   const [selectedDate, setSelectedDate] = useState(defaultDate);
-  const [duration, setDuration] = useState(1);
   const [selectedDesk, setSelectedDesk] = useState(null);
 
   const startDate = bookingType === 'day' ? selectedDate : getMonthStart(selectedMonth);
-  const endDate = bookingType === 'day' ? selectedDate : getMonthEnd(startDate, duration);
+  const endDate = bookingType === 'day' ? selectedDate : getMonthEndForStart(selectedMonth);
 
   const { data: bloqueos, isLoading, isError, error } = useQuery({
     queryKey: ['desk-availability', startDate, endDate],
@@ -161,7 +155,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   useEffect(() => {
     setSelectedDesk(null);
-  }, [selectedMonth, selectedDate, duration, bookingType]);
+  }, [selectedMonth, selectedDate, bookingType]);
 
   const handleContinue = () => {
     if (!selectedDesk) return;
@@ -177,6 +171,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         durationMonths: 0,
       });
     } else {
+      // Subscription = open-ended monthly. Bloqueos created for the starting
+      // calendar month only; Stripe renews automatically until cancelled.
       setSchedule({
         date: startDate,
         dateTo: endDate,
@@ -184,8 +180,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         endTime: '23:59',
         attendees: 1,
         deskProductName: `MA1O1-${selectedDesk}`,
-        bookingType: 'month',
-        durationMonths: duration,
+        bookingType: 'subscription',
+        durationMonths: 1,
       });
     }
     onContinue?.();
@@ -196,15 +192,14 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const VAT_RATE = 0.21;
   const pricePerDay = 10;
   const pricePerMonth = 90;
-  const isSubscription = bookingType === 'month' && duration > 1;
-  const subtotal = bookingType === 'day'
-    ? pricePerDay
-    : isSubscription ? pricePerMonth : pricePerMonth * duration;
+  const isSubscription = bookingType === 'subscription';
+  const subtotal = bookingType === 'day' ? pricePerDay : pricePerMonth;
   const vatAmount = subtotal * VAT_RATE;
   const totalPrice = subtotal + vatAmount;
 
-  const bookingTypeLabel = (v) => (v === 'day' ? (isEs ? 'Día' : 'Day') : (isEs ? 'Mes' : 'Month'));
-  const durationLabel = (m) => `${m} ${m === 1 ? (isEs ? 'mes' : 'month') : (isEs ? 'meses' : 'months')}`;
+  const bookingTypeLabel = (v) => (v === 'day'
+    ? (isEs ? 'Día' : 'Day')
+    : (isEs ? 'Suscripción' : 'Subscription'));
 
   return (
     <Stack spacing={3}>
@@ -242,7 +237,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               {isEs ? 'Tipo de reserva' : 'Booking type'}
             </Typography>
             <Stack direction="row" spacing={1}>
-              {['day', 'month'].map((opt) => (
+              {['day', 'subscription'].map((opt) => (
                 <Button
                   key={opt}
                   size="small"
@@ -308,24 +303,11 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 </Box>
               </Paper>
 
-              <Stack spacing={1.25}>
-                <Typography sx={{ ...typography.body, fontWeight: 600, color: colors.ink }}>
-                  {isEs ? 'Duración' : 'Duration'}
-                </Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                  {DURATION_OPTIONS.map((opt) => (
-                    <Button
-                      key={opt.months}
-                      size="small"
-                      onClick={() => setDuration(opt.months)}
-                      disableElevation
-                      sx={pillButtonSx(duration === opt.months)}
-                    >
-                      {durationLabel(opt.months)}
-                    </Button>
-                  ))}
-                </Stack>
-              </Stack>
+              <Typography sx={{ ...typography.body, color: colors.ink3 }}>
+                {isEs
+                  ? 'Suscripción mensual que se renueva automáticamente. Cancela cuando quieras desde tu cuenta.'
+                  : 'Monthly subscription that auto-renews. Cancel anytime from your account.'}
+              </Typography>
             </>
           )}
         </Stack>
@@ -452,7 +434,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                   {isEs ? `Mesa ${selectedDesk}` : `Desk ${selectedDesk}`} ·{' '}
                   {bookingType === 'day'
                     ? (isEs ? '1 día' : '1 day')
-                    : durationLabel(duration)}
+                    : (isEs ? 'Suscripción mensual' : 'Monthly subscription')}
                 </Typography>
                 <Typography sx={{ ...typography.body, color: colors.ink3, mt: 0.25 }}>
                   {bookingType === 'day'
@@ -462,7 +444,9 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                         month: 'long',
                         year: 'numeric',
                       })
-                    : `${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })} – ${new Date(endDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}`}
+                    : (isEs
+                        ? `Empieza ${new Date(startDate).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`
+                        : `Starts ${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}`)}
                 </Typography>
               </Box>
               <Typography sx={{ ...typography.body, color: colors.ink2 }}>
@@ -495,8 +479,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             {isSubscription && (
               <Typography sx={{ fontSize: '0.8rem', color: colors.ink3 }}>
                 {isEs
-                  ? `Primer mes ahora, después mensualmente durante ${duration} meses.`
-                  : `First month charged now, then monthly for ${duration} months total.`}
+                  ? 'Primer mes ahora, luego mensualmente hasta que canceles.'
+                  : 'First month charged now, then monthly until you cancel.'}
               </Typography>
             )}
           </Stack>

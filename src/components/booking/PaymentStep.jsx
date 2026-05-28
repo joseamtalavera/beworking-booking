@@ -334,10 +334,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
     }
 
     try {
-      const cancelAt = Math.floor(
-        new Date(`${schedule.dateTo}T23:59:59`).getTime() / 1000,
-      );
-
+      // Open-ended monthly sub: no cancel_at. Customer cancels from Settings.
       const subRes = await fetch(`${paymentsBaseUrl}/api/subscriptions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -346,7 +343,6 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
           monthly_amount: Math.round(monthlyAmount * 100),
           currency: (room?.currency || 'EUR').toLowerCase(),
           duration_months: durationMonths,
-          cancel_at: cancelAt,
           tenant: process.env.NEXT_PUBLIC_STRIPE_TENANT || 'default',
           reference: room?.id || 'booking',
           desk_name: schedule?.deskProductName || '',
@@ -716,7 +712,10 @@ const PaymentStep = ({ room, onBack }) => {
   const { t } = useTranslation();
   const schedule = useBookingFlow((state) => state.schedule);
   const isDesk = room?.priceUnit === '/month';
-  const isSubscription = isDesk && schedule?.bookingType === 'month' && (schedule?.durationMonths || 1) > 1;
+  // bookingType==='subscription' = open-ended monthly desk sub.
+  // Legacy 'month' kept for safety while older sessions still have it in their store.
+  const isSubscription = isDesk
+    && (schedule?.bookingType === 'subscription' || schedule?.bookingType === 'month');
 
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);

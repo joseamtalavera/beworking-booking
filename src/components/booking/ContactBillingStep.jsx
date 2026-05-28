@@ -117,7 +117,8 @@ const ContactBillingStep = ({ room, onBack, onContinue }) => {
   const [submitError] = useState('');
 
   const isDesk = room?.priceUnit === '/month';
-  const isSubscription = isDesk && schedule?.bookingType === 'month' && (schedule?.durationMonths || 1) > 1;
+  const isSubscription = isDesk
+    && (schedule?.bookingType === 'subscription' || schedule?.bookingType === 'month');
 
   const pricing = useMemo(() => {
     if (isDesk) {
