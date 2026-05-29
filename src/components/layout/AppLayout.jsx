@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import {
@@ -49,6 +49,40 @@ const AppLayout = ({ children }) => {
     { href: '/malaga/salas-de-reunion', labelKey: 'nav.short.rooms',    fallback: 'Rooms' },
     { href: '/platform',                labelKey: 'nav.short.platform', fallback: 'App' },
   ];
+
+  const navContainerRef = useRef(null);
+  const itemRefs = useRef([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [indicator, setIndicator] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
+
+  const activeIndex = navLinks.findIndex(
+    (l) => !l.placeholder && !l.external && l.href === router.pathname
+  );
+
+  useEffect(() => {
+    const measure = () => {
+      const target = hoveredIndex !== null ? hoveredIndex : activeIndex;
+      if (target == null || target < 0) {
+        setIndicator((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      const el = itemRefs.current[target];
+      const container = navContainerRef.current;
+      if (!el || !container) return;
+      const elRect = el.getBoundingClientRect();
+      const cRect = container.getBoundingClientRect();
+      setIndicator({
+        left: elRect.left - cRect.left,
+        top: elRect.top - cRect.top,
+        width: elRect.width,
+        height: elRect.height,
+        opacity: 1,
+      });
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [hoveredIndex, activeIndex, router.pathname, i18n.language]);
 
   const footerColumns = [
     {
@@ -192,12 +226,41 @@ const AppLayout = ({ children }) => {
             </span>
           </Box>
 
-          {/* Nav links — uniform gap matching the Toolbar's outer gap */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 1.5 }}>
-            {navLinks.map((link) => {
+          {/* Nav links — sliding pill indicator (lift99-style) */}
+          <Box
+            ref={navContainerRef}
+            onMouseLeave={() => setHoveredIndex(null)}
+            sx={{
+              display: { xs: 'none', md: 'flex' },
+              alignItems: 'center',
+              gap: 1.5,
+              position: 'relative',
+            }}
+          >
+            <Box
+              aria-hidden
+              sx={{
+                position: 'absolute',
+                left: indicator.left,
+                top: indicator.top,
+                width: indicator.width,
+                height: indicator.height,
+                borderRadius: '999px',
+                bgcolor: 'rgba(0,0,0,0.04)',
+                border: '1px solid rgba(0,0,0,0.06)',
+                opacity: indicator.opacity,
+                transition:
+                  'left 0.32s cubic-bezier(0.22, 1, 0.36, 1), top 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1), height 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease',
+                pointerEvents: 'none',
+                zIndex: 0,
+              }}
+            />
+            {navLinks.map((link, idx) => {
               const label = t(link.labelKey, { defaultValue: link.fallback });
-              const active = !link.placeholder && !link.external && link.href === router.pathname;
+              const setRef = (el) => { itemRefs.current[idx] = el; };
               const pillSx = {
+                position: 'relative',
+                zIndex: 1,
                 fontSize: '0.9rem',
                 fontWeight: 500,
                 color: '#1a1a1a',
@@ -206,23 +269,18 @@ const AppLayout = ({ children }) => {
                 px: 1,
                 py: 0.6,
                 borderRadius: '999px',
-                border: '1px solid',
-                // Active pill matches the ES/EN toggle container: subtle
-                // light-grey outline + faint fill, font kept readable but soft.
-                borderColor: active ? 'rgba(0,0,0,0.06)' : 'transparent',
-                bgcolor: active ? 'rgba(0,0,0,0.04)' : 'transparent',
-                color: active ? 'rgba(0,0,0,0.5)' : '#1a1a1a',
-                transition: 'border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease',
-                '&:hover': active
-                  ? {}
-                  : { borderColor: 'rgba(0,0,0,0.12)' },
+                transition: 'color 0.18s ease',
+                cursor: link.placeholder ? 'default' : 'pointer',
               };
+              const onMouseEnter = () => setHoveredIndex(idx);
               if (link.placeholder) {
                 return (
                   <Box
                     key={link.labelKey}
+                    ref={setRef}
                     component="span"
-                    sx={{ ...pillSx, cursor: 'default', color: 'rgba(0,0,0,0.45)', '&:hover': { borderColor: 'transparent' } }}
+                    onMouseEnter={onMouseEnter}
+                    sx={{ ...pillSx, color: 'rgba(0,0,0,0.45)' }}
                   >
                     {label}
                   </Box>
@@ -232,10 +290,12 @@ const AppLayout = ({ children }) => {
                 return (
                   <Box
                     key={link.href}
+                    ref={setRef}
                     component="a"
                     href={link.href}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onMouseEnter={onMouseEnter}
                     sx={pillSx}
                   >
                     {label}
@@ -245,8 +305,10 @@ const AppLayout = ({ children }) => {
               return (
                 <Box
                   key={link.href}
+                  ref={setRef}
                   component={NextLink}
                   href={link.href}
+                  onMouseEnter={onMouseEnter}
                   sx={pillSx}
                 >
                   {label}
