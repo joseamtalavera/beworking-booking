@@ -389,6 +389,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
           taxIdType: form.taxIdType || null,
           plan: selectedPlan, location: selectedLocation,
           stripeCustomerId,
+          paymentMethodId: setupIntent?.payment_method,
         }),
       });
       const result = await res.json();
