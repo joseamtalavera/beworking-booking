@@ -24,7 +24,7 @@ import InstagramIcon from '@mui/icons-material/Instagram';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import { useTranslation } from 'react-i18next';
-import { trackWhatsappClicked, trackCallClicked } from '@/utils/analytics';
+import { trackWhatsappClicked, trackCallClicked, trackEmailClicked } from '@/utils/analytics';
 
 const FRONTEND_URL = process.env.NEXT_PUBLIC_FRONTEND_URL || 'http://localhost:3020';
 
@@ -623,6 +623,7 @@ const AppLayout = ({ children }) => {
             <Link
               href="mailto:info@be-working.com"
               underline="none"
+              onClick={() => trackEmailClicked({ source: 'footer' })}
               sx={{ color: 'inherit', transition: 'color 0.15s ease', '&:hover': { color: '#007a1e' } }}
             >
               info@be-working.com
