@@ -619,6 +619,14 @@ const AppLayout = ({ children }) => {
         >
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
             {t('footer.tagline')}
+            {' · '}
+            <Link
+              href="mailto:info@be-working.com"
+              underline="none"
+              sx={{ color: 'inherit', transition: 'color 0.15s ease', '&:hover': { color: '#007a1e' } }}
+            >
+              info@be-working.com
+            </Link>
           </Typography>
 
           <Typography sx={{ fontSize: '0.8125rem', color: 'rgba(0,0,0,0.45)' }}>
