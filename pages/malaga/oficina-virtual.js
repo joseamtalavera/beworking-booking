@@ -186,6 +186,16 @@ export default function OficinaVirtualPage() {
     setContactOpen(true);
   };
   const [signUpOpen, setSignUpOpen] = useState(false);
+  // Returning from a 3DS redirect during signup: Stripe lands back here with
+  // ?setup_intent_client_secret=... but the SignUp dialog is closed by
+  // default. Auto-open it so SignUp mounts and its recovery effect can finish
+  // registration. No-op on normal loads.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (new URLSearchParams(window.location.search).has('setup_intent_client_secret')) {
+      setSignUpOpen(true);
+    }
+  }, []);
   const imagesPerPage = 4;
 
   const heroRef = useRef(null);
