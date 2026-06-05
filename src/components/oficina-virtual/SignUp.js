@@ -53,6 +53,11 @@ const { colors, radius, motion, typography } = tokens;
 
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
 
+// The in-progress signup payload is parked here before confirmSetup so a
+// 3DS redirect (redirect-based payment methods) can resume registration on
+// return. Mirrors PaymentStep.jsx's PENDING_BOOKING_KEY pattern.
+const PENDING_OV_SIGNUP_KEY = 'beworking_pending_ov_signup';
+
 const DEFAULT_PLANS = {
   basic: { name: 'BeWorkingVirtual', price: 15, priceCents: 1500 },
 };
@@ -233,6 +238,12 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   const [stripeCustomerId, setStripeCustomerId] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  // True only when the page loaded as a return from a 3DS redirect — drives
+  // the "finishing up" spinner while the recovery effect completes signup.
+  const [recovering, setRecovering] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return new URLSearchParams(window.location.search).has('setup_intent_client_secret');
+  });
   const [apiError, setApiError] = useState('');
   const [emailTaken, setEmailTaken] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -249,6 +260,60 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
   useEffect(() => {
     if (defaultPlan && PLANS[defaultPlan]) setSelectedPlan(defaultPlan);
   }, [defaultPlan]);
+
+  // 3DS redirect recovery: when a redirect-based payment method sends the
+  // browser away during confirmSetup, Stripe returns here with
+  // ?setup_intent_client_secret=...&redirect_status=... The original
+  // handleFinalSubmit never resumed (the page reloaded), so finish the signup
+  // from the payload parked in sessionStorage. No-op on normal page loads.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const siClientSecret = params.get('setup_intent_client_secret');
+    if (!siClientSecret) return;
+
+    let cancelled = false;
+    const cleanUrl = () => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('setup_intent');
+      url.searchParams.delete('setup_intent_client_secret');
+      url.searchParams.delete('redirect_status');
+      window.history.replaceState({}, '', url.pathname + url.search);
+    };
+
+    const recover = async () => {
+      try {
+        const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+        const { setupIntent } = await stripe.retrieveSetupIntent(siClientSecret);
+        if (setupIntent?.status !== 'succeeded') {
+          setApiError('Payment authentication failed. Please try registering again.');
+          return;
+        }
+        let saved;
+        try {
+          const raw = sessionStorage.getItem(PENDING_OV_SIGNUP_KEY);
+          saved = raw ? JSON.parse(raw) : null;
+        } catch (_) {}
+        if (!saved) {
+          setApiError('We could not finish your signup automatically. Please contact support.');
+          return;
+        }
+        try { sessionStorage.removeItem(PENDING_OV_SIGNUP_KEY); } catch (_) {}
+        if (!cancelled) {
+          await completeRegistration(saved, setupIntent.payment_method, setupIntent.id);
+        }
+      } catch {
+        setApiError('Network error.');
+      } finally {
+        if (!cancelled) setRecovering(false);
+        cleanUrl();
+      }
+    };
+
+    recover();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleChange = (field) => (e) => {
     setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -365,6 +430,34 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     }
   };
 
+  // Runs registration + conversion once the SetupIntent has succeeded.
+  // Shared by BOTH the inline path and the post-3DS-redirect recovery path,
+  // so the account is created and the conversion fires either way. Takes the
+  // payload as an argument because on recovery the form state is gone (the
+  // page reloaded) — it can only rely on what was parked in sessionStorage.
+  const completeRegistration = async (payload, paymentMethodId, setupIntentId) => {
+    const res = await fetch(`${API_URL}/auth/register-with-trial`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, paymentMethodId }),
+    });
+    const result = await res.json();
+    if (res.ok) {
+      setSuccess(true);
+      if (payload.plan === 'basic') {
+        trackPurchaseCompleted({
+          transactionId: result?.subscriptionId || setupIntentId,
+          value: PLANS.basic.price,
+          currency: 'EUR',
+          plan: 'oficina15',
+          email: payload.email,
+        });
+      }
+    } else {
+      setApiError(result.message || 'Error creating account.');
+    }
+  };
+
   const handleFinalSubmit = async (stripe, elements) => {
     if (!termsAccepted) {
       setErrors((prev) => ({ ...prev, terms: t('register.errors.termsRequired') }));
@@ -372,41 +465,31 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
     }
     setLoading(true);
     setApiError('');
+
+    const signupPayload = {
+      name: form.name, email: form.email, password: form.password,
+      phone: form.phone, company: form.company, taxId: form.taxId,
+      taxIdType: form.taxIdType || null,
+      plan: selectedPlan, location: selectedLocation,
+      stripeCustomerId,
+    };
+    // Park the payload before confirming so a 3DS redirect can resume it.
+    try { sessionStorage.setItem(PENDING_OV_SIGNUP_KEY, JSON.stringify(signupPayload)); } catch (_) {}
+
     try {
       const { error: stripeError, setupIntent } = await stripe.confirmSetup({
         elements,
         confirmParams: { return_url: window.location.href },
         redirect: 'if_required',
       });
-      if (stripeError) { setApiError(stripeError.message); setLoading(false); return; }
-
-      const res = await fetch(`${API_URL}/auth/register-with-trial`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name, email: form.email, password: form.password,
-          phone: form.phone, company: form.company, taxId: form.taxId,
-          taxIdType: form.taxIdType || null,
-          plan: selectedPlan, location: selectedLocation,
-          stripeCustomerId,
-          paymentMethodId: setupIntent?.payment_method,
-        }),
-      });
-      const result = await res.json();
-      if (res.ok) {
-        setSuccess(true);
-        if (selectedPlan === 'basic') {
-          trackPurchaseCompleted({
-            transactionId: result?.subscriptionId || setupIntent?.id,
-            value: PLANS.basic.price,
-            currency: 'EUR',
-            plan: 'oficina15',
-            email: form.email,
-          });
-        }
-      } else {
-        setApiError(result.message || 'Error creating account.');
+      if (stripeError) {
+        try { sessionStorage.removeItem(PENDING_OV_SIGNUP_KEY); } catch (_) {}
+        setApiError(stripeError.message); setLoading(false); return;
       }
+      // Inline path (no redirect): finish here. (On a redirect we never reach
+      // this line — the browser navigated away; the recovery effect takes over.)
+      try { sessionStorage.removeItem(PENDING_OV_SIGNUP_KEY); } catch (_) {}
+      await completeRegistration(signupPayload, setupIntent?.payment_method, setupIntent?.id);
     } catch {
       setApiError('Network error.');
     } finally {
@@ -448,6 +531,33 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
             <Link href="/login" sx={linkSx}>
               {t('register.signIn')}
             </Link>
+          </Typography>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  // Returned from a 3DS redirect and still finishing registration: show a
+  // spinner instead of flashing the empty step-0 form. The recovery effect
+  // flips `success` (→ success dialog above) or `recovering` off on failure.
+  if (recovering) {
+    return (
+      <Dialog
+        open
+        fullWidth
+        maxWidth="xs"
+        PaperProps={{
+          translate: 'no',
+          sx: {
+            borderRadius: `${tokens.radius.lg}px`,
+            p: 4,
+          },
+        }}
+      >
+        <DialogContent sx={{ textAlign: 'center', p: 0 }}>
+          <CircularProgress sx={{ color: colors.brand, mb: 2 }} />
+          <Typography sx={{ fontSize: '0.9rem', color: colors.ink2 }}>
+            {t('register.finalizing', 'Finalizing your signup…')}
           </Typography>
         </DialogContent>
       </Dialog>
