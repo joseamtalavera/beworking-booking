@@ -480,9 +480,7 @@ export default function SignUp({ defaultPlan = 'basic', defaultLocation = '' }) 
       const { error: stripeError, setupIntent } = await stripe.confirmSetup({
         elements,
         confirmParams: { return_url: window.location.href },
-        // TEMP (staging Test 2 only): force a redirect even for inline cards
-        // to exercise the 3DS recovery effect. REVERT to 'if_required' before main.
-        redirect: 'always',
+        redirect: 'if_required',
       });
       if (stripeError) {
         try { sessionStorage.removeItem(PENDING_OV_SIGNUP_KEY); } catch (_) {}
