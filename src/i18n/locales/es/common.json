@@ -305,7 +305,8 @@
     "defaultBookingInstructions": [
       "Solicita tu horario y espera confirmación.",
       "Recibirás la factura y enlace de pago.",
-      "Tras el pago te enviaremos instrucciones y acceso."
+      "Tras el pago te enviaremos instrucciones y acceso.",
+      "Abre las puertas desde la app, en «Mis puertas» (BeKey)."
     ],
     "amenities_map": {
       "Pizarra": "Pizarra",

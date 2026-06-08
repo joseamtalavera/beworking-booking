@@ -305,7 +305,8 @@
     "defaultBookingInstructions": [
       "Request your time slot and wait for confirmation.",
       "You will receive the invoice and payment link.",
-      "Once paid, we will send access instructions."
+      "Once paid, we will send access instructions.",
+      "Open the doors from the app, under 'My doors' (BeKey)."
     ],
     "amenities_map": {
       "Pizarra": "Whiteboard",
