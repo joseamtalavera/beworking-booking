@@ -95,10 +95,11 @@ const pickInstructionIcon = (text) => {
   if (!text) return InfoOutlinedIcon;
   const normalized = text.toLowerCase();
   if (normalized.includes('solicita') || normalized.includes('reserva') || normalized.includes('día')) return EventAvailableRoundedIcon;
-  // BeKey door-access bullet — check before payment/access so a sentence that
-  // also mentions "pago"/"acceso" still gets the door icon.
-  if (normalized.includes('bekey') || normalized.includes('puerta') || normalized.includes('mis puertas') || normalized.includes('door')) return MeetingRoomRoundedIcon;
-  if (normalized.includes('instruccion') || normalized.includes('acceso') || normalized.includes('llave')) return VpnKeyRoundedIcon;
+  // BeKey door-access bullet gets the KEY icon ("BeKey"). Checked before
+  // payment/access so a sentence that also mentions "pago"/"acceso" still
+  // resolves to the key.
+  if (normalized.includes('bekey') || normalized.includes('puerta') || normalized.includes('mis puertas') || normalized.includes('door')) return VpnKeyRoundedIcon;
+  if (normalized.includes('instruccion') || normalized.includes('acceso') || normalized.includes('llave')) return EditNoteRoundedIcon;
   if (normalized.includes('factura') || normalized.includes('pago') || normalized.includes('enlace')) return ReceiptLongRoundedIcon;
   return InfoOutlinedIcon;
 };
