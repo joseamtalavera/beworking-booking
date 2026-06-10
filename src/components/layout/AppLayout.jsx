@@ -636,14 +636,17 @@ const AppLayout = ({ children }) => {
         </Box>
 
         {/* EU / Kit Digital funding faldón — programme compliance obligation.
-            Light-background logo strip, centred and capped so it never stretches
-            past a legible width; sits below the copyright row as its own band. */}
+            Full-bleed white band (matches the logo strip's #fff background) that
+            breaks out of the footer padding so the divider runs edge-to-edge and
+            reaches the very bottom; logo strip centred and capped for legibility. */}
         <Box
           sx={{
-            maxWidth: 1200,
-            mx: 'auto',
             mt: { xs: 4, md: 5 },
-            pt: { xs: 3, md: 3.5 },
+            mx: { xs: -3, md: -5 },              // cancel footer px → full width
+            mb: { xs: '-24px', md: '-32px' },    // cancel footer pb → reach bottom edge
+            px: { xs: 3, md: 5 },
+            py: { xs: 2.5, md: 3 },
+            bgcolor: '#ffffff',
             borderTop: '1px solid rgba(0,0,0,0.08)',
             display: 'flex',
             justifyContent: 'center',
@@ -654,7 +657,7 @@ const AppLayout = ({ children }) => {
             src="/marketing/funding-faldon.webp"
             alt="Financiado por la Unión Europea – NextGenerationEU · Gobierno de España · Red.es · Plan de Recuperación, Transformación y Resiliencia · Kit Digital · España Digital 2026"
             loading="lazy"
-            sx={{ width: '100%', maxWidth: 860, height: 'auto', display: 'block', opacity: 0.92 }}
+            sx={{ width: '100%', maxWidth: 860, height: 'auto', display: 'block' }}
           />
         </Box>
       </Box>
