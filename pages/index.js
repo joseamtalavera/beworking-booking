@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import Head from 'next/head';
+import Seo from '@/seo/Seo';
 import NextLink from 'next/link';
 import { Box, Typography, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -119,11 +119,11 @@ export default function HomePage() {
 
   return (
     <>
-      <Head>
-        <title>{t('home.evolved.meta.title')}</title>
-        <meta name="description" content={t('home.evolved.meta.description')} />
-        <link rel="canonical" href="https://be-working.com" />
-      </Head>
+      <Seo
+        title={t('home.evolved.meta.title')}
+        description={t('home.evolved.meta.description')}
+        canonical="https://be-working.com"
+      />
 
       {/* HERO */}
       <HeroEvolved />

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
+import Seo from '@/seo/Seo';
 import { Box, Typography } from '@mui/material';
 import {
   useCatalogRooms,
@@ -145,11 +145,11 @@ export default function Coworking() {
 
   return (
     <>
-      <Head>
-        <title>{location.seo.coworking.title}</title>
-        <meta name="description" content={location.seo.coworking.description} />
-        <link rel="canonical" href="https://be-working.com/malaga/coworking" />
-      </Head>
+      <Seo
+        title={location.seo.coworking.title}
+        description={location.seo.coworking.description}
+        canonical="https://be-working.com/malaga/coworking"
+      />
 
       <Box
         component="section"

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head';
+import Seo from '@/seo/Seo';
 import {
   Box, Button, Dialog, DialogContent, DialogTitle, IconButton, MenuItem, Paper, Stack, TextField, Typography,
 } from '@mui/material';
@@ -238,11 +238,11 @@ export default function SalasDeReunion() {
 
   return (
     <>
-      <Head>
-        <title>{location.seo.meetingRooms.title}</title>
-        <meta name="description" content={location.seo.meetingRooms.description} />
-        <link rel="canonical" href="https://be-working.com/malaga/salas-de-reunion" />
-      </Head>
+      <Seo
+        title={location.seo.meetingRooms.title}
+        description={location.seo.meetingRooms.description}
+        canonical="https://be-working.com/malaga/salas-de-reunion"
+      />
 
       <Box
         component="section"
