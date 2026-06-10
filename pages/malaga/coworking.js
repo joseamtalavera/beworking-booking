@@ -173,6 +173,7 @@ export default function Coworking() {
           }}
         >
           <Typography
+            component="h1"
             sx={{
               ...typography.eyebrow,
               color: colors.brand,
@@ -183,7 +184,7 @@ export default function Coworking() {
             {t('locations.services.coworking', 'Coworking')} · Málaga
           </Typography>
           <Box
-            component="h1"
+            component="div"
             sx={{
               ...typography.h1,
               color: colors.ink,

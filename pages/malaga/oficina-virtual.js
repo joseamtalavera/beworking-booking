@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import Seo from '@/components/oficina-virtual/Seo';
+import Seo from '@/seo/Seo';
 import StructuredData from '@/components/oficina-virtual/StructuredData';
 import orgData from '@/components/oficina-virtual/structuredData/orgData';
 // Self-serve SignUp lives in a popup (opened by the "Reserva online" CTA).
@@ -244,8 +244,6 @@ export default function OficinaVirtualPage() {
       <Seo
         title={`Oficina Virtual en ${city} — BeWorking desde 15€/mes`}
         description="Domicilio legal y fiscal, recepción de correo, coworking y plataforma de gestión incluida. Sin depósito, sin permanencia. Empieza hoy."
-        image="/BeWorking_optimized.jpg"
-        url="https://be-working.com/malaga/oficina-virtual"
         canonical="https://be-working.com/malaga/oficina-virtual"
       />
       <StructuredData data={orgData} />
@@ -276,11 +274,11 @@ export default function OficinaVirtualPage() {
           }}
         >
           <Box>
-            <Typography sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
+            <Typography component="h1" sx={{ ...typography.eyebrow, color: colors.brand, textTransform: 'uppercase', mb: 2 }}>
               {t('landing.hero.label', 'Oficina virtual')} · {city}
             </Typography>
             <Box
-              component="h1"
+              component="div"
               sx={{
                 ...typography.h1,
                 color: colors.ink,

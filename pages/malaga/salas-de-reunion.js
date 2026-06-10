@@ -266,6 +266,7 @@ export default function SalasDeReunion() {
           }}
         >
           <Typography
+            component="h1"
             sx={{
               ...typography.eyebrow,
               color: colors.brand,
@@ -276,7 +277,7 @@ export default function SalasDeReunion() {
             {t('locations.services.meetingRooms', 'Salas de reunión')} · Málaga
           </Typography>
           <Box
-            component="h1"
+            component="div"
             sx={{
               ...typography.h1,
               color: colors.ink,
