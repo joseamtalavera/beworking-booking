@@ -107,6 +107,9 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const defaultDate = today.toISOString().split('T')[0];
   // Day desk bookings are limited to the next 30 days.
   const maxDayDate = new Date(today.getTime() + 30 * 86400000).toISOString().split('T')[0];
+  // Desk subscriptions can only start this month or the 1st of next month.
+  const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+  const maxMonth = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
 
   const [bookingType, setBookingType] = useState('subscription');
   const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
@@ -299,7 +302,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                     value={selectedMonth}
                     onChange={(e) => setSelectedMonth(e.target.value)}
                     fullWidth
-                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultMonth } }}
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultMonth, max: maxMonth } }}
                     sx={pillFieldSx(selectedMonth)}
                   />
                 </Box>
