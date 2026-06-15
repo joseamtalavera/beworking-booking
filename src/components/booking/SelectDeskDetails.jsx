@@ -28,17 +28,6 @@ const GRID_DESKS = [
   [5, 1, 6], [1, 4, 6],
 ];
 
-// End of the chosen calendar month — used only to bound the bloqueo range for
-// the starting month. The subscription itself is open-ended and renews monthly
-// via Stripe; subsequent months' bloqueos aren't pre-created here.
-const getMonthEndForStart = (yearMonth) => {
-  const [year, month] = yearMonth.split('-').map(Number);
-  const lastDay = new Date(year, month, 0).getDate();
-  return `${yearMonth}-${String(lastDay).padStart(2, '0')}`;
-};
-
-const getMonthStart = (yearMonth) => `${yearMonth}-01`;
-
 const pillFieldSx = (hasValue) => ({
   '& .MuiInputLabel-root': {
     fontSize: '0.7rem',
@@ -103,26 +92,32 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   );
 
   const today = new Date();
-  const defaultMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`;
   const defaultDate = today.toISOString().split('T')[0];
   // Day desk bookings are limited to the next 30 days.
   const maxDayDate = new Date(today.getTime() + 30 * 86400000).toISOString().split('T')[0];
-  // Desk subscriptions can only start this month or the 1st of next month.
+  // Desk subscriptions can only start today or up to the 1st of next month.
   const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-  const maxMonth = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}`;
+  const maxSubDate = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
+  // Open-ended monthly subscription: first period runs start → same day next
+  // month (e.g. 13th → 13th).
+  const addMonths = (dateStr, n) => {
+    const d = new Date(`${dateStr}T00:00:00`);
+    d.setMonth(d.getMonth() + n);
+    return d.toISOString().split('T')[0];
+  };
 
-  const [bookingType, setBookingType] = useState('subscription');
-  const [selectedMonth, setSelectedMonth] = useState(defaultMonth);
+  const [bookingType, setBookingType] = useState('day');
+  const [selectedSubDate, setSelectedSubDate] = useState(defaultDate);
   const [selectedDate, setSelectedDate] = useState(defaultDate);
   const [selectedDesk, setSelectedDesk] = useState(null);
 
-  const startDate = bookingType === 'day' ? selectedDate : getMonthStart(selectedMonth);
-  const endDate = bookingType === 'day' ? selectedDate : getMonthEndForStart(selectedMonth);
+  const startDate = bookingType === 'day' ? selectedDate : selectedSubDate;
+  const endDate = bookingType === 'day' ? selectedDate : addMonths(selectedSubDate, 1);
 
   const { data: bloqueos, isLoading, isError, error } = useQuery({
     queryKey: ['desk-availability', startDate, endDate],
     queryFn: () => fetchDeskAvailability(startDate, endDate, { deskCount }),
-    enabled: bookingType === 'day' ? Boolean(selectedDate) : Boolean(selectedMonth),
+    enabled: bookingType === 'day' ? Boolean(selectedDate) : Boolean(selectedSubDate),
   });
 
   const bookedDesks = useMemo(() => {
@@ -160,7 +155,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   useEffect(() => {
     setSelectedDesk(null);
-  }, [selectedMonth, selectedDate, bookingType]);
+  }, [selectedSubDate, selectedDate, bookingType]);
 
   const handleContinue = () => {
     if (!selectedDesk) return;
@@ -297,13 +292,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 <Box sx={{ flex: 1, px: 3, py: 1.5, minWidth: 0 }}>
                   <TextField
                     variant="standard"
-                    type="month"
-                    label={isEs ? 'MES DE INICIO' : 'START MONTH'}
-                    value={selectedMonth}
-                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    type="date"
+                    label={isEs ? 'FECHA DE INICIO' : 'START DATE'}
+                    value={selectedSubDate}
+                    onChange={(e) => setSelectedSubDate(e.target.value)}
                     fullWidth
-                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultMonth, max: maxMonth } }}
-                    sx={pillFieldSx(selectedMonth)}
+                    slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true }, htmlInput: { min: defaultDate, max: maxSubDate } }}
+                    sx={pillFieldSx(selectedSubDate)}
                   />
                 </Box>
               </Paper>
