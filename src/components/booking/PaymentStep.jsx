@@ -339,8 +339,11 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          // Send the pre-tax BASE; stripe-service layers 21% IVA on top so the
+          // hosted invoice (and our factura) split base + VAT. Customer is still
+          // charged the same gross (MONTHLY_WITH_VAT = base × 1.21).
           setup_intent_id: result.setupIntent.id,
-          monthly_amount: Math.round(monthlyAmount * 100),
+          monthly_amount: Math.round(MONTHLY_BASE * 100),
           currency: (room?.currency || 'EUR').toLowerCase(),
           duration_months: durationMonths,
           tenant: process.env.NEXT_PUBLIC_STRIPE_TENANT || 'default',
@@ -359,6 +362,10 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
       await createPublicBooking(
         buildBookingPayload(visitor, schedule, room, true, {
           stripeSubscriptionId: subData.subscriptionId,
+          stripeCustomerId: subData.customerId,
+          // Store the pre-tax base on the sub row (mirrors admin convention:
+          // monthlyAmount = base, vat_percent held separately).
+          monthlyAmount: MONTHLY_BASE,
         }),
       );
 
