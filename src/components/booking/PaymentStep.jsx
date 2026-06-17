@@ -481,11 +481,13 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
             {t('payment.chargedToday', { amount: monthlyAmount.toFixed(2) })}
           </Typography>
           <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-            {t('payment.thenMonthly', {
-              amount: monthlyAmount.toFixed(2),
-              remaining: durationMonths - 1,
-              label: durationMonths - 1 === 1 ? t('payment.monthSingular') : t('payment.monthPlural'),
-            })}
+            {durationMonths > 1
+              ? t('payment.thenMonthly', {
+                  amount: monthlyAmount.toFixed(2),
+                  remaining: durationMonths - 1,
+                  label: durationMonths - 1 === 1 ? t('payment.monthSingular') : t('payment.monthPlural'),
+                })
+              : t('payment.thenMonthlyOpen', { amount: monthlyAmount.toFixed(2) })}
           </Typography>
         </Stack>
       </Paper>

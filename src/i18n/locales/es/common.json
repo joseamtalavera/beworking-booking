@@ -476,6 +476,7 @@
     "monthlySubscription": "Suscripción mensual",
     "chargedToday": "Cobro hoy: €{{amount}}",
     "thenMonthly": "Luego €{{amount}}/mes durante {{remaining}} {{label}} restantes",
+    "thenMonthlyOpen": "Luego €{{amount}}/mes · se renueva automáticamente hasta que canceles",
     "monthSingular": "mes",
     "monthPlural": "meses",
     "subscribe": "Suscribirse — €{{amount}}/mes",

@@ -463,6 +463,7 @@
     "monthlySubscription": "Monthly subscription",
     "chargedToday": "Charged today: €{{amount}}",
     "thenMonthly": "Then €{{amount}}/month for {{remaining}} remaining {{label}}",
+    "thenMonthlyOpen": "Then €{{amount}}/month · renews automatically until you cancel",
     "monthSingular": "month",
     "monthPlural": "months",
     "subscribe": "Subscribe — €{{amount}}/month",
