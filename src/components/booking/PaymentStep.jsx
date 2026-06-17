@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n/i18n';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { useBookingVisitor } from '../../store/useBookingVisitor';
-import { createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
+import { checkBookingAvailability, createPublicBooking, fetchBookingUsage, fetchPublicAvailability } from '../../api/bookings';
 import { timeStringToMinutes } from '../../utils/calendarUtils';
 import { tokens } from '@/theme/tokens';
 import { trackBookingCompleted } from '@/utils/analytics';
@@ -36,6 +36,37 @@ const VAT_RATE = 0.21;
 const PENDING_BOOKING_KEY = 'beworking_pending_booking';
 const MONTHLY_BASE = 90;
 const MONTHLY_WITH_VAT = +(MONTHLY_BASE * (1 + VAT_RATE)).toFixed(2);
+
+// requestJson throws Error("<status> <raw body>"); the body is often JSON like
+// {message, conflicts, refunded}. Parse it so we can show a friendly message
+// instead of dumping the raw 409 payload at the user.
+const parseApiError = (err) => {
+  const raw = err?.message || '';
+  const jsonStart = raw.indexOf('{');
+  if (jsonStart >= 0) {
+    try {
+      return JSON.parse(raw.slice(jsonStart));
+    } catch (_) {
+      /* not JSON — fall through */
+    }
+  }
+  return null;
+};
+
+// Map a booking/subscription API error to a friendly, translated message.
+const friendlyBookingError = (err, t, fallbackKey = 'payment.subscriptionFailed') => {
+  const parsed = parseApiError(err);
+  const isConflict = parsed
+    && (Array.isArray(parsed.conflicts)
+      || /overlaps with existing bloqueos/i.test(parsed.message || ''));
+  if (isConflict) {
+    return parsed.refunded
+      ? t('payment.slotUnavailableRefunded')
+      : t('payment.deskUnavailable');
+  }
+  if (parsed?.message) return parsed.message;
+  return t(fallbackKey);
+};
 
 const cardSx = {
   p: { xs: 2.5, md: 3 },
@@ -322,6 +353,30 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
     setSubmitting(true);
     setError('');
 
+    // Availability pre-check BEFORE confirming payment, so a slot conflict can't
+    // leave an orphan paid subscription (#282). If the desk is taken for the
+    // requested period, stop here — nothing is charged.
+    const deskProductName = schedule?.deskProductName || room?.productName || room?.name || '';
+    try {
+      const availability = await checkBookingAvailability({
+        productName: deskProductName,
+        date: schedule?.date,
+        dateTo: schedule?.dateTo,
+        startTime: schedule?.startTime,
+        endTime: schedule?.endTime,
+        weekdays: schedule?.recurring && schedule?.weekdays?.length ? schedule.weekdays : undefined,
+      });
+      if (availability && availability.available === false) {
+        setSubmitting(false);
+        setError(t('payment.deskUnavailable'));
+        return;
+      }
+    } catch (availErr) {
+      setSubmitting(false);
+      setError(t('payment.availabilityCheckFailed'));
+      return;
+    }
+
     const result = await stripe.confirmSetup({
       elements,
       redirect: 'if_required',
@@ -373,7 +428,7 @@ const SubscriptionForm = ({ onBack, monthlyAmount, durationMonths, room }) => {
       setSuccess(true);
     } catch (err) {
       setSubmitting(false);
-      setError(err.message || t('payment.subscriptionFailed'));
+      setError(friendlyBookingError(err, t));
     }
   };
 
@@ -468,7 +523,7 @@ const FreeBookingForm = ({ onBack, room, pricing, usage }) => {
       );
       setSuccess(true);
     } catch (err) {
-      setError(err.message || t('payment.failedToCreate'));
+      setError(friendlyBookingError(err, t, 'payment.failedToCreate'));
     } finally {
       setSubmitting(false);
     }

@@ -77,6 +77,18 @@ export const fetchBookingUsage = (email, productName, options = {}) =>
   requestJson(`/public/booking-usage?email=${encodeURIComponent(email)}&productName=${encodeURIComponent(productName)}`, options);
 
 /**
+ * Pre-charge availability check. Call BEFORE confirming payment / creating a
+ * Stripe subscription so a slot conflict is surfaced without charging the
+ * customer (avoids orphan paid subs — #282). Returns { available, conflicts }.
+ */
+export const checkBookingAvailability = (payload, options = {}) =>
+  requestJson('/public/bookings/availability', {
+    method: 'POST',
+    body: payload,
+    ...options
+  });
+
+/**
  * Fetch desk availability for a given date range.
  * Returns bloqueos for desk products (MA1O1-1 through MA1O1-N)
  * for the specified range so the UI can mark desks as booked.
