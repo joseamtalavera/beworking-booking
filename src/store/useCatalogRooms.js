@@ -85,32 +85,25 @@ export const isDeskProducto = (producto) => {
 export function buildDeskRooms(productos, centroName) {
   const zones = COWORK_ZONES.filter(isZoneActiveToday);
   if (zones.length === 0) return [];
-  const primary = zones[0];
-  // Use a real image served by the API (the hardcoded /img URLs 404 in this
-  // context). Prefer the MA1A5 room photo, else any producto image, else config.
   const list = Array.isArray(productos) ? productos : [];
-  const a5 = list.find((p) => (p.name ?? p.nombre ?? '').toString().trim().toUpperCase() === 'MA1A5');
-  const heroImage = a5?.heroImage || list.map((p) => p.heroImage).find(Boolean) || primary.heroImage || '';
-  // Single catalog entry ("MA1 Desks"); the booking page exposes each zone as a
-  // Desk 1 / Desk 2 tab via deskZones.
+
+  // Keep the ORIGINAL catalog desk room (real photo, gallery, description,
+  // capacity from the admin catalog). Build from the canonical desk producto, or
+  // the first desk producto. We only override the slug/price and attach the
+  // Coworking 1 / Coworking 2 tabs (deskZones) — nothing else about the card.
+  const deskProducto = list.find(isCanonicalDeskProducto) || list.find(isDeskProducto);
+  const base = deskProducto
+    ? buildRoomFromProducto(deskProducto, centroName)
+    : { name: 'MA1-DESKS', productName: 'MA1-DESKS', centro: centroName || 'Málaga Workspace',
+        capacity: zones[0].deskCount, priceFrom: zones[0].priceFrom, heroImage: '', gallery: [],
+        amenities: [], tags: [], instantBooking: true };
+
   return [{
+    ...base,
     id: 'ma1-desks',
     slug: 'ma1-desks',
-    name: 'MA1 Desks',
-    productName: 'MA1 Desks',
-    centro: centroName || 'Málaga Workspace',
-    capacity: zones.reduce((sum, z) => sum + z.deskCount, 0),
-    priceFrom: primary.priceFrom,
     priceUnit: '/month',
-    currency: 'EUR',
-    heroImage,
-    gallery: [],
-    amenities: [],
-    tags: [],
-    instantBooking: true,
-    ratingAverage: 4.8,
-    ratingCount: 0,
-    deskPrefix: primary.prefix,
+    deskPrefix: zones[0].prefix,
     deskZones: zones.map((z) => ({
       prefix: z.prefix,
       shortLabel: z.shortLabel,

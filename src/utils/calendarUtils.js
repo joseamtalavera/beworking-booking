@@ -114,11 +114,22 @@ export const describeBloqueo = (bloqueo) => {
   return pieces.join(' · ');
 };
 
+// True if the block spans into a later calendar day (e.g. a multi-day/maintenance
+// blackout). On any day it covers, the whole day is blocked — its time-of-day
+// window (often 00:00→00:00) would otherwise read as zero-width and block nothing.
+const datePart = (iso) => (typeof iso === 'string' ? iso.slice(0, 10) : '');
+export const isAllDayBlock = (bloqueo) => {
+  const di = datePart(bloqueo?.fechaIni);
+  const df = datePart(bloqueo?.fechaFin);
+  return Boolean(di && df && df > di);
+};
+
 export const bloqueoCoversSlot = (bloqueo, slotId) => {
   const slotMinutes = timeStringToMinutes(slotId);
   if (slotMinutes == null) {
     return false;
   }
+  if (isAllDayBlock(bloqueo)) return true;
   const startMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaIni)) ?? 0;
   const endMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaFin)) ?? 24 * 60;
   return slotMinutes >= startMinutes && slotMinutes < endMinutes;
@@ -170,6 +181,11 @@ export const coversSlot = (booking, slotId) => {
 export const getBookedSlotIds = (bloqueos = []) => {
   const booked = new Set();
   for (const bloqueo of bloqueos) {
+    if (isAllDayBlock(bloqueo)) {
+      // Whole day blocked → mark every slot.
+      for (let m = 0; m < 24 * 60; m += 30) booked.add(padTime(m));
+      continue;
+    }
     const startMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaIni));
     const endMinutes = timeStringToMinutes(extractTimeFromISO(bloqueo.fechaFin));
     if (startMinutes == null || endMinutes == null) continue;
