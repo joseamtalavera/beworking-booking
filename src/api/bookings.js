@@ -100,10 +100,10 @@ export const checkBookingAvailability = (payload, options = {}) =>
  * @param {object} [params.requestOptions] — passed through to requestJson.
  */
 export const fetchDeskAvailability = async (startDate, endDate, params = {}) => {
-  const { deskCount = 16, requestOptions = {} } = params;
+  const { deskCount = 16, prefix = 'MA1O1', requestOptions = {} } = params;
   const products = [];
   for (let i = 1; i <= deskCount; i += 1) {
-    products.push(`MA1O1-${i}`);
+    products.push(`${prefix}-${i}`);
   }
 
   const search = new URLSearchParams();

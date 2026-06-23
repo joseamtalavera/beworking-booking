@@ -85,6 +85,12 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   // Real desk count comes from the catalog (room.capacity). Fall back to the
   // floor-plan size if the room has no capacity set, and clamp to the layout
   // to avoid rendering desks the floor plan can't position.
+  // Zone the room belongs to: drives the product prefix (MA1O1-N / MA1O5-N) and
+  // the seasonal date window for the summer A5 pop-up.
+  const deskPrefix = room?.deskPrefix || 'MA1O1';
+  const seasonStart = room?.seasonStart || null; // ISO yyyy-mm-dd or null
+  const seasonEnd = room?.seasonEnd || null;
+
   const deskCount = Math.min(room?.capacity ?? GRID_DESKS.length, GRID_DESKS.length);
   const visibleDesks = useMemo(
     () => GRID_DESKS.filter(([deskNum]) => deskNum <= deskCount),
@@ -92,12 +98,17 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   );
 
   const today = new Date();
-  const defaultDate = today.toISOString().split('T')[0];
-  // Day desk bookings are limited to the next 30 days.
-  const maxDayDate = new Date(today.getTime() + 30 * 86400000).toISOString().split('T')[0];
-  // Desk subscriptions can only start today or up to the 1st of next month.
+  const todayIso = today.toISOString().split('T')[0];
+  // Earliest selectable day: today, or the season start if the zone opens later.
+  const minDate = seasonStart && seasonStart > todayIso ? seasonStart : todayIso;
+  const defaultDate = minDate;
+  // Day desk bookings are limited to the next 30 days, clamped to the season end.
+  const plus30 = new Date(today.getTime() + 30 * 86400000).toISOString().split('T')[0];
+  const maxDayDate = seasonEnd && seasonEnd < plus30 ? seasonEnd : plus30;
+  // Subscriptions start today or up to the 1st of next month, clamped to season end.
   const nextMonthDate = new Date(today.getFullYear(), today.getMonth() + 1, 1);
-  const maxSubDate = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
+  const firstNextMonth = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth() + 1).padStart(2, '0')}-01`;
+  const maxSubDate = seasonEnd && seasonEnd < firstNextMonth ? seasonEnd : firstNextMonth;
   // Open-ended monthly subscription: first period runs start → same day next
   // month (e.g. 13th → 13th).
   const addMonths = (dateStr, n) => {
@@ -115,8 +126,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const endDate = bookingType === 'day' ? selectedDate : addMonths(selectedSubDate, 1);
 
   const { data: bloqueos, isLoading, isError, error } = useQuery({
-    queryKey: ['desk-availability', startDate, endDate],
-    queryFn: () => fetchDeskAvailability(startDate, endDate, { deskCount }),
+    queryKey: ['desk-availability', deskPrefix, startDate, endDate],
+    queryFn: () => fetchDeskAvailability(startDate, endDate, { deskCount, prefix: deskPrefix }),
     enabled: bookingType === 'day' ? Boolean(selectedDate) : Boolean(selectedSubDate),
   });
 
@@ -129,7 +140,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
     bloqueos.forEach((b) => {
       const productName = (b.producto?.nombre || b.productName || '').toUpperCase();
-      const match = productName.match(/^MA1O1[-_ ]?(\d{1,2})$/);
+      const match = productName.match(new RegExp(`^${deskPrefix}[-_ ]?(\\d{1,2})$`));
       if (!match) return;
 
       const bStart = new Date(b.fechaIni || b.fecha || b.date);
@@ -143,7 +154,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
     });
 
     return booked;
-  }, [bloqueos, startDate, endDate]);
+  }, [bloqueos, startDate, endDate, deskPrefix]);
 
   const availableDesks = useMemo(() => {
     const desks = [];
@@ -166,7 +177,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         startTime: '00:00',
         endTime: '23:59',
         attendees: 1,
-        deskProductName: `MA1O1-${selectedDesk}`,
+        deskProductName: `${deskPrefix}-${selectedDesk}`,
         bookingType: 'day',
         durationMonths: 0,
       });
@@ -179,7 +190,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         startTime: '00:00',
         endTime: '23:59',
         attendees: 1,
-        deskProductName: `MA1O1-${selectedDesk}`,
+        deskProductName: `${deskPrefix}-${selectedDesk}`,
         bookingType: 'subscription',
         durationMonths: 1,
       });

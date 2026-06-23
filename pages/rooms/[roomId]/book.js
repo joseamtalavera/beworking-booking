@@ -9,9 +9,9 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
-  isCanonicalDeskProducto,
-  isDeskProducto,
+  buildDeskRooms,
 } from '@/store/useCatalogRooms';
+import { hiddenAulasToday } from '@/config/coworkZones';
 import { useBookingFlow } from '@/store/useBookingFlow';
 import BookingStepper from '@/components/booking/BookingStepper';
 import SelectBookingDetails from '@/components/booking/SelectBookingDetails';
@@ -62,39 +62,21 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, initialEn
       .then((data) => {
         if (!active || !Array.isArray(data)) return;
 
+        const hiddenAulas = hiddenAulasToday();
         const aulas = data.filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && name.startsWith('MA1A');
+          return type === 'aula' && name.startsWith('MA1A') && !hiddenAulas.includes(name);
         });
-        const mesas = data.filter(isDeskProducto);
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));
-        const deskProducto = data.find(isCanonicalDeskProducto);
-
-        if (deskProducto) {
-          const deskRoom = buildRoomFromProducto(deskProducto);
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          setRooms([...aulaRooms, deskRoom]);
-        } else if (mesas.length > 0) {
-          const sample = mesas[0];
-          const deskRoom = buildRoomFromProducto({ ...sample, name: 'MA1 Desks', capacity: mesas.length });
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          setRooms([...aulaRooms, deskRoom]);
-        } else {
-          setRooms(aulaRooms);
-        }
+        const deskRooms = buildDeskRooms(data);
+        setRooms([...aulaRooms, ...deskRooms]);
       })
       .catch(() => {});
     return () => { active = false; };
   }, [rooms.length, roomId, setRooms]);
 
-  const isDesk = room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
+  const isDesk = Boolean(room?.deskPrefix) || room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
 
   const renderStep = () => {
     switch (activeStep) {

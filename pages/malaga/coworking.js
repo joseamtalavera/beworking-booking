@@ -6,9 +6,7 @@ import Seo from '@/seo/Seo';
 import { Box, Typography } from '@mui/material';
 import {
   useCatalogRooms,
-  buildRoomFromProducto,
-  isCanonicalDeskProducto,
-  isDeskProducto,
+  buildDeskRooms,
 } from '@/store/useCatalogRooms';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
@@ -66,30 +64,7 @@ export default function Coworking() {
         setProductos(Array.isArray(productosData) ? productosData : []);
 
         const centroLabel = mapped.find((c) => c.code === location.centerCode)?.label ?? 'Malaga Workspace';
-        const mesas = (productosData || []).filter(isDeskProducto);
-        const deskProducto = (productosData || []).find(isCanonicalDeskProducto);
-
-        const storeRooms = [];
-        if (deskProducto) {
-          const deskRoom = buildRoomFromProducto(deskProducto, centroLabel);
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          storeRooms.push(deskRoom);
-        } else if (mesas.length > 0) {
-          const sample = mesas[0];
-          const deskRoom = buildRoomFromProducto(
-            { ...sample, name: 'MA1 Desks', capacity: mesas.length },
-            centroLabel,
-          );
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          storeRooms.push(deskRoom);
-        }
-        setRooms(storeRooms);
+        setRooms(buildDeskRooms(productosData, centroLabel));
       } catch {
         // keep empty on error
       } finally {
@@ -100,39 +75,37 @@ export default function Coworking() {
     return () => { active = false; };
   }, [setRooms]);
 
-  const deskCard = useMemo(() => {
-    const mesas = productos.filter(isDeskProducto);
-    if (mesas.length === 0) return null;
-
-    const sample = mesas[0];
-    const center = (sample.centerCode ?? sample.centroCodigo ?? '').trim();
-    const matchingCentro = centros.find((c) => c.code === center.toUpperCase());
-    const matchingRoom = rooms.find((room) => (room.slug ?? '').toLowerCase() === 'ma1-desks');
-
-    return {
-      id: `desks-${center.toUpperCase() || 'ma1'}`,
-      name: matchingRoom?.name || 'MA1 Desks',
-      description: matchingRoom?.description || `${mesas.length} desk${mesas.length === 1 ? '' : 's'} available`,
-      productName: 'MA1 Desks',
-      slug: 'ma1-desks',
-      type: 'desk',
-      image: matchingRoom?.heroImage || sample.heroImage || '',
-      capacity: matchingRoom?.capacity != null ? String(matchingRoom.capacity) : String(mesas.length),
-      rating: 4.8,
-      reviewCount: 0,
-      // Catalog card shows the day-pass entry price; monthly fixed-desk
-      // pricing surfaces in the booking flow itself.
-      price: '€ 10',
-      priceUnit: '/day',
-      location: matchingCentro?.city || 'Malaga',
-      tags: matchingRoom?.tags || [],
-      instantBooking: true,
-      centroCode: center || undefined,
-      availableCount: mesas.length,
-      centerName: matchingCentro?.label || undefined,
-      isBookable: true,
-    };
-  }, [productos, centros, rooms]);
+  // One catalog card per coworking zone bookable today (the summer A5 zone
+  // appears only during its window). Derived from the store's desk rooms so a
+  // second zone never inflates the first one's desk count.
+  const deskCards = useMemo(() => {
+    const matchingCentro = centros.find((c) => c.code === location.centerCode);
+    return rooms
+      .filter((room) => room.deskPrefix)
+      .map((room) => ({
+        id: room.slug,
+        name: room.name,
+        description: room.description || `${room.capacity} desk${room.capacity === 1 ? '' : 's'} available`,
+        productName: room.productName,
+        slug: room.slug,
+        type: 'desk',
+        image: room.heroImage || '',
+        capacity: room.capacity != null ? String(room.capacity) : '',
+        rating: 4.8,
+        reviewCount: 0,
+        // Catalog card shows the day-pass entry price; monthly fixed-desk
+        // pricing surfaces in the booking flow itself.
+        price: '€ 10',
+        priceUnit: '/day',
+        location: matchingCentro?.city || 'Malaga',
+        tags: room.tags || [],
+        instantBooking: true,
+        centroCode: location.centerCode,
+        availableCount: room.capacity,
+        centerName: matchingCentro?.label || undefined,
+        isBookable: true,
+      }));
+  }, [rooms, centros]);
 
   const handleBookNow = useCallback(
     (space) => {
@@ -237,7 +210,7 @@ export default function Coworking() {
         }}
       >
         <Box sx={{ maxWidth: layout.maxWidth, mx: 'auto' }}>
-          {deskCard ? (
+          {deskCards.length > 0 ? (
             <Box
               sx={{
                 width: '100%',
@@ -251,7 +224,9 @@ export default function Coworking() {
                 alignItems: 'stretch',
               }}
             >
-              <SpaceCard space={deskCard} onBookNow={handleBookNow} />
+              {deskCards.map((card) => (
+                <SpaceCard key={card.id} space={card} onBookNow={handleBookNow} />
+              ))}
             </Box>
           ) : !loading ? (
             <Box sx={{ textAlign: 'center', py: 8 }}>

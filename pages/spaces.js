@@ -13,9 +13,11 @@ import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
+  buildDeskRooms,
   isCanonicalDeskProducto,
   isDeskProducto,
 } from '@/store/useCatalogRooms';
+import { hiddenAulasToday, zoneForProductName } from '@/config/coworkZones';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
@@ -125,37 +127,16 @@ const HomePage = () => {
 
         const centroLabel = centros.find((c) => (c.code ?? '').toUpperCase() === 'MA1')?.label ?? 'Málaga Workspace';
 
+        const hiddenAulas = hiddenAulasToday();
         const aulas = allProductos.filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && name.startsWith('MA1A');
+          return type === 'aula' && name.startsWith('MA1A') && !hiddenAulas.includes(name);
         });
 
-        const mesas = allProductos.filter(isDeskProducto);
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p, centroLabel));
-        const deskProducto = allProductos.find(isCanonicalDeskProducto);
-
-        if (deskProducto) {
-          const deskRoom = buildRoomFromProducto(deskProducto, centroLabel);
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          aulaRooms.push(deskRoom);
-        } else if (mesas.length > 0) {
-          const sample = mesas[0];
-          const deskRoom = buildRoomFromProducto(
-            { ...sample, name: 'MA1 Desks', capacity: mesas.length },
-            centroLabel,
-          );
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          aulaRooms.push(deskRoom);
-        }
-
-        setRooms(aulaRooms);
+        const deskRooms = buildDeskRooms(allProductos, centroLabel);
+        setRooms([...aulaRooms, ...deskRooms]);
       } catch {
         // keep store empty on error
       }
@@ -209,15 +190,15 @@ const HomePage = () => {
       const upperName = name.toUpperCase();
 
       if (type === 'aula' && !isCanonicalDeskProducto(producto)) {
+        // Hide a meeting room that's been converted to a cowork zone this season.
+        if (hiddenAulasToday().includes(upperName)) return false;
         return upperName.startsWith('MA1A');
       }
 
       if (isDeskProducto(producto)) {
         if (isCanonicalDeskProducto(producto)) return true;
-        const deskMatch = upperName.match(/^MA1[-_]?O1[-_ ]?(\d{1,2})$/);
-        if (!deskMatch) return false;
-        const numero = parseInt(deskMatch[1], 10);
-        return numero >= 1 && numero <= 16;
+        // Any zone's desk product (MA1O1-N, MA1O5-N…) bookable today.
+        return zoneForProductName(name) != null;
       }
 
       return false;
@@ -268,44 +249,35 @@ const HomePage = () => {
       };
     });
 
-    const deskCard = (() => {
-      if (mesas.length === 0) return null;
+    // One card per coworking zone bookable today, derived from the store's desk
+    // rooms (so a second zone never inflates the first one's desk count). The
+    // summer A5 zone appears only during its window.
+    const matchingCentro = centros.find((c) => (c.code ?? '').toUpperCase() === 'MA1');
+    const deskCards = (mesas.length === 0 ? [] : rooms.filter((room) => room.deskPrefix)).map((room) => ({
+      id: room.slug,
+      name: room.name,
+      description: room.description || `${room.capacity} desk${room.capacity === 1 ? '' : 's'} available for booking`,
+      productName: room.productName,
+      slug: room.slug,
+      type: 'desk',
+      image: room.heroImage || '',
+      capacity: room.capacity != null ? String(room.capacity) : '—',
+      rating: 4.8,
+      reviewCount: 0,
+      // Catalog card shows the day-pass entry price (most accessible) —
+      // monthly fixed-desk pricing surfaces in the booking flow itself.
+      price: '€ 10',
+      priceUnit: '/day',
+      location: matchingCentro?.city || matchingCentro?.label || 'Málaga',
+      tags: room.tags || [],
+      instantBooking: true,
+      centroCode: 'MA1',
+      availableCount: room.capacity,
+      centerName: matchingCentro?.label || undefined,
+      isBookable: true,
+    }));
 
-      const sample = mesas[0];
-      const productCenter = (sample.centerCode ?? sample.centroCodigo ?? '').trim();
-      const productCenterUpper = productCenter.toUpperCase();
-      const matchingCentro = centros.find((c) => (c.code ?? '').toUpperCase() === productCenterUpper);
-      const centerName = matchingCentro?.label ?? productCenter;
-      const city = matchingCentro?.city ?? '';
-      const deskCount = mesas.length;
-      const matchingRoom = rooms.find((room) => (room.slug ?? '').toLowerCase() === 'ma1-desks');
-
-      return {
-        id: `desks-${productCenterUpper || 'ma1'}`,
-        name: matchingRoom?.name || 'MA1 Desks',
-        description: matchingRoom?.description || `${deskCount} desk${deskCount === 1 ? '' : 's'} available for booking`,
-        productName: 'MA1 Desks',
-        slug: 'ma1-desks',
-        type: 'desk',
-        image: matchingRoom?.heroImage || sample.heroImage || '',
-        capacity: matchingRoom?.capacity != null ? String(matchingRoom.capacity) : String(deskCount),
-        rating: 4.8,
-        reviewCount: 0,
-        // Catalog card shows the day-pass entry price (most accessible) —
-        // monthly fixed-desk pricing surfaces in the booking flow itself.
-        price: '€ 10',
-        priceUnit: '/day',
-        location: city || centerName || 'Málaga',
-        tags: matchingRoom?.tags || [],
-        instantBooking: true,
-        centroCode: productCenter || undefined,
-        availableCount: deskCount,
-        centerName: centerName || undefined,
-        isBookable: true,
-      };
-    })();
-
-    const mappedSpaces = deskCard ? [...aulaSpaces, deskCard] : aulaSpaces;
+    const mappedSpaces = [...aulaSpaces, ...deskCards];
 
     let filtered = mappedSpaces.filter((space) => {
       if (activeTab === 0) return space.type === 'meeting_room';

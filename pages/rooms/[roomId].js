@@ -46,9 +46,9 @@ import { buildTimeSlots, bloqueoCoversSlot } from '@/utils/calendarUtils';
 import {
   useCatalogRooms,
   buildRoomFromProducto,
-  isCanonicalDeskProducto,
-  isDeskProducto,
+  buildDeskRooms,
 } from '@/store/useCatalogRooms';
+import { hiddenAulasToday } from '@/config/coworkZones';
 import { fetchPublicAvailability, fetchDeskAvailability, fetchBookingProductos } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 import { useTranslation } from 'react-i18next';
@@ -140,34 +140,16 @@ const RoomDetailPage = () => {
       .then((data) => {
         if (!active || !Array.isArray(data)) return;
 
+        const hiddenAulas = hiddenAulasToday();
         const aulas = data.filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && name.startsWith('MA1A');
+          return type === 'aula' && name.startsWith('MA1A') && !hiddenAulas.includes(name);
         });
 
-        const mesas = data.filter(isDeskProducto);
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));
-        const deskProducto = data.find(isCanonicalDeskProducto);
-
-        if (deskProducto) {
-          const deskRoom = buildRoomFromProducto(deskProducto);
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          setRooms([...aulaRooms, deskRoom]);
-        } else if (mesas.length > 0) {
-          const sample = mesas[0];
-          const deskRoom = buildRoomFromProducto({ ...sample, name: 'MA1 Desks', capacity: mesas.length });
-          deskRoom.id = 'ma1-desks';
-          deskRoom.slug = 'ma1-desks';
-          deskRoom.productName = 'MA1 Desks';
-          deskRoom.priceUnit = '/month';
-          setRooms([...aulaRooms, deskRoom]);
-        } else {
-          setRooms(aulaRooms);
-        }
+        const deskRooms = buildDeskRooms(data);
+        setRooms([...aulaRooms, ...deskRooms]);
       })
       .catch(() => {});
     return () => { active = false; };
@@ -188,7 +170,7 @@ const RoomDetailPage = () => {
     setSelectedDate(e.target.value);
   }, []);
 
-  const isDesk = room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
+  const isDesk = Boolean(room?.deskPrefix) || room?.priceUnit === '/month' || room?.slug === 'ma1-desks';
   // Desk count comes from the catalog (room.capacity); fall back to 16 only if
   // capacity is missing so we still render something sensible while the room
   // record is loading.

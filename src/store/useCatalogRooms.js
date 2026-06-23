@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { COWORK_ZONES, isZoneActiveToday, zoneForProductName } from '../config/coworkZones';
 
 // Static defaults for fields the API does not provide.
 // Keyed by product name (upper-cased) for easy lookup.
@@ -70,13 +71,44 @@ export const isDeskProducto = (producto) => {
     return true;
   }
 
-  // Defensive fallback for misclassified desk products.
-  if (/^MA1O1\d{1,2}$/.test(name)) {
-    return true;
-  }
-
-  return false;
+  // Defensive fallback for misclassified desk products in any zone (MA1O1-N, MA1O5-N…).
+  return zoneForProductName(producto?.name ?? producto?.nombre ?? '') != null;
 };
+
+/**
+ * Build one catalog desk room per coworking zone bookable today. Desks are
+ * grouped by zone prefix so a second zone (e.g. the summer A5 pop-up) doesn't
+ * inflate the original room's capacity. Each room carries deskPrefix + season
+ * bounds so the picker can scope availability and clamp dates. Returns [] when
+ * no desk products are present.
+ */
+export function buildDeskRooms(productos, centroName) {
+  const list = Array.isArray(productos) ? productos : [];
+  const rooms = [];
+  for (const zone of COWORK_ZONES) {
+    if (!isZoneActiveToday(zone)) continue;
+    const zoneMesas = list.filter((p) => {
+      const z = zoneForProductName(p?.name ?? p?.nombre ?? '');
+      return z && z.prefix === zone.prefix;
+    });
+    if (zoneMesas.length === 0) continue;
+
+    const sample = zoneMesas[0];
+    const deskRoom = buildRoomFromProducto(
+      { ...sample, name: zone.displayName, capacity: zoneMesas.length },
+      centroName,
+    );
+    deskRoom.id = zone.slug;
+    deskRoom.slug = zone.slug;
+    deskRoom.productName = zone.displayName;
+    deskRoom.priceUnit = '/month';
+    deskRoom.deskPrefix = zone.prefix;
+    deskRoom.seasonStart = zone.activeFrom || null;
+    deskRoom.seasonEnd = zone.activeTo || null;
+    rooms.push(deskRoom);
+  }
+  return rooms;
+}
 
 export const useCatalogRooms = create((set) => ({
   rooms: [],
