@@ -103,7 +103,7 @@ export function buildDeskRooms(productos, centroName) {
     priceFrom: primary.priceFrom,
     priceUnit: '/month',
     currency: 'EUR',
-    heroImage: primary.heroImage || '',
+    heroImage,
     gallery: [],
     amenities: [],
     tags: [],
