@@ -83,27 +83,38 @@ export const isDeskProducto = (producto) => {
  * dates. The `productos`/`centroName` args are accepted for call-site convenience.
  */
 export function buildDeskRooms(productos, centroName) {
-  return COWORK_ZONES.filter(isZoneActiveToday).map((zone) => ({
-    id: zone.slug,
-    slug: zone.slug,
-    name: zone.displayName,
-    productName: zone.displayName,
+  const zones = COWORK_ZONES.filter(isZoneActiveToday);
+  if (zones.length === 0) return [];
+  const primary = zones[0];
+  // Single catalog entry ("MA1 Desks"); the booking page exposes each zone as a
+  // Desk 1 / Desk 2 tab via deskZones.
+  return [{
+    id: 'ma1-desks',
+    slug: 'ma1-desks',
+    name: 'MA1 Desks',
+    productName: 'MA1 Desks',
     centro: centroName || 'Málaga Workspace',
-    capacity: zone.deskCount,
-    priceFrom: zone.priceFrom,
+    capacity: zones.reduce((sum, z) => sum + z.deskCount, 0),
+    priceFrom: primary.priceFrom,
     priceUnit: '/month',
     currency: 'EUR',
-    heroImage: zone.heroImage || '',
+    heroImage: primary.heroImage || '',
     gallery: [],
     amenities: [],
     tags: [],
     instantBooking: true,
     ratingAverage: 4.8,
     ratingCount: 0,
-    deskPrefix: zone.prefix,
-    seasonStart: zone.activeFrom || null,
-    seasonEnd: zone.activeTo || null,
-  }));
+    deskPrefix: primary.prefix,
+    deskZones: zones.map((z) => ({
+      prefix: z.prefix,
+      shortLabel: z.shortLabel,
+      displayName: z.displayName,
+      deskCount: z.deskCount,
+      seasonStart: z.activeFrom || null,
+      seasonEnd: z.activeTo || null,
+    })),
+  }];
 }
 
 export const useCatalogRooms = create((set) => ({

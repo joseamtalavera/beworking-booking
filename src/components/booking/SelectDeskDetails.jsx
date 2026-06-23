@@ -8,6 +8,8 @@ import {
   CircularProgress,
   Paper,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
 import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
@@ -107,18 +109,33 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const setSchedule = useBookingFlow((state) => state.setSchedule);
 
-  // Real desk count comes from the catalog (room.capacity). Fall back to the
-  // floor-plan size if the room has no capacity set, and clamp to the layout
-  // to avoid rendering desks the floor plan can't position.
-  // Zone the room belongs to: drives the product prefix (MA1O1-N / MA1O5-N) and
-  // the seasonal date window for the summer A5 pop-up.
-  const deskPrefix = room?.deskPrefix || 'MA1O1';
-  const seasonStart = room?.seasonStart || null; // ISO yyyy-mm-dd or null
-  const seasonEnd = room?.seasonEnd || null;
+  // Desk zones inside this room → Desk 1 / Desk 2 tabs. Fall back to a single
+  // zone built from the room's own fields for non-tabbed rooms.
+  const zones = useMemo(() => (
+    Array.isArray(room?.deskZones) && room.deskZones.length > 0
+      ? room.deskZones
+      : [{
+          prefix: room?.deskPrefix || 'MA1O1',
+          shortLabel: 'Desk 1',
+          displayName: room?.name,
+          deskCount: room?.capacity ?? MAX_DESKS,
+          seasonStart: room?.seasonStart || null,
+          seasonEnd: room?.seasonEnd || null,
+        }]
+  ), [room]);
+  const [zonePrefix, setZonePrefix] = useState(zones[0]?.prefix);
+  useEffect(() => {
+    if (!zones.some((z) => z.prefix === zonePrefix)) setZonePrefix(zones[0]?.prefix);
+  }, [zones, zonePrefix]);
+  const activeZone = zones.find((z) => z.prefix === zonePrefix) || zones[0] || {};
 
-  const deskCount = Math.min(room?.capacity ?? MAX_DESKS, MAX_DESKS);
-  // Pick the layout for this zone's size; fall back to the 16-grid filtered to
-  // the count if a size has no bespoke layout.
+  // Active zone drives the product prefix (MA1O1-N / MA1O5-N), desk count/layout
+  // and the bookable date window.
+  const deskPrefix = activeZone.prefix || 'MA1O1';
+  const seasonStart = activeZone.seasonStart || null; // ISO yyyy-mm-dd or null
+  const seasonEnd = activeZone.seasonEnd || null;
+
+  const deskCount = Math.min(activeZone.deskCount ?? MAX_DESKS, MAX_DESKS);
   const layout = DESK_LAYOUTS[deskCount];
   const gridCols = layout ? layout.cols : 4;
   const gridRows = layout ? layout.rows : 6;
@@ -129,6 +146,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   const today = new Date();
   const todayIso = today.toISOString().split('T')[0];
+  // Zone is blocked (visible but unbookable) once its window has ended.
+  const zoneBlocked = Boolean(seasonEnd) && todayIso > seasonEnd;
   // Earliest selectable day: today, or the season start if the zone opens later.
   const minDate = seasonStart && seasonStart > todayIso ? seasonStart : todayIso;
   const defaultDate = minDate;
@@ -196,7 +215,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
   useEffect(() => {
     setSelectedDesk(null);
-  }, [selectedSubDate, selectedDate, bookingType]);
+  }, [selectedSubDate, selectedDate, bookingType, zonePrefix]);
 
   const handleContinue = () => {
     if (!selectedDesk) return;
@@ -259,10 +278,30 @@ const SelectDeskDetails = ({ room, onContinue }) => {
           <Typography sx={{ fontSize: '1.05rem', fontWeight: 700, color: colors.ink }}>{room?.name}</Typography>
           <Typography sx={{ fontSize: '0.85rem', color: colors.ink3 }}>{room?.centro}</Typography>
           <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-            {`${room?.capacity ?? '—'} ${isEs ? 'mesas' : 'desks'} · ${isEs ? 'desde' : 'from'} €${room?.priceFrom ?? '—'}${room?.priceUnit ?? '/month'}`}
+            {`${deskCount} ${isEs ? 'mesas' : 'desks'} · ${isEs ? 'desde' : 'from'} €${room?.priceFrom ?? '—'}${room?.priceUnit ?? '/month'}`}
           </Typography>
         </Stack>
       </Paper>
+
+      {/* Desk room tabs (Desk 1 / Desk 2) */}
+      {zones.length > 1 && (
+        <Paper elevation={0} sx={{ ...cardSx, p: 0, overflow: 'hidden' }}>
+          <Tabs
+            value={zonePrefix}
+            onChange={(e, v) => setZonePrefix(v)}
+            variant="fullWidth"
+            sx={{
+              '& .MuiTab-root': { textTransform: 'none', fontWeight: 700, color: colors.ink2 },
+              '& .Mui-selected': { color: `${colors.brand} !important` },
+              '& .MuiTabs-indicator': { backgroundColor: colors.brand },
+            }}
+          >
+            {zones.map((z) => (
+              <Tab key={z.prefix} value={z.prefix} label={z.shortLabel || z.displayName} />
+            ))}
+          </Tabs>
+        </Paper>
+      )}
 
       {/* Period selection */}
       <Paper elevation={0} sx={cardSx}>
@@ -361,16 +400,22 @@ const SelectDeskDetails = ({ room, onContinue }) => {
           <Stack spacing={0.5}>
             <Box component="h3" sx={sectionTitleSx}>{isEs ? 'Elige tu escritorio' : 'Choose your desk'}</Box>
             <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-              {availableDesks.length > 0
+              {zoneBlocked
                 ? (isEs
-                    ? `${availableDesks.length} de ${deskCount} escritorios disponibles para este periodo.`
-                    : `${availableDesks.length} of ${deskCount} desks available for this period.`)
-                : (isEs
-                    ? 'No hay escritorios disponibles para este periodo. Prueba otra fecha.'
-                    : 'No desks available for this period. Try a different date.')}
+                    ? 'Este escritorio no está disponible para reservar en este momento.'
+                    : 'This desk room is not available for booking right now.')
+                : availableDesks.length > 0
+                  ? (isEs
+                      ? `${availableDesks.length} de ${deskCount} escritorios disponibles para este periodo.`
+                      : `${availableDesks.length} of ${deskCount} desks available for this period.`)
+                  : (isEs
+                      ? 'No hay escritorios disponibles para este periodo. Prueba otra fecha.'
+                      : 'No desks available for this period. Try a different date.')}
             </Typography>
           </Stack>
 
+          {!zoneBlocked && (
+          <>
           <Stack direction="row" spacing={2.5} sx={{ pt: 0.5 }}>
             <Stack direction="row" spacing={0.75} alignItems="center">
               <Box sx={{ width: 12, height: 12, borderRadius: '3px', bgcolor: colors.brandSoft, border: `1px solid ${colors.brand}` }} />
@@ -466,6 +511,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                 );
               })}
             </Box>
+          )}
+          </>
           )}
         </Stack>
       </Paper>

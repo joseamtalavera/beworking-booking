@@ -9,6 +9,7 @@ export const COWORK_ZONES = [
   {
     prefix: 'MA1O1',
     slug: 'ma1-desks',
+    shortLabel: 'Desk 1',
     displayName: 'MA1 Desks',
     deskCount: 16,
     priceFrom: 90,
@@ -24,6 +25,7 @@ export const COWORK_ZONES = [
     // calendar is blocked for the window by a DB bloqueo (V93), not by hiding.
     prefix: 'MA1O5',
     slug: 'ma1a5-desks',
+    shortLabel: 'Desk 2',
     displayName: 'MA1A5 Coworking',
     deskCount: 14,
     priceFrom: 90,
@@ -38,11 +40,14 @@ export const COWORK_ZONES = [
 const todayIso = () => new Date().toISOString().split('T')[0];
 
 /**
- * True iff the zone is VISIBLE / sellable today — i.e. its season hasn't ended.
- * Seasonal zones are shown (and pre-bookable) before they start; the date
- * picker clamps the selectable dates to [activeFrom, activeTo].
+ * Zones are PERMANENT fixtures and always visible. Bookability is governed
+ * separately by the date window [activeFrom, activeTo] (the picker clamps to it);
+ * outside that window the zone renders but is blocked.
  */
-export const isZoneActiveToday = (zone) => {
+export const isZoneActiveToday = (zone) => Boolean(zone);
+
+/** True iff the zone can be booked for some date as of today (window not over). */
+export const isZoneBookableToday = (zone) => {
   if (!zone) return false;
   if (zone.activeTo && todayIso() > zone.activeTo) return false;
   return true;
