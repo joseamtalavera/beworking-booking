@@ -12,16 +12,47 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import TextField from '../common/ClearableTextField';
 import { useBookingFlow } from '../../store/useBookingFlow';
 import { fetchDeskAvailability } from '../../api/bookings';
-import CoworkingRoomPlan from './CoworkingRoomPlan';
 import { tokens } from '@/theme/tokens';
 
 const { colors, radius, motion, typography } = tokens;
 
+// Distinct physical layouts per zone size. 16 = the original U-shaped room
+// (4 cols × 6 rows); 14 = the summer A5 room, two facing rows of 7 (2 cols ×
+// 7 rows) so the two rooms are visually unmistakable.
+const DESK_LAYOUTS = {
+  16: {
+    cols: 4,
+    rows: 6,
+    desks: [
+      [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
+      [9, 1, 2], [11, 2, 2], [13, 3, 2], [15, 4, 2],
+      [8, 1, 3], [4, 4, 3],
+      [7, 1, 4], [3, 4, 4],
+      [6, 1, 5], [2, 4, 5],
+      [5, 1, 6], [1, 4, 6],
+    ],
+  },
+  14: {
+    cols: 2,
+    rows: 7,
+    desks: [
+      [1, 1, 1], [2, 2, 1],
+      [3, 1, 2], [4, 2, 2],
+      [5, 1, 3], [6, 2, 3],
+      [7, 1, 4], [8, 2, 4],
+      [9, 1, 5], [10, 2, 5],
+      [11, 1, 6], [12, 2, 6],
+      [13, 1, 7], [14, 2, 7],
+    ],
+  },
+};
 const MAX_DESKS = 16;
 
 const pillFieldSx = (hasValue) => ({
@@ -105,6 +136,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const seasonEnd = activeZone.seasonEnd || null;
 
   const deskCount = Math.min(activeZone.deskCount ?? MAX_DESKS, MAX_DESKS);
+  const layout = DESK_LAYOUTS[deskCount];
+  const gridCols = layout ? layout.cols : 4;
+  const gridRows = layout ? layout.rows : 6;
+  const visibleDesks = useMemo(
+    () => (layout ? layout.desks : DESK_LAYOUTS[16].desks.filter(([deskNum]) => deskNum <= deskCount)),
+    [layout, deskCount],
+  );
 
   const today = new Date();
   const todayIso = today.toISOString().split('T')[0];
@@ -432,13 +470,69 @@ const SelectDeskDetails = ({ room, onContinue }) => {
               <CircularProgress size={28} sx={{ color: colors.brand }} />
             </Box>
           ) : (
-            <CoworkingRoomPlan
-              deskCount={deskCount}
-              bookedDesks={bookedDesks}
-              selectedDesk={selectedDesk}
-              onSelect={(n) => { if (!bookedDesks.has(n)) setSelectedDesk(n); }}
-              isEs={isEs}
-            />
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+                gridTemplateRows: `repeat(${gridRows}, auto)`,
+                gap: 1.25,
+              }}
+            >
+              {visibleDesks.map(([deskNum, col, row]) => {
+                const isBooked = bookedDesks.has(deskNum);
+                const isSelected = selectedDesk === deskNum;
+
+                return (
+                  <Box key={deskNum} sx={{ gridColumn: col, gridRow: row }}>
+                    <Button
+                      onClick={() => !isBooked && setSelectedDesk(deskNum)}
+                      disabled={isBooked}
+                      fullWidth
+                      disableElevation
+                      sx={{
+                        py: 1.75,
+                        borderRadius: `${radius.md}px`,
+                        textTransform: 'none',
+                        fontWeight: 700,
+                        fontSize: '0.875rem',
+                        minWidth: 0,
+                        boxShadow: 'none',
+                        ...(isSelected && {
+                          bgcolor: colors.brand,
+                          color: colors.bg,
+                          border: `1px solid ${colors.brand}`,
+                          '&:hover': { bgcolor: colors.brandDeep, borderColor: colors.brandDeep },
+                        }),
+                        ...(!isSelected && !isBooked && {
+                          bgcolor: colors.brandSoft,
+                          border: `1px solid ${colors.brand}`,
+                          color: colors.brandDeep,
+                          '&:hover': { bgcolor: colors.brand, color: colors.bg, borderColor: colors.brand },
+                        }),
+                        ...(isBooked && {
+                          bgcolor: colors.bgSoft,
+                          border: `1px solid ${colors.line}`,
+                          color: colors.ink3,
+                        }),
+                      }}
+                    >
+                      <Stack alignItems="center" spacing={0.25}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'inherit' }}>
+                          <PersonRoundedIcon sx={{ fontSize: 15, mb: '-4px', color: 'inherit' }} />
+                          <DeskRoundedIcon sx={{ fontSize: 24, color: 'inherit' }} />
+                        </Box>
+                        <Typography sx={{ fontSize: '0.7rem', fontWeight: 600, lineHeight: 1, color: 'inherit' }}>
+                          {isEs ? 'Mesa' : 'Desk'}
+                        </Typography>
+                        <Typography sx={{ fontSize: '1rem', fontWeight: 700, lineHeight: 1, color: 'inherit' }}>
+                          {deskNum}
+                        </Typography>
+                      </Stack>
+                    </Button>
+                  </Box>
+                );
+              })}
+            </Box>
           )}
           </>
           )}
