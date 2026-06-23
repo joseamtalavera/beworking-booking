@@ -12,8 +12,6 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
-import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import TextField from '../common/ClearableTextField';
@@ -517,9 +515,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                       }}
                     >
                       <Stack alignItems="center" spacing={0.25}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'inherit' }}>
-                          <PersonRoundedIcon sx={{ fontSize: 15, mb: '-4px', color: 'inherit' }} />
-                          <DeskRoundedIcon sx={{ fontSize: 24, color: 'inherit' }} />
+                        <Box sx={{ position: 'relative', width: 30, height: 26, color: 'inherit' }}>
+                          {/* head */}
+                          <Box sx={{ position: 'absolute', left: '50%', top: 0, transform: 'translateX(-50%)', width: 9, height: 9, borderRadius: '50%', bgcolor: 'currentColor' }} />
+                          {/* shoulders */}
+                          <Box sx={{ position: 'absolute', left: '50%', top: 7, transform: 'translateX(-50%)', width: 16, height: 9, borderRadius: '8px 8px 0 0', bgcolor: 'currentColor' }} />
+                          {/* desk */}
+                          <Box sx={{ position: 'absolute', left: 0, bottom: 0, width: 30, height: 7, borderRadius: '3px', bgcolor: 'currentColor', opacity: 0.8 }} />
                         </Box>
                         <Typography sx={{ fontSize: '0.7rem', fontWeight: 600, lineHeight: 1, color: 'inherit' }}>
                           {isEs ? 'Mesa' : 'Desk'}
