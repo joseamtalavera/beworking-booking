@@ -291,7 +291,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
       {/* Coworking 1 / Coworking 2 tabs — segmented-pill style (matches admin) */}
       {zones.length > 1 && (
-        <Box sx={{ display: 'inline-flex', alignSelf: 'flex-start' }}>
+        <Box sx={{ display: 'inline-flex', alignSelf: 'flex-end' }}>
           <Tabs
             value={zonePrefix}
             onChange={(e, v) => setZonePrefix(v)}
@@ -562,8 +562,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                         year: 'numeric',
                       })
                     : (isEs
-                        ? `Empieza ${new Date(startDate).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`
-                        : `Starts ${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}`)}
+                        ? `Empieza ${new Date(startDate).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}${seasonEnd ? ` · finaliza ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`
+                        : `Starts ${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}${seasonEnd ? ` · ends ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`)}
                 </Typography>
               </Box>
               <Typography sx={{ ...typography.body, color: colors.ink2 }}>
@@ -595,9 +595,13 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             </Stack>
             {isSubscription && (
               <Typography sx={{ fontSize: '0.8rem', color: colors.ink3 }}>
-                {isEs
-                  ? 'Primer mes ahora, luego mensualmente hasta que canceles.'
-                  : 'First month charged now, then monthly until you cancel.'}
+                {seasonEnd
+                  ? (isEs
+                      ? `Reserva de temporada: finaliza el ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.`
+                      : `Seasonal booking: ends ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.`)
+                  : (isEs
+                      ? 'Primer mes ahora, luego mensualmente hasta que canceles.'
+                      : 'First month charged now, then monthly until you cancel.')}
               </Typography>
             )}
           </Stack>

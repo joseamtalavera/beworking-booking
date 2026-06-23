@@ -86,6 +86,11 @@ export function buildDeskRooms(productos, centroName) {
   const zones = COWORK_ZONES.filter(isZoneActiveToday);
   if (zones.length === 0) return [];
   const primary = zones[0];
+  // Use a real image served by the API (the hardcoded /img URLs 404 in this
+  // context). Prefer the MA1A5 room photo, else any producto image, else config.
+  const list = Array.isArray(productos) ? productos : [];
+  const a5 = list.find((p) => (p.name ?? p.nombre ?? '').toString().trim().toUpperCase() === 'MA1A5');
+  const heroImage = a5?.heroImage || list.map((p) => p.heroImage).find(Boolean) || primary.heroImage || '';
   // Single catalog entry ("MA1 Desks"); the booking page exposes each zone as a
   // Desk 1 / Desk 2 tab via deskZones.
   return [{
