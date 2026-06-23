@@ -10,6 +10,8 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import DeskRoundedIcon from '@mui/icons-material/DeskRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import TextField from '../common/ClearableTextField';
@@ -249,6 +251,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             component="img"
             src={room.heroImage}
             alt={room.name}
+            onError={(e) => { e.currentTarget.style.display = 'none'; }}
             sx={{ width: 80, height: 80, borderRadius: `${radius.md}px`, objectFit: 'cover', flexShrink: 0 }}
           />
         )}
@@ -447,6 +450,10 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                       }}
                     >
                       <Stack alignItems="center" spacing={0.25}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: 'inherit' }}>
+                          <PersonRoundedIcon sx={{ fontSize: 15, mb: '-4px', color: 'inherit' }} />
+                          <DeskRoundedIcon sx={{ fontSize: 24, color: 'inherit' }} />
+                        </Box>
                         <Typography sx={{ fontSize: '0.7rem', fontWeight: 600, lineHeight: 1, color: 'inherit' }}>
                           {isEs ? 'Mesa' : 'Desk'}
                         </Typography>

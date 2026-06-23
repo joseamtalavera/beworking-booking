@@ -27,7 +27,9 @@ export const COWORK_ZONES = [
     displayName: 'MA1A5 Coworking',
     deskCount: 14,
     priceFrom: 90,
-    heroImage: 'https://app.be-working.com/img/MA1A5-0-featured-20240501123909.jpg',
+    // Same coworking-desk photo as MA1 (it's the same kind of space) — the
+    // standalone MA1A5 meeting-room shot 404s in this context.
+    heroImage: 'https://app.be-working.com/img/MA1O1-1-0-featured-20220512103754.jpg',
     activeFrom: '2026-07-01',
     activeTo: '2026-08-31',
   },
