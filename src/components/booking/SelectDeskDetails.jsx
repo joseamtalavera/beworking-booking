@@ -291,7 +291,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
 
       {/* Coworking 1 / Coworking 2 tabs — segmented-pill style (matches admin) */}
       {zones.length > 1 && (
-        <Box sx={{ display: 'inline-flex', alignSelf: 'flex-end' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
           <Tabs
             value={zonePrefix}
             onChange={(e, v) => setZonePrefix(v)}
