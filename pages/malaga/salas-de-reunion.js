@@ -14,7 +14,6 @@ import {
   buildRoomFromProducto,
   isCanonicalDeskProducto,
 } from '@/store/useCatalogRooms';
-import { hiddenAulasToday } from '@/config/coworkZones';
 import { fetchBookingCentros, fetchBookingProductos, fetchPublicAvailability } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import { useTranslation } from 'react-i18next';
@@ -97,8 +96,7 @@ export default function SalasDeReunion() {
         const aulas = (productosData || []).filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && !isCanonicalDeskProducto(p) && name.startsWith('MA1A')
-        && !hiddenAulasToday().includes(name);
+          return type === 'aula' && !isCanonicalDeskProducto(p) && name.startsWith('MA1A');
         });
         setRooms(aulas.map((p) => buildRoomFromProducto(p, centroLabel)));
       } catch {
@@ -131,8 +129,7 @@ export default function SalasDeReunion() {
     const aulas = productos.filter((p) => {
       const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
       const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-      return type === 'aula' && !isCanonicalDeskProducto(p) && name.startsWith('MA1A')
-        && !hiddenAulasToday().includes(name);
+      return type === 'aula' && !isCanonicalDeskProducto(p) && name.startsWith('MA1A');
     });
 
     let spaces = aulas.map((producto) => {

@@ -19,14 +19,37 @@ import { tokens } from '@/theme/tokens';
 
 const { colors, radius, motion, typography } = tokens;
 
-const GRID_DESKS = [
-  [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
-  [9, 1, 2], [11, 2, 2], [13, 3, 2], [15, 4, 2],
-  [8, 1, 3], [4, 4, 3],
-  [7, 1, 4], [3, 4, 4],
-  [6, 1, 5], [2, 4, 5],
-  [5, 1, 6], [1, 4, 6],
-];
+// Distinct physical layouts per zone size. 16 = the original U-shaped room
+// (4 cols × 6 rows); 14 = the summer A5 room, two facing rows of 7 (2 cols ×
+// 7 rows) so the two rooms are visually unmistakable.
+const DESK_LAYOUTS = {
+  16: {
+    cols: 4,
+    rows: 6,
+    desks: [
+      [10, 1, 1], [12, 2, 1], [14, 3, 1], [16, 4, 1],
+      [9, 1, 2], [11, 2, 2], [13, 3, 2], [15, 4, 2],
+      [8, 1, 3], [4, 4, 3],
+      [7, 1, 4], [3, 4, 4],
+      [6, 1, 5], [2, 4, 5],
+      [5, 1, 6], [1, 4, 6],
+    ],
+  },
+  14: {
+    cols: 2,
+    rows: 7,
+    desks: [
+      [1, 1, 1], [2, 2, 1],
+      [3, 1, 2], [4, 2, 2],
+      [5, 1, 3], [6, 2, 3],
+      [7, 1, 4], [8, 2, 4],
+      [9, 1, 5], [10, 2, 5],
+      [11, 1, 6], [12, 2, 6],
+      [13, 1, 7], [14, 2, 7],
+    ],
+  },
+};
+const MAX_DESKS = 16;
 
 const pillFieldSx = (hasValue) => ({
   '& .MuiInputLabel-root': {
@@ -91,10 +114,15 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   const seasonStart = room?.seasonStart || null; // ISO yyyy-mm-dd or null
   const seasonEnd = room?.seasonEnd || null;
 
-  const deskCount = Math.min(room?.capacity ?? GRID_DESKS.length, GRID_DESKS.length);
+  const deskCount = Math.min(room?.capacity ?? MAX_DESKS, MAX_DESKS);
+  // Pick the layout for this zone's size; fall back to the 16-grid filtered to
+  // the count if a size has no bespoke layout.
+  const layout = DESK_LAYOUTS[deskCount];
+  const gridCols = layout ? layout.cols : 4;
+  const gridRows = layout ? layout.rows : 6;
   const visibleDesks = useMemo(
-    () => GRID_DESKS.filter(([deskNum]) => deskNum <= deskCount),
-    [deskCount],
+    () => (layout ? layout.desks : DESK_LAYOUTS[16].desks.filter(([deskNum]) => deskNum <= deskCount)),
+    [layout, deskCount],
   );
 
   const today = new Date();
@@ -375,8 +403,8 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gridTemplateRows: 'repeat(6, auto)',
+                gridTemplateColumns: `repeat(${gridCols}, 1fr)`,
+                gridTemplateRows: `repeat(${gridRows}, auto)`,
                 gap: 1.25,
               }}
             >

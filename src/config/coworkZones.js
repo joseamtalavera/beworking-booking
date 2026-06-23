@@ -1,7 +1,9 @@
 // Coworking desk zones (mirror of the backend com.beworking.bookings.CoworkZone).
 // A zone is a block of individually-bookable desks whose product names share a
-// prefix (MA1O1-1..16). Each zone is one catalog room + one Akiles door, with an
-// optional active window. Keep this in sync with the backend registry.
+// prefix (MA1O1-1..16). Each zone is its own catalog room + floor plan + Akiles
+// door, with an optional bookable-date window. Capacity/image/price come from
+// THIS config (not by sniffing the productos list) so a zone's card can never
+// silently disappear. Keep in sync with the backend registry.
 
 export const COWORK_ZONES = [
   {
@@ -9,32 +11,38 @@ export const COWORK_ZONES = [
     slug: 'ma1-desks',
     displayName: 'MA1 Desks',
     deskCount: 16,
+    priceFrom: 90,
+    heroImage: 'https://app.be-working.com/img/MA1O1-1-0-featured-20220512103754.jpg',
+    // Bookable-date window; null = always bookable.
     activeFrom: null,
     activeTo: null,
-    // Meeting-room code this zone takes over (hidden from the catalog while the
-    // zone is active). The permanent zone takes over nothing.
-    sourceAula: null,
   },
   {
-    // Summer pop-up: Sala MA1A5 -> 14 desks, Jul–Aug 2026. Reuses the A5 door.
+    // Summer pop-up: Sala MA1A5 -> 14 desks. Sellable now (pre-booking); the
+    // picker clamps selectable dates to 2026-07-01 .. 2026-08-31. Reuses the
+    // MA1A5 Akiles door. The A5 meeting room still renders as usual — its
+    // calendar is blocked for the window by a DB bloqueo (V93), not by hiding.
     prefix: 'MA1O5',
     slug: 'ma1a5-desks',
     displayName: 'MA1A5 Coworking',
     deskCount: 14,
+    priceFrom: 90,
+    heroImage: 'https://app.be-working.com/img/MA1A5-0-featured-20240501123909.jpg',
     activeFrom: '2026-07-01',
     activeTo: '2026-08-31',
-    sourceAula: 'MA1A5',
   },
 ];
 
 const todayIso = () => new Date().toISOString().split('T')[0];
 
-/** True iff the zone is bookable today (within its active window). */
+/**
+ * True iff the zone is VISIBLE / sellable today — i.e. its season hasn't ended.
+ * Seasonal zones are shown (and pre-bookable) before they start; the date
+ * picker clamps the selectable dates to [activeFrom, activeTo].
+ */
 export const isZoneActiveToday = (zone) => {
   if (!zone) return false;
-  const today = todayIso();
-  if (zone.activeFrom && today < zone.activeFrom) return false;
-  if (zone.activeTo && today > zone.activeTo) return false;
+  if (zone.activeTo && todayIso() > zone.activeTo) return false;
   return true;
 };
 
@@ -51,7 +59,3 @@ export const zoneForSlug = (slug) => {
   const s = (slug || '').toLowerCase();
   return COWORK_ZONES.find((z) => z.slug === s) || null;
 };
-
-/** Meeting-room codes that are hidden from the catalog today (converted to cowork). */
-export const hiddenAulasToday = () =>
-  COWORK_ZONES.filter((z) => z.sourceAula && isZoneActiveToday(z)).map((z) => z.sourceAula.toUpperCase());

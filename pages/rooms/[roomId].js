@@ -48,7 +48,6 @@ import {
   buildRoomFromProducto,
   buildDeskRooms,
 } from '@/store/useCatalogRooms';
-import { hiddenAulasToday } from '@/config/coworkZones';
 import { fetchPublicAvailability, fetchDeskAvailability, fetchBookingProductos } from '@/api/bookings';
 import BookingFlowModal from '@/components/booking/BookingFlowModal';
 import { useTranslation } from 'react-i18next';
@@ -140,11 +139,10 @@ const RoomDetailPage = () => {
       .then((data) => {
         if (!active || !Array.isArray(data)) return;
 
-        const hiddenAulas = hiddenAulasToday();
         const aulas = data.filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && name.startsWith('MA1A') && !hiddenAulas.includes(name);
+          return type === 'aula' && name.startsWith('MA1A');
         });
 
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));

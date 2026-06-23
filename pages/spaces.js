@@ -17,7 +17,7 @@ import {
   isCanonicalDeskProducto,
   isDeskProducto,
 } from '@/store/useCatalogRooms';
-import { hiddenAulasToday, zoneForProductName } from '@/config/coworkZones';
+import { zoneForProductName } from '@/config/coworkZones';
 import { fetchBookingCentros, fetchBookingProductos } from '@/api/bookings';
 import SpaceCard from '@/components/home/SpaceCard';
 import VirtualOfficeSection from '@/components/home/VirtualOfficeSection';
@@ -190,8 +190,6 @@ const HomePage = () => {
       const upperName = name.toUpperCase();
 
       if (type === 'aula' && !isCanonicalDeskProducto(producto)) {
-        // Hide a meeting room that's been converted to a cowork zone this season.
-        if (hiddenAulasToday().includes(upperName)) return false;
         return upperName.startsWith('MA1A');
       }
 
@@ -253,7 +251,7 @@ const HomePage = () => {
     // rooms (so a second zone never inflates the first one's desk count). The
     // summer A5 zone appears only during its window.
     const matchingCentro = centros.find((c) => (c.code ?? '').toUpperCase() === 'MA1');
-    const deskCards = (mesas.length === 0 ? [] : rooms.filter((room) => room.deskPrefix)).map((room) => ({
+    const deskCards = rooms.filter((room) => room.deskPrefix).map((room) => ({
       id: room.slug,
       name: room.name,
       description: room.description || `${room.capacity} desk${room.capacity === 1 ? '' : 's'} available for booking`,

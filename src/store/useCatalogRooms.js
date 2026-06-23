@@ -76,38 +76,34 @@ export const isDeskProducto = (producto) => {
 };
 
 /**
- * Build one catalog desk room per coworking zone bookable today. Desks are
- * grouped by zone prefix so a second zone (e.g. the summer A5 pop-up) doesn't
- * inflate the original room's capacity. Each room carries deskPrefix + season
- * bounds so the picker can scope availability and clamp dates. Returns [] when
- * no desk products are present.
+ * Build one catalog desk room per coworking zone that's sellable today. Capacity,
+ * image and price come from the zone CONFIG (not from counting productos) so a
+ * zone's card never disappears if the productos payload shape changes. Each room
+ * carries deskPrefix + season bounds so the picker scopes availability and clamps
+ * dates. The `productos`/`centroName` args are accepted for call-site convenience.
  */
 export function buildDeskRooms(productos, centroName) {
-  const list = Array.isArray(productos) ? productos : [];
-  const rooms = [];
-  for (const zone of COWORK_ZONES) {
-    if (!isZoneActiveToday(zone)) continue;
-    const zoneMesas = list.filter((p) => {
-      const z = zoneForProductName(p?.name ?? p?.nombre ?? '');
-      return z && z.prefix === zone.prefix;
-    });
-    if (zoneMesas.length === 0) continue;
-
-    const sample = zoneMesas[0];
-    const deskRoom = buildRoomFromProducto(
-      { ...sample, name: zone.displayName, capacity: zoneMesas.length },
-      centroName,
-    );
-    deskRoom.id = zone.slug;
-    deskRoom.slug = zone.slug;
-    deskRoom.productName = zone.displayName;
-    deskRoom.priceUnit = '/month';
-    deskRoom.deskPrefix = zone.prefix;
-    deskRoom.seasonStart = zone.activeFrom || null;
-    deskRoom.seasonEnd = zone.activeTo || null;
-    rooms.push(deskRoom);
-  }
-  return rooms;
+  return COWORK_ZONES.filter(isZoneActiveToday).map((zone) => ({
+    id: zone.slug,
+    slug: zone.slug,
+    name: zone.displayName,
+    productName: zone.displayName,
+    centro: centroName || 'Málaga Workspace',
+    capacity: zone.deskCount,
+    priceFrom: zone.priceFrom,
+    priceUnit: '/month',
+    currency: 'EUR',
+    heroImage: zone.heroImage || '',
+    gallery: [],
+    amenities: [],
+    tags: [],
+    instantBooking: true,
+    ratingAverage: 4.8,
+    ratingCount: 0,
+    deskPrefix: zone.prefix,
+    seasonStart: zone.activeFrom || null,
+    seasonEnd: zone.activeTo || null,
+  }));
 }
 
 export const useCatalogRooms = create((set) => ({

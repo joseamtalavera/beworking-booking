@@ -11,7 +11,6 @@ import {
   buildRoomFromProducto,
   buildDeskRooms,
 } from '@/store/useCatalogRooms';
-import { hiddenAulasToday } from '@/config/coworkZones';
 import { useBookingFlow } from '@/store/useBookingFlow';
 import BookingStepper from '@/components/booking/BookingStepper';
 import SelectBookingDetails from '@/components/booking/SelectBookingDetails';
@@ -62,11 +61,10 @@ export const BookingFlowContent = ({ roomId, initialDate, initialTime, initialEn
       .then((data) => {
         if (!active || !Array.isArray(data)) return;
 
-        const hiddenAulas = hiddenAulasToday();
         const aulas = data.filter((p) => {
           const type = (p.type ?? p.tipo ?? '').trim().toLowerCase();
           const name = (p.name ?? p.nombre ?? '').trim().toUpperCase();
-          return type === 'aula' && name.startsWith('MA1A') && !hiddenAulas.includes(name);
+          return type === 'aula' && name.startsWith('MA1A');
         });
         const aulaRooms = aulas.map((p) => buildRoomFromProducto(p));
         const deskRooms = buildDeskRooms(data);
