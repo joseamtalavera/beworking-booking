@@ -9,11 +9,11 @@ export const COWORK_ZONES = [
   {
     prefix: 'MA1O1',
     slug: 'ma1-desks',
-    shortLabel: 'Desk 1',
+    shortLabel: 'Coworking 1',
     displayName: 'MA1 Desks',
     deskCount: 16,
     priceFrom: 90,
-    heroImage: 'https://app.be-working.com/img/MA1O1-1-0-featured-20220512103754.jpg',
+    heroImage: 'https://app.be-working.com/img/MA1A5-0-featured-20240501123909.jpg',
     // Bookable-date window; null = always bookable.
     activeFrom: null,
     activeTo: null,
@@ -25,13 +25,11 @@ export const COWORK_ZONES = [
     // calendar is blocked for the window by a DB bloqueo (V93), not by hiding.
     prefix: 'MA1O5',
     slug: 'ma1a5-desks',
-    shortLabel: 'Desk 2',
+    shortLabel: 'Coworking 2',
     displayName: 'MA1A5 Coworking',
     deskCount: 14,
     priceFrom: 90,
-    // Same coworking-desk photo as MA1 (it's the same kind of space) — the
-    // standalone MA1A5 meeting-room shot 404s in this context.
-    heroImage: 'https://app.be-working.com/img/MA1O1-1-0-featured-20220512103754.jpg',
+    heroImage: 'https://app.be-working.com/img/MA1A5-0-featured-20240501123909.jpg',
     activeFrom: '2026-07-01',
     activeTo: '2026-08-31',
   },

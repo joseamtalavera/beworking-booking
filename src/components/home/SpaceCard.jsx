@@ -100,6 +100,7 @@ const SpaceCard = ({ space, onBookNow }) => {
               component="img"
               src={images[imgIndex]}
               alt={space.name}
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
               sx={{
                 objectFit: 'cover',
                 width: '100%',

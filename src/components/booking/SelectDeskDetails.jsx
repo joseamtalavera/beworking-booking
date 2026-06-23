@@ -217,6 +217,14 @@ const SelectDeskDetails = ({ room, onContinue }) => {
     setSelectedDesk(null);
   }, [selectedSubDate, selectedDate, bookingType, zonePrefix]);
 
+  // When the zone changes, snap both dates to that zone's earliest valid day
+  // (a date from the other zone may be outside this zone's window).
+  useEffect(() => {
+    setSelectedDate(minDate);
+    setSelectedSubDate(minDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [zonePrefix]);
+
   const handleContinue = () => {
     if (!selectedDesk) return;
     if (bookingType === 'day') {
@@ -283,24 +291,38 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         </Stack>
       </Paper>
 
-      {/* Desk room tabs (Desk 1 / Desk 2) */}
+      {/* Coworking 1 / Coworking 2 tabs — segmented-pill style (matches admin) */}
       {zones.length > 1 && (
-        <Paper elevation={0} sx={{ ...cardSx, p: 0, overflow: 'hidden' }}>
+        <Box sx={{ display: 'inline-flex', alignSelf: 'flex-start' }}>
           <Tabs
             value={zonePrefix}
             onChange={(e, v) => setZonePrefix(v)}
-            variant="fullWidth"
             sx={{
-              '& .MuiTab-root': { textTransform: 'none', fontWeight: 700, color: colors.ink2 },
-              '& .Mui-selected': { color: `${colors.brand} !important` },
-              '& .MuiTabs-indicator': { backgroundColor: colors.brand },
+              minHeight: 40,
+              bgcolor: colors.bgSoft,
+              borderRadius: `${radius.md}px`,
+              p: 0.5,
+              '& .MuiTabs-indicator': { display: 'none' },
+              '& .MuiTabs-flexContainer': { gap: 0.5 },
+              '& .MuiTab-root': {
+                minHeight: 32,
+                minWidth: 'auto',
+                textTransform: 'none',
+                fontWeight: 600,
+                fontSize: '0.85rem',
+                borderRadius: `${radius.md}px`,
+                px: 2,
+                py: 0.5,
+                color: colors.ink2,
+              },
+              '& .Mui-selected': { color: `${colors.brand} !important`, bgcolor: colors.bg, boxShadow: 1 },
             }}
           >
             {zones.map((z) => (
               <Tab key={z.prefix} value={z.prefix} label={z.shortLabel || z.displayName} />
             ))}
           </Tabs>
-        </Paper>
+        </Box>
       )}
 
       {/* Period selection */}
