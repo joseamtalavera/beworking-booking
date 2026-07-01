@@ -289,40 +289,6 @@ const SelectDeskDetails = ({ room, onContinue }) => {
         </Stack>
       </Paper>
 
-      {/* Coworking 1 / Coworking 2 tabs — segmented-pill style (matches admin) */}
-      {zones.length > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
-          <Tabs
-            value={zonePrefix}
-            onChange={(e, v) => setZonePrefix(v)}
-            sx={{
-              minHeight: 40,
-              bgcolor: colors.bgSoft,
-              borderRadius: `${radius.md}px`,
-              p: 0.5,
-              '& .MuiTabs-indicator': { display: 'none' },
-              '& .MuiTabs-flexContainer': { gap: 0.5 },
-              '& .MuiTab-root': {
-                minHeight: 32,
-                minWidth: 'auto',
-                textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                borderRadius: `${radius.md}px`,
-                px: 2,
-                py: 0.5,
-                color: colors.ink2,
-              },
-              '& .Mui-selected': { color: `${colors.brand} !important`, bgcolor: colors.bg, boxShadow: 1 },
-            }}
-          >
-            {zones.map((z) => (
-              <Tab key={z.prefix} value={z.prefix} label={z.shortLabel || z.displayName} />
-            ))}
-          </Tabs>
-        </Box>
-      )}
-
       {/* Period selection */}
       <Paper elevation={0} sx={cardSx}>
         <Stack spacing={2.5}>
@@ -417,21 +383,54 @@ const SelectDeskDetails = ({ room, onContinue }) => {
       {/* Desk grid */}
       <Paper elevation={0} sx={cardSx}>
         <Stack spacing={2}>
-          <Stack spacing={0.5}>
-            <Box component="h3" sx={sectionTitleSx}>{isEs ? 'Elige tu escritorio' : 'Choose your desk'}</Box>
-            <Typography sx={{ ...typography.body, color: colors.ink2 }}>
-              {zoneBlocked
-                ? (isEs
-                    ? 'Este escritorio no está disponible para reservar en este momento.'
-                    : 'This desk room is not available for booking right now.')
-                : availableDesks.length > 0
+          <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={2}>
+            <Stack spacing={0.5}>
+              <Box component="h3" sx={sectionTitleSx}>{isEs ? 'Elige tu escritorio' : 'Choose your desk'}</Box>
+              <Typography sx={{ ...typography.body, color: colors.ink2 }}>
+                {zoneBlocked
                   ? (isEs
-                      ? `${availableDesks.length} de ${deskCount} escritorios disponibles para este periodo.`
-                      : `${availableDesks.length} of ${deskCount} desks available for this period.`)
-                  : (isEs
-                      ? 'No hay escritorios disponibles para este periodo. Prueba otra fecha.'
-                      : 'No desks available for this period. Try a different date.')}
-            </Typography>
+                      ? 'Este escritorio no está disponible para reservar en este momento.'
+                      : 'This desk room is not available for booking right now.')
+                  : availableDesks.length > 0
+                    ? (isEs
+                        ? `${availableDesks.length} de ${deskCount} escritorios disponibles para este periodo.`
+                        : `${availableDesks.length} of ${deskCount} desks available for this period.`)
+                    : (isEs
+                        ? 'No hay escritorios disponibles para este periodo. Prueba otra fecha.'
+                        : 'No desks available for this period. Try a different date.')}
+              </Typography>
+            </Stack>
+            {zones.length > 1 && (
+              <Tabs
+                value={zonePrefix}
+                onChange={(e, v) => setZonePrefix(v)}
+                sx={{
+                  minHeight: 36,
+                  bgcolor: colors.bgSoft,
+                  borderRadius: `${radius.md}px`,
+                  p: 0.5,
+                  flexShrink: 0,
+                  '& .MuiTabs-indicator': { display: 'none' },
+                  '& .MuiTabs-flexContainer': { gap: 0.5 },
+                  '& .MuiTab-root': {
+                    minHeight: 28,
+                    minWidth: 'auto',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    fontSize: '0.8rem',
+                    borderRadius: `${radius.md}px`,
+                    px: 1.5,
+                    py: 0.25,
+                    color: colors.ink2,
+                  },
+                  '& .Mui-selected': { color: `${colors.brand} !important`, bgcolor: colors.bg, boxShadow: 1 },
+                }}
+              >
+                {zones.map((z) => (
+                  <Tab key={z.prefix} value={z.prefix} label={z.shortLabel || z.displayName} />
+                ))}
+              </Tabs>
+            )}
           </Stack>
 
           {!zoneBlocked && (
