@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
   Box,
@@ -125,6 +125,10 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   useEffect(() => {
     if (!zones.some((z) => z.prefix === zonePrefix)) setZonePrefix(zones[0]?.prefix);
   }, [zones, zonePrefix]);
+  // Auto-switch to the alternative zone when the shown one is full (unless the
+  // user picked a tab). Guards against ping-pong when every zone is full.
+  const userPickedZoneRef = useRef(false);
+  const autoTriedZonesRef = useRef(new Set());
   const activeZone = zones.find((z) => z.prefix === zonePrefix) || zones[0] || {};
 
   // Active zone drives the product prefix (MA1O1-N / MA1O5-N), desk count/layout
@@ -214,6 +218,21 @@ const SelectDeskDetails = ({ room, onContinue }) => {
   useEffect(() => {
     setSelectedDesk(null);
   }, [selectedSubDate, selectedDate, bookingType, zonePrefix]);
+
+  // New period → re-evaluate which zones are full from scratch.
+  useEffect(() => {
+    autoTriedZonesRef.current = new Set();
+  }, [startDate, endDate]);
+
+  // When the current zone is full, render the alternative zone automatically.
+  useEffect(() => {
+    if (isLoading || userPickedZoneRef.current || zones.length < 2) return;
+    autoTriedZonesRef.current.add(zonePrefix);
+    if (availableDesks.length === 0 || zoneBlocked) {
+      const next = zones.find((z) => !autoTriedZonesRef.current.has(z.prefix));
+      if (next) setZonePrefix(next.prefix);
+    }
+  }, [isLoading, availableDesks.length, zoneBlocked, zonePrefix, zones]);
 
   // When the zone changes, snap both dates to that zone's earliest valid day
   // (a date from the other zone may be outside this zone's window).
@@ -403,7 +422,7 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             {zones.length > 1 && (
               <Tabs
                 value={zonePrefix}
-                onChange={(e, v) => setZonePrefix(v)}
+                onChange={(e, v) => { userPickedZoneRef.current = true; setZonePrefix(v); }}
                 sx={{
                   minHeight: 36,
                   bgcolor: colors.bgSoft,
