@@ -347,6 +347,7 @@
     "reviewPayment": "Revisión y pago"
   },
   "booking": {
+    "eyebrow": "Reserva",
     "pickDateTime": "Elige fecha y hora",
     "pickDateTimeDesc": "Selecciona una fecha y haz clic en un horario disponible, o establece la hora manualmente.",
     "date": "Fecha",

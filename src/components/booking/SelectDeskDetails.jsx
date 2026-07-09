@@ -571,18 +571,16 @@ const SelectDeskDetails = ({ room, onContinue }) => {
                     ? (isEs ? '1 día' : '1 day')
                     : (isEs ? 'Suscripción mensual' : 'Monthly subscription')}
                 </Typography>
-                <Typography sx={{ ...typography.body, color: colors.ink3, mt: 0.25 }}>
-                  {bookingType === 'day'
-                    ? new Date(`${selectedDate}T00:00:00`).toLocaleDateString(undefined, {
-                        weekday: 'long',
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                      })
-                    : (isEs
-                        ? `Empieza ${new Date(startDate).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}${seasonEnd ? ` · finaliza ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`
-                        : `Starts ${new Date(startDate).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}${seasonEnd ? ` · ends ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}` : ''}`)}
-                </Typography>
+                {bookingType === 'day' && (
+                  <Typography sx={{ ...typography.body, color: colors.ink3, mt: 0.25 }}>
+                    {new Date(`${selectedDate}T00:00:00`).toLocaleDateString(undefined, {
+                      weekday: 'long',
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </Typography>
+                )}
               </Box>
               <Typography sx={{ ...typography.body, color: colors.ink2 }}>
                 {isSubscription ? `€${subtotal.toFixed(2)}/${isEs ? 'mes' : 'month'}` : `€${subtotal.toFixed(2)}`}
@@ -613,13 +611,9 @@ const SelectDeskDetails = ({ room, onContinue }) => {
             </Stack>
             {isSubscription && (
               <Typography sx={{ fontSize: '0.8rem', color: colors.ink3 }}>
-                {seasonEnd
-                  ? (isEs
-                      ? `Reserva de temporada: finaliza el ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}.`
-                      : `Seasonal booking: ends ${new Date(`${seasonEnd}T00:00:00`).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}.`)
-                  : (isEs
-                      ? 'Primer mes ahora, luego mensualmente hasta que canceles.'
-                      : 'First month charged now, then monthly until you cancel.')}
+                {isEs
+                  ? 'Primer mes ahora, luego mensualmente hasta que canceles.'
+                  : 'First month charged now, then monthly until you cancel.'}
               </Typography>
             )}
           </Stack>

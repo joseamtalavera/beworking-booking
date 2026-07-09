@@ -347,6 +347,7 @@
     "reviewPayment": "Review & pay"
   },
   "booking": {
+    "eyebrow": "Booking",
     "pickDateTime": "Pick your date & time",
     "pickDateTimeDesc": "Select a date and click an available slot, or set the time manually.",
     "date": "Date",
