@@ -318,7 +318,14 @@
       "Soporte 24h": "24h support",
       "Sin permanencia": "No commitment",
       "Alarma": "Alarm",
-      "Escaner e impresora": "Scanner & printer"
+      "Escaner e impresora": "Scanner & printer",
+      "Agua gratis": "Free water",
+      "Cocina compartida": "Shared kitchen",
+      "Mesa Coworking": "Coworking desk",
+      "Oficina virtual": "Virtual office",
+      "Taquilla personal": "Personal locker",
+      "Terraza": "Terrace",
+      "Zona de descanso": "Lounge"
     }
   },
   "calendar": {
