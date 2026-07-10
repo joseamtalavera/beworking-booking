@@ -395,38 +395,6 @@ const SelectBookingDetails = ({ room, onContinue }) => {
         </Stack>
       </Paper>
 
-      {/* Notes */}
-      <Paper elevation={0} sx={cardSx}>
-        <Stack spacing={2}>
-          <Box component="h3" sx={sectionTitleSx}>{t('booking.additionalDetails')}</Box>
-          <Paper
-            elevation={0}
-            sx={{
-              border: `1px solid ${colors.line}`,
-              bgcolor: colors.bg,
-              display: 'flex',
-              overflow: 'hidden',
-              borderRadius: `${radius.md}px`,
-            }}
-          >
-            <Box sx={{ flex: 1, px: 3, py: { xs: 1.5, sm: 2 }, minWidth: 0, width: '100%' }}>
-              <TextField
-                variant="standard"
-                label={t('booking.notesOptional')}
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                fullWidth
-                multiline
-                minRows={2}
-                placeholder={t('booking.notesPlaceholder')}
-                slotProps={{ input: { disableUnderline: true }, inputLabel: { shrink: true } }}
-                sx={pillFieldSx(note)}
-              />
-            </Box>
-          </Paper>
-        </Stack>
-      </Paper>
-
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Button
           variant="contained"
