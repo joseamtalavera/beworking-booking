@@ -85,6 +85,9 @@ export default function Coworking() {
       .map((room) => ({
         id: room.slug,
         name: room.name,
+        // Mirror the meeting-room card: show the building address (subtitle),
+        // falling back to the description only if no subtitle exists.
+        subtitle: room.subtitle || '',
         description: room.description || `${room.capacity} desk${room.capacity === 1 ? '' : 's'} available`,
         productName: room.productName,
         slug: room.slug,
