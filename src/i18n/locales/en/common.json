@@ -658,7 +658,7 @@
       "passwordMatch": "Passwords do not match.",
       "termsRequired": "You must accept the terms and conditions."
     },
-    "trialBanner": "€{{price}}/month",
+    "trialBanner": "€{{price}}/month + VAT",
     "termsLabel": "I have read and accept the <terms>terms and conditions</terms>.",
     "submitTrial": "Subscribe",
     "trialRibbon": "",

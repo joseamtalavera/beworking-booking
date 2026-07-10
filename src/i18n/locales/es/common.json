@@ -664,7 +664,7 @@
       "passwordMatch": "Las contraseñas no coinciden.",
       "termsRequired": "Debes aceptar los términos y condiciones."
     },
-    "trialBanner": "{{price}}€/mes",
+    "trialBanner": "{{price}}€/mes + IVA",
     "termsLabel": "He leído y acepto los <terms>términos y condiciones</terms>.",
     "submitTrial": "Suscribirse",
     "trialRibbon": "",
